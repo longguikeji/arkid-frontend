@@ -1,0 +1,87 @@
+.@{menu-prefix-cls} {
+  &-horizontal{
+    &.@{menu-prefix-cls}-light{
+      &:after{
+        display: none;
+      }
+    }
+  }
+
+  &-light{
+    background: @component-background;
+  }
+
+  &-light&-horizontal &-item, &-light&-horizontal &-submenu{
+    color: @color-5;
+
+    &-active {
+      color: @primary-color;
+
+      font-weight: 600;
+      border-bottom: 0px;
+      display: flex;
+      justify-content: center;
+
+      &:after {
+        content: '';
+        height: 5px;
+        width: 24px;
+        position: absolute;
+        bottom: -2px;
+        background-color: @primary-color;
+      }
+    }
+    &-active:hover {
+      &:after {
+        //width: 100%;
+      }
+    }
+    &:hover{
+      border-bottom: 0px solid transparent;
+    }
+  }
+  
+  &-dark&-horizontal &-item, &-dark&-horizontal &-submenu{
+    &-active, &:hover{
+      color: @component-background;
+    }
+  }
+
+  &-primary&-horizontal &-item, &-primary&-horizontal &-submenu{
+    color: @component-background;
+  }
+
+  &-vertical &-item {
+    padding: 10px 24px;
+    margin: 0 12px;
+    border-radius: 4px;
+  }
+
+  &-light&-vertical &-item{
+    &-active:not(.@{menu-prefix-cls}-submenu){
+      background: @bg-3;
+      &:after {
+        display: none;
+      }
+    }
+  }
+
+  &-dark&-vertical &-item, &-dark&-vertical &-submenu-title{
+    &:hover{
+      color: @component-background;
+    }
+  }
+
+  &-dark&-vertical &-submenu &-item{
+    &:hover{
+      color: @component-background;
+    }
+    &-active,&-active:hover{
+      color: @component-background;
+    }
+  }
+
+  &-dark&-vertical &-child-item-active > &-submenu-title{
+    color: @component-background;
+  }
+}

@@ -1,0 +1,42 @@
+@import '../../../../utils.less';
+
+.ui-group-perm-page {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background-color: @bg-2;
+
+  .breadcrumb();
+
+  &--header {
+    display: flex;
+    flex: none;
+    height: 82px;
+    align-items: center;
+    padding-left: 30px;
+
+    img {
+      display: inline-flex;
+      width: 32px;
+      height: 32px;
+      margin-right: 16px;
+    }
+    span {
+      font-size: 22px;
+      font-weight: 600;
+    }
+  }
+  &--body {
+    display: flex;
+    flex: 1;
+  }
+  &--applist {
+    flex: none;
+    width: 330px;
+    border-right: 1px solid @bg-1;
+  }
+  &--perm-detail {
+    display: flex;
+    flex: 1;
+  }
+}

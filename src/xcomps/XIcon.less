@@ -1,0 +1,87 @@
+@import "~less-utils/for";
+
+#use-icon(@name, @size: contain) {
+  background: url('../assets/icons/auto/@{name}.svg') center no-repeat;
+  background-size: @size;
+}
+
+.x-icon--inline-svg {
+  vertical-align: middle;
+  line-height: 1em;
+
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+  path {
+    fill: currentColor;
+    stroke: none;
+  }
+}
+
+.fn(); .fn() {
+  @icons:
+    account-empty
+    account-synchronization
+    accountsettings
+    add
+    allaccount
+    apps-empty
+    bug
+    close-huge
+    custom-classification
+    developing
+    dingding
+    document
+    doubt
+    filter
+    folder-green
+    funnel
+    icon-accout
+    invisible
+    magnifyingglass
+    more
+    netdisconnection
+    noaccount
+    nogroup
+    oneid-logo
+    search-cancel
+    search
+    synchronous
+    thechild
+    visible
+    defaultapp
+    defaultcompany
+    completed
+  ;
+
+  // xs, s, md, l, xl
+  //     12 16  24 32
+  .for(@icons); .-each(@name) {
+    .x-icon-@{name} {
+      display: inline-block;
+      vertical-align: middle;
+      #use-icon(@name);
+    }
+  }
+
+  .x-icon--s {
+    width: 12px;
+    height: 12px;
+  }
+
+  .x-icon--md {
+    width: 16px;
+    height: 16px;
+  }
+
+  .x-icon--l {
+    width: 24px;
+    height: 24px;
+  }
+
+  .x-icon--xl {
+    width: 32px;
+    height: 32px;
+  }
+}

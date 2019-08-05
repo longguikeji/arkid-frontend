@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>search-cancel</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图画板" transform="translate(-793.000000, -127.000000)" fill="#3E3E3E">
+            <g id="编组-3" transform="translate(793.000000, 127.000000)">
+                <path d="M8,16 C3.581722,16 0,12.418278 0,8 C0,3.581722 3.581722,0 8,0 C12.418278,0 16,3.581722 16,8 C16,12.418278 12.418278,16 8,16 Z M9.41421356,8 L12.2426407,5.17157288 L10.8284271,3.75735931 L8,6.58578644 L5.17157288,3.75735931 L3.75735931,5.17157288 L6.58578644,8 L3.75735931,10.8284271 L5.17157288,12.2426407 L8,9.41421356 L10.8284271,12.2426407 L12.2426407,10.8284271 L9.41421356,8 Z" id="合并形状"></path>
+            </g>
+        </g>
+    </g>
+</svg>

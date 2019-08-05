@@ -1,0 +1,54 @@
+@import '../../../utils.less';
+
+
+
+.ui-admin-apps-app-list {
+  padding: 20px 40px 20px 30px;
+  background-color: @bg-2;
+  overflow-y: auto;
+
+  &--toolbar {
+    margin-bottom: 20px;
+    justify-content: space-between;
+    
+    h2 {
+      margin-top: 2px;
+    }
+
+    button {
+      margin: 0 20px;
+    }
+    .search {
+      width: 270px;
+    }
+  }
+
+  > .table-wrapper {
+    .table {
+      .table-btn {
+        color: #006064;
+        margin-right: 24px;
+        cursor: pointer;
+      }
+    }
+  }
+  .subtitle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    color: @color-2;
+  
+    &:before {
+      content: '';
+      display: inline-flex;
+      width: 6px;
+      height: 18px;
+      margin-right: 10px;
+      background: @primary-color;
+    }
+  }  
+}
+
+

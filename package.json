@@ -1,0 +1,50 @@
+{
+  "name": "@longguikeji/oneid",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve"
+  },
+  "dependencies": {
+    "axios": "*",
+    "dayjs": "^1.8.14",
+    "dingtalk-jsapi": "^2.6.26",
+    "font-awesome": "^4.7.0",
+    "iview": "^3.4.2",
+    "js-cookie": "*",
+    "vue": "^2.6.10",
+    "vue-class-component": "^7.1.0",
+    "vue-clipboard2": "^0.3.0",
+    "vue-property-decorator": "^8.1.1",
+    "vue-router": "^3.0.6",
+    "vue-typed-mixins": "^0.1.0"
+  },
+  "devDependencies": {
+    "@kindy/babel-plugin-transform-vue-template": "^0.4.2-fix.1",
+    "@types/js-yaml": "^3.12.1",
+    "@types/lodash": "^4.14.123",
+    "@types/webpack-chain": "^5.2.0",
+    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-eslint": "^3.0.1",
+    "@vue/cli-plugin-typescript": "^3.0.1",
+    "@vue/cli-plugin-unit-mocha": "^3.0.1",
+    "@vue/cli-service": "^3.0.1",
+    "@vue/eslint-config-airbnb": "^4.0.0",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "chai": "^4.2.0",
+    "expose-loader": "^0.7.5",
+    "imports-loader": "^0.8.0",
+    "json-loader": "^0.5.7",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0",
+    "less-utils": "^0.0.1",
+    "lint-staged": "^8.1.7",
+    "raw-loader": "^2.0.0",
+    "typescript": "^3.4.5",
+    "vue-template-compiler": "^2.6.10",
+    "webpack-stats-plugin": "^0.2.1",
+    "yaml-loader": "^0.5.0"
+  },
+  "license": "LGPL"
+}

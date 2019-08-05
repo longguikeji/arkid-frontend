@@ -1,0 +1,97 @@
+@import '../../../utils.less';
+
+
+.ui-admin-apps-perm {
+  padding: 20px 40px 20px 30px;
+  background-color: @bg-2;
+  overflow-y: auto;
+  &--head {
+    justify-content: space-between;
+    .search {
+      width: 270px;
+    }
+  }
+
+  &--menu {
+    margin-top: 20px;
+
+    .ivu-menu-light.ivu-menu-horizontal {
+      .ivu-menu-item-active {
+        justify-content: center;
+        &:after {
+          width: 124px;
+          height: 1px;
+        }
+      }
+    }
+  }
+
+  .table-wrapper {
+    .table {
+      .perm-results {
+        display: flex;
+        justify-content: center;
+        
+      }
+      .dropdown-column {
+        display: flex;
+        justify-content: flex-end;
+        .dropdown-column-table-btn {
+          color: @primary-color;
+          cursor: pointer;
+        }       
+      }
+      .table-btn {
+        color: @primary-color;
+        margin: 0px 24px 0px 10px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+    }
+  }
+  .page-wrapper {
+    margin-top: 12px;
+    .page {
+      justify-content: flex-end;
+    }
+  }
+  .perm-title {
+    margin-top: 30px;
+    .subtitle {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: @color-2;
+      margin-bottom: 20px;
+      &:before {
+        content: '';
+        display: inline-flex;
+        width: 6px;
+        height: 18px;
+        margin-right: 10px;
+        background: @primary-color;
+      }
+    }
+    .inner {
+      display: flex;
+      align-items: center;
+      align-content: center;
+      .new-perm {
+        margin-bottom: 20px;
+        margin-left: 10px;
+        .add-perm {
+          font-size: 15px;
+        }
+        .icon {
+          color: @primary-color;
+        }
+      }
+    }
+  }
+  .permtags {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

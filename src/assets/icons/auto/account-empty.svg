@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="79px" height="131px" viewBox="0 0 79 131" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>account-empty</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="65.5055222" height="93.2998022" rx="1.872"></rect>
+        <filter x="-10.8%" y="-36.1%" width="121.7%" height="172.2%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="3" dy="3" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feColorMatrix values="0 0 0 0 0.8377774   0 0 0 0 0.8377774   0 0 0 0 0.8377774  0 0 0 0.17334692 0" type="matrix" in="shadowOffsetOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="SourceGraphic"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图画板" transform="translate(-184.000000, -399.000000)">
+            <g id="编组-14" transform="translate(184.000000, 399.000000)">
+                <g id="编组">
+                    <g id="phone" transform="translate(0.905049, 0.000000)">
+                        <path d="M16.8975024,0 L66.3892369,0 C72.4201864,2.47233488e-15 77.3092369,4.88905053 77.3092369,10.92 L77.3092369,119.950192 C77.3092369,125.981142 72.4201864,130.870192 66.3892369,130.870192 L16.8975024,130.870192 C10.8665529,130.870192 5.97750241,125.981142 5.97750241,119.950192 L5.97750241,10.92 C5.97750241,4.88905053 10.8665529,1.10786744e-15 16.8975024,0 Z" id="side" fill="#0F0F0F"></path>
+                        <path d="M14.2267692,0 L63.7185037,0 C69.7494532,-4.68806977e-15 74.6385037,4.88905053 74.6385037,10.92 L74.6385037,119.950192 C74.6385037,125.981142 69.7494532,130.870192 63.7185037,130.870192 L14.2267692,130.870192 C8.19581968,130.870192 3.30676915,125.981142 3.30676915,119.950192 L3.30676915,10.92 C3.30676915,4.88905053 8.19581968,2.88422428e-15 14.2267692,0 Z" id="front" fill="#2A2A2A"></path>
+                        <rect id="speaker" fill="#131313" x="20.3130105" y="8.45333778" width="37.476717" height="2.34814938" rx="1.17407469"></rect>
+                        <ellipse id="button" fill="#141414" cx="38.8939038" cy="121.477595" rx="6.6135383" ry="6.57481827"></ellipse>
+                        <g id="screen" transform="translate(6.298608, 18.785195)">
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <use fill="#2F2F2F" xlink:href="#path-1"></use>
+                            <g id="4" opacity="0.600000024" mask="url(#mask-2)">
+                                <g transform="translate(3.149304, 71.540285)">
+                                    <rect id="Rectangle-16" fill="#1B1B1B" x="0" y="0" width="59.2069143" height="17.8459353" rx="3.12"></rect>
+                                    <ellipse id="Oval-Copy-2" fill="#414141" cx="8.97551627" cy="8.92296766" rx="6.6135383" ry="6.57481827"></ellipse>
+                                </g>
+                            </g>
+                            <g id="3" opacity="0.600000024" mask="url(#mask-2)">
+                                <g transform="translate(3.149304, 49.937310)">
+                                    <rect id="Rectangle-16" fill="#1B1B1B" x="0" y="0" width="59.2069143" height="17.8459353" rx="3.12"></rect>
+                                    <ellipse id="Oval-Copy-2" fill="#414141" cx="8.97551627" cy="8.92296766" rx="6.6135383" ry="6.57481827"></ellipse>
+                                </g>
+                            </g>
+                            <g id="1" opacity="0.600000024" mask="url(#mask-2)">
+                                <g transform="translate(3.149304, 4.852842)">
+                                    <rect id="Rectangle-16" fill="#1B1B1B" x="0" y="0" width="59.2069143" height="17.8459353" rx="3.12"></rect>
+                                    <ellipse id="Oval-Copy-2" fill="#414141" cx="8.97551627" cy="8.92296766" rx="6.6135383" ry="6.57481827"></ellipse>
+                                </g>
+                            </g>
+                        </g>
+                        <g id="yellow-comment" filter="url(#filter-3)" transform="translate(0.000000, 44.771382)">
+                            <rect id="Rectangle-16备份" fill="#454445" x="0" y="0" width="59.2069143" height="17.8459353" rx="3.12"></rect>
+                            <ellipse id="Oval-Copy-2" fill="#656565" cx="8.97551627" cy="8.92296766" rx="6.6135383" ry="6.57481827"></ellipse>
+                            <rect id="Rectangle" fill="#363636" x="17.9510325" y="3.13086584" width="36.6893911" height="2.66123597" rx="1.33061798"></rect>
+                            <rect id="Rectangle-Copy" fill="#363636" x="17.9510325" y="7.51407803" width="28.0288052" height="2.66123597" rx="1.33061798"></rect>
+                            <rect id="Rectangle-Copy-2" fill="#353535" opacity="0.5" x="17.9510325" y="12.83655" width="10.392703" height="1.87851951" rx="0.939259753"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,39 @@
+@import '../../../../utils.less';
+
+.ui-user-list {
+  &-toolbar {
+    padding-left: 10px;
+    margin-bottom: 12px;
+
+    .upload {
+      margin-right: 16px;
+    }
+    button {
+      margin-right: 16px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .search {
+      width: auto;
+    }
+  }
+
+  &-table-wrapper {
+    .table-btn {
+      color: #006064;
+      margin-right: 24px;
+      cursor: pointer;
+    }
+  }
+
+  .ui-user-is-settled {
+    display: inline-flex;
+    color: @primary-color;
+    border: 1px solid @primary-color;
+    border-radius: 2px;
+    font-size: 12px;
+    margin: 0 6px;
+    padding: 0 2px;
+  }
+}

@@ -1,0 +1,100 @@
+@import '../../../utils.less';
+
+.ui-choose-base {
+  .ivu-modal-body {
+    padding: 0;
+  }
+
+  ul, li {
+    list-style: none;
+  }
+
+  &--wrapper {
+    display: flex;
+    height: 460px;
+  }
+
+  &--left,
+  &--middle,
+  &--right {
+    overflow-y: auto;
+    padding: 10px 0;
+    .title {
+      padding: 10px 20px;
+      display: inline-flex;
+      align-items: center;
+
+      &:before {
+        content: '';
+        display: inline-flex;
+        width: 6px;
+        height: 18px;
+        background-color: @primary-color;
+        margin-right: 10px;
+      }
+    }
+  }
+
+  &--left {
+    flex: 2;
+  }
+  &--middle,
+  &--right {
+    flex: 3;
+  }
+
+  &--left,
+  &--middle {
+    border-right: solid 1px @bg-1;
+  }
+
+  &--left {
+    .tree {}
+  }
+
+  &--right {
+    .selection {
+      padding: 0 20px;
+      li {
+        align-items: center;
+        height: 28px;
+        padding: 0 10px;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        &:hover {
+          background: @bg-4;
+        }
+        span {
+          margin-left: 12px;
+        }
+      }
+    }
+  }
+  &--footer {
+    flex-direction: row-reverse;
+  }
+
+  ul.base-list {
+    padding: 0 20px;
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 30px;
+      border-radius: 4px;
+
+      &:not(:last-child) {
+        margin-bottom: 1px;
+      }
+
+      &.active,
+      &:hover {
+        background: @bg-3;
+      }
+      span {
+        margin-left: 10px;
+      }
+    }
+  }
+}

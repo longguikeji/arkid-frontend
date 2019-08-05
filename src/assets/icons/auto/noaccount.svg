@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="210px" height="133px" viewBox="0 0 210 133" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>noaccount</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#454445" offset="0%"></stop>
+            <stop stop-color="#1B1B1B" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="页面1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="切图画板" transform="translate(-1347.000000, -397.000000)">
+            <g id="编组-18" transform="translate(1347.000000, 397.000000)">
+                <g id="编组-2">
+                    <g id="通讯录空状态">
+                        <rect id="矩形" fill="#454445" x="36" y="58" width="26" height="71"></rect>
+                        <rect id="矩形备份" fill="#454445" x="176" y="91" width="11" height="39"></rect>
+                        <rect id="矩形" fill="#2A2A2A" x="52" y="0" width="94" height="127"></rect>
+                        <path d="M82,32 L134,32 L134,36 L82,36 L82,32 Z M69,39 C66.2385763,39 64,36.7614237 64,34 C64,31.2385763 66.2385763,29 69,29 C71.7614237,29 74,31.2385763 74,34 C74,36.7614237 71.7614237,39 69,39 Z" id="形状结合" fill="#454445"></path>
+                        <path d="M82,48 L134,48 L134,52 L82,52 L82,48 Z M69,55 C66.2385763,55 64,52.7614237 64,50 C64,47.2385763 66.2385763,45 69,45 C71.7614237,45 74,47.2385763 74,50 C74,52.7614237 71.7614237,55 69,55 Z" id="形状结合备份" fill="#454445"></path>
+                        <path d="M82,64 L134,64 L134,68 L82,68 L82,64 Z M69,71 C66.2385763,71 64,68.7614237 64,66 C64,63.2385763 66.2385763,61 69,61 C71.7614237,61 74,63.2385763 74,66 C74,68.7614237 71.7614237,71 69,71 Z" id="形状结合备份-2" fill="#454445"></path>
+                        <path d="M82,80 L134,80 L134,84 L82,84 L82,80 Z M69,87 C66.2385763,87 64,84.7614237 64,82 C64,79.2385763 66.2385763,77 69,77 C71.7614237,77 74,79.2385763 74,82 C74,84.7614237 71.7614237,87 69,87 Z" id="形状结合备份-3" fill="#454445"></path>
+                        <polygon id="矩形" fill="#454445" points="62 0 78 0 78 18 70 12 62 18"></polygon>
+                        <path d="M0,133 C32.3549779,119.466791 67.816099,112 105,112 C142.183902,112 177.645023,119.466791 210,133 L0,133 Z" id="路径" fill="url(#linearGradient-1)"></path>
+                        <g id="编组" transform="translate(108.000000, 67.000000)" fill="#454445">
+                            <circle id="椭圆形" stroke="#454445" stroke-width="2" fill-opacity="0.5" cx="22" cy="22" r="21"></circle>
+                            <rect id="矩形" transform="translate(45.916563, 46.343569) rotate(-45.000000) translate(-45.916563, -46.343569) " x="41.9165635" y="32.3435692" width="8" height="28"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

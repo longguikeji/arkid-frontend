@@ -1,0 +1,153 @@
+@import '../../utils.less';
+
+
+.ui-login-page,
+.ui-signup-page,
+.ui-password-page  {
+  display: flex;
+  justify-content: center;
+
+  &--form-wrapper {
+    width: 500px;
+
+    .form-alert-line {
+      justify-content: flex-end;
+      margin: 12px 0px 30px 0px;
+      .form-alert {
+        width: 380px;
+      }
+    }
+
+  }
+  .go-to {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .ivu-form-item-label {
+    color: black;
+  }
+  .ivu-radio-inner {
+    background-color: white;
+  }
+  .ivu-radio-wrapper {
+    margin-right: 50px;
+  }
+  .ivu-input {
+    color: black;
+    background-color: white;
+    border: #DCDEE2 solid 1px;
+    &:disabled {
+      background-color: #F3F3F3;
+      color: #C6C8CE;
+    }
+    &::placeholder {
+      color: #DCDEE2;
+    } 
+  }
+  .ivu-btn-primary {
+    border: 0px;
+    color: white;
+  }
+  
+  .form-alert-line {
+    justify-content: flex-end;
+    margin: 12px 0px 30px 0px;
+    .form-alert {
+      width: 380px;
+    }
+  }
+  .ivu-radio-wrapper {
+    margin-right: 50px;
+  }
+  .ivu-alert-info {
+    background-color: #F0FAFF;
+    border: 1px solid  #AADCFF;
+    color: #515A6E;
+  }
+  .ivu-alert-with-icon {
+    padding-right: 17px;
+  }
+  .ivu-icon-ios-information-circle:before {
+    color: #2C8CF0;
+  }
+}
+
+.ui-login-page {
+  .forget {
+    float: right;
+    font-size:14px;
+    font-weight:400;
+    color: @color-3;
+  }
+}
+
+.ui-signup-page {
+  .activate-area {
+    margin: -15px 0px 60px;
+    .activate-name {
+      justify-content: center;
+      font-size: 20px;
+      font-weight:600;
+      margin-bottom: 10px;
+    }
+    .activate-content {
+      justify-content: center;
+    }
+  }
+  .register-button {
+    margin-top: 65px;
+  }
+  .mobile-form {
+    margin-bottom: 70px;
+  }
+  .form-right-area{
+    a {
+      margin-top: 62px;
+      margin-left: 12px;
+      height: 20px;
+    }
+    .mobile-check {
+      margin-top: 38px;
+      margin-left: 15px;
+    }
+  }
+  .help {
+    font-size:12px;
+    font-weight:400;
+    color:rgba(128,134,149,1);
+  }
+}
+
+.ui-password-page {
+  
+  &--form-wrapper {
+    .welcome-word {
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .operation-button {
+      margin-bottom: 12px;
+    }
+    .reset-button {
+      margin-top: 106px;
+      margin-bottom: 12px;
+    }
+  }
+  .form-right-area{
+    .verify-code {
+      margin-top: 120px;
+      margin-left: 10px;
+    }
+  }
+}
+
+.ui-password-page,
+.ui-signup-page {
+  margin-left: 70px;
+  .go-to {
+    margin-left: 120px;
+  }
+}
