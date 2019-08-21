@@ -76,10 +76,10 @@ export default class Apps extends Vue {
   }
 
   goToApp(app: App) {
-    const {oauth_app: {home_url}} = app;
+    const {index: url} = app;
 
-    if (home_url) {
-      window.open(home_url, '_blank');
+    if (url) {
+      window.open(url, '_blank');
     } else {
       this.$Modal.error({content: `${app.name}没有配置跳转链接！`});
     }
