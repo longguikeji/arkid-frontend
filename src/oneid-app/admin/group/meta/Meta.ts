@@ -140,6 +140,7 @@ export default class Meta extends Vue {
       await api.Node.create(node);
       this.$Loading.finish();
       this.isAddingCustomNode = false;
+      this.customNodeName = null;
       this.loadData();
     } catch(e) {
       console.log(e);
