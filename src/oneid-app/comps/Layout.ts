@@ -40,10 +40,12 @@ import './Layout.less';
         </Dropdown>
         <template v-if="isAdminPage">
           <Divider type="vertical" class="divider"></Divider>
+          <a href="https://oneid1.docs.apiary.io/#" target="_blank">
           <div class="help">
             <XIcon name="document" size="13"></XIcon>
             <span>文档与帮助</span>
           </div>
+          </a>
         </template>
       </div>
     </header>
