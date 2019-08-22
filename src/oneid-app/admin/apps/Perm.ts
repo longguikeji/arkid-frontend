@@ -100,7 +100,6 @@ export default class Perm extends Vue {
     pageSizeOpts: [10, 20, 40, 60, 80, 100],
   };
   editNode = false;
-  menuName = '账号的权限';
   currentPerm: Permission|null = null;
   get viewMeta() {
     return {
@@ -114,12 +113,19 @@ export default class Perm extends Vue {
   subMenuItemList = [];
   selectedSubMenuItem = '';
   innerPerm: Permission[] = [];
-  appUID = '';
   metaNodes: Node[] = [];
   currentNode: Node|null = null;
   columnName = '';
   searchPerm = '';
   wholeNames = '';
+
+  get menuName(): string {
+    return (this.$route.query.tab || this.baseMenuItems[0]) as string;
+  }
+
+  get appUID(): string {
+    return this.$route.params.uid;
+  }
 
   showAdd() {
     this.editNode = false;
@@ -147,14 +153,9 @@ export default class Perm extends Vue {
   }
 
   async loadData() {
-    this.menuName = window.localStorage.getItem('menuName');
-    if(this.menuName.length == 0) {
-      this.menuName = this.baseMenuItems[0];
-    }
     await this.loadMetaNodes();
 
     this.subMenuItemList = this.metaNodes.filter(o => o.parent.name == '自定义分组类型');
-    this.appUID = this.$route.params.uid;
     this.loadPerms();
   }
 
@@ -189,9 +190,12 @@ export default class Perm extends Vue {
   }
 
   onSelect(menuName: string) {
-    this.menuName = menuName;
-    window.localStorage.setItem('menuName', this.menuName);
-    this.loadData();
+    const {uid} = this.$route.params;
+    this.$router.replace({
+      name: 'admin.app.perm',
+      params: {uid},
+      query: {tab: menuName},
+    });
   }
 
   async getAccessPermList(type: string) {
