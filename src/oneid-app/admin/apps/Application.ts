@@ -117,15 +117,16 @@ export default class Application extends Vue {
         }
       },
       {title: '操作', width: 300, render: (h, params) => {
+        const disabled = this.appList![params.index].auth_protocols.length === 0;
         const protoInterfaceBtn = h('span', {
-          class: 'table-btn',
-          on: {
+          class: {
+            'table-btn': true,
+            disabled,
+          },
+          on: disabled ? {} : {
             click: () => {
               this.showProtocol(this.appList![params.index]);
             }
-          },
-          style: {
-            marginRight: '12px',
           },
         }, '接口详情');
         const protoSetBtn = h('span', {
@@ -134,9 +135,6 @@ export default class Application extends Vue {
             click: () => {
               this.edit(this.appList![params.index]);
             }
-          },
-          style: {
-            marginRight: '12px',
           },
         }, '编辑');
         const permBtn = h('span', {
