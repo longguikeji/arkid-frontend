@@ -9,6 +9,12 @@ import './UserCommon.less';
 @Component({
   template: html`
 <SimpleFrame>
+  <SiteLogo
+    slot="logo"
+    v-if="siteLogo"
+    v-bind="siteLogo"
+  />
+
   <div class="ui-login-page">
     <div class="ui-login-page--form-wrapper">
       <Form ref="form" :model="form" :label-width="120" :rules="formRules" class="form"
