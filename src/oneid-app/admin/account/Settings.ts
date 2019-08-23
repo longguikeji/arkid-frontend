@@ -170,7 +170,6 @@ export default class Settings extends Vue {
       host: [FORM_RULES.required],
       port: [FORM_RULES.required, FORM_RULES.port],
       account: [FORM_RULES.required, FORM_RULES.email],
-      password: [FORM_RULES.required],
     };
   };
 
@@ -178,7 +177,6 @@ export default class Settings extends Vue {
     return {
       vendor: [FORM_RULES.required],
       accessKey: [FORM_RULES.required],
-      accessSecret: [FORM_RULES.required],
       template: [FORM_RULES.required],
       badging: [FORM_RULES.required],
     };
