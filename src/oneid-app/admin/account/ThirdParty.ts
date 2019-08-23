@@ -22,10 +22,10 @@ import './ThirdParty.less';
               <span>
                 <Icon :type="item.icon" color="#006064" size="22" class="icon"></Icon>
                 <span class="name">{{ item.name }}账号</span>
-                <span :class="'status status-' + item.status"></span>
+                <!-- <span :class="'status status-' + item.status"></span> -->
               </span>
-              <span class="action action-activate" v-if="item.status === 'no'">激活</span>
-              <span class="action action-deactivate" v-else>取消激活</span>
+              <!-- <span class="action action-activate" v-if="item.status === 'no'">激活</span>
+              <span class="action action-deactivate" v-else>取消激活</span> -->
             </li>
           </ul>
         </div>
