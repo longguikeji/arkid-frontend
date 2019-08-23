@@ -580,10 +580,6 @@ export class App {
     obj.logo = data.logo;
     obj.oauth_app = data.oauth_app;
     obj.index = data.index;
-    if (!obj.oauth_app) {
-
-      obj.oauth_app = new OAuthData();
-    }
     obj.ldap_app = data.ldap_app;
     obj.http_app = data.http_app;
     obj.auth_protocols = data.auth_protocols;
@@ -599,7 +595,7 @@ export class App {
   remark: string = '';
   logo: string = '';
   index: string = '';
-  oauth_app?:OAuthData|null = new OAuthData();
+  oauth_app?: OAuthData|null = null;
   ldap_app?: object|null = null;
   http_app?: object|null = null;
   auth_protocols: string[] = [];
