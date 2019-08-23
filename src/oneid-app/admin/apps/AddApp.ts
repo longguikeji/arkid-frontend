@@ -1,6 +1,6 @@
 import { Vue, Component } from 'vue-property-decorator';
 import * as api from '@/services/oneid';
-import {App} from '@/models/oneid';
+import {App, OAuthData} from '@/models/oneid';
 import './AddApp.less';
 
 
@@ -115,7 +115,7 @@ import './AddApp.less';
 
 export default class AddApp extends Vue {
   showAdd: boolean = false;
-  app?: App | null = new App();
+  app: App|null = null;
 
   rules = {
     name: {required: true, message: 'Required', trigger: 'blur'},
@@ -127,12 +127,13 @@ export default class AddApp extends Vue {
   isNew: boolean = true;
 
   showModal(app?: App|null) {
-    if (app) {  
+    if (app) {
       this.app = app;
       this.isNew = false;
-    }
-    else
-    {
+    } else {
+      const newApp = new App();
+      newApp.oauth_app = new OAuthData();
+      this.app = newApp;
       this.isNew = true;
     }
     this.showAdd = true;
@@ -245,5 +246,4 @@ export default class AddApp extends Vue {
     this.showAdd = false;
     this.$emit('on-change');
   }
-
 }

@@ -11,14 +11,20 @@ import './SiteLogo.less';
   `,
 })
 export default class SiteLogo extends Vue {
+  @Prop({type: String}) logo?: string;
+  @Prop({type: String}) name?: string;
+
   @Prop({default: false}) customLogoFirst!: boolean;
 
   get siteLogo() {
+    if (this.logo) {
+      return this.logo;
+    }
     const icon = this.$app.metaInfo!.org.icon;
     return (this.customLogoFirst && icon) ? FileApi.url(icon) : require('@/assets/oneid-logo.svg');
   }
 
   get siteName() {
-    return this.$app.metaInfo!.org.nameCn;
+    return this.name || this.$app.metaInfo!.org.nameCn;
   }
 }

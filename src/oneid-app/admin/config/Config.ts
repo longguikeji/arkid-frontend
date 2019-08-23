@@ -27,8 +27,8 @@ E65100
 
 @Component
 class LoginPreview extends UserLogin {
-  loginStateCheck() {
-  }
+  @Prop({type: Object, required: true}) siteLogo!: object;
+  loginStateCheck() {}
 }
 
 
@@ -128,7 +128,9 @@ class LoginPreview extends UserLogin {
             <div class="right-preview-title"> 预览 </div>
             <div class="right-image-area">
               <div class="right-image">     
-                <LoginPreview class="image-preview" ref="loginPreview"/>
+                <LoginPreview class="image-preview" ref="loginPreview"
+                  :siteLogo="{logo: siteLogo, name: companyName}"
+                />
                 <div class="cover-image-preview"></div>
               </div>
             </div>
@@ -153,7 +155,9 @@ class LoginPreview extends UserLogin {
       footer-hide
       class="ui-admin-config-preview-model"
     >
-      <LoginPreview class="ui-admin-config-preview-large" ref="loginPreview"/>
+      <LoginPreview class="ui-admin-config-preview-large" ref="loginPreview"
+        :siteLogo="{logo: siteLogo, name: companyName}"
+      />
       <div class="ui-admin-config-login-cover"></div>
       <!-- <div class="ivu-modal-mask"></div> -->
     </Modal>
@@ -261,10 +265,9 @@ export default class Config extends Vue {
 
     this.isSaving = false;
     await ConfigApi.refreshMeta();
-    const configInfo = ConfigApi.cachedMeta();
-    if (configInfo.org.color) {
-      this.createStyle(configInfo.org.color);
-    }
+
+    this.$app.metaInfo = ConfigApi.cachedMeta();
+    this.createStyle(this.$app.metaInfo.org.color);
   }
 
   cancel() {

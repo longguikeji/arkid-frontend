@@ -1,6 +1,7 @@
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import * as api from '@/services/oneid';
 import * as model from '@/models/oneid';
+import {FORM_RULES} from '@/utils';
 
 @Component({
   template: html`
@@ -18,7 +19,7 @@ import * as model from '@/models/oneid';
         <FormItem prop="mobile" label="手机号码">
           <div class="flex-row">
             <Input type="text" v-model="form.mobile" placeholder="填写手机号码"/>
-            <Button @click="doSendSms" class="send-sms-btn">发送短信</Button>
+            <Button :disabled="sendSmsBtnDisabled" @click="doSendSms" class="send-sms-btn">发送短信</Button>
           </div>
         </FormItem>
         <FormItem prop="smsCode" label="验证码">
@@ -43,15 +44,30 @@ export default class ResetMobile extends Vue {
     smsCode: '',
   };
   rules = {
-    mobile: [],
-    smsCode: [],
+    mobile: [FORM_RULES.required, FORM_RULES.mobile],
+    smsCode: [FORM_RULES.required],
   };
+
+  get sendSmsBtnDisabled() {
+    const enabled = /^(1)\d{10}$/.test(this.form.mobile);
+    return !enabled;
+  }
 
   async doSendSms() {
     try {
       await api.ApiService.sendSmsToUpdateMobile(this.user.username, this.form.mobile, this.password);
       this.$Message.success('发送短信成功');
     } catch(e) {
+      if (e.status === 400) {
+        if (e.data.mobile && e.data.mobile.includes('unsupported')) {
+          this.$Message.error('未配置短信服务');
+          return;
+        }
+        if (e.data.mobile && e.data.mobile.includes('existed')) {
+          this.$Message.error('该手机号码已存在');
+          return;
+        }
+      }
       this.$Message.error('发送短信失败');
     }
   }

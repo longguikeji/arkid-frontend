@@ -22,10 +22,10 @@ import './ThirdParty.less';
               <span>
                 <Icon :type="item.icon" color="#006064" size="22" class="icon"></Icon>
                 <span class="name">{{ item.name }}账号</span>
-                <span :class="'status status-' + item.status"></span>
+                <!-- <span :class="'status status-' + item.status"></span> -->
               </span>
-              <span class="action action-activate" v-if="item.status === 'no'">激活</span>
-              <span class="action action-deactivate" v-else>取消激活</span>
+              <!-- <span class="action action-activate" v-if="item.status === 'no'">激活</span>
+              <span class="action action-deactivate" v-else>取消激活</span> -->
             </li>
           </ul>
         </div>
@@ -37,7 +37,12 @@ import './ThirdParty.less';
               :label="item.label"
               :labelWidth="158"
             >
-              <Input v-model="form[item.key]"/>
+              <Input :value="Array.from({length: 32}, () => 'x').join()" v-if="item.key === 'appSecret'"
+                type="password"
+                @on-focus="(e) => {e.target.value = form[item.key];e.target.type = 'text'}"
+                @on-blur="(e) => form[item.key] = e.target.value"
+              />
+              <Input v-model="form[item.key]" v-else/>
             </FormItem>
           </Form>
           <div class="btns">
@@ -98,7 +103,7 @@ export default class ThirdParty extends Vue {
       const {ding} = this.config as model.Config;
       const form = {
         appKey: ding.appKey,
-        appSecret: ding.appSecret,
+        appSecret: '',
         corpId: ding.corpId,
         corpSecret: ding.corpSecret,
       };

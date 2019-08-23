@@ -20,7 +20,7 @@ import './ProtocolInterface.less';
       <div class="body">
         <Form class="form" :label-width="300" :model="app">
           <h2 class="subtitle">协议配置</h2>
-          <Tabs :animated="false" class="protocol-tab" type="card" v-if="app.auth_protocols.length != 0">
+          <Tabs :animated="false" class="protocol-tab" type="card" v-if="app && app.auth_protocols.length != 0">
             <TabPane v-if="app.oauth_app" :label="authTypes[0]" :name="authTypes[0]">
               <FormItem label="client_id:">
                 <p>{{ app.oauth_app.client_id }}</p>

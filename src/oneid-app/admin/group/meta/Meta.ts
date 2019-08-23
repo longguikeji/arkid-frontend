@@ -36,7 +36,15 @@ import './Meta.less';
           :class="item.id === curMetaNode.id ? 'active' : ''"
           @click="onMetaNodeClick(item)"
         >
-          <template v-if="!operatingCustomNode || operatingCustomNode.id !== item.id">
+          <Input
+            v-if="operatingCustomNode && operatingCustomNode.id === item.id"
+            autofocus
+            clearable
+            :value="operatingCustomNode.name"
+            @on-enter="doRenameCustomNode"
+            @on-blur="operatingCustomNode = null"
+          />
+          <template v-else>
             <span>{{ item.name || '未命名' }}</span>
             <Dropdown trigger="click">
               <Icon type="ios-more" color="white" size="18" class="icon-more"></Icon>
@@ -46,8 +54,6 @@ import './Meta.less';
               </DropdownMenu>
             </Dropdown>
           </template>
-          <Input @on-enter="doRenameCustomNode"
-            autofocus clearable :value="operatingCustomNode.name" v-else/>
         </li>
       </ul>
       <div
@@ -140,6 +146,7 @@ export default class Meta extends Vue {
       await api.Node.create(node);
       this.$Loading.finish();
       this.isAddingCustomNode = false;
+      this.customNodeName = null;
       this.loadData();
     } catch(e) {
       console.log(e);

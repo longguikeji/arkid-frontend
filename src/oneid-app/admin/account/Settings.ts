@@ -109,7 +109,11 @@ const SMS_VENDORS = [
             <Input type="text" v-model="registerOptions.email.account" placeholder="填写邮箱账号"></Input>
           </FormItem>
           <FormItem prop="password" label="邮箱密码：">
-            <Input type="password" v-model="registerOptions.email.password" placeholder="填写邮箱密码"></Input>
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.email.password"
+              @on-blur="(e) => registerOptions.email.password = e.target.value"
+              placeholder="填写邮箱密码"></Input>
           </FormItem>
         </Form>
         <Form
@@ -129,7 +133,11 @@ const SMS_VENDORS = [
             <Input type="text" v-model="registerOptions.mobile.accessKey" placeholder="填写 Access Key"></Input>
           </FormItem>
           <FormItem prop="accessSecret" label="Access Secret：">
-            <Input type="password" v-model="registerOptions.mobile.accessSecret" placeholder="填写 Access Secret"></Input>
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.mobile.accessSecret"
+              @on-blur="(e) => registerOptions.mobile.accessSecret = e.target.value"
+              placeholder="填写 Access Secret"></Input>
           </FormItem>
           <FormItem prop="template" label="短信模板：">
             <Input type="text" v-model="registerOptions.mobile.template" placeholder="填写短信模板"></Input>
@@ -170,7 +178,6 @@ export default class Settings extends Vue {
       host: [FORM_RULES.required],
       port: [FORM_RULES.required, FORM_RULES.port],
       account: [FORM_RULES.required, FORM_RULES.email],
-      password: [FORM_RULES.required],
     };
   };
 
@@ -178,7 +185,6 @@ export default class Settings extends Vue {
     return {
       vendor: [FORM_RULES.required],
       accessKey: [FORM_RULES.required],
-      accessSecret: [FORM_RULES.required],
       template: [FORM_RULES.required],
       badging: [FORM_RULES.required],
     };
@@ -187,7 +193,10 @@ export default class Settings extends Vue {
   registerOptions: FreakConfig | null = null;
 
   async loadData() {
-    this.registerOptions = await api.FreakConfig.get();
+    const registerOptions = await api.FreakConfig.get();
+    registerOptions.mobile.accessSecret = '';
+    registerOptions.email.password = '';
+    this.registerOptions = registerOptions;
   }
 
   mounted() {

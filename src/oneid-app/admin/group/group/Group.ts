@@ -16,13 +16,13 @@ import './Group.less';
   <div class="flex-row flex-auto ui-group-page">
     <div class="flex-col ui-group-page-side ui-group-page-tree-group">
       <div class="subtitle">
-        <div class="subtitle-wrapper">
+        <div class="subtitle-wrapper" v-if="metaNode">
           <h4>
-            {{ metaNode && metaNode.name }}
+            {{ metaNode.name }}
           </h4>
           <span @click="goAddLevelOne" class="add">
             <XIcon name="add" size="14px" class="icon" />
-            新{{ metaNode && metaNode.name }}
+            新{{ metaNode.name }}
           </span>
         </div>
       </div>
@@ -41,9 +41,15 @@ import './Group.less';
         <span class="tree-no-data-info">您还未创建任何{{ metaNode.name }}</span>
         <span class="tree-no-data-help">点击“+新{{ metaNode.name }}”按钮，创建您的第一个{{ metaNode.name }}</span>
       </div>
+      <div v-if="loading" style="margin: auto;">
+        <Spin large></Spin>
+      </div>
     </div>
     <div class="ui-group-page-detail flex-col flex-auto" style="width: 0;">
-      <template v-if="!curNode">
+      <div v-if="loading" style="margin: auto;">
+        <Spin large></Spin>
+      </div>
+      <template v-else-if="!loading && !curNode">
         <div class="node-detail-no-data">
           <XIcon name="noaccount" class="node-detail-no-data-icon"/>
           <span class="node-detail-no-data-info">暂时没有联系人账号</span>
@@ -118,6 +124,10 @@ export default class Group extends Vue {
   onMetaNodeIdChange() {
     this.tree = null;
     this.$nextTick(() => this.loadData());
+  }
+
+  get loading() {
+    return !this.tree;
   }
 
   async loadData() {
