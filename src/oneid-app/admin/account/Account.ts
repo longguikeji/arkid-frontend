@@ -11,7 +11,7 @@ import './Account.less';
     <div v-if="loading" style="margin: auto; display: flex;">
       <Spin large></Spin>
     </div>
-    <div class="ui-account-page-wrapper">
+    <div class="ui-account-page-wrapper" v-show="!loading">
       <UserList @ready="loading = false" />
     </div>
   </div>
