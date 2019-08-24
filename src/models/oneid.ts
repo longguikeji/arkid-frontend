@@ -538,12 +538,12 @@ export class Permission {
 }
 
 
-class OAuthData {
-  client_id =  '';
-  client_secret =  '';
-  redirect_uris =  '';
-  client_type =  '';
-  authorization_grant_type =  '';
+export class OAuthData {
+  client_id = '';
+  client_secret = '';
+  redirect_uris = '';
+  client_type = 'confidential';
+  authorization_grant_type = 'authorization-code';
 }
 
 export interface AccessPermData {
