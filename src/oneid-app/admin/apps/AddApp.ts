@@ -1,4 +1,4 @@
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 import * as api from '@/services/oneid';
 import {App, OAuthData} from '@/models/oneid';
 import './AddApp.less';
@@ -20,7 +20,7 @@ import './AddApp.less';
         </div>
       </div>
       <div class="body">
-        <Form class="form" :rules="rules" :label-width="300" :model="app">
+        <Form ref="form" class="form" :rules="rules" :label-width="300" :model="app">
           <h2 class="subtitle">应用基础信息</h2>
           <FormItem prop="name" label="应用名称:">
             <Input v-model="app.name" placeholder="填写应用名称"></Input>
@@ -64,18 +64,18 @@ import './AddApp.less';
               <FormItem v-if="app.oauth_app.client_secret" label="client_secret:">
                 <p class="client-secret">{{app.oauth_app.client_secret}}</p>
               </FormItem>
-              <FormItem label="client_type:">
+              <FormItem prop="oauth_app.client_type" label="client_type:">
                 <Select placeholder="请选择" v-model="app.oauth_app.client_type">
                   <Option v-for="item in clientTypes" :key="item" :value="item">{{ item }}</Option>
                 </Select>
               </FormItem>
-              <FormItem label="authorization_grant_type:">
+              <FormItem prop="oauth_app.authorization_grant_type" label="authorization_grant_type:">
                 <Select placeholder="请输入" v-model="app.oauth_app.authorization_grant_type">
                   <Option v-for="item in grantTypes" :key="item" :value="item">{{ item }}</Option>
                 </Select>
               </FormItem>
-              <FormItem label="redirect_uris:">
-                <Input placeholder="请输入" type="textarea" :autosize="true" v-model="app.oauth_app.redirect_uris" 
+              <FormItem prop="oauth_app.redirect_uris" label="redirect_uris:">
+                <Input placeholder="请输入" type="textarea" :autosize="true" v-model="app.oauth_app.redirect_uris"
                   placeholder="请输入 redirect_uris...">
                 </Input>
               </FormItem>
@@ -95,7 +95,6 @@ import './AddApp.less';
               </div>
             </TabPane>
           </Tabs>
-          
         </Form>
       </div>
       <div slot="footer" class="footer flex-row">
@@ -117,23 +116,44 @@ export default class AddApp extends Vue {
   showAdd: boolean = false;
   app: App|null = null;
 
-  rules = {
-    name: {required: true, message: 'Required', trigger: 'blur'},
-  };
+  get rules() {
+    const required = {required: true, message: '必填项', trigger: 'blur'};
+    return {
+      'name': [required],
+      'oauth_app.redirect_uris': [required],
+    };
+  }
   authTypes = ['OAuth 2.0', 'LDAP', 'HTTP'];
   selectedAuthTypes?: string[] = [];
   clientTypes = ['confidential', 'public'];
   grantTypes = ['authorization-code', 'implicit', 'password', 'client'];
   isNew: boolean = true;
 
+  constructor() {
+    super();
+    const newApp = new App();
+    newApp.oauth_app = new OAuthData();
+    this.app = newApp;
+  }
+
+  @Watch('app.auth_protocols', {deep: true})
+  onProtocolsChange(newVal: string[], oldVal: string[]) {
+    const oauthType = this.authTypes[0];
+    const addOauth = newVal.includes(oauthType) && !oldVal.includes(oauthType);
+    const removeOauth = !newVal.includes(oauthType) && oldVal.includes(oauthType);
+    if (addOauth) {
+      this.app!.oauth_app = new OAuthData();
+    }
+    if (removeOauth) {
+      this.app!.oauth_app = null;
+    }
+  }
+
   showModal(app?: App|null) {
     if (app) {
       this.app = app;
       this.isNew = false;
     } else {
-      const newApp = new App();
-      newApp.oauth_app = new OAuthData();
-      this.app = newApp;
       this.isNew = true;
     }
     this.showAdd = true;
@@ -170,7 +190,7 @@ export default class AddApp extends Vue {
   }
 
   getAppParams() {
-    let params = { 
+    const params = {
       name: this.app!.name,
       remark: this.app!.remark,
       logo: this.app!.logo,
@@ -183,23 +203,20 @@ export default class AddApp extends Vue {
         redirect_uris: this.app!.oauth_app!.redirect_uris,
         client_type: this.app!.oauth_app!.client_type,
         authorization_grant_type: this.app!.oauth_app!.authorization_grant_type,
-      }
-    }
-    else {
+      };
+    } else {
       params['oauth_app'] = null;
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[1])) {
       params['ldap_app'] = new Object();
-    }
-    else {
+    } else {
       params['ldap_app'] = null;
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[2])) {
       params['http_app'] = new Object();
-    }
-    else {
+    } else {
       params['http_app'] = null;
     }
 
@@ -208,8 +225,7 @@ export default class AddApp extends Vue {
 
   async edit() {
     try {
-      await api.App.partialUpdate(this.app!.uid, 
-      this.getAppParams());
+      await api.App.partialUpdate(this.app!.uid, this.getAppParams());
       this.$Message.success('保存成功');
     } catch(err) {
       console.log(err);
@@ -233,6 +249,12 @@ export default class AddApp extends Vue {
   }
 
   async doSave() {
+    const valid = await this.$refs.form.validate();
+    if (!valid) {
+      this.$Message.error('请正确填写表单');
+      return;
+    }
+
     if (this.isNew) {
       await this.create();
     } else {
