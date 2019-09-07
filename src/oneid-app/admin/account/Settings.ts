@@ -156,7 +156,7 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType = null;
+  editType: 'email'|'mobile'|null = null;
   accountBtnLoading = false;
   emailOrMobileBtnLoading = false;
 
@@ -179,7 +179,7 @@ export default class Settings extends Vue {
       port: [FORM_RULES.required, FORM_RULES.port],
       account: [FORM_RULES.required, FORM_RULES.email],
     };
-  };
+  }
 
   get mobileRules() {
     return {
@@ -188,7 +188,7 @@ export default class Settings extends Vue {
       template: [FORM_RULES.required],
       badging: [FORM_RULES.required],
     };
-  };
+  }
 
   registerOptions: FreakConfig | null = null;
 
@@ -207,43 +207,27 @@ export default class Settings extends Vue {
     this.showDrawer = false;
   }
 
-  ctrlBtnLoading(type: string, active: boolean) {
-    if (active) {
-      if (type === 'account') {
-        this.accountBtnLoading = true;
-      } else {
-        this.emailOrMobileBtnLoading = true;
-      }
-    } else {
-      if (type === 'account') {
-        this.accountBtnLoading = false;
-      } else {
-        this.emailOrMobileBtnLoading = false;
-      }
+  async save(fn: any) {
+    try {
+      this.registerOptions = await fn();
+      this.showDrawer = false;
+      this.$Message.success('保存成功');
+    } catch(error) {
+      this.showDrawer = false;
+      this.$Message.error('保存失败');
     }
-  }
-
-  save(type: string) {
-    this.ctrlBtnLoading(type, true);
-    this.$nextTick(async () => {
-      try {
-        this.registerOptions = await api.FreakConfig.patch(this.registerOptions!.toData());
-        this.ctrlBtnLoading(type, false);
-        this.$nextTick(() => {this.showDrawer = false;});
-        this.$nextTick(() => {this.$Message.success('保存成功');});
-      } catch(error) {
-        this.ctrlBtnLoading(type, false);
-        this.$nextTick(() => {this.showDrawer = false;});
-        this.$nextTick(() => {this.$Message.error('保存失败');});
-      }
-    });
   }
 
   onSaveEmailOrMobile() {
     if (this.editType) {
       this.$refs[this.editType].validate((valid: boolean) => {
         if (valid) {
-          this.save('emailOrMobile');
+          if (this.editType === 'email') {
+            this.saveEmail();
+          }
+          if (this.editType === 'mobile') {
+            this.saveMobile();
+          }
         }
       });
     }
@@ -262,6 +246,22 @@ export default class Settings extends Vue {
       this.$Message.error('短信配置不正确');
       return;
     }
-    this.save('account');
+    this.saveAccount();
+  }
+
+  async saveEmail() {
+    this.emailOrMobileBtnLoading = true;
+    this.save(api.FreakConfig.patchEmail.bind(this, this.registerOptions));
+    this.emailOrMobileBtnLoading = false;
+  }
+  async saveMobile() {
+    this.emailOrMobileBtnLoading = true;
+    this.save(api.FreakConfig.patchMobile.bind(this, this.registerOptions));
+    this.emailOrMobileBtnLoading = false;
+  }
+  async saveAccount() {
+    this.accountBtnLoading = true;
+    this.save(api.FreakConfig.patchAccount.bind(this, this.registerOptions));
+    this.accountBtnLoading = false;
   }
 }

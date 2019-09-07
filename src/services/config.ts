@@ -127,9 +127,20 @@ export class FreakConfig {
     return http.get(this.url()).then(x => models.FreakConfig.fromData(x.data));
   }
 
-  static patch(config: any) {
-    const data = config.toData ? config.toData() : config;
-    return http.patch(this.url(), data).then(x => models.FreakConfig.fromData(x.data));
+  static patchEmail(config: any) {
+    const url = '/siteapi/oneid/config/';
+    const data = {email_config: config.toData().email_config};
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  }
+  static patchMobile(config: any) {
+    const url = '/siteapi/oneid/config/';
+    const data = {sms_config: config.toData().sms_config};
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  }
+  static patchAccount(config: any) {
+    const url = '/siteapi/oneid/config/';
+    const data = {account_config: config.toData().account_config};
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
   }
 }
 
