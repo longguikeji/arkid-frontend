@@ -196,6 +196,7 @@ export default class Perm extends Vue {
       params: {uid},
       query: {tab: menuName},
     });
+    this.loadPerms();
   }
 
   async getAccessPermList(type: string) {
