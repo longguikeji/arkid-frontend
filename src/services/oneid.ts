@@ -579,6 +579,12 @@ export class UCenter extends API {
     return user;
   }
 
+  static async revokeToken() {
+    const url = '/siteapi/oneid/revoke/token/';
+    const resp = await http.post(url);
+    return resp.data;
+  }
+
   static async apps() {
     return http.get(this.url({action: 'apps'})).then(x => x.data);
   }

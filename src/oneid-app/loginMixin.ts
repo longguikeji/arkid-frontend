@@ -95,6 +95,7 @@ export default class LoginMixin extends Vue {
   }
 
   async logout() {
+    await api.UCenter.revokeToken();
     await api.logout();
     this.doLogout();
   }
