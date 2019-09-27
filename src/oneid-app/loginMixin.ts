@@ -99,6 +99,7 @@ export default class LoginMixin extends Vue {
       'oneid.activate',
       'oneid.password',
       'oneid.registersuccess',
+      'oneid.bindThirdParty',
     ].indexOf(route.name) === -1;
   }
 

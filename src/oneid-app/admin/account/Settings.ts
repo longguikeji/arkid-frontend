@@ -35,7 +35,34 @@ const SMS_VENDORS = [
           </div>
         </div>
       </div>
-      
+
+      <div class="thirdparty-login">
+        <div class="label">
+          设置是否开放第三方扫码登录
+        </div>
+        <div class="content">
+          <div>
+            <Checkbox v-model="registerOptions.account.allowDingQR" size="large" class="description">
+              钉钉
+            </Checkbox>
+            <div class="link" @click="editType = 'ding'">
+              钉钉配置
+            </div>
+            <div :class="\`tag\${registerOptions.ding.qrAppValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.ding.qrAppValid ? '已完成' : '未完成' }}
+            </div>
+          </div>
+          <div>
+            <Checkbox size="large" class="description">
+              微信
+            </Checkbox>
+            <div class="link" @click="editType = 'wechat'">
+              微信配置
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="register-type">
         <div class="label">
           <div>注册账号类型设置</div>
@@ -43,7 +70,7 @@ const SMS_VENDORS = [
             （设置用户注册账号时所用的用户名类型，至少选择一种，支持多选。默认状态下选择“个人邮箱注册”）
           </div>
         </div>
-        
+
         <div class="content">
           <div>
             <Checkbox v-model="registerOptions.account.allowEmail" size="large" class="description">
@@ -89,7 +116,7 @@ const SMS_VENDORS = [
       :transfer="true"
       className="register-edit"
     >
-      <div slot="header" class="header">配置{{ editType === 'email' ? '邮箱' : '短信' }}</div>
+      <div slot="header" class="header">配置{{ editType === 'email' ? '邮箱' : editType === 'ding' ? '钉钉' : '短信'}}</div>
       <div class="body">
         <Form
           v-if="editType === 'email'"
@@ -146,6 +173,26 @@ const SMS_VENDORS = [
             <Input type="text" v-model="registerOptions.mobile.badging" placeholder="填写短信落款"></Input>
           </FormItem>
         </Form>
+
+        <Form
+          v-if="editType === 'ding'"
+          ref="ding"
+          :model="registerOptions.ding"
+          :rules="dingRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="qrAppId" label="App Id：">
+            <Input type="text" v-model="registerOptions.ding.qrAppId" placeholder="填写 App Id"></Input>
+          </FormItem>
+          <FormItem prop="qrAppSecret" label="App Secret：">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.ding.qrAppSecret"
+              @on-blur="(e) => registerOptions.ding.qrAppSecret = e.target.value"
+              placeholder="填写 App Secret"></Input>
+          </FormItem>
+        </Form>
       </div>
       <div class="footer">
         <Button @click="onCancel">取消</Button>
@@ -156,7 +203,7 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType: 'email'|'mobile'|null = null;
+  editType: 'email'|'mobile'|'ding'|null = null;
   accountBtnLoading = false;
   emailOrMobileBtnLoading = false;
 
@@ -187,6 +234,12 @@ export default class Settings extends Vue {
       accessKey: [FORM_RULES.required],
       template: [FORM_RULES.required],
       badging: [FORM_RULES.required],
+    };
+  }
+
+  get dingRules() {
+    return {
+      qrAppId: [FORM_RULES.required],
     };
   }
 
@@ -228,6 +281,9 @@ export default class Settings extends Vue {
           if (this.editType === 'mobile') {
             this.saveMobile();
           }
+          if (this.editType === 'ding') {
+            this.saveDing();
+          }
         }
       });
     }
@@ -244,6 +300,10 @@ export default class Settings extends Vue {
     }
     if (this.registerOptions!.account.allowMobile && !this.registerOptions!.mobile.isValid) {
       this.$Message.error('短信配置不正确');
+      return;
+    }
+    if (this.registerOptions!.account.allowDingQR && !this.registerOptions!.ding.qrAppValid) {
+      this.$Message.error('钉钉配置不正确');
       return;
     }
     this.saveAccount();
@@ -263,5 +323,10 @@ export default class Settings extends Vue {
     this.accountBtnLoading = true;
     this.save(api.FreakConfig.patchAccount.bind(this, this.registerOptions));
     this.accountBtnLoading = false;
+  }
+  async saveDing() {
+    this.emailOrMobileBtnLoading = true;
+    this.save(api.FreakConfig.patchDing.bind(this, this.registerOptions));
+    this.emailOrMobileBtnLoading = false;
   }
 }
