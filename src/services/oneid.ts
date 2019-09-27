@@ -440,6 +440,26 @@ export class ApiService extends API {
     return resp.data;
   }
 
+  static async sendBindSms(mobile: string, dingId: string) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/sms/';
+    const data = {
+      mobile,
+    };
+    const resp = await http.post(url, data);
+    return resp.data;
+  }
+
+  static async verifySmsWithBind(mobile: string, smsCode: string, dingId: string) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/sms/';
+    const data = {params: {
+      mobile,
+      code: smsCode,
+      dingId,
+    }};
+    const resp = await http.get(url, data);
+    return resp.data;
+  }
+
   static async sendResetPasswordSms(mobile: string, username: string) {
     const url = this.url({action: 'sms/reset_password'});
     const data = {
@@ -611,6 +631,7 @@ export class UCenter extends API {
     const url = this.url({action: 'login'});
     const resp = await http.post(url, params);
     const {token} = resp.data;
+    console.log('data', resp.data);
     window.localStorage.setItem(ONEID_TOKEN, token);
     return model.User.exchangeCurrentUserData(resp.data);
   }
@@ -649,6 +670,44 @@ export class UCenter extends API {
     const url = this.url({action: 'register'});
     const resp = await http.post(url, q);
     return resp.data;
+  }
+
+  static async registerWithBind(q: object) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/register/';
+    const resp = await http.post(url, q);
+    console.log('register',resp);
+    return resp.data;
+  }
+
+  static async checkUserExistWithMobile(q: object) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/query/user/';
+    const resp = await http.post(url, q);
+    console.log('check',resp.data);
+    return resp.data;
+  }
+
+  static async bindUserWithType(q: object) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/';
+    const resp = await http.post(url, q);
+    console.log('bind', resp.data);
+    const {token} = resp.data;
+    console.log('token', token);
+    window.localStorage.setItem(ONEID_TOKEN, token);
+    return model.User.exchangeCurrentUserData(resp.data);
+  }
+
+  static async isUserBound(q: object) {
+    const url = 'http://192.168.3.49:8000/siteapi/v1/dingding/qr/callback/';
+    const resp = await http.post(url, q);
+    console.log('bound', resp.data);
+    const {token} = resp.data;
+    console.log('token', token);
+    if (token === '') {
+      console.log('isNULL');
+      return null;
+    }
+    // window.localStorage.setItem(ONEID_TOKEN, token);
+    return model.User.exchangeCurrentUserData(resp.data);
   }
 }
 

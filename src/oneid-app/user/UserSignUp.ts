@@ -210,7 +210,7 @@ export default class UserSignUp extends Vue {
 
   @Watch('mobileForm.smsCode')
   onSmsCodeChange(val: string) {
-    if (/\d{6,}$/.test(val)) {
+    if (/\d{6}$/.test(val)) {
       this.verifyMobile();
     } else {
       this.isValidMobile = false;
@@ -283,8 +283,7 @@ export default class UserSignUp extends Vue {
           sms_token: smsToken,
           key: this.inviteCode,
         });
-      }
-      else {
+      } else {
         await api.UCenter.register({
           sms_token: smsToken,
           password,

@@ -32,7 +32,6 @@ export default class LoginMixin extends Vue {
 
     this.$router.beforeEach((to, from, next) => {
       // console.log('app $router beforeEach', to, from);
-
       const target = this.getLoginTarget(to);
       if (target) {
         next(target);
@@ -87,6 +86,7 @@ export default class LoginMixin extends Vue {
       'oneid.activate',
       'oneid.password',
       'oneid.registersuccess',
+      'oneid.bind',
     ].indexOf(route.name) === -1;
   }
 

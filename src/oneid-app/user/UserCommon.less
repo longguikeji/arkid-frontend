@@ -3,7 +3,8 @@
 
 .ui-login-page,
 .ui-signup-page,
-.ui-password-page  {
+.ui-password-page,
+.ui-bind-page  {
   display: flex;
   justify-content: center;
 
@@ -84,6 +85,31 @@
   }
 }
 
+.ui-login-third-party{
+  width: 500px;
+  float: right;
+  padding-top: 10px;
+  border-top: 1px solid #C6C8CE;
+  display: flex;
+  align-items: center;  
+  justify-content: space-between;
+  img{
+    width: 30px;
+  }
+  button{
+    color: black;
+  }
+  .diff-third-party{
+    display: flex;
+    flex-grow: 2;
+    justify-content: flex-start;
+  }
+}
+.ui-login-QRCode{
+  width: 300px;
+  margin-left: 100px;
+}
+
 .ui-signup-page {
   .activate-area {
     margin: -15px 0px 60px;
@@ -144,8 +170,26 @@
   }
 }
 
+.ui-bind-page {
+  .form-right-area {
+    a {
+      margin-top: 60px;
+      margin-left: 12px;
+      height: 20px;
+    }
+    .mobile-check {
+      margin-top: 38px;
+      margin-left: 15px;
+    }
+  }
+  .top-area {
+    line-height: 55px;
+  }
+}
+
 .ui-password-page,
-.ui-signup-page {
+.ui-signup-page,
+.ui-bind-page {
   margin-left: 70px;
   .go-to {
     margin-left: 120px;
