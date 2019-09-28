@@ -31,24 +31,28 @@ export default class LoginMixin extends Vue {
     });
 
     this.$router.beforeEach((to, from, next) => {
-      // console.log('app $router beforeEach', to, from);
 
-      const target = this.getLoginTarget(to);
-      if (target) {
-        next(target);
-
+      if (!this.isLogin && this.isRouteRequireLogin(to)) {
+        next({
+          name: 'oneid.login',
+          query: {
+            backPath: to.fullPath,
+          },
+        });
         return;
       }
 
-      const adminTarget = this.getAdminTarget(to);
-      if (adminTarget) {
-        next(adminTarget);
+      if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(to)) {
+        next({
+          name: 'workspace.apps',
+        });
         return;
       }
 
-      const internTarget = this.getInternTarget(to);
-      if (internTarget) {
-        next(internTarget);
+      if (this.user && this.user!.is_extern_user && this.isRouteRequireIntern(to)) {
+        next({
+          name: 'workspace.apps',
+        });
         return;
       }
 
@@ -63,62 +67,28 @@ export default class LoginMixin extends Vue {
   }
 
   resolveNavigation(): void {
-    const target = this.getLoginTarget(this.$route);
-
-    if (target) {
-      let path = this.getLoginPath();
-      if (typeof __ONEID_LOGIN_PATH__ !== 'undefined') {
-        path = __ONEID_LOGIN_PATH__;
-      }
-
-      if (path) {
-        location.href = path;
-        return;
-      }
-
-      this.$router.push(target);
-    } else {
-      // 非admin账号，限制admin相关的路由
-      const adminTarget = this.getAdminTarget(this.$route);
-      if (adminTarget) {
-        this.$router.push(adminTarget);
-        return;
-      }
-
-      const internTarget = this.getInternTarget(this.$route);
-      if (internTarget) {
-        this.$router.push(internTarget);
-        return;
-      }
-    }
-  }
-
-  getLoginTarget(to: Route) {
-    // TODO: 还有其他几个page 也不需要登录
-    if (!this.isLogin && this.isRouteRequireLogin(to)) {
-      return {
+    if (!this.isLogin && this.isRouteRequireLogin(this.$route)) {
+      this.$router.push({
         name: 'oneid.login',
         query: {
-          backPath: to.fullPath,
+          backPath: this.$route.fullPath,
         },
-      };
+      });
+      return;
     }
-  }
 
-  getAdminTarget(to: Route) {
-    if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(to)) {
-      return {
+    if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(this.$route)) {
+      this.$router.push({
         name: 'workspace.apps',
-      };
+      });
+      return;
     }
-  }
 
-  getInternTarget(to: Route) {
-    console.log(this.user);
-    if (this.user && this.user.is_extern_user && this.isRouteRequireIntern(to)) {
-      return {
+    if (this.user && this.user!.is_extern_user && this.isRouteRequireIntern(this.$route)) {
+      this.$router.push({
         name: 'workspace.apps',
-      };
+      });
+      return;
     }
   }
 
