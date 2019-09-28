@@ -188,29 +188,6 @@ export default class UserLogin extends Vue {
     console.log('origin',origin);
     if (origin === 'https://login.dingtalk.com') {
       window.location.href=`https://oapi.dingtalk.com/connect/oauth2/sns_authorize?appid=dingoawoeovveele6cbbt2&response_type=code&scope=snsapi_login&state=STATE&redirect_uri=https://oneid.intra.longguikeji.com/dingding/qr/callback/&loginTmpCode=`+loginTmpCode;
-      const dingId = '$:LWCP_v1:$8U7Rn2BdZDi5dLSLWcBa92uhLo4353oW';
-      // try {
-      //   const user = await api.UCenter.isUserBound({dingId});
-
-      //   if (user === null) {
-      //     console.log('user',user);
-      //     this.$router.push({name: 'oneid.bind'});
-      //   } else {
-      //     this.user = user;
-      //     this.$Message.success('登录成功');
-
-      //     const user = {
-      //       isLogin: true,
-      //       ...this.user,
-      //     };
-      //     this.$app.onLogin(user);
-
-      //     // this.$router.push({name:'workspace.userinfo'});
-      //   }
-      // } catch (e) {
-      //   this.$Message.error('登录失败');
-      //   console.log(e);
-      // }
     }
   }
 

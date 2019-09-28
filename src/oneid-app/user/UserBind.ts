@@ -103,7 +103,7 @@ export default class UserBind extends Vue {
     mobile: '',
     smsCode: '',
     smsToken: '',
-    dingId: '$:LWCP_v1:$8U7Rn2BdZDi5dLSLWcBa92uhLo4353oW',
+    dingId: '',
   };
 
   registerForm = {
@@ -139,13 +139,26 @@ export default class UserBind extends Vue {
     };
   }
 
-  created() {
-    // const {dingId, mobile} = this.$route.query;
-    // console.log(dingId, mobile);
-    // if (mobile !== undefined && mobile.length === 11) {
-    //   console.log('sdf');
-    //   this.isNewUser = true;
-    // }
+  async created() {
+    const {code, state} = this.$route.query;
+    console.log(code, state);
+
+    try {
+      const data = await api.UCenter.getDingIdWithCode({
+        code,
+        state,
+      });
+      const {dingId} = data;
+      console.log('dingId',dingId);
+      if (dingId !== undefined) {
+        this.mobileForm.dingId = dingId;
+      } else {
+        this.user = data;
+        this.doLogin();
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async sendSms() {
@@ -153,9 +166,9 @@ export default class UserBind extends Vue {
     if (!isValid) {
       return;
     }
-    const {mobile, dingId} = this.mobileForm;
+    const {mobile} = this.mobileForm;
     try {
-      await api.ApiService.sendBindSms(mobile, dingId);
+      await api.ApiService.sendBindSms(mobile);
       this.$Message.success('成功发送短信');
     } catch(err) {
       console.log(err);
@@ -178,7 +191,6 @@ export default class UserBind extends Vue {
     try {
       const {sms_token} = await api.ApiService.verifySmsWithBind(mobile, smsCode, dingId);
       this.mobileForm.smsToken = sms_token;
-      // console.log(sms_token);
       this.$Loading.finish();
       this.isValidMobile = true;
       this.isUserExist();
@@ -210,11 +222,11 @@ export default class UserBind extends Vue {
     const {dingId, smsToken} = this.mobileForm;
     const type = 'dingding';
     try {
-      this.user = await api.UCenter.bindUserWithType({
+      const user = await api.UCenter.bindUserWithType({
         dingId,
         sms_token: smsToken,
       });
-      console.log('user',this.user);
+      this.user = user;
       this.$Message.success('成功绑定手机号');
       this.doLogin();
     } catch (e) {
@@ -230,16 +242,18 @@ export default class UserBind extends Vue {
     }
 
     const {username, password} = this.registerForm;
-    const {dingId, smsToken} = this.mobileForm;
+    const {smsToken, dingId} = this.mobileForm;
 
     try {
-      await api.UCenter.registerWithBind({
+      const user = await api.UCenter.registerWithBind({
         username,
         password,
+        dingId,
         sms_token: smsToken,
       });
+      this.user = user;
       this.$Message.success('注册成功');
-      this.bindUserWithType();
+      this.doLogin();
     } catch (e) {
       this.$Message.error('注册失败');
       console.log(e);
@@ -255,7 +269,7 @@ export default class UserBind extends Vue {
 
     this.$app.onLogin(user);
 
-    // this.$router.push({name:'workspace.userinfo'});
+    this.$router.push({name:'workspace.userinfo'});
 
   }
 }
