@@ -40,6 +40,18 @@ export default class LoginMixin extends Vue {
         return;
       }
 
+      const adminTarget = this.getAdminTarget(to);
+      if (adminTarget) {
+        next(adminTarget);
+        return;
+      }
+
+      const internTarget = this.getInternTarget(to);
+      if (internTarget) {
+        next(internTarget);
+        return;
+      }
+
       next();
     });
 
@@ -65,6 +77,19 @@ export default class LoginMixin extends Vue {
       }
 
       this.$router.push(target);
+    } else {
+      // 非admin账号，限制admin相关的路由
+      const adminTarget = this.getAdminTarget(this.$route);
+      if (adminTarget) {
+        this.$router.push(adminTarget);
+        return;
+      }
+
+      const internTarget = this.getInternTarget(this.$route);
+      if (internTarget) {
+        this.$router.push(internTarget);
+        return;
+      }
     }
   }
 
@@ -80,6 +105,23 @@ export default class LoginMixin extends Vue {
     }
   }
 
+  getAdminTarget(to: Route) {
+    if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(to)) {
+      return {
+        name: 'workspace.apps',
+      };
+    }
+  }
+
+  getInternTarget(to: Route) {
+    console.log(this.user);
+    if (this.user && this.user.is_extern_user && this.isRouteRequireIntern(to)) {
+      return {
+        name: 'workspace.apps',
+      };
+    }
+  }
+
   isRouteRequireLogin(route: Route): boolean {
     return !route.name || [
       'oneid.login',
@@ -88,6 +130,14 @@ export default class LoginMixin extends Vue {
       'oneid.password',
       'oneid.registersuccess',
     ].indexOf(route.name) === -1;
+  }
+
+  isRouteRequireIntern(route: Route): boolean {
+    return !!route.name && route.name.startsWith('workspace.contacts');
+  }
+
+  isRouteRequireAdmin(route: Route): boolean {
+    return !!route.name && route.name.startsWith('admin');
   }
 
   onLogin(user: {}): void {

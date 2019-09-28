@@ -215,7 +215,12 @@ export default class Layout extends Vue {
   }
 
   get topMenuActiveName() {
-    return this.topMenu.find(i => this.$route.name!.startsWith(i.name))!.name || '';
+    const menu = this.topMenu.find(i => this.$route.name!.startsWith(i.name));
+    if(menu) {
+      return menu.name;
+    } else {
+      return '';
+    }
   }
 
   get sideMenu() {
