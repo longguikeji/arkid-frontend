@@ -441,7 +441,7 @@ export class ApiService extends API {
   }
 
   static async sendBindSms(mobile: string) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/sms/';
+    const url = '/siteapi/v1/ding/bind/sms/';
     const data = {
       mobile,
     };
@@ -450,7 +450,7 @@ export class ApiService extends API {
   }
 
   static async verifySmsWithBind(mobile: string, smsCode: string, dingId: string) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/sms/';
+    const url = '/siteapi/v1/ding/bind/sms/';
     const data = {params: {
       mobile,
       code: smsCode,
@@ -672,7 +672,7 @@ export class UCenter extends API {
   }
 
   static async getDingIdWithCode(q: object) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/dingding/qr/callback/';
+    const url = '/siteapi/v1/dingding/qr/callback/';
     const resp = await http.post(url, q);
     if (resp.data.dingId === undefined) {
       const {token} = resp.data;
@@ -683,7 +683,7 @@ export class UCenter extends API {
   }
 
   static async registerWithBind(q: object) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/register/bind/';
+    const url = '/siteapi/v1/ding/register/bind/';
     const resp = await http.post(url, q);
     const {token} = resp.data;
     window.localStorage.setItem(ONEID_TOKEN, token);
@@ -691,13 +691,13 @@ export class UCenter extends API {
   }
 
   static async checkUserExistWithMobile(q: object) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/query/user/';
+    const url = '/siteapi/v1/ding/query/user/';
     const resp = await http.post(url, q);
     return resp.data;
   }
 
   static async bindUserWithType(q: object) {
-    const url = 'http://192.168.3.49:8000/siteapi/v1/ding/bind/';
+    const url = '/siteapi/v1/ding/bind/';
     const resp = await http.post(url, q);
     const {token} = resp.data;
     window.localStorage.setItem(ONEID_TOKEN, token);

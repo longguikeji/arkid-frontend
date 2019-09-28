@@ -141,7 +141,6 @@ export default class UserBind extends Vue {
 
   async created() {
     const {code, state} = this.$route.query;
-    console.log(code, state);
 
     try {
       const data = await api.UCenter.getDingIdWithCode({
@@ -149,7 +148,7 @@ export default class UserBind extends Vue {
         state,
       });
       const {dingId} = data;
-      console.log('dingId',dingId);
+
       if (dingId !== undefined) {
         this.mobileForm.dingId = dingId;
       } else {

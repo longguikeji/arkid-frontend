@@ -85,30 +85,66 @@
   }
 }
 
-.ui-login-third-party{
-  width: 500px;
+.ui-other-login{
+  width: 380px;
   float: right;
-  padding-top: 10px;
-  border-top: 1px solid #C6C8CE;
-  display: flex;
-  align-items: center;  
-  justify-content: space-between;
-  img{
-    width: 30px;
-  }
-  button{
-    color: black;
-  }
-  .diff-third-party{
-    display: flex;
-    flex-grow: 2;
-    justify-content: flex-start;
+  border-top: 1px solid rgba(220,222,226,1);
+  margin-top: 20px;
+  p{
+    width: 92px;
+    height: 17px;
+    margin: -8px auto 0;
+    padding: 0 10px;
+    font-size: 12px;
+    line-height: 17px;
+    text-align: center;
+    color:rgba(128,134,149,1);
+    background: #FFF;
   }
 }
-.ui-login-QRCode{
-  width: 300px;
-  margin-left: 100px;
+
+.ui-login-third-party{
+  width: 380px;
+  float: right;
+  padding-top: 24px;
+  text-align: center;
+  .ivu-poptip-body{
+    background: white;
+  }
+  .ivu-poptip-popper[x-placement^="top"] .ivu-poptip-arrow:after {
+    border-top-color: white;
+  }
+  .ui-login-ding{
+    filter: grayscale(100%);
+    img{
+      width: 30px;
+    }
+    p{
+      color: #3396FA;
+      font-size: 12px;
+    }
+  }
+  .dingding-QRCode{
+    width: 600px;
+    height: 396px;
+    text-align: center;
+    background: #FFF;
+    .ui-login-QRCode{
+      .img{
+        width: 120px;
+      }
+    }
+    .ivu-btn{
+      width: 74px;
+      height: 32px;
+      font-size: 14px;
+      border: 1px solid #DCDEE2;
+      background: white;
+      color: #515A6E;
+    }
+  }
 }
+
 
 .ui-signup-page {
   .activate-area {
