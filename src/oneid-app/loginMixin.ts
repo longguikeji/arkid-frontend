@@ -31,12 +31,28 @@ export default class LoginMixin extends Vue {
     });
 
     this.$router.beforeEach((to, from, next) => {
-      // console.log('app $router beforeEach', to, from);
 
-      const target = this.getLoginTarget(to);
-      if (target) {
-        next(target);
+      if (!this.isLogin && this.isRouteRequireLogin(to)) {
+        next({
+          name: 'oneid.login',
+          query: {
+            backPath: to.fullPath,
+          },
+        });
+        return;
+      }
 
+      if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(to)) {
+        next({
+          name: 'workspace.apps',
+        });
+        return;
+      }
+
+      if (this.user && this.user!.is_extern_user && this.isRouteRequireIntern(to)) {
+        next({
+          name: 'workspace.apps',
+        });
         return;
       }
 
@@ -51,32 +67,28 @@ export default class LoginMixin extends Vue {
   }
 
   resolveNavigation(): void {
-    const target = this.getLoginTarget(this.$route);
-
-    if (target) {
-      let path = this.getLoginPath();
-      if (typeof __ONEID_LOGIN_PATH__ !== 'undefined') {
-        path = __ONEID_LOGIN_PATH__;
-      }
-
-      if (path) {
-        location.href = path;
-        return;
-      }
-
-      this.$router.push(target);
-    }
-  }
-
-  getLoginTarget(to: Route) {
-    // TODO: 还有其他几个page 也不需要登录
-    if (!this.isLogin && this.isRouteRequireLogin(to)) {
-      return {
+    if (!this.isLogin && this.isRouteRequireLogin(this.$route)) {
+      this.$router.push({
         name: 'oneid.login',
         query: {
-          backPath: to.fullPath,
+          backPath: this.$route.fullPath,
         },
-      };
+      });
+      return;
+    }
+
+    if (this.user && !this.user!.hasAccessToAdmin && this.isRouteRequireAdmin(this.$route)) {
+      this.$router.push({
+        name: 'workspace.apps',
+      });
+      return;
+    }
+
+    if (this.user && this.user!.is_extern_user && this.isRouteRequireIntern(this.$route)) {
+      this.$router.push({
+        name: 'workspace.apps',
+      });
+      return;
     }
   }
 
@@ -88,6 +100,14 @@ export default class LoginMixin extends Vue {
       'oneid.password',
       'oneid.registersuccess',
     ].indexOf(route.name) === -1;
+  }
+
+  isRouteRequireIntern(route: Route): boolean {
+    return !!route.name && route.name.startsWith('workspace.contacts');
+  }
+
+  isRouteRequireAdmin(route: Route): boolean {
+    return !!route.name && route.name.startsWith('admin');
   }
 
   onLogin(user: {}): void {
