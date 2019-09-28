@@ -201,7 +201,10 @@ export default class Layout extends Vue {
       {title: '子管理员', name: 'admin.manager'},
       {title: '操作日志', name: 'admin.oplog'},
     ];
-    const wsMenu = [
+    const wsMenu = this.$app.user && this.$app.user.is_extern_user ? [
+      {title: '我的应用', name: 'workspace.apps'},
+      {title: '个人资料', name: 'workspace.userinfo'},
+    ] : [
       {title: '我的应用', name: 'workspace.apps'},
       {title: '通讯录', name: 'workspace.contacts'},
       {title: '个人资料', name: 'workspace.userinfo'},
