@@ -58,6 +58,7 @@ export interface UserData {
   is_settled: boolean;
   is_manager: boolean;
   is_admin: boolean;
+  is_extern_user: boolean;
 }
 
 export class User {
@@ -98,7 +99,7 @@ export class User {
     obj.isManager = data.is_manager;
     obj.isAdmin = data.is_admin;
     obj.hasAccessToAdmin = data.is_admin || data.is_manager;
-
+    obj.isExternUser = data.is_extern_user;
     return obj;
   }
 
@@ -122,6 +123,8 @@ export class User {
   isManager: boolean = false;
   isAdmin: boolean = false;
   hasAccessToAdmin: boolean = false;
+  isExternUser: boolean = false;
+
 
   toData() {
     const data = {

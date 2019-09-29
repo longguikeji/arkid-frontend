@@ -599,6 +599,12 @@ export class UCenter extends API {
     return user;
   }
 
+  static async revokeToken() {
+    const url = '/siteapi/oneid/revoke/token/';
+    const resp = await http.post(url);
+    return resp.data;
+  }
+
   static async apps() {
     return http.get(this.url({action: 'apps'})).then(x => x.data);
   }
@@ -672,7 +678,7 @@ export class UCenter extends API {
   }
 
   static async getDingIdWithCode(q: object) {
-    const url = '/siteapi/v1/dingding/qr/callback/';
+    const url = '/siteapi/v1/ding/qr/callback/';
     const resp = await http.post(url, q);
     if (resp.data.ding_id === undefined) {
       const {token} = resp.data;
