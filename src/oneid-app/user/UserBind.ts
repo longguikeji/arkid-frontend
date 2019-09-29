@@ -204,7 +204,7 @@ export default class UserBind extends Vue {
     try {
       const {exist} = await api.UCenter.checkUserExistWithMobile({
         mobile,
-        dingId,
+        ding_id: dingId,
         sms_token: smsToken,
       });
       if(exist) {
@@ -222,7 +222,7 @@ export default class UserBind extends Vue {
     const type = 'dingding';
     try {
       const user = await api.UCenter.bindUserWithType({
-        dingId,
+        ding_id: dingId,
         sms_token: smsToken,
       });
       this.user = user;
@@ -247,7 +247,7 @@ export default class UserBind extends Vue {
       const user = await api.UCenter.registerWithBind({
         username,
         password,
-        dingId,
+        ding_id: dingId,
         sms_token: smsToken,
       });
       this.user = user;

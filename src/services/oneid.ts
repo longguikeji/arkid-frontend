@@ -454,7 +454,7 @@ export class ApiService extends API {
     const data = {params: {
       mobile,
       code: smsCode,
-      dingId,
+      ding_id: dingId,
     }};
     const resp = await http.get(url, data);
     return resp.data;
@@ -674,7 +674,7 @@ export class UCenter extends API {
   static async getDingIdWithCode(q: object) {
     const url = '/siteapi/v1/dingding/qr/callback/';
     const resp = await http.post(url, q);
-    if (resp.data.dingId === undefined) {
+    if (resp.data.ding_id === undefined) {
       const {token} = resp.data;
       window.localStorage.setItem(ONEID_TOKEN, token);
       return model.User.exchangeCurrentUserData(resp.data);
