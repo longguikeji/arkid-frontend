@@ -36,7 +36,7 @@ import './UserCommon.less';
         </FormItem>
         <FormItem>
           <Button class="simpleframe-btn" type="primary" @click="handleSubmit" style="width: 100%;">登录</Button>
-          <RouterLink v-if="isRegisterEnabled" :to="{name: 'oneid.signup'}" class="simpleframe-route go-to">没有账号？去注册</RouterLink>
+          <RouterLink v-if="isRegisterEnabled" :to="registerRouterLink" class="simpleframe-route go-to">没有账号？去注册</RouterLink>
         </FormItem>
       </Form>
     </div>
@@ -66,6 +66,15 @@ export default class UserLogin extends Vue {
 
   get isResetPasswordEnable() {
     return this.$app.metaInfo!.account.isResetPasswordEnabled;
+  }
+
+  get registerRouterLink() {
+    return {
+      name: 'oneid.signup',
+      query: {
+        next: this.nextURL,
+      },
+    };
   }
 
   mounted() {
@@ -118,7 +127,7 @@ export default class UserLogin extends Vue {
     this.doLogin();
   }
 
-  doLogin() {
+  get nextURL(): string {
     let {next} = this.$route.query;
     if (next && typeof next === 'string'){
       next = next.replace('_authorize', 'authorize');
@@ -126,7 +135,14 @@ export default class UserLogin extends Vue {
       if (urlParams.get('oneid_token')){
         next = next.replace('oneid_token', '_oneid_token');
       }
-      window.location.href = next;
+      return next;
+    }
+    return '';
+  }
+
+  doLogin() {
+    if (this.nextURL) {
+      window.location.href = this.nextURL;
       return;
     }
 

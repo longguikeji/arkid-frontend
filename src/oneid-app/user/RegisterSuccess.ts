@@ -18,7 +18,7 @@ export default class RegisterSuccess extends Vue {
   maxTimeout: number = 5;
   
   goHome() {
-    this.$router.push({name: 'oneid.login'});
+    this.$router.push({name: 'oneid.login', query: {next: String(this.$route.query.next) || ''}});
   }
 
   created() {
