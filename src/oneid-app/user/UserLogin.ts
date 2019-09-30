@@ -137,7 +137,7 @@ export default class UserLogin extends Vue {
       }
       return next;
     }
-    return 'AAA';
+    return '';
   }
 
   doLogin() {
