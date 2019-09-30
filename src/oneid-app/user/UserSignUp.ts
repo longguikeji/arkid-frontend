@@ -244,7 +244,7 @@ export default class UserSignUp extends Vue {
         this.handleMobileSubmit(username, password);
       }
       this.$Loading.finish();
-      this.$router.push({name: 'oneid.registersuccess'});
+      this.$router.push({name: 'oneid.registersuccess', query: {next: String(this.$route.query.next) || ''}});
     } catch (e) {
       this.$Loading.error();
     }
