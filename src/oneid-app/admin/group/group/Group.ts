@@ -22,7 +22,7 @@ import './Group.less';
           </h4>
           <span @click="goAddLevelOne" class="add">
             <XIcon name="add" size="14px" class="icon" />
-            新{{ metaNode.name }}
+            新{{ nodeTypeName }}
           </span>
         </div>
       </div>
@@ -38,8 +38,8 @@ import './Group.less';
       />
       <div v-if="tree && tree.children.length === 0" class="tree-no-data">
         <XIcon name="nogroup" class="tree-no-data-icon" />
-        <span class="tree-no-data-info">您还未创建任何{{ metaNode.name }}</span>
-        <span class="tree-no-data-help">点击“+新{{ metaNode.name }}”按钮，创建您的第一个{{ metaNode.name }}</span>
+        <span class="tree-no-data-info">您还未创建任何{{ nodeTypeName }}</span>
+        <span class="tree-no-data-help">点击“+新{{ nodeTypeName }}”按钮，创建您的第一个{{ nodeTypeName }}</span>
       </div>
       <div v-if="loading" style="margin: auto;">
         <Spin large></Spin>
@@ -58,8 +58,8 @@ import './Group.less';
       <template v-else>
         <div class="ui-group-page-detail-header flex-row">
           <h2 class="title">{{ curNode.name }}</h2>
-          <Button @click="goEdit">编辑{{ metaNode.name }}</Button>
-          <Button @click="goAdd">添加下级{{ metaNode.name }}</Button>
+          <Button @click="goEdit">编辑{{ nodeTypeName }}</Button>
+          <Button @click="goAdd">添加下级{{ nodeTypeName }}</Button>
           <div class="flex-row flex-auto"></div>
           <router-link :to="{name: 'admin.group.perm', query: {groupId: curNode.id}}">
             <Button type="primary">分组权限管理</Button>
@@ -67,7 +67,7 @@ import './Group.less';
         </div>
         <div class="ui-group-page-detail-content flex-col">
           <div class="group-list-block flex-col">
-            <h4 class="subtitle">下级{{ metaNode.name }}</h4>
+            <h4 class="subtitle">下级{{ nodeTypeName }}</h4>
             <ul class="flex-col flex-auto" v-if="curNode.children.length > 0">
               <li
                 v-for="item in curNode.children"
@@ -78,10 +78,10 @@ import './Group.less';
                 <Icon type="ios-arrow-forward" color="#D8D8D8"></Icon>
               </li>
             </ul>
-            <span v-else>没有下级{{ metaNode.name }}</span>
+            <span v-else>没有下级{{ nodeTypeName }}</span>
           </div>
           <div class="user-list-block flex-col flex-auto">
-            <h4 class="subtitle">{{ metaNode.name }}成员</h4>
+            <h4 class="subtitle">{{ nodeTypeName }}成员</h4>
             <UserList
               :metaNode="metaNode"
               :node="curNode"
@@ -128,6 +128,12 @@ export default class Group extends Vue {
 
   get loading() {
     return !this.tree;
+  }
+
+  get nodeTypeName() {
+    return ['dept', 'role', 'label'].includes(this.metaNode!.nodeSubject)
+      ? this.metaNode!.name
+      : '分组';
   }
 
   async loadData() {

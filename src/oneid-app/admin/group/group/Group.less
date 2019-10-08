@@ -80,7 +80,15 @@
         display: flex;
         flex: 1;
         justify-content: space-between;
+
+        > h4 {
+          width: 160px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
+
       .add {
         cursor: pointer;
         display: flex;

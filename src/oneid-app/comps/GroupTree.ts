@@ -195,7 +195,7 @@ export default class GroupTree extends Vue {
   <div :class="'ui-tree-item' + (disabled ? ' disabled' : '') + (active ? ' active' : '')">
     <div class="ui-tree-item-bg"></div>
     <XIcon :name="icon" />
-    <span class="ui-tree-item-title">{{ title }}</span>
+    <span class="ui-tree-item-title"><span>{{ title }}</span></span>
   </div>
   `,
 })
