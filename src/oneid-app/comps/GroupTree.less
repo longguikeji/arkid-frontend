@@ -105,6 +105,17 @@
     overflow: hidden;
   }
 
+  &-title {
+    display: inline-flex;
+
+    > span {
+      width: 160px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
   &.active {
     font-weight:600;
     color: @color-1;
