@@ -66,6 +66,9 @@ export interface FreakDingInterface {
   corp_secret: string,
   app_valid: boolean,
   corp_valid: boolean,
+  qr_app_id: string,
+  qr_app_secret: string,
+  qr_app_valid: boolean,
 }
 
 export class FreakDing {
@@ -75,6 +78,9 @@ export class FreakDing {
   corpId = '';
   corpSecret = '';
   corpValid = false;
+  qrAppId = '';
+  qrAppSecret = '';
+  qrAppValid = false;
 
   static fromData(data: FreakDingInterface | null) {
     const obj = new this();
@@ -85,6 +91,9 @@ export class FreakDing {
       obj.corpId = data.corp_id;
       obj.corpSecret = data.corp_secret;
       obj.corpValid = data.corp_valid;
+      obj.qrAppId = data.qr_app_id;
+      obj.qrAppSecret = data.qr_app_secret;
+      obj.qrAppValid = data.qr_app_valid;
     }
     return obj;
   }
@@ -95,8 +104,11 @@ export class FreakDing {
       app_secret: this.appSecret,
       corp_id: this.corpId,
       corp_secret: this.corpSecret,
-      //app_valid: this.appValid,
-      //corp_valid: this.corpValid,
+      qr_app_id: this.qrAppId,
+      qr_app_secret: this.qrAppSecret,
+      qr_app_valid: this.qrAppValid,
+      // app_valid: this.appValid,
+      // corp_valid: this.corpValid,
     };
   }
 }
@@ -105,12 +117,14 @@ export interface FreakAccountInterface {
   allow_register: boolean,
   allow_mobile: boolean,
   allow_email: boolean,
+  allow_ding_qr: boolean,
 }
 
 export class FreakAccount {
   allowRegister = false;
   allowMobile = false;
   allowEmail = false;
+  allowDingQR = false;
 
   static fromData(data: FreakAccountInterface | null) {
     const obj = new this();
@@ -118,6 +132,7 @@ export class FreakAccount {
       obj.allowRegister = data.allow_register;
       obj.allowMobile = data.allow_mobile;
       obj.allowEmail = data.allow_email;
+      obj.allowDingQR = data.allow_ding_qr;
     }
     return obj;
   }
@@ -127,6 +142,7 @@ export class FreakAccount {
       allow_register: this.allowRegister,
       allow_mobile: this.allowMobile,
       allow_email: this.allowEmail,
+      allow_ding_qr: this.allowDingQR,
     };
   }
 }
