@@ -85,7 +85,7 @@
   }
 }
 
-.ui-other-login{
+.ui-QR-login{
   width: 380px;
   float: right;
   border-top: 1px solid rgba(220,222,226,1);
@@ -108,27 +108,83 @@
   float: right;
   padding-top: 24px;
   text-align: center;
+  .ivu-btn{
+    width: 74px;
+    height: 32px;
+    font-size: 14px;
+    border: 1px solid #DCDEE2;
+    background: white;
+    color: #515A6E;
+  }
   .ivu-poptip-body{
     background: white;
   }
-  .ivu-poptip-popper[x-placement^="top"] .ivu-poptip-arrow:after {
-    border-top-color: white;
-    .login_qrcode_content {
+
+  .ui-poptip-arrow-ding{
+    .ivu-poptip-popper .ivu-poptip-arrow:after {
+      border-top-color: white;
+      left: -155px;
+    }
+  }
+
+  .ui-poptip-arrow-wechat{
+    .ivu-poptip-popper .ivu-poptip-arrow:after {
+      border-top-color: white;
+      left: -84px;
+    }
+  }
+
+  .ui-poptip-arrow-alipay{
+    .ivu-poptip-popper .ivu-poptip-arrow:after {
+      border-top-color: white;
+      left: -10px;
+    }
+  }
+
+  .ui-poptip-arrow-QQ{
+    .ivu-poptip-popper .ivu-poptip-arrow:after {
+      border-top-color: white;
+      left: 65px;
+    }
+  }
+
+  .ui-poptip-arrow-wechatWork{
+    .ivu-poptip-popper .ivu-poptip-arrow:after {
+      border-top-color: white;
+      left: 144px;
+    }
+  }
+  
+
+  .ui-login-diff-btn{
+    width: 380px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    .ui-login-third-btn{
+      filter: grayscale(100%);
       img{
-        width: 150px;
+        width: 30px;
+      }
+      p{
+        color: #3396FA;
+      }
+    }
+    .ui-login-third-btn:hover{
+      filter: grayscale(0);
+    }
+    .ui-login-btn-chosen{
+      filter: grayscale(0);
+      img{
+        width: 30px;
+      }
+      p{
+        color: #3396FA;
       }
     }
   }
-  .ui-login-ding{
-    filter: grayscale(100%);
-    img{
-      width: 30px;
-    }
-    p{
-      color: #3396FA;
-      font-size: 12px;
-    }
-  }
+  
   .dingding-QRCode{
     width: 600px;
     height: 396px;
@@ -139,17 +195,8 @@
         width: 120px;
       }
     }
-    .ivu-btn{
-      width: 74px;
-      height: 32px;
-      font-size: 14px;
-      border: 1px solid #DCDEE2;
-      background: white;
-      color: #515A6E;
-    }
   }
 }
-
 
 .ui-signup-page {
   .activate-area {
