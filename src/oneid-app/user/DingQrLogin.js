@@ -14,5 +14,5 @@
             e.innerHTML = "",
             e.appendChild(c)
     }
-    window.DDLogin = d
+    window.dingQrCode = d
 }(window, document);

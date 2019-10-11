@@ -3,12 +3,13 @@ import {User} from '@/models/oneid';
 import * as api from '@/services/oneid';
 import {Form} from 'iview/types/index';
 import {FORM_RULES} from '@/utils';
-import './ddLogin.js';
+import './DingQrLogin.js';
 import './UserCommon.less';
 
 
 @Component({
   template: html`
+<div @click="poptipVisible = ''">
 <SimpleFrame>
   <SiteLogo
     slot="logo"
@@ -39,91 +40,60 @@ import './UserCommon.less';
           <RouterLink v-if="isRegisterEnabled" :to="registerRouterLink" class="simpleframe-route go-to">没有账号？去注册</RouterLink>
         </FormItem>
       </Form>
-      <div class="ui-QR-login">
+      <div class="ui-other-login-boundline">
         <p>其他登录方式</p>
       </div>
-      <div class="ui-login-third-party">
-        <div class="ui-login-diff-btn">
-          <Poptip
-            v-model="dingVisible"
-            @on-popper-hide="() => {this.$refs.dingding.className = 'ui-login-third-btn';}"
-            class="ui-poptip-arrow-ding"
-            offset="155"
+      <div class="ui-login-third-party" @click="e => e.stopPropagation()">
+        <div
+          class="ui-qr-poptip"
+          v-show="poptipVisible !== ''"
+        >
+          <div id="login_container" v-show="poptipVisible === 'ding'"></div>
+          <Button class="cancle-btn" @click="poptipVisible = ''">取消</Button>
+        </div>
+        <div class="ui-qr-diff-btn">
+          <div
+            :class="poptipVisible === 'ding' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            @click="dingLogin"
+            v-show="dingQrAccount"
           >
-            <div slot="content" class="dingding-QRCode">
-              <div id="login_container" class="ui-login-QRCode"></div>
-              <Button class="ivu-btn" @click="cancelThirdParty">取消</Button>
-            </div>
-            <div ref="dingding" class="ui-login-third-btn" @click="dingdingLogin">
-              <img :src="dingImgPath"/>
-              <p>钉钉</p>
-            </div>
-          </Poptip>
-          <Poptip
-            v-model="wechatVisible"
-            @on-popper-hide="() => {this.$refs.wechat.className = 'ui-login-third-btn';}"
-            class="ui-poptip-arrow-wechat"
-            offset="84"
-          >
-            <div slot="content" class="dingding-QRCode">
-              <div id="login_container" class="ui-login-QRCode"></div>
-              <Button class="ivu-btn" @click="cancelThirdParty">取消</Button>
-            </div>
-            <div ref="wechat" class="ui-login-third-btn" @click="wechatLogin">
-              <img :src="wechatImgPath"/>
-              <p>微信</p>
-            </div>
-          </Poptip>
-          <Poptip
-            v-model="alipayVisible"
-            @on-popper-hide="() => {this.$refs.alipay.className = 'ui-login-third-btn';}"
-            class="ui-poptip-arrow-alipay"
-            offset="10"
-          >
-            <div slot="content" class="dingding-QRCode">
-              <div id="login_container" class="ui-login-QRCode"></div>
-              <Button class="ivu-btn" @click="cancelThirdParty">取消</Button>
-            </div>
-            <div ref="alipay" class="ui-login-third-btn" @click="alipayLogin">
-              <img :src="alipayImgPath"/>
-              <p>支付宝</p>
-            </div>
-          </Poptip>
-          <Poptip
-            v-model="QQVisible"
-            @on-popper-hide="() => {this.$refs.QQ.className = 'ui-login-third-btn';}"
-            class="ui-poptip-arrow-QQ"
-            offset="-65"
-          >
-            <div slot="content" class="dingding-QRCode">
-              <div id="login_container" class="ui-login-QRCode"></div>
-              <Button class="ivu-btn" @click="cancelThirdParty">取消</Button>
-            </div>
-            <div ref="QQ" class="ui-login-third-btn" @click="QQLogin">
-              <img :src="QQImgPath"/>
-              <p>QQ</p>
-            </div>
-          </Poptip>
-          <Poptip
-            v-model="wechatWorkVisible"
-            @on-popper-hide="() => {this.$refs.wechatWork.className = 'ui-login-third-btn';}"
-            class="ui-poptip-arrow-wechatWork"
-            offset="-144"
-          >
-            <div slot="content" class="dingding-QRCode">
-              <div id="login_container" class="ui-login-QRCode"></div>
-              <Button class="ivu-btn" @click="cancelThirdParty">取消</Button>
-            </div>
-            <div ref="wechatWork" class="ui-login-third-btn" @click="wechatWorkLogin">
-              <img :src="wechatWorkImgPath"/>
-              <p>企业微信</p>
-            </div>
-          </Poptip>
+            <img :src="dingImgPath"/>
+            <p>钉钉</p>
           </div>
+          <div
+            :class="poptipVisible === 'wechat' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            @click="wechatLogin"
+          >
+            <img :src="wechatImgPath"/>
+            <p>微信</p>
+          </div>
+          <div
+            :class="poptipVisible === 'alipay' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            @click="alipayLogin"
+          >
+            <img :src="alipayImgPath"/>
+            <p>支付宝</p>
+          </div>
+          <div
+            :class="poptipVisible === 'qq' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            @click="qqLogin"
+          >
+            <img :src="qqImgPath"/>
+            <p>qq</p>
+          </div>
+          <div
+            :class="poptipVisible === 'wechatwork' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            @click="wechatworkLogin"
+          >
+            <img :src="wechatworkImgPath"/>
+            <p>企业微信</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </SimpleFrame>
+</div>
   `,
 })
 export default class UserLogin extends Vue {
@@ -141,22 +111,16 @@ export default class UserLogin extends Vue {
     password: [FORM_RULES.required],
   };
 
-  dingAccount: boolean = true;
-
   user: User|null = null;
-  dingVisible: boolean = false;
-  wechatVisible: boolean = false;
-  alipayVisible: boolean = false;
-  QQVisible: boolean = false;
-  wechatWorkVisible: boolean = false;
+
+  poptipVisible: string = '';
+  dingQrAccount: boolean = true;
 
   dingImgPath: string = require('../../assets/icons/icon-login-dingding.png');
   wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png');
   alipayImgPath: string = require('../../assets/icons/icon-login-alipay.png');
-  QQImgPath: string = require('../../assets/icons/icon-login-QQ.png');
-  wechatWorkImgPath: string = require('../../assets/icons/icon-login-wechatWork.png');
-
-  poptipClass: string|null = '';
+  qqImgPath: string = require('../../assets/icons/icon-login-qq.png');
+  wechatworkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png');
 
   get isRegisterEnabled() {
     return this.$app.metaInfo!.account.isRegisterEnabled;
@@ -177,7 +141,7 @@ export default class UserLogin extends Vue {
 
   mounted() {
     this.loginStateCheck();
-    this.getQRAccount();
+    this.dingQrAccount = this.$app.metaInfo!.account.support_ding_qr;
   }
 
   get loginType() {
@@ -196,10 +160,6 @@ export default class UserLogin extends Vue {
     if (this.$app.isLogin) {
       this.$app.goHome();
     }
-  }
-
-  getQRAccount() {
-    this.dingAccount = false;
   }
 
   onLoginTypeChange() {
@@ -271,33 +231,28 @@ export default class UserLogin extends Vue {
     });
   }
 
-  dingdingLogin() {
-    this.$refs.dingding.className = 'ui-login-btn-chosen';
-    DDLogin({
+  dingLogin() {
+    this.poptipVisible = this.poptipVisible === 'ding' ? '' : 'ding';
+
+    dingQrCode({
       id:'login_container',
       style: 'border:none;background-color:#FFFFFF;',
-      goto: 'https%3a%2f%2foapi.dingtalk.com%2f'
-            + 'connect%2foauth2%2fsns_authorize%3f'
-            + 'appid%3ddingoawoeovveele6cbbt2%26'
-            + 'response_type%3dcode%26scope%3dsnsapi_login%26'
-            + 'state%3dSTATE%26'
-            + 'redirect_uri%3dhttps%3a%2f%2foneid.intra.longguikeji.com%2f'
-            + 'dingding%2fqr%2fcallback%2f',
+      goto: encodeURI('https://oapi.dingtalk.com/connect/oauth2/sns_authorize?appid=dingoawoeovveele6cbbt2&response_type=code&scope=snsapi_login&state=STATE&redirect_uri=https://oneid.intra.longguikeji.com/dingding/qr/callback/'),
       width : '600px',
       height: '330px',
     });
-    this.addEvent();
+    this.addDingEvent();
   }
 
-  addEvent() {
+  addDingEvent() {
     if (typeof window.addEventListener !== 'undefined') {
-        window.addEventListener('message', this.handleMessage, false);
+        window.addEventListener('message', this.handleDingMessage, false);
     } else if (typeof window.attachEvent !== 'undefined') {
-        window.attachEvent('onmessage', this.handleMessage);
+        window.attachEvent('onmessage', this.handleDingMessage);
     }
   }
 
-  async handleMessage(event: any) {
+  handleDingMessage(event: any) {
     const loginTmpCode = event.data;
     const origin = event.origin;
 
@@ -311,28 +266,19 @@ export default class UserLogin extends Vue {
     }
   }
 
-  cancelThirdParty() {
-    this.dingVisible = false;
-    this.wechatVisible = false;
-    this.alipayVisible = false;
-    this.QQVisible = false;
-    this.wechatWorkVisible = false;
-  }
-
   wechatLogin() {
-    this.$refs.wechat.className = 'ui-login-btn-chosen';
+    this.poptipVisible = this.poptipVisible === 'wechat' ? '' : 'wechat';
   }
 
   alipayLogin() {
-    this.$refs.alipay.className = 'ui-login-btn-chosen';
-    
+    this.poptipVisible = this.poptipVisible === 'alipay' ? '' : 'alipay';
   }
 
-  QQLogin() {
-    this.$refs.QQ.className = 'ui-login-btn-chosen';
+  qqLogin() {
+    this.poptipVisible = this.poptipVisible === 'qq' ? '' : 'qq';
   }
 
-  wechatWorkLogin() {
-    this.$refs.wechatWork.className = 'ui-login-btn-chosen';
+  wechatworkLogin() {
+    this.poptipVisible = this.poptipVisible === 'wechatwork' ? '' : 'wechatwork';
   }
 }

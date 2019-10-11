@@ -688,7 +688,7 @@ export class UCenter extends API {
     return resp.data;
   }
 
-  static async registerWithBind(q: object) {
+  static async registerWithDingId(q: object) {
     const url = '/siteapi/v1/ding/register/bind/';
     const resp = await http.post(url, q);
     const {token} = resp.data;
@@ -696,13 +696,13 @@ export class UCenter extends API {
     return model.User.exchangeCurrentUserData(resp.data);
   }
 
-  static async checkUserExistWithMobile(q: object) {
+  static async checkExistWithMobile(q: object) {
     const url = '/siteapi/v1/ding/query/user/';
     const resp = await http.post(url, q);
     return resp.data;
   }
 
-  static async bindUserWithType(q: object) {
+  static async bindMobileWithDingId(q: object) {
     const url = '/siteapi/v1/ding/bind/';
     const resp = await http.post(url, q);
     const {token} = resp.data;

@@ -3,7 +3,7 @@ import UserPassword from './UserPassword';
 import UserSignUp from './UserSignUp';
 import UserActivate from './UserActivate';
 import RegisterSuccess from './RegisterSuccess';
-import UserBind from './UserBind';
+import UserBindMobile from './UserBindMobile';
 
 export const routes = [
   {path: '/oneid/login', name: 'oneid.login', component: UserLogin},
@@ -11,5 +11,5 @@ export const routes = [
   {path: '/oneid/signup', name: 'oneid.signup', component: UserSignUp},
   {path: '/oneid/activate', name: 'oneid.activate', component: UserActivate},
   {path: '/oneid/registersuccess', name: 'oneid.registersuccess', component: RegisterSuccess},
-  {path: '/oneid/bind', name: 'oneid.bind', component: UserBind},
+  {path: '/oneid/bindmobile', name: 'oneid.bindmobile', component: UserBindMobile},
 ];

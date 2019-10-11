@@ -85,7 +85,7 @@
   }
 }
 
-.ui-QR-login{
+.ui-other-login-boundline {
   width: 380px;
   float: right;
   border-top: 1px solid rgba(220,222,226,1);
@@ -103,97 +103,69 @@
   }
 }
 
-.ui-login-third-party{
+.ui-login-third-party {
   width: 380px;
   float: right;
   padding-top: 24px;
   text-align: center;
-  .ivu-btn{
-    width: 74px;
-    height: 32px;
-    font-size: 14px;
-    border: 1px solid #DCDEE2;
-    background: white;
-    color: #515A6E;
-  }
-  .ivu-poptip-body{
-    background: white;
-  }
 
-  .ui-poptip-arrow-ding{
-    .ivu-poptip-popper .ivu-poptip-arrow:after {
-      border-top-color: white;
-      left: -155px;
+  .ui-qr-poptip {
+    width: 600px;
+    height: 396px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-43%,-40%);
+    background-color: #FFF;
+    box-shadow: 0px 0px 2px 2px #e2e2e2;
+
+    .cancle-btn {
+      width:74px;
+      height:32px;
+      background:rgba(255,255,255,1);
+      border-radius:4px;
+      color: #515A6E;
+      border:1px solid rgba(220,222,226,1);
     }
   }
 
-  .ui-poptip-arrow-wechat{
-    .ivu-poptip-popper .ivu-poptip-arrow:after {
-      border-top-color: white;
-      left: -84px;
-    }
-  }
-
-  .ui-poptip-arrow-alipay{
-    .ivu-poptip-popper .ivu-poptip-arrow:after {
-      border-top-color: white;
-      left: -10px;
-    }
-  }
-
-  .ui-poptip-arrow-QQ{
-    .ivu-poptip-popper .ivu-poptip-arrow:after {
-      border-top-color: white;
-      left: 65px;
-    }
-  }
-
-  .ui-poptip-arrow-wechatWork{
-    .ivu-poptip-popper .ivu-poptip-arrow:after {
-      border-top-color: white;
-      left: 144px;
-    }
-  }
-  
-
-  .ui-login-diff-btn{
+  .ui-qr-diff-btn {
     width: 380px;
+    position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
 
-    .ui-login-third-btn{
+    .ui-qr-btn-unchose {
       filter: grayscale(100%);
-      img{
+      img {
         width: 30px;
       }
-      p{
+      p {
         color: #3396FA;
       }
     }
-    .ui-login-third-btn:hover{
+    .ui-qr-btn-unchose:hover {
       filter: grayscale(0);
     }
-    .ui-login-btn-chosen{
+
+    .ui-qr-btn-chosen {
       filter: grayscale(0);
-      img{
+      img {
         width: 30px;
       }
-      p{
+      p {
         color: #3396FA;
       }
     }
-  }
-  
-  .dingding-QRCode{
-    width: 600px;
-    height: 396px;
-    text-align: center;
-    background: #FFF;
-    .ui-login-QRCode{
-      .img{
-        width: 120px;
-      }
+    .ui-qr-btn-chosen:before {
+      content: '';
+      width: 15px;
+      height: 15px;
+      border: 8px solid rgb(255, 255, 255);
+      box-shadow: 2px 2px 2px #e2e2e2;
+      position: absolute;
+      transform: translate(40%,-150%) rotate(45deg);
     }
   }
 }

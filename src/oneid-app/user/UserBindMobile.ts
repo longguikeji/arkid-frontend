@@ -139,7 +139,11 @@ export default class UserBind extends Vue {
     };
   }
 
-  async created() {
+  created() {
+    this.getDingIdWithCode();
+  }
+
+  async getDingIdWithCode() {
     const {code, state} = this.$route.query;
 
     try {
@@ -192,23 +196,23 @@ export default class UserBind extends Vue {
       this.mobileForm.smsToken = sms_token;
       this.$Loading.finish();
       this.isValidMobile = true;
-      this.isUserExist();
+      this.checkUserExist();
     } catch (e) {
       this.isValidMobile = false;
       this.$Loading.error();
     }
   }
 
-  async isUserExist() {
+  async checkUserExist() {
     const {mobile, dingId, smsToken} = this.mobileForm;
     try {
-      const {exist} = await api.UCenter.checkUserExistWithMobile({
+      const {exist} = await api.UCenter.checkExistWithMobile({
         mobile,
         ding_id: dingId,
         sms_token: smsToken,
       });
       if(exist) {
-        this.bindUserWithType();
+        this.bindMobileWithDingId();
       } else {
         this.isNewUser = true;
       }
@@ -217,11 +221,11 @@ export default class UserBind extends Vue {
     }
   }
 
-  async bindUserWithType() {
+  async bindMobileWithDingId() {
     const {dingId, smsToken} = this.mobileForm;
     const type = 'dingding';
     try {
-      const user = await api.UCenter.bindUserWithType({
+      const user = await api.UCenter.bindMobileWithDingId({
         ding_id: dingId,
         sms_token: smsToken,
       });
@@ -244,7 +248,7 @@ export default class UserBind extends Vue {
     const {smsToken, dingId} = this.mobileForm;
 
     try {
-      const user = await api.UCenter.registerWithBind({
+      const user = await api.UCenter.registerWithDingId({
         username,
         password,
         ding_id: dingId,
