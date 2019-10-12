@@ -440,6 +440,26 @@ export class ApiService extends API {
     return resp.data;
   }
 
+  static async sendBindSms(mobile: string) {
+    const url = this.url({action: 'sms/ding_bind'});
+    const data = {
+      mobile,
+    };
+    const resp = await http.post(url, data);
+    return resp.data;
+  }
+
+  static async verifySmsWithBind(mobile: string, smsCode: string, dingId: string) {
+    const url = this.url({action: 'sms/ding_bind'});
+    const data = {params: {
+      mobile,
+      code: smsCode,
+      ding_id: dingId,
+    }};
+    const resp = await http.get(url, data);
+    return resp.data;
+  }
+
   static async sendResetPasswordSms(mobile: string, username: string) {
     const url = this.url({action: 'sms/reset_password'});
     const data = {
@@ -655,6 +675,39 @@ export class UCenter extends API {
     const url = this.url({action: 'register'});
     const resp = await http.post(url, q);
     return resp.data;
+  }
+
+  static async getDingIdWithCode(q: object) {
+    const url = '/siteapi/v1/dingding/qr/callback/';
+    const resp = await http.post(url, q);
+    if (resp.data.ding_id === undefined) {
+      const {token} = resp.data;
+      window.localStorage.setItem(ONEID_TOKEN, token);
+      return model.User.exchangeCurrentUserData(resp.data);
+    }
+    return resp.data;
+  }
+
+  static async registerWithDingId(q: object) {
+    const url = '/siteapi/v1/ding/register/bind/';
+    const resp = await http.post(url, q);
+    const {token} = resp.data;
+    window.localStorage.setItem(ONEID_TOKEN, token);
+    return model.User.exchangeCurrentUserData(resp.data);
+  }
+
+  static async checkExistWithMobile(q: object) {
+    const url = '/siteapi/v1/ding/query/user/';
+    const resp = await http.post(url, q);
+    return resp.data;
+  }
+
+  static async bindMobileWithDingId(q: object) {
+    const url = '/siteapi/v1/ding/bind/';
+    const resp = await http.post(url, q);
+    const {token} = resp.data;
+    window.localStorage.setItem(ONEID_TOKEN, token);
+    return model.User.exchangeCurrentUserData(resp.data);
   }
 }
 

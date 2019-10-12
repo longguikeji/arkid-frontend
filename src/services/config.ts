@@ -142,6 +142,11 @@ export class FreakConfig {
     const data = {account_config: config.toData().account_config};
     return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
   }
+  static patchDing(config: any) {
+    const url = '/siteapi/oneid/config/';
+    const data = {ding_config: config.toData().ding_config};
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  }
 }
 
 // ********************************************************************************************************
