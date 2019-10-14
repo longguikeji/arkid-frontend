@@ -317,6 +317,8 @@ export class Ding {
     obj.corpId = data.corp_id;
     obj.corpSecret = data.corp_secret;
     obj.corpValid = data.corp_valid;
+    obj.qrAppId = data.qr_app_id;
+    obj.qrCallBackUrl = data.qr_callback_url;
 
     return obj;
   }
@@ -327,6 +329,8 @@ export class Ding {
   corpId = '';
   corpSecret = '';
   corpValid = false;
+  qrAppId = '';
+  qrCallBackUrl = '';
 
   toData() {
     return {
@@ -334,6 +338,8 @@ export class Ding {
       app_secret: this.appSecret,
       corp_id: this.corpId,
       corp_secret: this.corpSecret,
+      qr_app_id: this.qrAppId,
+      qr_callback_url: this.qrCallBackUrl,
     };
   }
 }
@@ -357,7 +363,6 @@ export class Account {
     return this.support_email || this.support_mobile;
   }
 }
-
 
 export class Config {
   ding!: Ding;
