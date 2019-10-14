@@ -243,10 +243,15 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
+    const dingUri = encodeURIComponent('https://oapi.dingtalk.com/connect/oauth2/sns_authorize?'
+        +'appid='+this.$app.metaInfo!.ding.qrAppId
+        +'&response_type=code&scope=snsapi_login&state=STATE&'
+        +'redirect_uri='+this.$app.metaInfo!.ding.qrCallBackUrl);
+
     dingQrCode({
       id:'login_container',
       style: 'border:none;background-color:#FFFFFF;',
-      goto: encodeURIComponent('https://oapi.dingtalk.com/connect/oauth2/sns_authorize?appid=dingoawoeovveele6cbbt2&response_type=code&scope=snsapi_login&state=STATE&redirect_uri=https://oneid.intra.longguikeji.com/dingding/qr/callback/'),
+      goto: dingUri,
       width : '600px',
       height: '330px',
     });
@@ -267,11 +272,10 @@ export default class UserLogin extends Vue {
 
     if (origin === 'https://login.dingtalk.com') {
       window.location.href='https://oapi.dingtalk.com/connect/oauth2/sns_authorize?'
-                            + 'appid=dingoawoeovveele6cbbt2'
-                            + '&response_type=code'
-                            + '&scope=snsapi_login&state=STATE'
-                            + '&redirect_uri=https://oneid.intra.longguikeji.com/dingding/qr/callback/'
-                            + '&loginTmpCode=' + loginTmpCode;
+        + 'appid='+this.$app.metaInfo!.ding.qrAppId
+        + '&response_type=code&scope=snsapi_login&state=STATE'
+        + '&redirect_uri='+this.$app.metaInfo!.ding.qrCallBackUrl
+        + '&loginTmpCode=' + loginTmpCode;
     }
   }
 
