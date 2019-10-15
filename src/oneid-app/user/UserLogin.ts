@@ -119,6 +119,7 @@ export default class UserLogin extends Vue {
 
   thirdPartyType: string = '';
   dingQrAccount: boolean = false;
+  redirectUri: string|null = null;
 
   dingImgPath: string = require('../../assets/icons/icon-login-dingding.png');
   wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png');
@@ -243,18 +244,21 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    const dingUri = encodeURIComponent('https://oapi.dingtalk.com/connect/oauth2/sns_authorize?'
-        +'appid='+this.$app.metaInfo!.ding.qrAppId
-        +'&response_type=code&scope=snsapi_login&state=STATE&'
-        +'redirect_uri='+this.$app.metaInfo!.ding.qrCallBackUrl);
+    this.redirectUri = window.location.origin + '/oneid/bindthirdparty';
 
-    dingQrCode({
+    const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
+      + `appid=${this.$app.metaInfo!.ding.qrAppId}`
+      + `&response_type=code&scope=snsapi_login&state=STATE`
+      + `&redirect_uri=${this.redirectUri}`;
+
+    window.dingQrCode({
       id:'login_container',
       style: 'border:none;background-color:#FFFFFF;',
-      goto: dingUri,
+      goto: encodeURIComponent(url),
       width : '600px',
       height: '330px',
     });
+
     this.addDingEvent();
   }
 
@@ -270,12 +274,14 @@ export default class UserLogin extends Vue {
     const loginTmpCode = event.data;
     const origin = event.origin;
 
+    const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
+      + `appid=${this.$app.metaInfo!.ding.qrAppId}`
+      + `&response_type=code&scope=snsapi_login&state=STATE`
+      + `&redirect_uri=${this.redirectUri}`
+      + `&loginTmpCode=${loginTmpCode}`;
+
     if (origin === 'https://login.dingtalk.com') {
-      window.location.href='https://oapi.dingtalk.com/connect/oauth2/sns_authorize?'
-        + 'appid='+this.$app.metaInfo!.ding.qrAppId
-        + '&response_type=code&scope=snsapi_login&state=STATE'
-        + '&redirect_uri='+this.$app.metaInfo!.ding.qrCallBackUrl
-        + '&loginTmpCode=' + loginTmpCode;
+      window.location.href = url;
     }
   }
 
