@@ -244,7 +244,7 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    this.redirectUri = window.location.origin + '/oneid/bindthirdparty';
+    this.redirectUri = window.location.href.replace(this.$route.fullPath, '/oneid/bindthirdparty');
 
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
