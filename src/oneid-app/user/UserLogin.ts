@@ -175,7 +175,7 @@ export default class UserLogin extends Vue {
     const {form} = this;
     try {
       let params = {password: form.password};
-      if (form.selectedLoginType == this.loginType[0]) {
+      if (form.selectedLoginType === this.loginType[0]) {
         params['username'] = form.accountname;
       }
       else if(form.selectedLoginType.includes('邮箱')) {
@@ -244,7 +244,7 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    this.redirectUri = window.location.href.replace(this.$route.fullPath, '/oneid/bindthirdparty');
+    this.redirectUri = window.location.origin + '/%23/oneid/bindthirdparty';
 
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
