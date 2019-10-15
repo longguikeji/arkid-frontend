@@ -318,7 +318,6 @@ export class Ding {
     obj.corpSecret = data.corp_secret;
     obj.corpValid = data.corp_valid;
     obj.qrAppId = data.qr_app_id;
-    obj.qrCallBackUrl = data.qr_callback_url;
 
     return obj;
   }
@@ -330,7 +329,6 @@ export class Ding {
   corpSecret = '';
   corpValid = false;
   qrAppId = '';
-  qrCallBackUrl = '';
 
   toData() {
     return {
@@ -339,7 +337,6 @@ export class Ding {
       corp_id: this.corpId,
       corp_secret: this.corpSecret,
       qr_app_id: this.qrAppId,
-      qr_callback_url: this.qrCallBackUrl,
     };
   }
 }
