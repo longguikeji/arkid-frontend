@@ -3,7 +3,6 @@ import {User} from '@/models/oneid';
 import * as api from '@/services/oneid';
 import {Form} from 'iview/types/index';
 import {FORM_RULES} from '@/utils';
-import './dingQrLogin.js';
 import './UserCommon.less';
 
 
@@ -37,7 +36,9 @@ import './UserCommon.less';
         </FormItem>
         <FormItem>
           <Button class="simpleframe-btn" type="primary" @click="handleSubmit" style="width: 100%;">登录</Button>
-          <RouterLink v-if="isRegisterEnabled" :to="registerRouterLink" class="simpleframe-route go-to">没有账号？去注册</RouterLink>
+          <RouterLink v-if="isRegisterEnabled" :to="registerRouterLink" class="simpleframe-route go-to">
+            没有账号？去注册
+          </RouterLink>
         </FormItem>
       </Form>
       <div class="ui-other-login-boundline" v-if="dingQrAccount || false">
@@ -251,7 +252,7 @@ export default class UserLogin extends Vue {
       + `&response_type=code&scope=snsapi_login&state=STATE`
       + `&redirect_uri=${this.redirectUri}`;
 
-    window.dingQrCode({
+    this.dingQrCode({
       id:'login_container',
       style: 'border:none;background-color:#FFFFFF;',
       goto: encodeURIComponent(url),
@@ -260,6 +261,25 @@ export default class UserLogin extends Vue {
     });
 
     this.addDingEvent();
+  }
+
+  dingQrCode(params: any) {
+    let dingElement = null;
+    const iframe = document.createElement('iframe');
+    let directUrl = 'https://login.dingtalk.com/login/qrcode.htm?goto=' + params.goto;
+
+    directUrl += params.style ? '&style=' + encodeURIComponent(params.style) : '';
+    iframe.src = directUrl;
+
+    iframe.frameBorder = '0';
+    iframe.scrolling = 'no';
+
+    iframe.width =  params.width ? params.width + 'px' : '365px';
+    iframe.height = params.height ? params.height + 'px' : '400px';
+
+    dingElement = document.getElementById(params.id);
+    dingElement!.innerHTML = '';
+    dingElement!.appendChild(iframe);
   }
 
   addDingEvent() {
