@@ -24,6 +24,7 @@
     "vue-typed-mixins": "^0.1.0"
   },
   "devDependencies": {
+    "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.2",
     "@kindy/babel-plugin-transform-vue-template": "^0.4.2-fix.1",
     "@types/chai": "^4.1.0",
     "@types/js-yaml": "^3.12.1",
