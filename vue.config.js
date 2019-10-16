@@ -95,7 +95,7 @@ module.exports = {
     ...getDevProxy(),
   },
   pluginOptions: {
-    lintStyleOnBuild: true,
+    // lintStyleOnBuild: true,
     stylelint: {
       fix: true,
       ...stylelints,
