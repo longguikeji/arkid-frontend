@@ -1,3 +1,4 @@
+const stylelints = require('./stylelint.config')
 const path = require('path');
 
 const CONF = {
@@ -92,6 +93,13 @@ module.exports = {
     },
 
     ...getDevProxy(),
+  },
+  pluginOptions: {
+    // lintStyleOnBuild: true,
+    stylelint: {
+      fix: true,
+      ...stylelints,
+    },
   },
 };
 

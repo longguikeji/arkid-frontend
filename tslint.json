@@ -1,37 +1,63 @@
 {
   "defaultSeverity": "warning",
   "extends": [
-    "tslint:recommended"
+    "tslint:recommended",
+    "gts/tslint.json"
   ],
   "linterOptions": {
     "exclude": [
-      "node_modules/**"
+      "node_modules/**",
+      "**/*.json"
     ]
   },
   "rules": {
-    "quotemark": [
-      true,
-      "single"
-    ],
-    "indent": [
-      true,
-      "spaces",
-      2
-    ],
-    "member-access": [true, "no-public"],
-    "member-ordering": false,
-    "arrow-parens": false,
-    "whitespace": false,
-    "no-trailing-whitespace": true,
+    "no-any": true,
+    "no-empty-interface": true,
+    "no-console": true,
+    "no-eval": true,
+    "no-var-requires": true,
+    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
+    "no-empty": true,
+    "prefer-for-of": true,
+    "indent": [true, "spaces", 2],
+    "promise-function-async": true,
+    "await-promise": true,
     "interface-name": false,
-    "only-arrow-functions": false,
-    "no-console": false,
-    "interface-over-type-literal": false,
-    "array-type": false,
-    "ordered-imports": false,
+    "no-consecutive-blank-lines": true,
     "object-literal-sort-keys": false,
-    "max-classes-per-file": false,
+    "ordered-imports": true,
+    "quotemark": [true, "single", "avoid-escape"],
+    "typedef-whitespace": false,
+    "whitespace": true,
+    "one-line": true,
+    "semicolon": [true, "never"],
+    "no-trailing-whitespace": true,
+    "no-irregular-whitespace": true,
     "space-within-parens": false,
-    "no-consecutive-blank-lines": false
+    "arrow-return-shorthand": true,
+    "prefer-switch": [true, {"min-cases": 2}],
+    "prefer-while": true,
+    "return-undefined": false,
+    "no-inferrable-types": false,
+    "no-default-export": false,
+    "trailing-comma": [true, {
+      "multiline": {
+        "objects": "always",
+        "arrays": "always",
+        "functions": "always",
+        "typeLiterals": "always"
+      },
+      "esSpecCompliant": true
+    }],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ]
   }
-}
+ }
+  
+ 
+ 

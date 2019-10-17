@@ -1,16 +1,14 @@
 @import '../../../utils.less';
 
-
-
 .ui-admin-apps-app-list {
   padding: 20px 40px 20px 30px;
-  background-color: @bg-2;
   overflow-y: auto;
+  background-color: @bg-2;
 
   &--toolbar {
-    margin-bottom: 20px;
     justify-content: space-between;
-    
+    margin-bottom: 20px;
+
     h2 {
       margin-top: 2px;
     }
@@ -18,6 +16,7 @@
     button {
       margin: 0 20px;
     }
+
     .search {
       width: 270px;
     }
@@ -26,34 +25,33 @@
   > .table-wrapper {
     .table {
       .table-btn {
-        color: #006064;
         margin-right: 24px;
+        color: #006064;
         cursor: pointer;
 
         &.disabled {
-          cursor: default;
           color: #666666;
+          cursor: default;
         }
       }
     }
   }
+
   .subtitle {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 18px;
     font-weight: 600;
+    font-size: 18px;
     color: @color-2;
-  
-    &:before {
-      content: '';
+
+    &::before {
       display: inline-flex;
       width: 6px;
       height: 18px;
       margin-right: 10px;
       background: @primary-color;
+      content: '';
     }
-  }  
+  }
 }
-
-
