@@ -100,9 +100,6 @@ module.exports = {
       fix: true,
       ...stylelints,
     },
-    webpackBundleAnalyzer: {
-      openAnalyzer: false,
-    },
   },
 };
 

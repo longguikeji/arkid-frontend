@@ -58,15 +58,5 @@
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
-  "license": "LGPL",
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,vue}": [
-      "vue-cli-service lint",
-      "git add"
-    ],
-    "*.{vue,htm,html,css,sss,less,scss}": [
-      "vue-cli-service lint:style",
-      "git add"
-    ]
-  }
+  "license": "LGPL"
 }
