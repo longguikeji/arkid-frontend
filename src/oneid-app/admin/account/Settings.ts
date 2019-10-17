@@ -1,17 +1,16 @@
-import {Vue, Component} from 'vue-property-decorator';
-import './Settings.less';
-import {FORM_RULES} from '@/utils';
-import {FreakConfig} from '@/models/config';
-import * as api from '@/services/config';
-
+import {FreakConfig} from '@/models/config'
+import * as api from '@/services/config'
+import {FORM_RULES} from '@/utils'
+import {Form} from 'iview/types/index'
+import {Component, Vue} from 'vue-property-decorator'
+import './Settings.less'
 
 const SMS_VENDORS = [
   {
     value: 'aliyun',
     label: '阿里云',
   },
-];
-
+]
 
 @Component({
   template: html`
@@ -42,7 +41,7 @@ const SMS_VENDORS = [
         </div>
         <div class="content">
           <div>
-            <Checkbox v-model="registerOptions.account.allowDingQR" size="large" class="description">
+            <Checkbox v-model="registerOptions.account.allowDingQr" size="large" class="description">
               钉钉
             </Checkbox>
             <div class="link" @click="editType = 'ding'">
@@ -53,11 +52,14 @@ const SMS_VENDORS = [
             </div>
           </div>
           <div>
-            <Checkbox size="large" class="description">
-              微信
+            <Checkbox v-model="registerOptions.account.allowAlipayQr" size="large" class="description">
+              支付宝
             </Checkbox>
-            <div class="link" @click="editType = 'wechat'">
-              微信配置
+            <div class="link" @click="editType = 'alipay'">
+              支付宝配置
+            </div>
+            <div :class="\`tag\${registerOptions.alipay.qrAppValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.alipay.qrAppValid ? '已完成' : '未完成' }}
             </div>
           </div>
         </div>
@@ -102,7 +104,7 @@ const SMS_VENDORS = [
           </div>
         </div>
       </div>
-      
+
       <div class="register-submit">
         <Button @click="onSaveAccount" :loading="accountBtnLoading">保存修改</Button>
         <div><RouterLink :to="{name: 'admin.config'}">去配置自定义登录页面</RouterLink></div>
@@ -116,7 +118,10 @@ const SMS_VENDORS = [
       :transfer="true"
       className="register-edit"
     >
-      <div slot="header" class="header">配置{{ editType === 'email' ? '邮箱' : editType === 'ding' ? '钉钉' : '短信'}}</div>
+      <div slot="header" class="header">配置
+        {{ editType === 'email' ? '邮箱' :
+           editType === 'ding' ? '钉钉' :
+           editType === 'alipay' ? '支付宝' : '短信'}}</div>
       <div class="body">
         <Form
           v-if="editType === 'email'"
@@ -193,6 +198,31 @@ const SMS_VENDORS = [
               placeholder="填写 App Secret"></Input>
           </FormItem>
         </Form>
+
+        <Form
+          v-if="editType === 'alipay'"
+          ref="alipay"
+          :model="registerOptions.alipay"
+          :rules="alipayRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="appId" label="App Id：">
+            <Input type="text" v-model="registerOptions.alipay.appId" placeholder="填写 App Id"></Input>
+          </FormItem>
+          <FormItem prop="appPrivateKey" label="Private Key：">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.alipay.appPrivateKey"
+              @on-blur="(e) => registerOptions.alipay.appPrivateKey = e.target.value"
+              placeholder="填写 App Private Key"></Input>
+          </FormItem>
+          <FormItem prop="alipayPublicKey" label="Alipay Public Key：">
+            <Input type="textarea" :rows="8" v-model="registerOptions.alipay.alipayPublicKey"
+              placeholder="填写 Alipay Public Key"></Input>
+          </FormItem>
+        </Form>
+
       </div>
       <div class="footer">
         <Button @click="onCancel">取消</Button>
@@ -203,21 +233,21 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType: 'email'|'mobile'|'ding'|null = null;
-  accountBtnLoading = false;
-  emailOrMobileBtnLoading = false;
+  editType: 'email'|'mobile'|'ding'|'alipay'|null = null
+  accountBtnLoading = false
+  emailOrMobileBtnLoading = false
 
   get showDrawer() {
-    return !!this.editType;
+    return !!this.editType
   }
   set showDrawer(val: boolean) {
     if (!val) {
-      this.editType = null;
+      this.editType = null
     }
   }
 
   get smsVendors() {
-    return SMS_VENDORS;
+    return SMS_VENDORS
   }
 
   get emailRules() {
@@ -225,7 +255,7 @@ export default class Settings extends Vue {
       host: [FORM_RULES.required],
       port: [FORM_RULES.required, FORM_RULES.port],
       account: [FORM_RULES.required, FORM_RULES.email],
-    };
+    }
   }
 
   get mobileRules() {
@@ -234,99 +264,120 @@ export default class Settings extends Vue {
       accessKey: [FORM_RULES.required],
       template: [FORM_RULES.required],
       badging: [FORM_RULES.required],
-    };
+    }
   }
 
   get dingRules() {
     return {
       qrAppId: [FORM_RULES.required],
-    };
+    }
   }
 
-  registerOptions: FreakConfig | null = null;
+  get alipayRules() {
+    return {
+      appId: [FORM_RULES.required],
+    }
+  }
+
+  registerOptions: FreakConfig | null = null
 
   async loadData() {
-    const registerOptions = await api.FreakConfig.get();
-    registerOptions.mobile.accessSecret = '';
-    registerOptions.email.password = '';
-    this.registerOptions = registerOptions;
+    const registerOptions = await api.FreakConfig.get()
+    registerOptions.mobile.accessSecret = ''
+    registerOptions.email.password = ''
+    registerOptions.ding.qrAppSecret = ''
+    registerOptions.alipay.appPrivateKey = ''
+    this.registerOptions = registerOptions
   }
 
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 
   onCancel() {
-    this.showDrawer = false;
+    this.showDrawer = false
   }
 
-  async save(fn: any) {
+  async save(fn: Function) {
     try {
-      this.registerOptions = await fn();
-      this.showDrawer = false;
-      this.$Message.success('保存成功');
+      this.registerOptions = await fn()
+      this.showDrawer = false
+      this.$Message.success('保存成功')
     } catch(error) {
-      this.showDrawer = false;
-      this.$Message.error('保存失败');
+      this.showDrawer = false
+      this.$Message.error('保存失败')
     }
   }
 
   onSaveEmailOrMobile() {
     if (this.editType) {
-      this.$refs[this.editType].validate((valid: boolean) => {
+      const ref = this.$refs[this.editType] as Form
+      ref.validate((valid: boolean|void) => {
         if (valid) {
           if (this.editType === 'email') {
-            this.saveEmail();
+            this.saveEmail()
           }
           if (this.editType === 'mobile') {
-            this.saveMobile();
+            this.saveMobile()
           }
           if (this.editType === 'ding') {
-            this.saveDing();
+            this.saveDing()
+          }
+          if (this.editType === 'alipay') {
+            this.saveAlipay()
           }
         }
-      });
+      })
     }
   }
 
   onSaveAccount() {
     if (!this.registerOptions!.account.allowEmail && !this.registerOptions!.account.allowMobile) {
-      this.$Message.error('请选择一种注册类型');
-      return;
+      this.$Message.error('请选择一种注册类型')
+      return
     }
     if (this.registerOptions!.account.allowEmail && !this.registerOptions!.email.isValid) {
-      this.$Message.error('邮箱配置不正确');
-      return;
+      this.$Message.error('邮箱配置不正确')
+      return
     }
     if (this.registerOptions!.account.allowMobile && !this.registerOptions!.mobile.isValid) {
-      this.$Message.error('短信配置不正确');
-      return;
+      this.$Message.error('短信配置不正确')
+      return
     }
-    if (this.registerOptions!.account.allowDingQR && !this.registerOptions!.ding.qrAppValid) {
-      this.$Message.error('钉钉配置不正确');
-      return;
+    if (this.registerOptions!.account.allowDingQr && !this.registerOptions!.ding.qrAppValid) {
+      this.$Message.error('钉钉配置不正确')
+      return
     }
-    this.saveAccount();
+    if (this.registerOptions!.account.allowAlipayQr && !this.registerOptions!.alipay.qrAppValid) {
+      this.$Message.error('支付宝配置不正确')
+      return
+    }
+    this.saveAccount()
   }
 
   async saveEmail() {
-    this.emailOrMobileBtnLoading = true;
-    this.save(api.FreakConfig.patchEmail.bind(this, this.registerOptions));
-    this.emailOrMobileBtnLoading = false;
+    this.emailOrMobileBtnLoading = true
+    this.save(api.FreakConfig.patchEmail.bind(this, this.registerOptions))
+    this.emailOrMobileBtnLoading = false
   }
   async saveMobile() {
-    this.emailOrMobileBtnLoading = true;
-    this.save(api.FreakConfig.patchMobile.bind(this, this.registerOptions));
-    this.emailOrMobileBtnLoading = false;
+    this.emailOrMobileBtnLoading = true
+    this.save(api.FreakConfig.patchMobile.bind(this, this.registerOptions))
+    this.emailOrMobileBtnLoading = false
   }
   async saveAccount() {
-    this.accountBtnLoading = true;
-    this.save(api.FreakConfig.patchAccount.bind(this, this.registerOptions));
-    this.accountBtnLoading = false;
+    this.accountBtnLoading = true
+    this.save(api.FreakConfig.patchAccount.bind(this, this.registerOptions))
+    this.accountBtnLoading = false
   }
   async saveDing() {
-    this.emailOrMobileBtnLoading = true;
-    this.save(api.FreakConfig.patchDing.bind(this, this.registerOptions));
-    this.emailOrMobileBtnLoading = false;
+    this.emailOrMobileBtnLoading = true
+    this.save(api.FreakConfig.patchDing.bind(this, this.registerOptions))
+    this.emailOrMobileBtnLoading = false
+  }
+  async saveAlipay() {
+    this.emailOrMobileBtnLoading = true
+    this.save(api.FreakConfig.patchAlipay.bind(this, this.registerOptions))
+    this.emailOrMobileBtnLoading = false
   }
 }

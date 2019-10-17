@@ -1,10 +1,9 @@
 @import '../../utils.less';
 
-
 .ui-login-page,
 .ui-signup-page,
 .ui-password-page,
-.ui-bind-page  {
+.ui-bind-page {
   display: flex;
   justify-content: center;
 
@@ -13,65 +12,74 @@
 
     .form-alert-line {
       justify-content: flex-end;
-      margin: 12px 0px 30px 0px;
+      margin: 12px 0 30px;
+
       .form-alert {
         width: 380px;
       }
     }
-
   }
+
   .go-to {
     display: flex;
     justify-content: center;
     margin-top: 12px;
-    font-size: 14px;
     font-weight: 400;
+    font-size: 14px;
   }
+
   .ivu-form-item-label {
     color: black;
   }
+
   .ivu-radio-inner {
     background-color: white;
   }
+
   .ivu-radio-wrapper {
     margin-right: 50px;
   }
+
   .ivu-input {
+    border: #DCDEE2 solid 1px;
     color: black;
     background-color: white;
-    border: #DCDEE2 solid 1px;
+
     &:disabled {
-      background-color: #F3F3F3;
       color: #C6C8CE;
+      background-color: #F3F3F3;
     }
+
     &::placeholder {
       color: #DCDEE2;
-    } 
+    }
   }
+
   .ivu-btn-primary {
-    border: 0px;
+    border: 0;
     color: white;
   }
-  
+
   .form-alert-line {
     justify-content: flex-end;
-    margin: 12px 0px 30px 0px;
+    margin: 12px 0 30px;
+
     .form-alert {
       width: 380px;
     }
   }
-  .ivu-radio-wrapper {
-    margin-right: 50px;
-  }
+
   .ivu-alert-info {
-    background-color: #F0FAFF;
     border: 1px solid  #AADCFF;
     color: #515A6E;
+    background-color: #F0FAFF;
   }
+
   .ivu-alert-with-icon {
     padding-right: 17px;
   }
-  .ivu-icon-ios-information-circle:before {
+
+  .ivu-icon-ios-information-circle::before {
     color: #2C8CF0;
   }
 }
@@ -79,150 +87,166 @@
 .ui-login-page {
   .forget {
     float: right;
-    font-size:14px;
-    font-weight:400;
+    font-weight: 400;
+    font-size: 14px;
     color: @color-3;
   }
 }
 
 .ui-other-login-boundline {
-  width: 380px;
   float: right;
-  border-top: 1px solid rgba(220,222,226,1);
+  width: 380px;
   margin-top: 20px;
-  p{
+  border-top: 1px solid rgba(220, 222, 226, 1);
+
+  p {
     width: 92px;
     height: 17px;
-    margin: -8px auto 0;
     padding: 0 10px;
+    margin: -8px auto 0;
     font-size: 12px;
     line-height: 17px;
     text-align: center;
-    color:rgba(128,134,149,1);
-    background: #FFF;
+    color: rgba(128, 134, 149, 1);
+    background: #FFFFFF;
   }
 }
 
 .ui-login-third-party {
   position: relative;
-  width: 380px;
   float: right;
+  width: 380px;
   padding-top: 24px;
   text-align: center;
 
   .ui-qr-poptip {
+    position: absolute;
     width: 600px;
     height: 396px;
-    position: absolute;
-    transform: translate(-18%,-104%);
-    background-color: #FFF;
-    box-shadow: 0px 0px 2px 2px #e2e2e2;
+    background-color: #FFFFFF;
+    box-shadow: 0 0 2px 2px #E2E2E2;
+    transform: translate(-18%, -104%);
 
     .cancle-btn {
-      width:74px;
-      height:32px;
+      width: 74px;
+      height: 32px;
+      border: 1px solid rgba(220, 222, 226, 1);
+      border-radius: 4px;
       font-size: 14px;
-      background:rgba(255,255,255,1);
-      border-radius:4px;
       color: #515A6E;
-      border:1px solid rgba(220,222,226,1);
+      background: rgba(255, 255, 255, 1);
     }
   }
 
   .ui-qr-diff-btn {
-    width: 380px;
     position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    width: 380px;
 
     .ui-qr-btn-unchose {
       filter: grayscale(100%);
+
       img {
         width: 30px;
       }
+
       p {
         color: #3396FA;
       }
     }
+
     .ui-qr-btn-unchose:hover {
       filter: grayscale(0);
     }
 
     .ui-qr-btn-chosen {
       filter: grayscale(0);
+
       img {
         width: 30px;
       }
+
       p {
         color: #3396FA;
       }
     }
-    .ui-qr-btn-chosen:before {
-      content: '';
+
+    .ui-qr-btn-chosen::before {
+      position: absolute;
       width: 15px;
       height: 15px;
       border: 8px solid rgb(255, 255, 255);
-      box-shadow: 2px 2px 2px #e2e2e2;
-      position: absolute;
-      transform: translate(40%,-150%) rotate(45deg);
+      box-shadow: 2px 2px 2px #E2E2E2;
+      transform: translate(40%, -150%) rotate(45deg);
+      content: '';
     }
   }
 }
 
 .ui-signup-page {
   .activate-area {
-    margin: -15px 0px 60px;
+    margin: -15px 0 60px;
+
     .activate-name {
       justify-content: center;
-      font-size: 20px;
-      font-weight:600;
       margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 20px;
     }
+
     .activate-content {
       justify-content: center;
     }
   }
+
   .register-button {
     margin-top: 65px;
   }
+
   .mobile-form {
     margin-bottom: 70px;
   }
-  .form-right-area{
+
+  .form-right-area {
     a {
+      height: 20px;
       margin-top: 62px;
       margin-left: 12px;
-      height: 20px;
     }
+
     .mobile-check {
       margin-top: 38px;
       margin-left: 15px;
     }
   }
+
   .help {
-    font-size:12px;
-    font-weight:400;
-    color:rgba(128,134,149,1);
+    font-weight: 400;
+    font-size: 12px;
+    color: rgba(128, 134, 149, 1);
   }
 }
 
 .ui-password-page {
-  
   &--form-wrapper {
     .welcome-word {
       justify-content: center;
       margin-bottom: 30px;
     }
+
     .operation-button {
       margin-bottom: 12px;
     }
+
     .reset-button {
       margin-top: 106px;
       margin-bottom: 12px;
     }
   }
-  .form-right-area{
+
+  .form-right-area {
     .verify-code {
       margin-top: 120px;
       margin-left: 10px;
@@ -233,15 +257,17 @@
 .ui-bind-page {
   .form-right-area {
     a {
+      height: 20px;
       margin-top: 60px;
       margin-left: 12px;
-      height: 20px;
     }
+
     .mobile-check {
       margin-top: 38px;
       margin-left: 15px;
     }
   }
+
   .top-area {
     line-height: 55px;
   }
@@ -251,6 +277,7 @@
 .ui-signup-page,
 .ui-bind-page {
   margin-left: 70px;
+
   .go-to {
     margin-left: 120px;
   }

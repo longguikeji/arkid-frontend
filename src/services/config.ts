@@ -1,8 +1,7 @@
-import {delayIt, http, getUuid} from './base';
-import * as models from '../models/config';
+import * as models from '../models/config'
+import {delayIt, getUuid, http} from './base'
 
-
-export type TypeMetaInfo = {
+export interface TypeMetaInfo {
   company_config: {
     name_cn: string;
     fullname_cn: string;
@@ -13,14 +12,23 @@ export type TypeMetaInfo = {
     address: string;
     domain: string;
     display_name: string;
-  };
+  }
 
-  sms_config: any;
+  sms_config: object
 
   ding_config: {
     app_key: string;
+    app_secret: string;
+    app_valid: boolean;
     corp_id: string;
-  };
+    corp_secret: string;
+    corp_valid: boolean;
+    qr_app_id: string;
+  }
+
+  alipay_config: {
+    app_id: string;
+  }
 
   account_config: {
     email_register: boolean;
@@ -28,80 +36,78 @@ export type TypeMetaInfo = {
     username_register: boolean;
     email_reset_pwd: boolean;
     mobile_reset_pwd: boolean;
-  };
-};
-
+  }
+}
 
 export class Config {
-  static url({detail = false, id, action} = {}) {
-    let url = '/siteapi/oneid/config';
+  static url({detail = false, id = '', action = ''} = {}) {
+    let url = '/siteapi/oneid/config'
     if (detail) {
-      url += `/${id}`;
+      url += `/${id}`
     }
     if (action) {
-      url += `/${action}`;
+      url += `/${action}`
     }
 
-    return `${url}/`;
+    return `${url}/`
   }
 
-  static retrieve() {
+  static async retrieve() {
     return http.get(this.url())
-      .then(x => models.Config.fromData(x.data));
+      .then(x => models.Config.fromData(x.data))
   }
 
-  static partialUpdate(config: any) {
-    const data = config.toData ? config.toData() : config;
+  static async partialUpdate(config: models.Config) {
+    const data = config.toData ? config.toData() : config
     return http.patch(this.url(), data)
-      .then(x => models.Config.fromData(x.data));
+      .then(x => models.Config.fromData(x.data))
   }
 
   static async retrieveMetaPermList() {
-    const url = '/siteapi/oneid/meta/perm/';
-    const resp = await http.get(url);
-    const results = resp.data.map(i => ({
+    const url = '/siteapi/oneid/meta/perm/'
+    const resp = await http.get(url)
+    const results = resp.data.map((i: {uid: string, name: string}) => ({
       id: i.uid,
       name: i.name,
-    })) as {id: string, name: string}[];
+    })) as Array<{id: string, name: string}>
     return {
       results,
-    };
+    }
   }
 
-  static retrieveMeta() {
-    const url = '/siteapi/oneid/meta/';
-    return http.get(url).then(x => models.Config.fromData(x.data as TypeMetaInfo));
+  static async retrieveMeta() {
+    const url = '/siteapi/oneid/meta/'
+    return http.get(url).then(x => models.Config.fromData(x.data as TypeMetaInfo))
   }
 
   static async refreshMeta() {
-    window.cachedConfig = await this.retrieveMeta();
+    window.cachedConfig = await this.retrieveMeta()
   }
 
   static cachedMeta(): models.Config {
-    return window.cachedConfig;
+    return window.cachedConfig
   }
 
-  static importDing() {
-    const url = '/siteapi/oneid/task/import/ding/';
-    return http.get(url).then(x => x.data);
+  static async importDing() {
+    const url = '/siteapi/oneid/task/import/ding/'
+    return http.get(url).then(x => x.data)
   }
 
-  static importResult(id) {
-    const url = `/siteapi/oneid/task/${id}/result/`;
-    return http.get(url).then(x => x.data);
+  static async importResult(id: string) {
+    const url = `/siteapi/oneid/task/${id}/result/`
+    return http.get(url).then(x => x.data)
   }
   static async updateAdmin(username: string, oldMobileSmsToken: string, newMobileSmsToken: string) {
-    const url = this.url({action: 'admin'});
+    const url = this.url({action: 'admin'})
     const data = {
       old_admin_sms_token: oldMobileSmsToken,
       new_admin_sms_token: newMobileSmsToken,
       username,
-    };
-    const resp = await http.put(url, data);
-    return resp.data;
+    }
+    const resp = await http.put(url, data)
+    return resp.data
   }
 }
-
 
 // ********************************************************************************************************
 //
@@ -111,41 +117,47 @@ export class Config {
 //
 // ********************************************************************************************************
 
+// tslint:disable-next-line:max-classes-per-file
 export class FreakConfig {
-  static url({detail = false, id, action} = {}) {
-    let url = '/siteapi/oneid/config';
+  static url({detail = false, id = '', action = ''} = {}) {
+    let url = '/siteapi/oneid/config'
     if (detail) {
-      url += `/${id}`;
+      url += `/${id}`
     }
     if (action) {
-      url += `/${action}`;
+      url += `/${action}`
     }
-    return `${url}/`;
+    return `${url}/`
   }
 
-  static get() {
-    return http.get(this.url()).then(x => models.FreakConfig.fromData(x.data));
+  static async get() {
+    return http.get(this.url()).then(x => models.FreakConfig.fromData(x.data))
   }
 
-  static patchEmail(config: any) {
-    const url = '/siteapi/oneid/config/';
-    const data = {email_config: config.toData().email_config};
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  static async patchEmail(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {email_config: config!.toData().email_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
-  static patchMobile(config: any) {
-    const url = '/siteapi/oneid/config/';
-    const data = {sms_config: config.toData().sms_config};
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  static async patchMobile(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {sms_config: config!.toData().sms_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
-  static patchAccount(config: any) {
-    const url = '/siteapi/oneid/config/';
-    const data = {account_config: config.toData().account_config};
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  static async patchAccount(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {account_config: config!.toData().account_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
-  static patchDing(config: any) {
-    const url = '/siteapi/oneid/config/';
-    const data = {ding_config: config.toData().ding_config};
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data));
+  static async patchDing(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {ding_config: config!.toData().ding_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
+  }
+  static async patchAlipay(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {alipay_config: config!.toData().alipay_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
 }
 

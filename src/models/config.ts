@@ -1,5 +1,5 @@
-import {TypeMetaInfo} from '../services/config';
-
+import {TypeMetaInfo} from '../services/config'
+// tslint:disable: max-classes-per-file
 
 // ********************************************************************************************************
 //
@@ -21,29 +21,29 @@ export interface FreakCompanyInterface {
 }
 
 export class FreakCompany {
-  nameCn = '';
-  fullNameCn = '';
-  nameEn = '';
-  fullNameEn = '';
-  icon = '';
-  address = '';
-  domain = '';
-  color = '';
 
   static fromData(data: FreakCompanyInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.address = data.address;
-      obj.domain = data.domain;
-      obj.fullNameCn = data.fullname_cn;
-      obj.fullNameEn = data.fullname_en;
-      obj.icon = data.icon;
-      obj.color = data.color || '';
-      obj.nameCn = data.name_cn;
-      obj.nameEn = data.name_en;
+      obj.address = data.address
+      obj.domain = data.domain
+      obj.fullNameCn = data.fullname_cn
+      obj.fullNameEn = data.fullname_en
+      obj.icon = data.icon
+      obj.color = data.color || ''
+      obj.nameCn = data.name_cn
+      obj.nameEn = data.name_en
     }
-    return obj;
+    return obj
   }
+  nameCn = ''
+  fullNameCn = ''
+  nameEn = ''
+  fullNameEn = ''
+  icon = ''
+  address = ''
+  domain = ''
+  color = ''
 
   toData() {
     return {
@@ -54,8 +54,8 @@ export class FreakCompany {
       icon: this.icon,
       name_cn: this.nameCn,
       name_en: this.nameEn,
-      //color: this.color,
-    };
+      // color: this.color,
+    }
   }
 }
 
@@ -72,31 +72,31 @@ export interface FreakDingInterface {
 }
 
 export class FreakDing {
-  appKey = '';
-  appSecret = '';
-  appValid = false;
-  corpId = '';
-  corpSecret = '';
-  corpValid = false;
-  qrAppId = '';
-  qrAppSecret = '';
-  qrAppValid = false;
 
   static fromData(data: FreakDingInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.appKey = data.app_key;
-      obj.appSecret = data.app_secret;
-      obj.appValid = data.app_valid;
-      obj.corpId = data.corp_id;
-      obj.corpSecret = data.corp_secret;
-      obj.corpValid = data.corp_valid;
-      obj.qrAppId = data.qr_app_id;
-      obj.qrAppSecret = data.qr_app_secret;
-      obj.qrAppValid = data.qr_app_valid;
+      obj.appKey = data.app_key
+      obj.appSecret = data.app_secret
+      obj.appValid = data.app_valid
+      obj.corpId = data.corp_id
+      obj.corpSecret = data.corp_secret
+      obj.corpValid = data.corp_valid
+      obj.qrAppId = data.qr_app_id
+      obj.qrAppSecret = data.qr_app_secret
+      obj.qrAppValid = data.qr_app_valid
     }
-    return obj;
+    return obj
   }
+  appKey = ''
+  appSecret = ''
+  appValid = false
+  corpId = ''
+  corpSecret = ''
+  corpValid = false
+  qrAppId = ''
+  qrAppSecret = ''
+  qrAppValid = false
 
   toData() {
     return {
@@ -109,7 +109,41 @@ export class FreakDing {
       qr_app_valid: this.qrAppValid,
       // app_valid: this.appValid,
       // corp_valid: this.corpValid,
-    };
+    }
+  }
+}
+
+export interface FreakAlipayInterface {
+  app_id: string,
+  app_private_key: string,
+  alipay_public_key: string,
+  qr_app_valid: boolean,
+}
+
+export class FreakAlipay {
+  static fromData(data: FreakAlipayInterface | null) {
+    const obj = new this()
+    if (data) {
+      obj.appId = data.app_id
+      obj.appPrivateKey = data.app_private_key
+      obj.alipayPublicKey = data.alipay_public_key
+      obj.qrAppValid = data.qr_app_valid
+    }
+    return obj
+  }
+
+  appId = ''
+  appPrivateKey = ''
+  alipayPublicKey = ''
+  qrAppValid = false
+
+  toData() {
+    return {
+      app_id: this.appId,
+      app_private_key: this.appPrivateKey,
+      alipay_public_key: this.alipayPublicKey,
+      qr_app_valid: this.qrAppValid,
+    }
   }
 }
 
@@ -118,32 +152,36 @@ export interface FreakAccountInterface {
   allow_mobile: boolean,
   allow_email: boolean,
   allow_ding_qr: boolean,
+  allow_alipay_qr: boolean,
 }
 
 export class FreakAccount {
-  allowRegister = false;
-  allowMobile = false;
-  allowEmail = false;
-  allowDingQR = false;
 
   static fromData(data: FreakAccountInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.allowRegister = data.allow_register;
-      obj.allowMobile = data.allow_mobile;
-      obj.allowEmail = data.allow_email;
-      obj.allowDingQR = data.allow_ding_qr;
+      obj.allowRegister = data.allow_register
+      obj.allowMobile = data.allow_mobile
+      obj.allowEmail = data.allow_email
+      obj.allowDingQr = data.allow_ding_qr
+      obj.allowAlipayQr = data.allow_alipay_qr
     }
-    return obj;
+    return obj
   }
+  allowRegister = false
+  allowMobile = false
+  allowEmail = false
+  allowDingQr = false
+  allowAlipayQr = false
 
   toData() {
     return {
       allow_register: this.allowRegister,
       allow_mobile: this.allowMobile,
       allow_email: this.allowEmail,
-      allow_ding_qr: this.allowDingQR,
-    };
+      allow_ding_qr: this.allowDingQr,
+      allow_alipay_qr: this.allowAlipayQr,
+    }
   }
 }
 
@@ -157,25 +195,25 @@ export interface FreakSMSInterface {
 }
 
 export class FreakSMS {
-  vendor = '';
-  accessKey = '';
-  accessSecret = '';
-  template = '';
-  badging = '';
-  isValid = false;
 
   static fromData(data: FreakSMSInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.vendor = data.vendor;
-      obj.accessKey = data.access_key;
-      obj.accessSecret = data.access_secret;
-      obj.template = data.template_code;
-      obj.badging = data.signature;
-      obj.isValid = data.is_valid;
+      obj.vendor = data.vendor
+      obj.accessKey = data.access_key
+      obj.accessSecret = data.access_secret
+      obj.template = data.template_code
+      obj.badging = data.signature
+      obj.isValid = data.is_valid
     }
-    return obj;
+    return obj
   }
+  vendor = ''
+  accessKey = ''
+  accessSecret = ''
+  template = ''
+  badging = ''
+  isValid = false
 
   toData() {
     return {
@@ -184,8 +222,8 @@ export class FreakSMS {
       access_secret: this.accessSecret,
       template_code: this.template,
       signature: this.badging,
-      //is_valid: this.isValid,
-    };
+      // is_valid: this.isValid,
+    }
   }
 }
 
@@ -198,32 +236,32 @@ export interface FreakEmailInterface {
 }
 
 export class FreakEmail {
-  host = '';
-  port = '';
-  account = '';
-  password = '';
-  isValid = false;
 
   static fromData(data: FreakEmailInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.host = data.host;
-      obj.port = data.port.toString();
-      obj.account = data.access_key;
-      obj.password = data.access_secret;
-      obj.isValid = data.is_valid;
+      obj.host = data.host
+      obj.port = data.port.toString()
+      obj.account = data.access_key
+      obj.password = data.access_secret
+      obj.isValid = data.is_valid
     }
-    return obj;
+    return obj
   }
+  host = ''
+  port = ''
+  account = ''
+  password = ''
+  isValid = false
 
   toData() {
     return {
       host: this.host,
-      port: parseInt(this.port, 10),
+      port: Number(this.port),
       access_key: this.account,
       access_secret: this.password,
-      //is_valid: this.isValid,
-    };
+      // is_valid: this.isValid,
+    }
   }
 }
 
@@ -233,26 +271,29 @@ export interface FreakConfigInterface {
   account_config: FreakAccountInterface | null,
   sms_config: FreakSMSInterface | null,
   email_config: FreakEmailInterface | null,
+  alipay_config: FreakAlipayInterface | null,
 }
 
 export class FreakConfig {
-  company!: FreakCompany;
-  ding!: FreakDing;
-  account!: FreakAccount;
-  mobile!: FreakSMS;
-  email!: FreakEmail;
 
   static fromData(data: FreakConfigInterface | null) {
-    const obj = new this();
+    const obj = new this()
     if (data) {
-      obj.company = FreakCompany.fromData(data.company_config);
-      obj.ding = FreakDing.fromData(data.ding_config);
-      obj.account = FreakAccount.fromData(data.account_config);
-      obj.mobile = FreakSMS.fromData(data.sms_config);
-      obj.email = FreakEmail.fromData(data.email_config);
+      obj.company = FreakCompany.fromData(data.company_config)
+      obj.ding = FreakDing.fromData(data.ding_config)
+      obj.account = FreakAccount.fromData(data.account_config)
+      obj.mobile = FreakSMS.fromData(data.sms_config)
+      obj.email = FreakEmail.fromData(data.email_config)
+      obj.alipay = FreakAlipay.fromData(data.alipay_config)
     }
-    return obj;
+    return obj
   }
+  company!: FreakCompany
+  ding!: FreakDing
+  account!: FreakAccount
+  mobile!: FreakSMS
+  email!: FreakEmail
+  alipay!: FreakAlipay
 
   toData() {
     return {
@@ -261,37 +302,49 @@ export class FreakConfig {
       account_config: this.account ? this.account.toData() : null,
       sms_config: this.mobile ? this.mobile.toData() : null,
       email_config: this.email ? this.email.toData() : null,
-    };
+      alipay_config: this.alipay ? this.alipay.toData() : null,
+    }
   }
 }
 
 // ********************************************************************************************************
 
+export interface OrgInterface {
+  address: string
+  domain: string
+  fullname_cn: string
+  fullname_en: string
+  icon: string
+  color: string
+  name_cn: string
+  name_en: string
+}
 
 export class Org {
-  static fromData(data) {
-    const obj = new this();
+  static fromData(data: OrgInterface|null) {
+    const obj = new this()
 
-    obj.address = data.address;
-    obj.domain = data.domain;
-    obj.fullNameCn = data.fullname_cn;
-    obj.fullNameEn = data.fullname_en;
-    obj.icon = data.icon;
-    obj.color = data.color || '';
-    obj.nameCn = data.name_cn;
-    obj.nameEn = data.name_en;
-
-    return obj;
+    if (data) {
+      obj.address = data.address
+      obj.domain = data.domain
+      obj.fullNameCn = data.fullname_cn
+      obj.fullNameEn = data.fullname_en
+      obj.icon = data.icon
+      obj.color = data.color || ''
+      obj.nameCn = data.name_cn
+      obj.nameEn = data.name_en
+    }
+    return obj
   }
 
-  address = '';
-  domain = '';
-  fullNameCn = '';
-  fullNameEn = '';
-  icon = '';
-  color = '';
-  nameCn = '';
-  nameEn = '';
+  address = ''
+  domain = ''
+  fullNameCn = ''
+  fullNameEn = ''
+  icon = ''
+  color = ''
+  nameCn = ''
+  nameEn = ''
 
   toData() {
     return {
@@ -302,33 +355,43 @@ export class Org {
       icon: this.icon,
       name_cn: this.nameCn,
       name_en: this.nameEn,
-    };
+    }
   }
 }
 
+export interface DingInterface {
+  app_key: string,
+  app_secret: string,
+  app_valid: boolean,
+  corp_id: string,
+  corp_secret: string,
+  corp_valid: boolean,
+  qr_app_id: string,
+}
 
 export class Ding {
-  static fromData(data) {
-    const obj = new this();
+  static fromData(data: DingInterface|null) {
+    const obj = new this()
 
-    obj.appKey = data.app_key;
-    obj.appSecret = data.app_secret;
-    obj.appValid = data.app_valid;
-    obj.corpId = data.corp_id;
-    obj.corpSecret = data.corp_secret;
-    obj.corpValid = data.corp_valid;
-    obj.qrAppId = data.qr_app_id;
-
-    return obj;
+    if (data) {
+      obj.appKey = data.app_key
+      obj.appSecret = data.app_secret
+      obj.appValid = data.app_valid
+      obj.corpId = data.corp_id
+      obj.corpSecret = data.corp_secret
+      obj.corpValid = data.corp_valid
+      obj.qrAppId = data.qr_app_id
+    }
+    return obj
   }
 
-  appKey = '';
-  appSecret = '';
-  appValid = false;
-  corpId = '';
-  corpSecret = '';
-  corpValid = false;
-  qrAppId = '';
+  appKey = ''
+  appSecret = ''
+  appValid = false
+  corpId = ''
+  corpSecret = ''
+  corpValid = false
+  qrAppId = ''
 
   toData() {
     return {
@@ -337,50 +400,73 @@ export class Ding {
       corp_id: this.corpId,
       corp_secret: this.corpSecret,
       qr_app_id: this.qrAppId,
-    };
+    }
   }
 }
 
+export interface AlipayInterface {
+  app_id: string,
+}
 
-type AccountInfo = TypeMetaInfo['account_config'];
+export class Alipay {
+  static fromData(data: AlipayInterface|null) {
+    const obj = new this
+    if (data) {
+      obj.appId = data.app_id
+    }
+    return obj
+  }
+  appId = ''
+  toData() {
+    return {
+      app_id: this.appId,
+    }
+  }
+}
 
+type AccountInfo = TypeMetaInfo['account_config']
 
 export class Account {
-  static fromData(data: any) {
-    const obj = new this();
-    Object.assign(obj, data);
-    return obj;
+
+  static fromData(data: AccountInfo) {
+    const obj = new this()
+    Object.assign(obj, data)
+    return obj
   }
 
   get isRegisterEnabled(): boolean {
-    return this.support_email_register || this.support_mobile_register;
+    return this.support_email_register || this.support_mobile_register
   }
 
   get isResetPasswordEnabled(): boolean {
-    return this.support_email || this.support_mobile;
+    return this.support_email || this.support_mobile
   }
 }
 
 export class Config {
-  ding!: Ding;
-  org!: Org;
-  account!: Account;
 
   static fromData(data: TypeMetaInfo) {
-    const obj = new this();
+    const obj = new this()
 
-    obj.ding = Ding.fromData(data.ding_config);
-    obj.org = Org.fromData(data.company_config);
-    obj.account = Account.fromData(data.account_config);
-    obj.sms = data.sms_config;
+    obj.ding = Ding.fromData(data.ding_config)
+    obj.alipay = Alipay.fromData(data.alipay_config)
+    obj.org = Org.fromData(data.company_config)
+    obj.account = Account.fromData(data.account_config)
+    obj.sms = data.sms_config
 
-    return obj;
+    return obj
   }
+  ding!: Ding
+  org!: Org
+  account!: Account
+  sms!: object
+  alipay!: Alipay
 
   toData() {
     return {
+      alipay_config: this.alipay ? this.alipay.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
       company_config: this.org ? this.org.toData() : null,
-    };
+    }
   }
 }
