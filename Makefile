@@ -5,7 +5,13 @@ test:
 	@echo test
 
 lint:
-	@echo lint
+	@if [ ${BASE_COMMIT_ID}x != ""x ]; \
+	then \
+		git reset ${BASE_COMMIT_ID}; \
+		git add .; \
+	fi
+	
+	npx lint-staged
 
 build: docker-dev-build
 
