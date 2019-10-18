@@ -2,7 +2,7 @@ VERSION ?= 1.0.`date +%Y%m%d`
 BASE_COMMIT_ID ?= ""
 
 test:
-	@echo test
+	npm run test:unit
 
 lint:
 	@if [ ${BASE_COMMIT_ID}x != ""x ]; \
