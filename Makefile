@@ -31,7 +31,7 @@ docker-dev-build:
 	docker build -t harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION) .
 
 docker-dev-push:
-	docker build -t harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION)
+	docker push harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION)
 
 docker-prod: docker-prod-build docker-prod-push
 
