@@ -1,15 +1,23 @@
-FROM node:8.15-alpine AS build_deps
+FROM node:8.15 AS build_deps
 WORKDIR /workspace
-COPY . .
-
+COPY *.json *.js *.lock ./
 RUN yarn install \
     --ignore-engines \
     --frozen-lockfile \
     --non-interactive
 
-FROM build_deps AS build
-ARG META
+FROM build_deps AS run_lint
+COPY . .
+ARG base_commit_id=""
+RUN make BASE_COMMIT_ID=${base_commit_id} lint
 
+FROM build_deps AS run_test
+COPY . .
+RUN make test
+
+FROM build_deps AS build
+COPY . .
+ARG META
 RUN echo $META > meta.txt \
     && npm run build
 
