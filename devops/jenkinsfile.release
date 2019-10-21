@@ -13,7 +13,7 @@ pipeline {
         DOCKER_PROD_REGISTRY_CREDENTIAL="devops-longguikeji-dockerhub"
 
         DEV_DOCKER_IMAGE="harbor.longguikeji.com/ark-releases/arkid-fe:${params.DEV_VERSION}"
-        STAGE_DOCKER_IMAGE="harbor.longguikeji.com/ark-release/arkid-fe:${params.PROD_VERSION}"
+        STAGE_DOCKER_IMAGE="harbor.longguikeji.com/ark-releases/arkid-fe:${params.PROD_VERSION}"
         PROD_DOCKER_IMAGE="longguikeji/arkid-fe:${params.PROD_VERSION}"
     }
     stages {
