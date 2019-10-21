@@ -25,9 +25,11 @@ pipeline {
         stage("release docker image") {
             steps {
                 withDockerRegistry([credentialsId: "${DOCKER_DEV_REGISTRY_CREDENTIAL}", url: "${DOCKER_DEV_REGISTRY}"]){
-                    sh "docker pull ${env.DEV_DOCKER_IMAGE}"
+                    sh """
+                    docker pull ${env.DEV_DOCKER_IMAGE}
                     docker tag ${env.DEV_DOCKER_IMAGE} ${env.STAGE_DOCKER_IMAGE}
                     docker push ${env.STAGE_DOCKER_IMAGE}
+                    """
                 }
                 withDockerRegistry([credentialsId: "${DOCKER_PROD_REGISTRY_CREDENTIAL}", url: "${DOCKER_PROD_REGISTRY}"]){
                     sh """
