@@ -320,10 +320,11 @@ export default class UserLogin extends Vue {
   toggleAlipayPoptip() {
     const url = window.location.origin + '/#/oneid/bindthirdparty'
     const appId = this.$app.metaInfo!.alipay.appId
-
-    window.location.href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
+    const href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
       + `app_id=${appId}&state=alipay&scope=auth_base`
       + `&redirect_uri=${encodeURIComponent(url)}`
+
+    window.location.href = href
   }
 
   toggleQqPoptip() {

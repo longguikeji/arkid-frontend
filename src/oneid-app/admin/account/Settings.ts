@@ -226,7 +226,7 @@ const SMS_VENDORS = [
       </div>
       <div class="footer">
         <Button @click="onCancel">取消</Button>
-        <Button @click="onSaveEmailOrMobile" :loading="emailOrMobileBtnLoading">保存</Button>
+        <Button @click="onSaveEmailOrMobile" :loading="saveBtnLoading">保存</Button>
       </div>
     </Drawer>
   </div>
@@ -235,7 +235,9 @@ const SMS_VENDORS = [
 export default class Settings extends Vue {
   editType: 'email'|'mobile'|'ding'|'alipay'|null = null
   accountBtnLoading = false
-  emailOrMobileBtnLoading = false
+  saveBtnLoading = false
+
+  registerOptions: FreakConfig | null = null
 
   get showDrawer() {
     return !!this.editType
@@ -278,8 +280,6 @@ export default class Settings extends Vue {
       appId: [FORM_RULES.required],
     }
   }
-
-  registerOptions: FreakConfig | null = null
 
   async loadData() {
     const registerOptions = await api.FreakConfig.get()
@@ -356,14 +356,14 @@ export default class Settings extends Vue {
   }
 
   async saveEmail() {
-    this.emailOrMobileBtnLoading = true
+    this.saveBtnLoading = true
     this.save(api.FreakConfig.patchEmail.bind(this, this.registerOptions))
-    this.emailOrMobileBtnLoading = false
+    this.saveBtnLoading = false
   }
   async saveMobile() {
-    this.emailOrMobileBtnLoading = true
+    this.saveBtnLoading = true
     this.save(api.FreakConfig.patchMobile.bind(this, this.registerOptions))
-    this.emailOrMobileBtnLoading = false
+    this.saveBtnLoading = false
   }
   async saveAccount() {
     this.accountBtnLoading = true
@@ -371,13 +371,13 @@ export default class Settings extends Vue {
     this.accountBtnLoading = false
   }
   async saveDing() {
-    this.emailOrMobileBtnLoading = true
+    this.saveBtnLoading = true
     this.save(api.FreakConfig.patchDing.bind(this, this.registerOptions))
-    this.emailOrMobileBtnLoading = false
+    this.saveBtnLoading = false
   }
   async saveAlipay() {
-    this.emailOrMobileBtnLoading = true
+    this.saveBtnLoading = true
     this.save(api.FreakConfig.patchAlipay.bind(this, this.registerOptions))
-    this.emailOrMobileBtnLoading = false
+    this.saveBtnLoading = false
   }
 }

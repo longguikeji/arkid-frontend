@@ -681,7 +681,7 @@ export class UCenter extends API {
   static async getDingIdWithCode(q: object) {
     const url = '/siteapi/v1/ding/qr/callback/'
     const resp = await http.post(url, q)
-    if (resp.data.ding_id === undefined) {
+    if (!resp.data.ding_id) {
       const {token} = resp.data
       window.localStorage.setItem(ONEID_TOKEN, token)
       return model.User.exchangeCurrentUserData(resp.data)
@@ -714,7 +714,7 @@ export class UCenter extends API {
   static async getAlipayId(q: object) {
     const url = '/siteapi/v1/alipay/qr/callback/'
     const resp = await http.post(url, q)
-    if (resp.data.alipay_id === undefined) {
+    if (!resp.data.alipay_id) {
       const {token} = resp.data
       window.localStorage.setItem(ONEID_TOKEN, token)
       return model.User.exchangeCurrentUserData(resp.data)

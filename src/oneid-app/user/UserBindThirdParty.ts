@@ -99,7 +99,7 @@ export default class UserBindThirdParty extends Vue {
   isValidMobile: boolean|null = null
   user: User|null = null
 
-  thirdparty: string = ''
+  thirdParty: string = ''
 
   mobileForm = {
     mobile: '',
@@ -143,15 +143,15 @@ export default class UserBindThirdParty extends Vue {
   }
 
   mounted() {
-    this.getBindType()
+    this.getThirdPartyId()
   }
 
-  getBindType() {
-    this.thirdparty = this.$route.query.state as string
-    if (this.thirdparty === 'alipay') {
+  getThirdPartyId() {
+    this.thirdParty = this.$route.query.state as string
+    if (this.thirdParty === 'alipay') {
       this.getAlipayId()
     }
-    if (this.thirdparty === 'ding') {
+    if (this.thirdParty === 'ding') {
       this.getDingIdWithCode()
     }
   }
@@ -165,7 +165,7 @@ export default class UserBindThirdParty extends Vue {
     })
 
     const {alipay_id} = data
-    if (alipay_id !== undefined) {
+    if (alipay_id) {
       this.mobileForm.alipayId = alipay_id
     } else {
       this.user = data
@@ -182,7 +182,7 @@ export default class UserBindThirdParty extends Vue {
     })
 
     const {ding_id} = data
-    if (ding_id !== undefined) {
+    if (ding_id) {
       this.mobileForm.dingId = ding_id
     } else {
       this.user = data
@@ -249,7 +249,7 @@ export default class UserBindThirdParty extends Vue {
     const {dingId, alipayId, smsToken} = this.mobileForm
 
     try {
-      if (this.thirdparty === 'alipay') {
+      if (this.thirdParty === 'alipay') {
         const user = await api.UCenter.bindMobileWithAlipay({
           alipay_id: alipayId,
           sms_token: smsToken,
@@ -279,7 +279,7 @@ export default class UserBindThirdParty extends Vue {
     const {smsToken, dingId, alipayId} = this.mobileForm
 
     try {
-      if (this.thirdparty === 'alipay') {
+      if (this.thirdParty === 'alipay') {
         const user = await api.UCenter.registerWithAlipay({
           username,
           password,
