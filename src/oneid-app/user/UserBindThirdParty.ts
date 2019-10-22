@@ -1,9 +1,9 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import {User} from '@/models/oneid';
-import {Form} from 'iview/types/index';
-import {FORM_RULES} from '@/utils';
-import './UserCommon.less';
+import {User} from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {FORM_RULES} from '@/utils'
+import {Form} from 'iview/types/index'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './UserCommon.less'
 
 @Component({
   template: html`
@@ -93,171 +93,213 @@ export default class UserBindThirdParty extends Vue {
   $refs!: {
     mobileForm: Form,
     registerForm: Form,
-  };
+  }
 
-  isNewUser: boolean = false;
-  isValidMobile: boolean|null = null;
-  user: User|null = null;
+  isNewUser: boolean = false
+  isValidMobile: boolean|null = null
+  user: User|null = null
+
+  thirdParty: string = ''
 
   mobileForm = {
     mobile: '',
     smsCode: '',
     smsToken: '',
+    alipayId: '',
     dingId: '',
-  };
+  }
 
   registerForm = {
     username: '',
     password: '',
     passwordAgain: '',
     registerToken: '',
-  };
+  }
 
   get mobileFormRules() {
     return {
       mobile: [FORM_RULES.required, FORM_RULES.mobile],
-    };
+    }
   }
 
   get registerFormRules() {
-    const {password, passwordAgain} = this.registerForm;
+    const {password, passwordAgain} = this.registerForm
     const passwordDiffCheck = {
       trigger: 'blur',
-      validator: (rule: any, value: string, cb: any) => {
+      validator: (cb: Function) => {
         if (password !== passwordAgain) {
-          cb(new Error('两次输入的密码不一致, 请重新输入'));
+          cb(new Error('两次输入的密码不一致, 请重新输入'))
         } else {
-          cb();
+          cb()
         }
       },
-    };
+    }
 
     return {
       password: [FORM_RULES.required],
       passwordAgain: [FORM_RULES.required, passwordDiffCheck],
       username: [FORM_RULES.required, FORM_RULES.username],
-    };
+    }
   }
 
   mounted() {
-    this.getDingIdWithCode();
+    this.getThirdPartyId()
+  }
+
+  getThirdPartyId() {
+    this.thirdParty = this.$route.query.state as string
+    if (this.thirdParty === 'alipay') {
+      this.getAlipayId()
+    }
+    if (this.thirdParty === 'ding') {
+      this.getDingIdWithCode()
+    }
+  }
+
+  async getAlipayId() {
+    const {app_id, auth_code} = this.$route.query
+
+    const data = await api.UCenter.getAlipayId({
+      app_id,
+      auth_code,
+    })
+
+    const {alipay_id} = data
+    if (alipay_id) {
+      this.mobileForm.alipayId = alipay_id
+    } else {
+      this.user = data
+      this.doLogin()
+    }
   }
 
   async getDingIdWithCode() {
-    const {code, state} = this.$route.query;
-    try {
-      const data = await api.UCenter.getDingIdWithCode({
-        code,
-        state,
-      });
-      const {ding_id} = data;
-      if (ding_id !== undefined) {
-        this.mobileForm.dingId = ding_id;
-      } else {
-        this.user = data;
-        this.doLogin();
-      }
-    } catch (e) {
-      console.log(e);
+    const {code, state} = this.$route.query
+
+    const data = await api.UCenter.getDingIdWithCode({
+      code,
+      state,
+    })
+
+    const {ding_id} = data
+    if (ding_id) {
+      this.mobileForm.dingId = ding_id
+    } else {
+      this.user = data
+      this.doLogin()
     }
   }
 
   async sendSms() {
-    const isValid: any = await this.$refs.mobileForm.validate();
-    if (!isValid) {
-      return;
-    }
-    const {mobile} = this.mobileForm;
+    this.$refs.mobileForm.validate((isValid: boolean|void) => {
+      if (!isValid) {
+        return
+      }
+    })
+
+    const {mobile} = this.mobileForm
     try {
-      await api.ApiService.sendBindSms(mobile);
-      this.$Message.success('成功发送短信');
+      await api.ApiService.sendBindSms(mobile)
+      this.$Message.success('成功发送短信')
     } catch(err) {
-      console.log(err);
-      this.$Message.error('发送短信失败');
+      this.$Message.error('发送短信失败')
     }
   }
 
   submitSmsCode() {
-    const {smsCode} = this.mobileForm;
+    const {smsCode} = this.mobileForm
     if (/^\d{6}$/.test(smsCode)) {
-      this.verifyMobile();
+      this.verifyMobile()
     } else {
-      this.isValidMobile = false;
+      this.isValidMobile = false
     }
   }
 
   async verifyMobile() {
-    const {mobile,smsCode,dingId} = this.mobileForm;
-    this.$Loading.start();
+    const {mobile,smsCode,dingId} = this.mobileForm
+    this.$Loading.start()
     try {
-      const {sms_token} = await api.ApiService.verifySmsWithBind(mobile, smsCode, dingId);
-      this.mobileForm.smsToken = sms_token;
-      this.$Loading.finish();
-      this.isValidMobile = true;
-      this.checkUserExist();
+      const {sms_token} = await api.ApiService.verifySmsWithBind(mobile, smsCode, dingId)
+      this.mobileForm.smsToken = sms_token
+      this.$Loading.finish()
+      this.isValidMobile = true
+      this.checkUserExist()
     } catch (e) {
-      this.isValidMobile = false;
-      this.$Loading.error();
+      this.isValidMobile = false
+      this.$Loading.error()
     }
   }
 
   async checkUserExist() {
-    const {mobile, dingId, smsToken} = this.mobileForm;
-    try {
-      const {exist} = await api.UCenter.checkExistWithMobile({
-        mobile,
-        ding_id: dingId,
-        sms_token: smsToken,
-      });
-      if(exist) {
-        this.bindMobileWithDingId();
-      } else {
-        this.isNewUser = true;
-      }
-    } catch (e) {
-      console.log(e);
+    const {mobile, dingId, smsToken} = this.mobileForm
+
+    const {exist} = await api.UCenter.checkExistWithMobile({
+      mobile,
+      ding_id: dingId,
+      sms_token: smsToken,
+    })
+    if (exist) {
+      this.bindMobileWithThirdParty()
+    } else {
+      this.isNewUser = true
     }
   }
 
-  async bindMobileWithDingId() {
-    const {dingId, smsToken} = this.mobileForm;
-    const type = 'dingding';
+  async bindMobileWithThirdParty() {
+    const {dingId, alipayId, smsToken} = this.mobileForm
+
     try {
-      const user = await api.UCenter.bindMobileWithDingId({
-        ding_id: dingId,
-        sms_token: smsToken,
-      });
-      this.user = user;
-      this.$Message.success('成功绑定手机号');
-      this.doLogin();
+      if (this.thirdParty === 'alipay') {
+        const user = await api.UCenter.bindMobileWithAlipay({
+          alipay_id: alipayId,
+          sms_token: smsToken,
+        })
+        this.user = user
+      } else {
+        const user = await api.UCenter.bindMobileWithDingId({
+          ding_id: dingId,
+          sms_token: smsToken,
+        })
+        this.user = user
+      }
+      this.$Message.success('成功绑定手机号')
+      this.doLogin()
     } catch (e) {
-      console.log(e);
-      this.$Message.error('绑定手机号失败');
+      this.$Message.error('绑定手机号失败')
     }
   }
 
   async submitRegisterForm() {
-    const isValid: any = await this.$refs.registerForm.validate();
-    if (!isValid) {
-      return;
-    }
-
-    const {username, password} = this.registerForm;
-    const {smsToken, dingId} = this.mobileForm;
+    this.$refs.registerForm.validate((isValid: boolean|void) => {
+      if (!isValid) {
+        return
+      }
+    })
+    const {username, password} = this.registerForm
+    const {smsToken, dingId, alipayId} = this.mobileForm
 
     try {
-      const user = await api.UCenter.registerWithDingId({
-        username,
-        password,
-        ding_id: dingId,
-        sms_token: smsToken,
-      });
-      this.user = user;
-      this.$Message.success('注册成功');
-      this.doLogin();
+      if (this.thirdParty === 'alipay') {
+        const user = await api.UCenter.registerWithAlipay({
+          username,
+          password,
+          alipay_id: alipayId,
+          sms_token: smsToken,
+        })
+        this.user = user
+      } else {
+        const user = await api.UCenter.registerWithDingId({
+          username,
+          password,
+          ding_id: dingId,
+          sms_token: smsToken,
+        })
+        this.user = user
+      }
+      this.$Message.success('注册成功')
+      this.doLogin()
     } catch (e) {
-      this.$Message.error('注册失败');
-      console.log(e);
+      this.$Message.error('注册失败')
     }
   }
 
@@ -266,13 +308,11 @@ export default class UserBindThirdParty extends Vue {
     const user = {
       isLogin: true,
       ...this.user,
-    };
+    }
 
-    this.$app.onLogin(user);
+    this.$app.onLogin(user)
 
-    this.$router.push({name:'workspace.apps'});
+    this.$router.push({name:'workspace.apps'})
 
   }
 }
-
-

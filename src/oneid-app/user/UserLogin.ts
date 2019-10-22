@@ -1,10 +1,10 @@
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import {User} from '@/models/oneid';
-import * as api from '@/services/oneid';
-import {Form} from 'iview/types/index';
-import {FORM_RULES} from '@/utils';
-import './UserCommon.less';
-
+import {User} from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {FORM_RULES} from '@/utils'
+import {Form} from 'iview/types/index'
+import { stringify } from 'querystring'
+import {Component, Prop, Vue} from 'vue-property-decorator'
+import './UserCommon.less'
 
 @Component({
   template: html`
@@ -41,7 +41,10 @@ import './UserCommon.less';
           </RouterLink>
         </FormItem>
       </Form>
-      <div class="ui-other-login-boundline" v-if="dingQrAccount || false">
+      <div
+        class="ui-other-login-boundline"
+        v-if="qrAccount.support_ding_qr || qrAccount.support_alipay_qr"
+      >
         <p>其他登录方式</p>
       </div>
       <div class="ui-login-third-party" @click="e => e.stopPropagation()">
@@ -56,7 +59,7 @@ import './UserCommon.less';
           <div
             :class="thirdPartyType === 'ding' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleDingPoptip"
-            v-show="dingQrAccount"
+            v-show="qrAccount.support_ding_qr"
           >
             <img :src="dingImgPath"/>
             <p>钉钉</p>
@@ -72,7 +75,7 @@ import './UserCommon.less';
           <div
             :class="thirdPartyType === 'alipay' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleAlipayPoptip"
-            v-show=""
+            v-show="qrAccount.support_alipay_qr"
           >
             <img :src="alipayImgPath"/>
             <p>支付宝</p>
@@ -105,35 +108,34 @@ export default class UserLogin extends Vue {
 
   $refs!: {
     form: Form,
-  };
+  }
   form = {
     selectedLoginType: '用户名',
     accountname: '',
     password: '',
-  };
+  }
   formRules = {
     accountname: [FORM_RULES.required],
     password: [FORM_RULES.required],
-  };
+  }
 
-  user: User|null = null;
+  user: User|null = null
 
-  thirdPartyType: string = '';
-  dingQrAccount: boolean = false;
-  redirectUri: string|null = null;
+  thirdPartyType: string = ''
+  redirectUri: string|null = null
 
-  dingImgPath: string = require('../../assets/icons/icon-login-dingding.png');
-  wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png');
-  alipayImgPath: string = require('../../assets/icons/icon-login-alipay.png');
-  qqImgPath: string = require('../../assets/icons/icon-login-qq.png');
-  wechatworkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png');
+  dingImgPath: string = require('../../assets/icons/icon-login-dingding.png')
+  wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png')
+  alipayImgPath: string = require('../../assets/icons/icon-login-alipay.png')
+  qqImgPath: string = require('../../assets/icons/icon-login-qq.png')
+  wechatworkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png')
 
   get isRegisterEnabled() {
-    return this.$app.metaInfo!.account.isRegisterEnabled;
+    return this.$app.metaInfo!.account.isRegisterEnabled
   }
 
   get isResetPasswordEnable() {
-    return this.$app.metaInfo!.account.isResetPasswordEnabled;
+    return this.$app.metaInfo!.account.isResetPasswordEnabled
   }
 
   get registerRouterLink() {
@@ -142,115 +144,123 @@ export default class UserLogin extends Vue {
       query: {
         next: this.nextURL,
       },
-    };
+    }
+  }
+
+  get qrAccount() {
+    return this.$app.metaInfo!.account
   }
 
   mounted() {
-    this.loginStateCheck();
-    this.dingQrAccount = this.$app.metaInfo!.account.support_ding_qr;
+    this.loginStateCheck()
   }
 
   get loginType() {
-    let loginTypes = ['用户名'];
+    const loginTypes = ['用户名']
     if (this.$app.metaInfo!.account.support_email) {
-      loginTypes.push('邮箱');
+      loginTypes.push('邮箱')
     }
 
     if (this.$app.metaInfo!.account.support_mobile) {
-      loginTypes.push('手机号');
+      loginTypes.push('手机号')
     }
-    return loginTypes;
+    return loginTypes
   }
 
   loginStateCheck() {
     if (this.$app.isLogin) {
-      this.$app.goHome();
+      this.$app.goHome()
     }
   }
 
   onLoginTypeChange() {
-    this.$refs.form.resetFields();
+    this.$refs.form.resetFields()
   }
 
   async login() {
-    const {form} = this;
+    const {form} = this
     try {
-      let params = {password: form.password};
+      const params: {
+        password?: string,
+        username?: string,
+        private_email?: string,
+        mobile?: string,
+      } = {password: form.password}
+
       if (form.selectedLoginType === this.loginType[0]) {
-        params['username'] = form.accountname;
+        params.username = form.accountname
       }
       else if(form.selectedLoginType.includes('邮箱')) {
-        params['private_email'] = form.accountname;
+        params.private_email = form.accountname
       }
       else {
-        params['mobile'] = form.accountname;
+        params.mobile = form.accountname
       }
 
-      const user = await api.login(params);
-      this.user = user;
-      this.$Message.success('登录成功');
+      const user = await api.login(params)
+      this.user = user
+      this.$Message.success('登录成功')
     } catch(err) {
-      console.log(err);
-      this.$Message.error('登录失败');
-      return;
+      this.$Message.error('登录失败')
+      return
     }
-    this.doLogin();
+    this.doLogin()
   }
 
   get nextURL(): string {
-    let {next} = this.$route.query;
+    let {next} = this.$route.query
     if (next && typeof next === 'string') {
-      next = next.replace('_authorize', 'authorize');
-      const urlParams = new URLSearchParams(next);
+      next = next.replace('_authorize', 'authorize')
+      const urlParams = new URLSearchParams(next)
       if (urlParams.get('oneid_token')) {
-        next = next.replace('oneid_token', '_oneid_token');
+        next = next.replace('oneid_token', '_oneid_token')
       }
-      return next;
+      return next
     }
-    return '';
+    return ''
   }
 
   doLogin() {
     if (this.nextURL) {
-      window.location.href = this.nextURL;
-      return;
+      window.location.href = this.nextURL
+      return
     }
 
     this.$app.onLogin({
       isLogin: true,
       ...this.user,
-    });
+    })
 
-    const {backPath} = this.$route.query;
+    const {backPath} = this.$route.query
     if (backPath && typeof backPath === 'string') {
-      this.$router.push(backPath);
+      this.$router.push(backPath)
     } else {
-      this.$app.goHome();
+      this.$app.goHome()
     }
   }
 
   handleSubmit() {
-    this.$refs.form.validate((valid: boolean) => {
+    this.$refs.form.validate((valid: boolean|void) => {
       if (valid) {
-        this.login();
+        this.login()
       }
-    });
+    })
   }
 
   toggleDingPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'ding' ? '' : 'ding';
+    this.thirdPartyType = this.thirdPartyType === 'ding' ? '' : 'ding'
     if(this.thirdPartyType === 'ding') {
-      this.showDingQrCode();
+      this.showDingQrCode()
     }
   }
 
   showDingQrCode() {
-    this.redirectUri = window.location.origin + '/%23/oneid/bindthirdparty';
+    this.redirectUri = window.location.origin + '/%23/oneid/bindthirdparty'
 
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login&state=STATE`
-      + `&redirect_uri=${this.redirectUri}`;
+      + `&response_type=code&scope=snsapi_login&state=ding`
+      + `&redirect_uri=${this.redirectUri}`
 
     this.dingQrCode({
       id:'login_container',
@@ -258,66 +268,70 @@ export default class UserLogin extends Vue {
       goto: encodeURIComponent(url),
       width : '600px',
       height: '330px',
-    });
+    })
 
-    this.addDingEvent();
+    this.addDingEvent()
   }
 
-  dingQrCode(params: any) {
-    let dingElement = null;
-    const iframe = document.createElement('iframe');
-    let directUrl = 'https://login.dingtalk.com/login/qrcode.htm?goto=' + params.goto;
+  dingQrCode(params: {id: string, style: string, goto: string, width: string, height: string}) {
+    let dingElement = null
+    const iframe = document.createElement('iframe')
+    let directUrl = 'https://login.dingtalk.com/login/qrcode.htm?goto=' + params.goto
 
-    directUrl += params.style ? '&style=' + encodeURIComponent(params.style) : '';
-    iframe.src = directUrl;
+    directUrl += params.style ? '&style=' + encodeURIComponent(params.style) : ''
+    iframe.src = directUrl
 
-    iframe.frameBorder = '0';
-    iframe.scrolling = 'no';
+    // tslint:disable-next-line: deprecation
+    iframe.frameBorder = '0'
+    // tslint:disable-next-line: deprecation
+    iframe.scrolling = 'no'
 
-    iframe.width =  params.width ? params.width + 'px' : '365px';
-    iframe.height = params.height ? params.height + 'px' : '400px';
+    iframe.width =  params.width ? params.width + 'px' : '365px'
+    iframe.height = params.height ? params.height + 'px' : '400px'
 
-    dingElement = document.getElementById(params.id);
-    dingElement!.innerHTML = '';
-    dingElement!.appendChild(iframe);
+    dingElement = document.getElementById(params.id)
+    dingElement!.innerHTML = ''
+    dingElement!.appendChild(iframe)
   }
 
   addDingEvent() {
-    if (typeof window.addEventListener !== 'undefined') {
-        window.addEventListener('message', this.handleDingMessage, false);
-    } else if (typeof window.attachEvent !== 'undefined') {
-        window.attachEvent('onmessage', this.handleDingMessage);
-    }
+    window.addEventListener('message', this.handleDingMessage, false)
   }
 
-  handleDingMessage(event: any) {
-    const loginTmpCode = event.data;
-    const origin = event.origin;
+  handleDingMessage(event: MessageEvent) {
+    const loginTmpCode = event.data
+    const origin = event.origin
 
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login&state=STATE`
+      + `&response_type=code&scope=snsapi_login&state=ding`
       + `&redirect_uri=${this.redirectUri}`
-      + `&loginTmpCode=${loginTmpCode}`;
+      + `&loginTmpCode=${loginTmpCode}`
 
     if (origin === 'https://login.dingtalk.com') {
-      window.location.href = url;
+      window.location.href = url
     }
   }
 
   toggleWechatPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'wechat' ? '' : 'wechat';
+    this.thirdPartyType = this.thirdPartyType === 'wechat' ? '' : 'wechat'
   }
 
   toggleAlipayPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'alipay' ? '' : 'alipay';
+    const url = window.location.origin + '/#/oneid/bindthirdparty'
+    const appId = this.$app.metaInfo!.alipay.appId
+    const href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
+      + `app_id=${appId}&state=alipay&scope=auth_base`
+      + `&redirect_uri=${encodeURIComponent(url)}`
+
+    window.location.href = href
   }
 
   toggleQqPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'qq' ? '' : 'qq';
+    this.thirdPartyType = this.thirdPartyType === 'qq' ? '' : 'qq'
   }
 
   toggleWechatWorkPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'wechatwork' ? '' : 'wechatwork';
+    this.thirdPartyType = this.thirdPartyType === 'wechatwork' ? '' : 'wechatwork'
   }
 }
