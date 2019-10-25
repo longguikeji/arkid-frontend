@@ -164,9 +164,9 @@ export default class UserBindThirdParty extends Vue {
       auth_code,
     })
 
-    const {alipay_id} = data
-    if (alipay_id) {
-      this.mobileForm.alipayId = alipay_id
+    const {alipay_user_id} = data
+    if (alipay_user_id) {
+      this.mobileForm.alipayId = alipay_user_id
     } else {
       this.user = data
       this.doLogin()
@@ -251,7 +251,7 @@ export default class UserBindThirdParty extends Vue {
     try {
       if (this.thirdParty === 'alipay') {
         const user = await api.UCenter.bindMobileWithAlipay({
-          alipay_id: alipayId,
+          alipay_user_id: alipayId,
           sms_token: smsToken,
         })
         this.user = user
@@ -283,7 +283,7 @@ export default class UserBindThirdParty extends Vue {
         const user = await api.UCenter.registerWithAlipay({
           username,
           password,
-          alipay_id: alipayId,
+          alipay_user_id: alipayId,
           sms_token: smsToken,
         })
         this.user = user
