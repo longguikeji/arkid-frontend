@@ -2,7 +2,6 @@ import {User} from '@/models/oneid'
 import * as api from '@/services/oneid'
 import {FORM_RULES} from '@/utils'
 import {Form} from 'iview/types/index'
-import { stringify } from 'querystring'
 import {Component, Prop, Vue} from 'vue-property-decorator'
 import './UserCommon.less'
 
@@ -52,7 +51,7 @@ import './UserCommon.less'
           class="ui-qr-poptip"
           v-show="thirdPartyType !== ''"
         >
-          <div id="login_container" v-show="thirdPartyType === 'ding'"></div>
+          <div id="qr_container" v-show="thirdPartyType !== ''"></div>
           <Button class="cancle-btn" @click="thirdPartyType = ''">取消</Button>
         </div>
         <div class="ui-qr-diff-btn">
@@ -89,11 +88,11 @@ import './UserCommon.less'
             <p>qq</p>
           </div>
           <div
-            :class="thirdPartyType === 'wechatwork' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
+            :class="thirdPartyType === 'wechatWork' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleWechatWorkPoptip"
-            v-show=""
+            v-show="qrAccount.support_work_wechat_qr"
           >
-            <img :src="wechatworkImgPath"/>
+            <img :src="wechatWorkImgPath"/>
             <p>企业微信</p>
           </div>
         </div>
@@ -122,13 +121,12 @@ export default class UserLogin extends Vue {
   user: User|null = null
 
   thirdPartyType: string = ''
-  redirectUri: string|null = null
 
   dingImgPath: string = require('../../assets/icons/icon-login-dingding.png')
   wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png')
   alipayImgPath: string = require('../../assets/icons/icon-login-alipay.png')
   qqImgPath: string = require('../../assets/icons/icon-login-qq.png')
-  wechatworkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png')
+  wechatWorkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png')
 
   get isRegisterEnabled() {
     return this.$app.metaInfo!.account.isRegisterEnabled
@@ -149,6 +147,13 @@ export default class UserLogin extends Vue {
 
   get qrAccount() {
     return this.$app.metaInfo!.account
+  }
+
+  get redirectUri() {
+    let redirectUri = window.location.origin
+    redirectUri += this.thirdPartyType === 'ding' ? '/%23/' : '/#/'
+    redirectUri += 'oneid/bindthirdparty'
+    return redirectUri
   }
 
   mounted() {
@@ -255,43 +260,20 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    this.redirectUri = window.location.origin + '/%23/oneid/bindthirdparty'
-
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login&state=ding`
+      + `&response_type=code&scope=snsapi_login&state=`
       + `&redirect_uri=${this.redirectUri}`
 
-    this.dingQrCode({
-      id:'login_container',
-      style: 'border:none;background-color:#FFFFFF;',
-      goto: encodeURIComponent(url),
-      width : '600px',
-      height: '330px',
+    const src = `https://login.dingtalk.com/login/qrcode.htm?goto=${encodeURIComponent(url)}`
+      + `&style=${encodeURIComponent('border:none;background-color:#FFF;')}`
+
+    this.createQr({
+      id:'qr_container',
+      src,
     })
 
     this.addDingEvent()
-  }
-
-  dingQrCode(params: {id: string, style: string, goto: string, width: string, height: string}) {
-    let dingElement = null
-    const iframe = document.createElement('iframe')
-    let directUrl = 'https://login.dingtalk.com/login/qrcode.htm?goto=' + params.goto
-
-    directUrl += params.style ? '&style=' + encodeURIComponent(params.style) : ''
-    iframe.src = directUrl
-
-    // tslint:disable-next-line: deprecation
-    iframe.frameBorder = '0'
-    // tslint:disable-next-line: deprecation
-    iframe.scrolling = 'no'
-
-    iframe.width =  params.width ? params.width + 'px' : '365px'
-    iframe.height = params.height ? params.height + 'px' : '400px'
-
-    dingElement = document.getElementById(params.id)
-    dingElement!.innerHTML = ''
-    dingElement!.appendChild(iframe)
   }
 
   addDingEvent() {
@@ -302,9 +284,13 @@ export default class UserLogin extends Vue {
     const loginTmpCode = event.data
     const origin = event.origin
 
+    const state = 'ding_' + this.proRandomNum()
+    sessionStorage.setItem('state', state)
+
     const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
       + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login&state=ding`
+      + `&response_type=code&scope=snsapi_login`
+      + `&state=${state}`
       + `&redirect_uri=${this.redirectUri}`
       + `&loginTmpCode=${loginTmpCode}`
 
@@ -318,11 +304,16 @@ export default class UserLogin extends Vue {
   }
 
   toggleAlipayPoptip() {
-    const url = window.location.origin + '/#/oneid/bindthirdparty'
     const appId = this.$app.metaInfo!.alipay.appId
+
+    const state = 'alipay_' + this.proRandomNum()
+    sessionStorage.setItem('state', state)
+
     const href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
-      + `app_id=${appId}&state=alipay&scope=auth_base`
-      + `&redirect_uri=${encodeURIComponent(url)}`
+      + `app_id=${appId}`
+      + `&scope=auth_base`
+      + `&state=${state}`
+      + `&redirect_uri=${encodeURIComponent(this.redirectUri)}`
 
     window.location.href = href
   }
@@ -332,6 +323,40 @@ export default class UserLogin extends Vue {
   }
 
   toggleWechatWorkPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'wechatwork' ? '' : 'wechatwork'
+    this.thirdPartyType = this.thirdPartyType === 'wechatWork' ? '' : 'wechatWork'
+
+    const state = 'wechatWork_' + this.proRandomNum()
+    sessionStorage.setItem('state', state)
+
+    const src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`
+     + `appid=${this.$app.metaInfo!.wechatWork.corpId}`
+     + `&agentid=${this.$app.metaInfo!.wechatWork.agentId}`
+     + `&redirect_uri=${encodeURIComponent(this.redirectUri)}`
+     + `&state=${state}`
+     + `&logintype=jssdk`
+     + `&href=data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=`
+
+    this.createQr({
+      id: 'qr_container',
+      src,
+    })
+  }
+
+  proRandomNum() {
+    return Math.round(Math.random()*100000).toString()
+  }
+
+  createQr(params: {id: string, src: string}) {
+    const iframe = document.createElement('iframe')
+    iframe.src = params.src
+
+    // tslint:disable-next-line: deprecation
+    iframe.frameBorder = '0'
+    iframe.width = '600px'
+    iframe.height = '330px'
+
+    const element = document.getElementById(params.id)
+    element!.innerHTML = ''
+    element!.appendChild(iframe)
   }
 }

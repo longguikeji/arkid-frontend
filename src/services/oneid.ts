@@ -450,12 +450,11 @@ export class ApiService extends API {
     return resp.data
   }
 
-  static async verifySmsWithBind(mobile: string, smsCode: string, dingId: string) {
+  static async verifySmsWithBind(mobile: string, smsCode: string) {
     const url = this.url({action: 'sms/ding_bind'})
     const data = {params: {
       mobile,
       code: smsCode,
-      ding_id: dingId,
     }}
     const resp = await http.get(url, data)
     return resp.data
@@ -678,60 +677,38 @@ export class UCenter extends API {
     return resp.data
   }
 
-  static async getDingIdWithCode(q: object) {
-    const url = '/siteapi/v1/ding/qr/callback/'
-    const resp = await http.post(url, q)
-    if (!resp.data.ding_id) {
-      const {token} = resp.data
-      window.localStorage.setItem(ONEID_TOKEN, token)
-      return model.User.exchangeCurrentUserData(resp.data)
-    }
-    return resp.data
-  }
-
-  static async registerWithDingId(q: object) {
-    const url = '/siteapi/v1/ding/register/bind/'
-    const resp = await http.post(url, q)
-    const {token} = resp.data
-    window.localStorage.setItem(ONEID_TOKEN, token)
-    return model.User.exchangeCurrentUserData(resp.data)
-  }
-
   static async checkExistWithMobile(q: object) {
     const url = '/siteapi/v1/qr/query/user/'
     const resp = await http.post(url, q)
     return resp.data
   }
 
-  static async bindMobileWithDingId(q: object) {
-    const url = '/siteapi/v1/ding/bind/'
+  static async getThirdPartyUserId(q: object, thirdParty: string) {
+    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
+    const url = `/siteapi/v1/${thirdParty}/qr/callback/`
     const resp = await http.post(url, q)
-    const {token} = resp.data
-    window.localStorage.setItem(ONEID_TOKEN, token)
-    return model.User.exchangeCurrentUserData(resp.data)
-  }
-
-  static async getAlipayId(q: object) {
-    const url = '/siteapi/v1/alipay/qr/callback/'
-    const resp = await http.post(url, q)
-    if (!resp.data.alipay_id) {
-      const {token} = resp.data
+    const data = resp.data
+    const thirdPartyUserId = thirdParty === 'ding' ? data.ding_id : thirdParty === 'alipay' ? data.alipay_user_id : data.work_wechat_user_id
+    if (!thirdPartyUserId) {
+      const {token} = data
       window.localStorage.setItem(ONEID_TOKEN, token)
-      return model.User.exchangeCurrentUserData(resp.data)
+      return model.User.exchangeCurrentUserData(data)
     }
-    return resp.data
+    return {thirdPartyUserId}
   }
 
-  static async bindMobileWithAlipay(q: object) {
-    const url = '/siteapi/v1/alipay/bind/'
+  static async bindMobileWithThirdParty(q: object, thirdParty: string) {
+    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
+    const url = `/siteapi/v1/${thirdParty}/bind/`
     const resp = await http.post(url, q)
     const {token} = resp.data
     window.localStorage.setItem(ONEID_TOKEN, token)
     return model.User.exchangeCurrentUserData(resp.data)
   }
 
-  static async registerWithAlipay(q: object) {
-    const url = '/siteapi/v1/alipay/register/bind/'
+  static async registerWithThirdParty(q: object, thirdParty: string) {
+    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
+    const url = `/siteapi/v1/${thirdParty}/register/bind/`
     const resp = await http.post(url, q)
     const {token} = resp.data
     window.localStorage.setItem(ONEID_TOKEN, token)

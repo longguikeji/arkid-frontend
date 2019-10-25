@@ -2,8 +2,8 @@
 
 .ui-account-settings-page {
   display: flex;
-  flex-direction: column;
   flex: 1 0 auto;
+  flex-direction: column;
   padding: 30px;
   background: @bg-2;
 
@@ -11,86 +11,38 @@
     display: flex;
     flex-direction: column;
 
-    .register-mode {
-      .label {
-        display: flex;
-        color: @color-1;
-        font-size: 14px;
-        font-weight: 600;
-        align-items: center;
-        padding: 10px 0px;
-
-        &::before {
-          content: '';
-          height: 14px;
-          border-left: 6px solid @primary-color;
-          margin-right: 10px;
-        }
-      }
-
-      .content {
-        display: flex;
-        align-items: center;
-        padding: 10px 0px;
-        font-weight: 400;
-        font-size: 14px;
-        color: @color-2;
-
-        &> div:first-child {
-          margin-right: 12px;
-        }
-
-        &> div:last-child {
-          display: flex;
-
-          .ivu-radio {
-            margin-right: 8px;
-          }
-
-          &> div:first-child {
-            margin-right: 29px;
-          }
-        }
-
-        &::before {
-          content: '';
-          width: 16px;
-        }
-      }
-    }
-
     .thirdparty-login {
       margin-top: 41px;
 
       .label {
         display: flex;
-        color: @color-1;
-        font-size: 14px;
+        align-items: center;
+        padding: 10px 0;
         font-weight: 600;
-        align-items: center;
-        padding: 10px 0px;
+        font-size: 14px;
+        color: @color-1;
 
         &::before {
-          content: '';
           height: 14px;
-          border-left: 6px solid @primary-color;
           margin-right: 10px;
+          border-left: 6px solid @primary-color;
+          content: '';
         }
       }
 
       .content {
         margin-top: 2px;
 
-        &> div {
+        & > div {
           display: flex;
-          padding: 8px 0px;
           align-items: center;
+          padding: 8px 0;
 
           .description {
-            font-size: 14px;
+            width: 100px;
             font-weight: 400;
+            font-size: 14px;
             color: @color-2;
-            width: 80px;
 
             .ivu-checkbox {
               margin-right: 8px;
@@ -98,20 +50,20 @@
           }
 
           .link {
-            font-size: 14px;
-            font-weight: 400;
-            color: @primary-color;
             margin-right: 20px;
+            font-weight: 400;
+            font-size: 14px;
+            color: @primary-color;
             cursor: pointer;
           }
 
           .tag {
-            width: 55px;
-            height: 22px;
-            border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
+            width: 55px;
+            height: 22px;
+            border-radius: 4px;
             font-weight: 400;
             font-size: 12px;
             color: @color-7;
@@ -124,118 +76,34 @@
           }
 
           &::before {
-            content: '';
             width: 16px;
-          }
-        }
-      }
-    }
-
-    .register-type {
-      margin-top: 41px;
-
-      .label {
-        display: flex;
-        align-items: center;
-        padding: 10px 0px;
-
-        &> div:first-child {
-          color: @color-1;
-          font-size: 14px;
-          font-weight: 600;
-          margin-right: 15px;
-          min-width: 112px;
-        }
-
-        &> div:last-child {
-          color: @color-3;
-          font-size: 12px;
-          font-weight: 600;
-          min-width: 561px;
-        }
-
-        &::before {
-          content: '';
-          height: 14px;
-          border-left: 6px solid @primary-color;
-          margin-right: 10px;
-        }
-      }
-
-      .content {
-        margin-top: 2px;
-
-        &> div {
-          display: flex;
-          padding: 8px 0px;
-          align-items: center;
-
-          .description {
-            font-size: 14px;
-            font-weight: 400;
-            color: @color-2;
-            width: 288px;
-
-            .ivu-checkbox {
-              margin-right: 8px;
-            }
-          }
-
-          .link {
-            font-size: 14px;
-            font-weight: 400;
-            color: @primary-color;
-            margin-right: 20px;
-            cursor: pointer;
-          }
-
-          .tag {
-            width: 55px;
-            height: 22px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 400;
-            font-size: 12px;
-            color: @color-7;
-            background-color: @bg-4;
-
-            &-finished {
-              color: @color-1;
-              background-color: @color-8;
-            }
-          }
-
-          &::before {
             content: '';
-            width: 16px;
           }
         }
       }
     }
 
     .register-submit {
-      margin-top: 104px;
-      margin-left: 281px;
       display: flex;
       flex-direction: column;
       align-items: center;
       width: 140px;
+      margin-top: 104px;
+      margin-left: 281px;
 
-      &> button:first-child {
-        width: 74px;
-        height: 32px;
-        border-radius: 4px;
-        background-color: @primary-color;
-        font-size: 14px;
-        font-weight: 400;
-        cursor: pointer;
-        color: @color-1;
+      & > button:first-child {
         display: flex;
         justify-content: center;
         align-items: center;
+        width: 74px;
+        height: 32px;
         border: 1px solid @primary-color;
+        border-radius: 4px;
+        font-weight: 400;
+        font-size: 14px;
+        color: @color-1;
+        background-color: @primary-color;
+        cursor: pointer;
 
         &:hover {
           border: 1px solid @color-4;
@@ -243,12 +111,144 @@
         }
       }
 
-      &> div:last-child {
-        color: @primary-color;
-        font-size: 14px;
-        font-weight: 400;
-        cursor: pointer;
+      & > div:last-child {
         padding-top: 20px;
+        font-weight: 400;
+        font-size: 14px;
+        color: @primary-color;
+        cursor: pointer;
+      }
+    }
+
+    .register-type {
+      margin-top: 41px;
+
+      .content {
+        margin-top: 2px;
+
+        & > div {
+          display: flex;
+          align-items: center;
+          padding: 8px 0;
+
+          .description {
+            width: 288px;
+            font-weight: 400;
+            font-size: 14px;
+            color: @color-2;
+
+            .ivu-checkbox {
+              margin-right: 8px;
+            }
+          }
+
+          .link {
+            margin-right: 20px;
+            font-weight: 400;
+            font-size: 14px;
+            color: @primary-color;
+            cursor: pointer;
+          }
+
+          .tag {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 55px;
+            height: 22px;
+            border-radius: 4px;
+            font-weight: 400;
+            font-size: 12px;
+            color: @color-7;
+            background-color: @bg-4;
+
+            &-finished {
+              color: @color-1;
+              background-color: @color-8;
+            }
+          }
+
+          &::before {
+            width: 16px;
+            content: '';
+          }
+        }
+      }
+
+      .label {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+
+        & > div:first-child {
+          min-width: 112px;
+          margin-right: 15px;
+          font-weight: 600;
+          font-size: 14px;
+          color: @color-1;
+        }
+
+        & > div:last-child {
+          min-width: 561px;
+          font-weight: 600;
+          font-size: 12px;
+          color: @color-3;
+        }
+
+        &::before {
+          height: 14px;
+          margin-right: 10px;
+          border-left: 6px solid @primary-color;
+          content: '';
+        }
+      }
+    }
+
+    .register-mode {
+      .label {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        font-weight: 600;
+        font-size: 14px;
+        color: @color-1;
+
+        &::before {
+          height: 14px;
+          margin-right: 10px;
+          border-left: 6px solid @primary-color;
+          content: '';
+        }
+      }
+
+      .content {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        font-weight: 400;
+        font-size: 14px;
+        color: @color-2;
+
+        & > div:first-child {
+          margin-right: 12px;
+        }
+
+        & > div:last-child {
+          display: flex;
+
+          .ivu-radio {
+            margin-right: 8px;
+          }
+
+          & > div:first-child {
+            margin-right: 29px;
+          }
+        }
+
+        &::before {
+          width: 16px;
+          content: '';
+        }
       }
     }
   }
@@ -260,22 +260,22 @@
   }
 
   .ivu-drawer-header {
-    padding: 0px;
+    padding: 0;
     border-bottom-color: @bg-1;
 
     .header {
       height: 84px;
-      font-size: 20px;
-      font-weight: 400;
-      color: @color-2;
-      padding-left: 30px;
       padding-top: 36px;
+      padding-left: 30px;
+      font-weight: 400;
+      font-size: 20px;
+      color: @color-2;
     }
   }
 
   .ivu-drawer-body {
     height: calc(100% - 84px);
-    padding: 0px;
+    padding: 0;
 
     .body {
       padding-top: 40px;
@@ -296,20 +296,14 @@
             font-size: 14px;
             color: @color-2;
           }
-
-          .ivu-select-dropdown {
-          }
         }
       }
 
       input {
         padding-left: 15px;
-        color: @color-2;
-        font-size: 14px;
         font-weight: 400;
-
-        &[type="password"] {
-        }
+        font-size: 14px;
+        color: @color-2;
 
         &::placeholder {
           color: @color-3;
@@ -319,11 +313,11 @@
           color: @color-3;
         }
 
-        &:-moz-placeholder {
+        &::-moz-placeholder {
           color: @color-3;
         }
 
-        &::-moz-placeholder {
+        &:-moz-placeholder {
           color: @color-3;
         }
 
@@ -334,31 +328,32 @@
     }
 
     .footer {
-      height: 52px;
       position: absolute;
       bottom: 0;
-      width: 100%;
-      border-top: 1px solid @bg-1;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0px 20px;
+      width: 100%;
+      height: 52px;
+      padding: 0 20px;
+      border-top: 1px solid @bg-1;
 
-      &> button {
-        border-radius: 4px;
-        font-size: 14px;
-        font-weight: 400;
+      /* stylelint-disable */
+      & > button {
         width: 74px;
         height: 32px;
+        border-radius: 4px;
+        font-weight: 400;
+        font-size: 14px;
       }
 
-      &> button:first-child {
+      & > button:first-child {
         border: 1px solid @color-4;
         color: @color-3;
         background-color: @bg-2;
       }
 
-      &> button:last-child {
+      & > button:last-child {
         border: 1px solid @primary-color;
         color: @color-2;
         background-color: @primary-color;

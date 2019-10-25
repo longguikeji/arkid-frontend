@@ -147,12 +147,47 @@ export class FreakAlipay {
   }
 }
 
+export interface FreakWechatWorkInterface {
+  corp_id: string,
+  agent_id: string,
+  secret: string,
+  qr_app_valid: boolean,
+}
+
+export class FreakWechatWork {
+  static fromData(data: FreakWechatWorkInterface | null) {
+    const obj = new this()
+    if (data) {
+      obj.corpId = data.corp_id
+      obj.agentId = data.agent_id
+      obj.secret = data.secret
+      obj.qrAppValid = data.qr_app_valid
+    }
+    return obj
+  }
+
+  corpId = ''
+  agentId = ''
+  secret = ''
+  qrAppValid = false
+
+  toData() {
+    return {
+      corp_id: this.corpId,
+      agent_id: this.agentId,
+      secret: this.secret,
+      qr_app_valid: this.qrAppValid,
+    }
+  }
+}
+
 export interface FreakAccountInterface {
   allow_register: boolean,
   allow_mobile: boolean,
   allow_email: boolean,
   allow_ding_qr: boolean,
   allow_alipay_qr: boolean,
+  allow_work_wechat_qr: boolean,
 }
 
 export class FreakAccount {
@@ -165,6 +200,7 @@ export class FreakAccount {
       obj.allowEmail = data.allow_email
       obj.allowDingQr = data.allow_ding_qr
       obj.allowAlipayQr = data.allow_alipay_qr
+      obj.allowWechatWorkQr = data.allow_work_wechat_qr
     }
     return obj
   }
@@ -173,6 +209,7 @@ export class FreakAccount {
   allowEmail = false
   allowDingQr = false
   allowAlipayQr = false
+  allowWechatWorkQr = false
 
   toData() {
     return {
@@ -181,6 +218,7 @@ export class FreakAccount {
       allow_email: this.allowEmail,
       allow_ding_qr: this.allowDingQr,
       allow_alipay_qr: this.allowAlipayQr,
+      allow_work_wechat_qr: this.allowWechatWorkQr,
     }
   }
 }
@@ -272,6 +310,7 @@ export interface FreakConfigInterface {
   sms_config: FreakSMSInterface | null,
   email_config: FreakEmailInterface | null,
   alipay_config: FreakAlipayInterface | null,
+  work_wechat_config: FreakWechatWorkInterface | null,
 }
 
 export class FreakConfig {
@@ -285,6 +324,7 @@ export class FreakConfig {
       obj.mobile = FreakSMS.fromData(data.sms_config)
       obj.email = FreakEmail.fromData(data.email_config)
       obj.alipay = FreakAlipay.fromData(data.alipay_config)
+      obj.wechatWork = FreakWechatWork.fromData(data.work_wechat_config)
     }
     return obj
   }
@@ -294,6 +334,7 @@ export class FreakConfig {
   mobile!: FreakSMS
   email!: FreakEmail
   alipay!: FreakAlipay
+  wechatWork!: FreakWechatWork
 
   toData() {
     return {
@@ -303,6 +344,7 @@ export class FreakConfig {
       sms_config: this.mobile ? this.mobile.toData() : null,
       email_config: this.email ? this.email.toData() : null,
       alipay_config: this.alipay ? this.alipay.toData() : null,
+      work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
     }
   }
 }
@@ -424,6 +466,30 @@ export class Alipay {
   }
 }
 
+export interface WechatWorkInterface {
+  corp_id: string,
+  agent_id: string,
+}
+
+export class WechatWork {
+  static fromData(data: WechatWorkInterface|null) {
+    const obj = new this
+    if (data) {
+      obj.corpId = data.corp_id
+      obj.agentId = data.agent_id
+    }
+    return obj
+  }
+  corpId = ''
+  agentId = ''
+  toData() {
+    return {
+      corp_id: this.corpId,
+      agent_id: this.agentId,
+    }
+  }
+}
+
 type AccountInfo = TypeMetaInfo['account_config']
 
 export class Account {
@@ -450,6 +516,7 @@ export class Config {
 
     obj.ding = Ding.fromData(data.ding_config)
     obj.alipay = Alipay.fromData(data.alipay_config)
+    obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
     obj.org = Org.fromData(data.company_config)
     obj.account = Account.fromData(data.account_config)
     obj.sms = data.sms_config
@@ -461,10 +528,12 @@ export class Config {
   account!: Account
   sms!: object
   alipay!: Alipay
+  wechatWork!: WechatWork
 
   toData() {
     return {
       alipay_config: this.alipay ? this.alipay.toData() : null,
+      work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
       company_config: this.org ? this.org.toData() : null,
     }

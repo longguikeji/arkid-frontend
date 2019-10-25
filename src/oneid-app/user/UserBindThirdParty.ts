@@ -105,8 +105,7 @@ export default class UserBindThirdParty extends Vue {
     mobile: '',
     smsCode: '',
     smsToken: '',
-    alipayId: '',
-    dingId: '',
+    thirdPartyUserId: '',
   }
 
   registerForm = {
@@ -143,47 +142,30 @@ export default class UserBindThirdParty extends Vue {
   }
 
   mounted() {
-    this.getThirdPartyId()
+    this.varifyState()
   }
 
-  getThirdPartyId() {
-    this.thirdParty = this.$route.query.state as string
-    if (this.thirdParty === 'alipay') {
-      this.getAlipayId()
-    }
-    if (this.thirdParty === 'ding') {
-      this.getDingIdWithCode()
-    }
-  }
-
-  async getAlipayId() {
-    const {app_id, auth_code} = this.$route.query
-
-    const data = await api.UCenter.getAlipayId({
-      app_id,
-      auth_code,
-    })
-
-    const {alipay_user_id} = data
-    if (alipay_user_id) {
-      this.mobileForm.alipayId = alipay_user_id
+  varifyState() {
+    const state = sessionStorage.getItem('state')
+    if (state === this.$route.query.state) {
+      this.thirdParty = this.$route.query.state.split('_')[0]
+      this.getThirdPartyId()
     } else {
-      this.user = data
-      this.doLogin()
+      this.$router.push({name: 'oneid.login'})
     }
   }
 
-  async getDingIdWithCode() {
-    const {code, state} = this.$route.query
+  async getThirdPartyId() {
+    const params = this.thirdParty === 'alipay' ? {
+      auth_code: this.$route.query.auth_code,
+    } : {
+      code: this.$route.query.code,
+    }
+    const data = await api.UCenter.getThirdPartyUserId(params, this.thirdParty)
+    const {thirdPartyUserId} = data
 
-    const data = await api.UCenter.getDingIdWithCode({
-      code,
-      state,
-    })
-
-    const {ding_id} = data
-    if (ding_id) {
-      this.mobileForm.dingId = ding_id
+    if (thirdPartyUserId) {
+      this.mobileForm.thirdPartyUserId = thirdPartyUserId
     } else {
       this.user = data
       this.doLogin()
@@ -216,10 +198,10 @@ export default class UserBindThirdParty extends Vue {
   }
 
   async verifyMobile() {
-    const {mobile,smsCode,dingId} = this.mobileForm
+    const {mobile,smsCode} = this.mobileForm
     this.$Loading.start()
     try {
-      const {sms_token} = await api.ApiService.verifySmsWithBind(mobile, smsCode, dingId)
+      const {sms_token} = await api.ApiService.verifySmsWithBind(mobile, smsCode)
       this.mobileForm.smsToken = sms_token
       this.$Loading.finish()
       this.isValidMobile = true
@@ -231,11 +213,10 @@ export default class UserBindThirdParty extends Vue {
   }
 
   async checkUserExist() {
-    const {mobile, dingId, smsToken} = this.mobileForm
+    const {mobile, smsToken} = this.mobileForm
 
     const {exist} = await api.UCenter.checkExistWithMobile({
       mobile,
-      ding_id: dingId,
       sms_token: smsToken,
     })
     if (exist) {
@@ -246,22 +227,15 @@ export default class UserBindThirdParty extends Vue {
   }
 
   async bindMobileWithThirdParty() {
-    const {dingId, alipayId, smsToken} = this.mobileForm
+    const {thirdPartyUserId, smsToken} = this.mobileForm
+    const userId = this.thirdParty === 'alipay' ? 'alipay_user_id' : this.thirdParty === 'ding' ? 'ding_id' : 'work_wechat_user_id'
 
     try {
-      if (this.thirdParty === 'alipay') {
-        const user = await api.UCenter.bindMobileWithAlipay({
-          alipay_user_id: alipayId,
-          sms_token: smsToken,
-        })
-        this.user = user
-      } else {
-        const user = await api.UCenter.bindMobileWithDingId({
-          ding_id: dingId,
-          sms_token: smsToken,
-        })
-        this.user = user
-      }
+      const user = await api.UCenter.bindMobileWithThirdParty({
+        [userId]: thirdPartyUserId,
+        sms_token: smsToken,
+      }, this.thirdParty)
+      this.user = user
       this.$Message.success('成功绑定手机号')
       this.doLogin()
     } catch (e) {
@@ -276,26 +250,16 @@ export default class UserBindThirdParty extends Vue {
       }
     })
     const {username, password} = this.registerForm
-    const {smsToken, dingId, alipayId} = this.mobileForm
-
+    const {smsToken, thirdPartyUserId} = this.mobileForm
+    const userId = this.thirdParty === 'alipay' ? 'alipay_user_id' : this.thirdParty === 'ding' ? 'ding_id' : 'work_wechat_user_id'
     try {
-      if (this.thirdParty === 'alipay') {
-        const user = await api.UCenter.registerWithAlipay({
-          username,
-          password,
-          alipay_user_id: alipayId,
-          sms_token: smsToken,
-        })
-        this.user = user
-      } else {
-        const user = await api.UCenter.registerWithDingId({
-          username,
-          password,
-          ding_id: dingId,
-          sms_token: smsToken,
-        })
-        this.user = user
-      }
+      const user = await api.UCenter.registerWithThirdParty({
+        username,
+        password,
+        [userId]: thirdPartyUserId,
+        sms_token: smsToken,
+      }, this.thirdParty)
+      this.user = user
       this.$Message.success('注册成功')
       this.doLogin()
     } catch (e) {

@@ -51,6 +51,7 @@ const SMS_VENDORS = [
               {{ registerOptions.ding.qrAppValid ? '已完成' : '未完成' }}
             </div>
           </div>
+
           <div>
             <Checkbox v-model="registerOptions.account.allowAlipayQr" size="large" class="description">
               支付宝
@@ -60,6 +61,18 @@ const SMS_VENDORS = [
             </div>
             <div :class="\`tag\${registerOptions.alipay.qrAppValid ? ' tag-finished' : ''}\`">
               {{ registerOptions.alipay.qrAppValid ? '已完成' : '未完成' }}
+            </div>
+          </div>
+
+          <div>
+            <Checkbox v-model="registerOptions.account.allowWechatWorkQr" size="large" class="description">
+              企业微信
+            </Checkbox>
+            <div class="link" @click="editType = 'wechatWork'">
+              企业微信配置
+            </div>
+            <div :class="\`tag\${registerOptions.wechatWork.qrAppValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.wechatWork.qrAppValid ? '已完成' : '未完成' }}
             </div>
           </div>
         </div>
@@ -121,6 +134,7 @@ const SMS_VENDORS = [
       <div slot="header" class="header">配置
         {{ editType === 'email' ? '邮箱' :
            editType === 'ding' ? '钉钉' :
+           editType === 'wechatWork' ? '企业微信' :
            editType === 'alipay' ? '支付宝' : '短信'}}</div>
       <div class="body">
         <Form
@@ -223,17 +237,39 @@ const SMS_VENDORS = [
           </FormItem>
         </Form>
 
+        <Form
+          v-if="editType === 'wechatWork'"
+          ref="wechatWork"
+          :model="registerOptions.wechatWork"
+          :rules="wechatWorkRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="corpId" label="Corp Id：">
+            <Input type="text" v-model="registerOptions.wechatWork.corpId" placeholder="填写 Corp Id"></Input>
+          </FormItem>
+          <FormItem prop="agentId" label="Agent Id：">
+            <Input type="text" v-model="registerOptions.wechatWork.agentId" placeholder="填写 agent Id"></Input>
+          </FormItem>
+          <FormItem prop="secret" label="Secret：">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.wechatWork.secret"
+              @on-blur="(e) => registerOptions.wechatWork.secret = e.target.value"
+              placeholder="填写 Secret"></Input>
+          </FormItem>
+        </Form>
       </div>
       <div class="footer">
         <Button @click="onCancel">取消</Button>
-        <Button @click="onSaveEmailOrMobile" :loading="saveBtnLoading">保存</Button>
+        <Button @click="onSaveConfigForm" :loading="saveBtnLoading">保存</Button>
       </div>
     </Drawer>
   </div>
   `,
 })
 export default class Settings extends Vue {
-  editType: 'email'|'mobile'|'ding'|'alipay'|null = null
+  editType: string|null = null
   accountBtnLoading = false
   saveBtnLoading = false
 
@@ -281,12 +317,20 @@ export default class Settings extends Vue {
     }
   }
 
+  get wechatWorkRules() {
+    return {
+      corpId: [FORM_RULES.required],
+      agentId: [FORM_RULES.required],
+    }
+  }
+
   async loadData() {
     const registerOptions = await api.FreakConfig.get()
     registerOptions.mobile.accessSecret = ''
     registerOptions.email.password = ''
     registerOptions.ding.qrAppSecret = ''
     registerOptions.alipay.appPrivateKey = ''
+    registerOptions.wechatWork.secret = ''
     this.registerOptions = registerOptions
   }
 
@@ -309,7 +353,7 @@ export default class Settings extends Vue {
     }
   }
 
-  onSaveEmailOrMobile() {
+  onSaveConfigForm() {
     if (this.editType) {
       const ref = this.$refs[this.editType] as Form
       ref.validate((valid: boolean|void) => {
@@ -325,6 +369,9 @@ export default class Settings extends Vue {
           }
           if (this.editType === 'alipay') {
             this.saveAlipay()
+          }
+          if (this.editType === 'wechatWork') {
+            this.saveWechatWork()
           }
         }
       })
@@ -350,6 +397,10 @@ export default class Settings extends Vue {
     }
     if (this.registerOptions!.account.allowAlipayQr && !this.registerOptions!.alipay.qrAppValid) {
       this.$Message.error('支付宝配置不正确')
+      return
+    }
+    if (this.registerOptions!.account.allowWechatWorkQr && !this.registerOptions!.wechatWork.qrAppValid) {
+      this.$Message.error('企业微信配置不正确')
       return
     }
     this.saveAccount()
@@ -378,6 +429,11 @@ export default class Settings extends Vue {
   async saveAlipay() {
     this.saveBtnLoading = true
     this.save(api.FreakConfig.patchAlipay.bind(this, this.registerOptions))
+    this.saveBtnLoading = false
+  }
+  async saveWechatWork() {
+    this.saveBtnLoading = true
+    this.save(api.FreakConfig.patchWechatWork.bind(this, this.registerOptions))
     this.saveBtnLoading = false
   }
 }
