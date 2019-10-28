@@ -269,7 +269,7 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType: string|null = null
+  editType: 'email'|'mobile'|'ding'|'alipay'|'wechatWork'|null = null
   accountBtnLoading = false
   saveBtnLoading = false
 

@@ -149,6 +149,11 @@ export default class UserBindThirdParty extends Vue {
     const state = sessionStorage.getItem('state')
     if (state === this.$route.query.state) {
       this.thirdParty = this.$route.query.state.split('_')[0]
+
+      if (this.thirdParty === 'wechatWork') {
+        this.thirdParty = 'work_wechat'
+      }
+
       this.getThirdPartyId()
     } else {
       this.$router.push({name: 'oneid.login'})
@@ -161,11 +166,12 @@ export default class UserBindThirdParty extends Vue {
     } : {
       code: this.$route.query.code,
     }
-    const data = await api.UCenter.getThirdPartyUserId(params, this.thirdParty)
-    const {thirdPartyUserId} = data
 
-    if (thirdPartyUserId) {
-      this.mobileForm.thirdPartyUserId = thirdPartyUserId
+    const data = await api.UCenter.getThirdPartyUserId(params, this.thirdParty)
+    const {third_party_id} = data
+
+    if (third_party_id) {
+      this.mobileForm.thirdPartyUserId = third_party_id
     } else {
       this.user = data
       this.doLogin()
@@ -228,11 +234,10 @@ export default class UserBindThirdParty extends Vue {
 
   async bindMobileWithThirdParty() {
     const {thirdPartyUserId, smsToken} = this.mobileForm
-    const userId = this.thirdParty === 'alipay' ? 'alipay_user_id' : this.thirdParty === 'ding' ? 'ding_id' : 'work_wechat_user_id'
 
     try {
       const user = await api.UCenter.bindMobileWithThirdParty({
-        [userId]: thirdPartyUserId,
+        user_id: thirdPartyUserId,
         sms_token: smsToken,
       }, this.thirdParty)
       this.user = user
@@ -251,12 +256,11 @@ export default class UserBindThirdParty extends Vue {
     })
     const {username, password} = this.registerForm
     const {smsToken, thirdPartyUserId} = this.mobileForm
-    const userId = this.thirdParty === 'alipay' ? 'alipay_user_id' : this.thirdParty === 'ding' ? 'ding_id' : 'work_wechat_user_id'
     try {
       const user = await api.UCenter.registerWithThirdParty({
         username,
         password,
-        [userId]: thirdPartyUserId,
+        user_id: thirdPartyUserId,
         sms_token: smsToken,
       }, this.thirdParty)
       this.user = user

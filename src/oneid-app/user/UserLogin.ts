@@ -1,6 +1,6 @@
 import {User} from '@/models/oneid'
 import * as api from '@/services/oneid'
-import {FORM_RULES} from '@/utils'
+import {FORM_RULES, uuidHex} from '@/utils'
 import {Form} from 'iview/types/index'
 import {Component, Prop, Vue} from 'vue-property-decorator'
 import './UserCommon.less'
@@ -51,7 +51,7 @@ import './UserCommon.less'
           class="ui-qr-poptip"
           v-show="thirdPartyType !== ''"
         >
-          <div id="qr_container" v-show="thirdPartyType !== ''"></div>
+          <div id="qrContainer" v-show="thirdPartyType !== ''"></div>
           <Button class="cancle-btn" @click="thirdPartyType = ''">取消</Button>
         </div>
         <div class="ui-qr-diff-btn">
@@ -150,10 +150,7 @@ export default class UserLogin extends Vue {
   }
 
   get redirectUri() {
-    let redirectUri = window.location.origin
-    redirectUri += this.thirdPartyType === 'ding' ? '/%23/' : '/#/'
-    redirectUri += 'oneid/bindthirdparty'
-    return redirectUri
+    return window.location.origin + '/#/oneid/bindthirdparty'
   }
 
   mounted() {
@@ -260,16 +257,24 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
-      + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login&state=`
-      + `&redirect_uri=${this.redirectUri}`
+    let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
+    const urlParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.ding.qrAppId,
+      response_type: 'code',
+      scope: 'snsapi_login',
+      redirect_uri: this.redirectUri,
+    })
+    url += urlParams.toString()
 
-    const src = `https://login.dingtalk.com/login/qrcode.htm?goto=${encodeURIComponent(url)}`
-      + `&style=${encodeURIComponent('border:none;background-color:#FFF;')}`
+    let src = `https://login.dingtalk.com/login/qrcode.htm?`
+    const srcParams = new URLSearchParams({
+      goto: url,
+      style: 'border:none;background-color:#FFF;',
+    })
+    src += srcParams.toString()
 
     this.createQr({
-      id:'qr_container',
+      id:'qrContainer',
       src,
     })
 
@@ -284,15 +289,19 @@ export default class UserLogin extends Vue {
     const loginTmpCode = event.data
     const origin = event.origin
 
-    const state = 'ding_' + this.proRandomNum()
+    const state = 'ding_' + uuidHex()
     sessionStorage.setItem('state', state)
 
-    const url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
-      + `appid=${this.$app.metaInfo!.ding.qrAppId}`
-      + `&response_type=code&scope=snsapi_login`
-      + `&state=${state}`
-      + `&redirect_uri=${this.redirectUri}`
-      + `&loginTmpCode=${loginTmpCode}`
+    let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
+    const urlParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.ding.qrAppId,
+      response_type: 'code',
+      scope: 'snsapi_login',
+      state,
+      redirect_uri: this.redirectUri,
+      loginTmpCode,
+    })
+    url += urlParams.toString()
 
     if (origin === 'https://login.dingtalk.com') {
       window.location.href = url
@@ -304,18 +313,19 @@ export default class UserLogin extends Vue {
   }
 
   toggleAlipayPoptip() {
-    const appId = this.$app.metaInfo!.alipay.appId
-
-    const state = 'alipay_' + this.proRandomNum()
+    const state = 'alipay_' + uuidHex()
     sessionStorage.setItem('state', state)
 
-    const href = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
-      + `app_id=${appId}`
-      + `&scope=auth_base`
-      + `&state=${state}`
-      + `&redirect_uri=${encodeURIComponent(this.redirectUri)}`
+    let url = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
+    const urlParams = new URLSearchParams({
+      app_id: this.$app.metaInfo!.alipay.appId,
+      scope: 'auth_base',
+      state,
+      redirect_uri: this.redirectUri,
+    })
+    url += urlParams.toString()
 
-    window.location.href = href
+    window.location.href = url
   }
 
   toggleQqPoptip() {
@@ -325,25 +335,24 @@ export default class UserLogin extends Vue {
   toggleWechatWorkPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechatWork' ? '' : 'wechatWork'
 
-    const state = 'wechatWork_' + this.proRandomNum()
+    const state = 'wechatWork_' + uuidHex()
     sessionStorage.setItem('state', state)
 
-    const src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`
-     + `appid=${this.$app.metaInfo!.wechatWork.corpId}`
-     + `&agentid=${this.$app.metaInfo!.wechatWork.agentId}`
-     + `&redirect_uri=${encodeURIComponent(this.redirectUri)}`
-     + `&state=${state}`
-     + `&logintype=jssdk`
-     + `&href=data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=`
+    let src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`
+    const srcParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.wechatWork.corpId,
+      agentid: this.$app.metaInfo!.wechatWork.agentId,
+      state,
+      redirect_uri: this.redirectUri,
+      logintype: 'jssdk',
+      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
+    })
+    src += srcParams.toString()
 
     this.createQr({
-      id: 'qr_container',
+      id: 'qrContainer',
       src,
     })
-  }
-
-  proRandomNum() {
-    return Math.round(Math.random()*100000).toString()
   }
 
   createQr(params: {id: string, src: string}) {

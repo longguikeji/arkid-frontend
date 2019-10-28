@@ -684,21 +684,18 @@ export class UCenter extends API {
   }
 
   static async getThirdPartyUserId(q: object, thirdParty: string) {
-    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
     const url = `/siteapi/v1/${thirdParty}/qr/callback/`
     const resp = await http.post(url, q)
     const data = resp.data
-    const thirdPartyUserId = thirdParty === 'ding' ? data.ding_id : thirdParty === 'alipay' ? data.alipay_user_id : data.work_wechat_user_id
-    if (!thirdPartyUserId) {
+    if (!data.third_party_id) {
       const {token} = data
       window.localStorage.setItem(ONEID_TOKEN, token)
       return model.User.exchangeCurrentUserData(data)
     }
-    return {thirdPartyUserId}
+    return data
   }
 
   static async bindMobileWithThirdParty(q: object, thirdParty: string) {
-    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
     const url = `/siteapi/v1/${thirdParty}/bind/`
     const resp = await http.post(url, q)
     const {token} = resp.data
@@ -707,7 +704,6 @@ export class UCenter extends API {
   }
 
   static async registerWithThirdParty(q: object, thirdParty: string) {
-    thirdParty = thirdParty === 'wechatWork' ? 'work/wechat' : thirdParty
     const url = `/siteapi/v1/${thirdParty}/register/bind/`
     const resp = await http.post(url, q)
     const {token} = resp.data
