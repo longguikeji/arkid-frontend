@@ -150,7 +150,7 @@ export default class UserLogin extends Vue {
   }
 
   get redirectUri() {
-    return window.location.origin + '/#/oneid/bindthirdparty'
+    return window.location.origin + `/#/oneid/bindthirdparty/${this.thirdPartyType}`
   }
 
   mounted() {
@@ -289,7 +289,7 @@ export default class UserLogin extends Vue {
     const loginTmpCode = event.data
     const origin = event.origin
 
-    const state = 'ding_' + uuidHex()
+    const state = uuidHex()
     sessionStorage.setItem('state', state)
 
     let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
@@ -313,7 +313,7 @@ export default class UserLogin extends Vue {
   }
 
   toggleAlipayPoptip() {
-    const state = 'alipay_' + uuidHex()
+    const state = uuidHex()
     sessionStorage.setItem('state', state)
 
     let url = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
@@ -335,7 +335,7 @@ export default class UserLogin extends Vue {
   toggleWechatWorkPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechatWork' ? '' : 'wechatWork'
 
-    const state = 'wechatWork_' + uuidHex()
+    const state = uuidHex()
     sessionStorage.setItem('state', state)
 
     let src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`

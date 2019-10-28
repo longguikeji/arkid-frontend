@@ -147,13 +147,9 @@ export default class UserBindThirdParty extends Vue {
 
   varifyState() {
     const state = sessionStorage.getItem('state')
+
     if (state === this.$route.query.state) {
-      this.thirdParty = this.$route.query.state.split('_')[0]
-
-      if (this.thirdParty === 'wechatWork') {
-        this.thirdParty = 'work_wechat'
-      }
-
+      this.thirdParty = this.$route.params.type
       this.getThirdPartyId()
     } else {
       this.$router.push({name: 'oneid.login'})
