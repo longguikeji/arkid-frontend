@@ -30,6 +30,11 @@ export interface TypeMetaInfo {
     app_id: string;
   }
 
+  work_wechat_config: {
+    corp_id: string;
+    agent_id: string;
+  }
+
   account_config: {
     email_register: boolean;
     mobile_register: boolean;
@@ -157,6 +162,11 @@ export class FreakConfig {
   static async patchAlipay(config: models.FreakConfig|null) {
     const url = '/siteapi/oneid/config/'
     const data = {alipay_config: config!.toData().alipay_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
+  }
+  static async patchWechatWork(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {work_wechat_config: config!.toData().work_wechat_config}
     return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
 }
