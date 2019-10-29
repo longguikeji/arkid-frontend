@@ -30,6 +30,10 @@ export interface TypeMetaInfo {
     app_id: string;
   }
 
+  wechat_config: {
+    appid: string;
+  }
+
   work_wechat_config: {
     corp_id: string;
     agent_id: string;
@@ -167,6 +171,11 @@ export class FreakConfig {
   static async patchWechatWork(config: models.FreakConfig|null) {
     const url = '/siteapi/oneid/config/'
     const data = {work_wechat_config: config!.toData().work_wechat_config}
+    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
+  }
+  static async patchWechat(config: models.FreakConfig|null) {
+    const url = '/siteapi/oneid/config/'
+    const data = {wechat_config: config!.toData().wechat_config}
     return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
 }

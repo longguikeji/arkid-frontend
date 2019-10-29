@@ -147,6 +147,36 @@ export class FreakAlipay {
   }
 }
 
+export interface FreakWechatInterface {
+  appid: string,
+  secret: string,
+  qr_app_valid: boolean,
+}
+
+export class FreakWechat {
+  static fromData(data: FreakWechatInterface | null) {
+    const obj = new this()
+    if (data) {
+      obj.appId = data.appid
+      obj.secret = data.secret
+      obj.qrAppValid = data.qr_app_valid
+    }
+    return obj
+  }
+
+  appId = ''
+  secret = ''
+  qrAppValid = false
+
+  toData() {
+    return {
+      appid: this.appId,
+      secret: this.secret,
+      qr_app_valid: this.qrAppValid,
+    }
+  }
+}
+
 export interface FreakWechatWorkInterface {
   corp_id: string,
   agent_id: string,
@@ -188,6 +218,7 @@ export interface FreakAccountInterface {
   allow_ding_qr: boolean,
   allow_alipay_qr: boolean,
   allow_work_wechat_qr: boolean,
+  allow_wechat_qr: boolean,
 }
 
 export class FreakAccount {
@@ -201,6 +232,7 @@ export class FreakAccount {
       obj.allowDingQr = data.allow_ding_qr
       obj.allowAlipayQr = data.allow_alipay_qr
       obj.allowWechatWorkQr = data.allow_work_wechat_qr
+      obj.allowWechatQr = data.allow_wechat_qr
     }
     return obj
   }
@@ -210,6 +242,7 @@ export class FreakAccount {
   allowDingQr = false
   allowAlipayQr = false
   allowWechatWorkQr = false
+  allowWechatQr = false
 
   toData() {
     return {
@@ -219,6 +252,7 @@ export class FreakAccount {
       allow_ding_qr: this.allowDingQr,
       allow_alipay_qr: this.allowAlipayQr,
       allow_work_wechat_qr: this.allowWechatWorkQr,
+      allow_wechat_qr: this.allowWechatQr,
     }
   }
 }
@@ -311,6 +345,7 @@ export interface FreakConfigInterface {
   email_config: FreakEmailInterface | null,
   alipay_config: FreakAlipayInterface | null,
   work_wechat_config: FreakWechatWorkInterface | null,
+  wechat_config: FreakWechatInterface | null,
 }
 
 export class FreakConfig {
@@ -325,6 +360,7 @@ export class FreakConfig {
       obj.email = FreakEmail.fromData(data.email_config)
       obj.alipay = FreakAlipay.fromData(data.alipay_config)
       obj.wechatWork = FreakWechatWork.fromData(data.work_wechat_config)
+      obj.wechat = FreakWechat.fromData(data.wechat_config)
     }
     return obj
   }
@@ -335,6 +371,7 @@ export class FreakConfig {
   email!: FreakEmail
   alipay!: FreakAlipay
   wechatWork!: FreakWechatWork
+  wechat!: FreakWechat
 
   toData() {
     return {
@@ -345,6 +382,7 @@ export class FreakConfig {
       email_config: this.email ? this.email.toData() : null,
       alipay_config: this.alipay ? this.alipay.toData() : null,
       work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
+      wechat_config: this.wechat ? this.wechat.toData() : null,
     }
   }
 }
@@ -466,6 +504,26 @@ export class Alipay {
   }
 }
 
+export interface WechatInterface {
+  appid: string,
+}
+
+export class Wechat {
+  static fromData(data: WechatInterface|null) {
+    const obj = new this
+    if (data) {
+      obj.appId = data.appid
+    }
+    return obj
+  }
+  appId = ''
+  toData() {
+    return {
+      appid: this.appId,
+    }
+  }
+}
+
 export interface WechatWorkInterface {
   corp_id: string,
   agent_id: string,
@@ -517,6 +575,7 @@ export class Config {
     obj.ding = Ding.fromData(data.ding_config)
     obj.alipay = Alipay.fromData(data.alipay_config)
     obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
+    obj.wechat = Wechat.fromData(data.wechat_config)
     obj.org = Org.fromData(data.company_config)
     obj.account = Account.fromData(data.account_config)
     obj.sms = data.sms_config
@@ -529,11 +588,13 @@ export class Config {
   sms!: object
   alipay!: Alipay
   wechatWork!: WechatWork
+  wechat!: Wechat
 
   toData() {
     return {
       alipay_config: this.alipay ? this.alipay.toData() : null,
       work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
+      wechat_config: this.wechat ? this.wechat.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
       company_config: this.org ? this.org.toData() : null,
     }
