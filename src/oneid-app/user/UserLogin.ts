@@ -313,6 +313,7 @@ export default class UserLogin extends Vue {
   }
 
   toggleAlipayPoptip() {
+    this.thirdPartyType = this.thirdPartyType === 'alipay' ? '' : 'alipay'
     const state = uuidHex()
     sessionStorage.setItem('state', state)
 
