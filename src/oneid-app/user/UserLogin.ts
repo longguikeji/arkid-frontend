@@ -66,7 +66,7 @@ import './UserCommon.less'
           <div
             :class="thirdPartyType === 'wechat' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleWechatPoptip"
-            v-show=""
+            v-show="qrAccount.support_wechat_qr"
           >
             <img :src="wechatImgPath"/>
             <p>微信</p>
@@ -310,6 +310,24 @@ export default class UserLogin extends Vue {
 
   toggleWechatPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechat' ? '' : 'wechat'
+
+    const state = uuidHex()
+    sessionStorage.setItem('state', state)
+
+    let src = `https://open.weixin.qq.com/connect/qrconnect?`
+    const srcParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.wechat.appId,
+      state,
+      redirect_uri: this.redirectUri,
+      scope: 'snsapi_login',
+      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O2JvcmRlcjowO30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
+    })
+    src += srcParams.toString()
+
+    this.createQr({
+      id: 'qrContainer',
+      src,
+    })
   }
 
   toggleAlipayPoptip() {

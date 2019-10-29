@@ -65,6 +65,18 @@ const SMS_VENDORS = [
           </div>
 
           <div>
+            <Checkbox v-model="registerOptions.account.allowWechatQr" size="large" class="description">
+              微信
+            </Checkbox>
+            <div class="link" @click="editType = 'wechat'">
+              微信配置
+            </div>
+            <div :class="\`tag\${registerOptions.wechat.qrAppValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.wechat.qrAppValid ? '已完成' : '未完成' }}
+            </div>
+          </div>
+
+          <div>
             <Checkbox v-model="registerOptions.account.allowWechatWorkQr" size="large" class="description">
               企业微信
             </Checkbox>
@@ -135,6 +147,7 @@ const SMS_VENDORS = [
         {{ editType === 'email' ? '邮箱' :
            editType === 'ding' ? '钉钉' :
            editType === 'wechatWork' ? '企业微信' :
+           editType === 'wechat' ? '微信' :
            editType === 'alipay' ? '支付宝' : '短信'}}</div>
       <div class="body">
         <Form
@@ -238,6 +251,26 @@ const SMS_VENDORS = [
         </Form>
 
         <Form
+          v-if="editType === 'wechat'"
+          ref="wechat"
+          :model="registerOptions.wechat"
+          :rules="wechatRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="appId" label="App Id：">
+            <Input type="text" v-model="registerOptions.wechat.appId" placeholder="填写 App Id"></Input>
+          </FormItem>
+          <FormItem prop="secret" label="Secret：">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.wechat.secret"
+              @on-blur="(e) => registerOptions.wechat.secret = e.target.value"
+              placeholder="填写 Secret"></Input>
+          </FormItem>
+        </Form>
+
+        <Form
           v-if="editType === 'wechatWork'"
           ref="wechatWork"
           :model="registerOptions.wechatWork"
@@ -249,7 +282,7 @@ const SMS_VENDORS = [
             <Input type="text" v-model="registerOptions.wechatWork.corpId" placeholder="填写 Corp Id"></Input>
           </FormItem>
           <FormItem prop="agentId" label="Agent Id：">
-            <Input type="text" v-model="registerOptions.wechatWork.agentId" placeholder="填写 agent Id"></Input>
+            <Input type="text" v-model="registerOptions.wechatWork.agentId" placeholder="填写 Agent Id"></Input>
           </FormItem>
           <FormItem prop="secret" label="Secret：">
             <Input type="password"
@@ -269,7 +302,7 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType: 'email'|'mobile'|'ding'|'alipay'|'wechatWork'|null = null
+  editType: 'email'|'mobile'|'ding'|'alipay'|'wechatWork'|'wechat'|null = null
   accountBtnLoading = false
   saveBtnLoading = false
 
@@ -317,6 +350,12 @@ export default class Settings extends Vue {
     }
   }
 
+  get wechatRules() {
+    return {
+      appId: [FORM_RULES.required],
+    }
+  }
+
   get wechatWorkRules() {
     return {
       corpId: [FORM_RULES.required],
@@ -331,6 +370,7 @@ export default class Settings extends Vue {
     registerOptions.ding.qrAppSecret = ''
     registerOptions.alipay.appPrivateKey = ''
     registerOptions.wechatWork.secret = ''
+    registerOptions.wechat.secret = ''
     this.registerOptions = registerOptions
   }
 
@@ -373,6 +413,9 @@ export default class Settings extends Vue {
           if (this.editType === 'wechatWork') {
             this.saveWechatWork()
           }
+          if (this.editType === 'wechat') {
+            this.saveWechat()
+          }
         }
       })
     }
@@ -401,6 +444,10 @@ export default class Settings extends Vue {
     }
     if (this.registerOptions!.account.allowWechatWorkQr && !this.registerOptions!.wechatWork.qrAppValid) {
       this.$Message.error('企业微信配置不正确')
+      return
+    }
+    if (this.registerOptions!.account.allowWechatQr && !this.registerOptions!.wechat.qrAppValid) {
+      this.$Message.error('微信配置不正确')
       return
     }
     this.saveAccount()
@@ -434,6 +481,11 @@ export default class Settings extends Vue {
   async saveWechatWork() {
     this.saveBtnLoading = true
     this.save(api.FreakConfig.patchWechatWork.bind(this, this.registerOptions))
+    this.saveBtnLoading = false
+  }
+  async saveWechat() {
+    this.saveBtnLoading = true
+    this.save(api.FreakConfig.patchWechat.bind(this, this.registerOptions))
     this.saveBtnLoading = false
   }
 }
