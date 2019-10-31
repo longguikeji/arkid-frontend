@@ -125,7 +125,7 @@ export default class UserBindThirdParty extends Vue {
     const {password, passwordAgain} = this.registerForm
     const passwordDiffCheck = {
       trigger: 'blur',
-      validator: (cb: Function) => {
+      validator: (rule: string, value: string, cb: Function) => {
         if (password !== passwordAgain) {
           cb(new Error('两次输入的密码不一致, 请重新输入'))
         } else {
@@ -175,19 +175,17 @@ export default class UserBindThirdParty extends Vue {
   }
 
   async sendSms() {
-    this.$refs.mobileForm.validate((isValid: boolean|void) => {
-      if (!isValid) {
-        return
+    this.$refs.mobileForm.validate( async (isValid: boolean|void) => {
+      if (isValid) {
+        const {mobile} = this.mobileForm
+        try {
+          await api.ApiService.sendBindSms(mobile)
+          this.$Message.success('成功发送短信')
+        } catch(err) {
+          this.$Message.error('发送短信失败')
+        }
       }
     })
-
-    const {mobile} = this.mobileForm
-    try {
-      await api.ApiService.sendBindSms(mobile)
-      this.$Message.success('成功发送短信')
-    } catch(err) {
-      this.$Message.error('发送短信失败')
-    }
   }
 
   submitSmsCode() {
@@ -245,26 +243,25 @@ export default class UserBindThirdParty extends Vue {
   }
 
   async submitRegisterForm() {
-    this.$refs.registerForm.validate((isValid: boolean|void) => {
-      if (!isValid) {
-        return
+    this.$refs.registerForm.validate( async (isValid: boolean|void) => {
+      if (isValid) {
+        const {username, password} = this.registerForm
+        const {smsToken, thirdPartyUserId} = this.mobileForm
+        try {
+          const user = await api.UCenter.registerWithThirdParty({
+            username,
+            password,
+            user_id: thirdPartyUserId,
+            sms_token: smsToken,
+          }, this.thirdParty)
+          this.user = user
+          this.$Message.success('注册成功')
+          this.doLogin()
+        } catch (e) {
+          this.$Message.error('注册失败')
+        }
       }
     })
-    const {username, password} = this.registerForm
-    const {smsToken, thirdPartyUserId} = this.mobileForm
-    try {
-      const user = await api.UCenter.registerWithThirdParty({
-        username,
-        password,
-        user_id: thirdPartyUserId,
-        sms_token: smsToken,
-      }, this.thirdParty)
-      this.user = user
-      this.$Message.success('注册成功')
-      this.doLogin()
-    } catch (e) {
-      this.$Message.error('注册失败')
-    }
   }
 
   async doLogin() {
