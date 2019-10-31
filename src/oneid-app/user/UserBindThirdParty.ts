@@ -164,10 +164,9 @@ export default class UserBindThirdParty extends Vue {
     }
 
     const data = await api.UCenter.getThirdPartyUserId(params, this.thirdParty)
-    const {third_party_id} = data
 
-    if (third_party_id) {
-      this.mobileForm.thirdPartyUserId = third_party_id
+    if ('third_party_id' in data) {
+      this.mobileForm.thirdPartyUserId = data.third_party_id
     } else {
       this.user = data
       this.doLogin()

@@ -147,6 +147,40 @@ export class FreakAlipay {
   }
 }
 
+export interface FreakQQInterface {
+  app_id: string,
+  redirect_uri: string,
+  app_key: string,
+  qr_app_valid: boolean,
+}
+
+export class FreakQQ {
+  static fromData(data: FreakQQInterface | null) {
+    const obj = new this()
+    if (data) {
+      obj.appId = data.app_id
+      obj.redirectUri = data.redirect_uri
+      obj.appKey = data.app_key
+      obj.qrAppValid = data.qr_app_valid
+    }
+    return obj
+  }
+
+  appId = ''
+  redirectUri = ''
+  appKey = ''
+  qrAppValid = false
+
+  toData() {
+    return {
+      app_id: this.appId,
+      redirect_uri: this.redirectUri,
+      app_key: this.appKey,
+      qr_app_valid: this.qrAppValid,
+    }
+  }
+}
+
 export interface FreakWechatInterface {
   appid: string,
   secret: string,
@@ -219,6 +253,7 @@ export interface FreakAccountInterface {
   allow_alipay_qr: boolean,
   allow_work_wechat_qr: boolean,
   allow_wechat_qr: boolean,
+  allow_qq_qr: boolean,
 }
 
 export class FreakAccount {
@@ -233,6 +268,7 @@ export class FreakAccount {
       obj.allowAlipayQr = data.allow_alipay_qr
       obj.allowWechatWorkQr = data.allow_work_wechat_qr
       obj.allowWechatQr = data.allow_wechat_qr
+      obj.allowQqQr = data.allow_qq_qr
     }
     return obj
   }
@@ -243,6 +279,7 @@ export class FreakAccount {
   allowAlipayQr = false
   allowWechatWorkQr = false
   allowWechatQr = false
+  allowQqQr = false
 
   toData() {
     return {
@@ -253,6 +290,7 @@ export class FreakAccount {
       allow_alipay_qr: this.allowAlipayQr,
       allow_work_wechat_qr: this.allowWechatWorkQr,
       allow_wechat_qr: this.allowWechatQr,
+      allow_qq_qr: this.allowQqQr,
     }
   }
 }
@@ -346,6 +384,7 @@ export interface FreakConfigInterface {
   alipay_config: FreakAlipayInterface | null,
   work_wechat_config: FreakWechatWorkInterface | null,
   wechat_config: FreakWechatInterface | null,
+  qq_config: FreakQQInterface | null,
 }
 
 export class FreakConfig {
@@ -361,6 +400,7 @@ export class FreakConfig {
       obj.alipay = FreakAlipay.fromData(data.alipay_config)
       obj.wechatWork = FreakWechatWork.fromData(data.work_wechat_config)
       obj.wechat = FreakWechat.fromData(data.wechat_config)
+      obj.qq = FreakQQ.fromData(data.qq_config)
     }
     return obj
   }
@@ -372,6 +412,7 @@ export class FreakConfig {
   alipay!: FreakAlipay
   wechatWork!: FreakWechatWork
   wechat!: FreakWechat
+  qq!: FreakQQ
 
   toData() {
     return {
@@ -383,25 +424,15 @@ export class FreakConfig {
       alipay_config: this.alipay ? this.alipay.toData() : null,
       work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
       wechat_config: this.wechat ? this.wechat.toData() : null,
+      qq_config: this.qq ? this.qq.toData() : null,
     }
   }
 }
 
 // ********************************************************************************************************
 
-export interface OrgInterface {
-  address: string
-  domain: string
-  fullname_cn: string
-  fullname_en: string
-  icon: string
-  color: string
-  name_cn: string
-  name_en: string
-}
-
 export class Org {
-  static fromData(data: OrgInterface|null) {
+  static fromData(data: TypeMetaInfo['company_config']) {
     const obj = new this()
 
     if (data) {
@@ -439,18 +470,8 @@ export class Org {
   }
 }
 
-export interface DingInterface {
-  app_key: string,
-  app_secret: string,
-  app_valid: boolean,
-  corp_id: string,
-  corp_secret: string,
-  corp_valid: boolean,
-  qr_app_id: string,
-}
-
 export class Ding {
-  static fromData(data: DingInterface|null) {
+  static fromData(data: TypeMetaInfo['ding_config']) {
     const obj = new this()
 
     if (data) {
@@ -484,13 +505,9 @@ export class Ding {
   }
 }
 
-export interface AlipayInterface {
-  app_id: string,
-}
-
 export class Alipay {
-  static fromData(data: AlipayInterface|null) {
-    const obj = new this
+  static fromData(data: TypeMetaInfo['alipay_config']) {
+    const obj = new this()
     if (data) {
       obj.appId = data.app_id
     }
@@ -504,13 +521,25 @@ export class Alipay {
   }
 }
 
-export interface WechatInterface {
-  appid: string,
+export class QQ {
+  static fromData(data: TypeMetaInfo['qq_config']) {
+    const obj = new this()
+    if (data) {
+      obj.appId = data.app_id
+    }
+    return obj
+  }
+  appId = ''
+  toData() {
+    return {
+      app_id: this.appId,
+    }
+  }
 }
 
 export class Wechat {
-  static fromData(data: WechatInterface|null) {
-    const obj = new this
+  static fromData(data: TypeMetaInfo['wechat_config']) {
+    const obj = new this()
     if (data) {
       obj.appId = data.appid
     }
@@ -524,14 +553,9 @@ export class Wechat {
   }
 }
 
-export interface WechatWorkInterface {
-  corp_id: string,
-  agent_id: string,
-}
-
 export class WechatWork {
-  static fromData(data: WechatWorkInterface|null) {
-    const obj = new this
+  static fromData(data: TypeMetaInfo['work_wechat_config']) {
+    const obj = new this()
     if (data) {
       obj.corpId = data.corp_id
       obj.agentId = data.agent_id
@@ -548,11 +572,8 @@ export class WechatWork {
   }
 }
 
-type AccountInfo = TypeMetaInfo['account_config']
-
 export class Account {
-
-  static fromData(data: AccountInfo) {
+  static fromData(data: TypeMetaInfo['account_config']) {
     const obj = new this()
     Object.assign(obj, data)
     return obj
@@ -576,6 +597,7 @@ export class Config {
     obj.alipay = Alipay.fromData(data.alipay_config)
     obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
     obj.wechat = Wechat.fromData(data.wechat_config)
+    obj.qq = QQ.fromData(data.qq_config)
     obj.org = Org.fromData(data.company_config)
     obj.account = Account.fromData(data.account_config)
     obj.sms = data.sms_config
@@ -589,12 +611,14 @@ export class Config {
   alipay!: Alipay
   wechatWork!: WechatWork
   wechat!: Wechat
+  qq!: QQ
 
   toData() {
     return {
       alipay_config: this.alipay ? this.alipay.toData() : null,
       work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
       wechat_config: this.wechat ? this.wechat.toData() : null,
+      qq_config: this.qq ? this.qq.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
       company_config: this.org ? this.org.toData() : null,
     }

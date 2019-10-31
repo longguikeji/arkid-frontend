@@ -42,7 +42,7 @@ import './UserCommon.less'
       </Form>
       <div
         class="ui-other-login-boundline"
-        v-if="qrAccount.support_ding_qr || qrAccount.support_alipay_qr"
+        v-if="qrAccount.support_ding_qr || qrAccount.support_alipay_qr || qrAccount.support_work_wechat_qr || qrAccount.support_wechat_qr || qrAccount.support_qq_qr"
       >
         <p>其他登录方式</p>
       </div>
@@ -82,7 +82,7 @@ import './UserCommon.less'
           <div
             :class="thirdPartyType === 'qq' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleQqPoptip"
-            v-show=""
+            v-show="qrAccount.support_qq_qr"
           >
             <img :src="qqImgPath"/>
             <p>qq</p>
@@ -344,11 +344,26 @@ export default class UserLogin extends Vue {
     })
     url += urlParams.toString()
 
+    this.thirdPartyType = ''
     window.location.href = url
   }
 
   toggleQqPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'qq' ? '' : 'qq'
+    const state = uuidHex()
+    sessionStorage.setItem('state', state)
+
+    let src = `https://graph.qq.com/oauth2.0/authorize?`
+    const srcParams = new URLSearchParams({
+      client_id: this.$app.metaInfo!.qq.appId,
+      response_type: 'code',
+      redirect_uri: this.redirectUri,
+      state,
+    })
+    src += srcParams.toString()
+
+    this.thirdPartyType = ''
+    window.location.href = src
   }
 
   toggleWechatWorkPoptip() {

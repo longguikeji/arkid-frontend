@@ -688,12 +688,12 @@ export class UCenter extends API {
     const url = `/siteapi/v1/${thirdParty}/qr/callback/`
     const resp = await http.post(url, q)
     const data = resp.data
-    if (!data.third_party_id) {
-      const {token} = data
-      window.localStorage.setItem(ONEID_TOKEN, token)
-      return model.User.exchangeCurrentUserData(data)
+    if ('third_party_id' in data) {
+      return data
     }
-    return data
+    const {token} = data
+    window.localStorage.setItem(ONEID_TOKEN, token)
+    return model.User.exchangeCurrentUserData(data)
   }
 
   static async bindMobileWithThirdParty(q: object, thirdParty: string) {
