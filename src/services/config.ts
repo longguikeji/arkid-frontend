@@ -153,7 +153,14 @@ export class FreakConfig {
 
   static async patchConfig(config: models.FreakConfig|null, editType: string) {
     const url = '/siteapi/oneid/config/'
-    editType = editType === 'wechatWork' ? 'work_wechat' : editType === 'mobile' ? 'sms' : editType
+
+    if (editType === 'wechatWork') {
+      editType = 'work_wechat'
+    }
+    if (editType === 'mobile') {
+      editType = 'sms'
+    }
+
     const configType = `${editType}_config`
     // tslint:disable-next-line:no-any
     const configData: any= config!.toData()

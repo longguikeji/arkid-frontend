@@ -274,9 +274,6 @@ const SMS_VENDORS = [
           <FormItem prop="appId" label="App Id：">
             <Input type="text" v-model="registerOptions.qq.appId" placeholder="填写 App Id"></Input>
           </FormItem>
-          <FormItem prop="redirectUri" label="Redirect Uri：">
-            <Input type="text" v-model="registerOptions.qq.redirectUri" placeholder="填写 Redirect Uri"></Input>
-          </FormItem>
           <FormItem prop="appKey" label="App Key：">
             <Input type="password"
               value="************"
@@ -390,7 +387,6 @@ export default class Settings extends Vue {
   get qqRules() {
     return {
       appId: [FORM_RULES.required],
-      redirectUri: [FORM_RULES.required],
     }
   }
 
@@ -450,35 +446,37 @@ export default class Settings extends Vue {
   }
 
   onSaveAccount() {
-    if (!this.registerOptions!.account.allowEmail && !this.registerOptions!.account.allowMobile) {
+    const options = this.registerOptions!
+    const {account} = options
+    if (!account.allowEmail && !account.allowMobile) {
       this.$Message.error('请选择一种注册类型')
       return
     }
-    if (this.registerOptions!.account.allowEmail && !this.registerOptions!.email.isValid) {
+    if (account.allowEmail && !options.email.isValid) {
       this.$Message.error('邮箱配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowMobile && !this.registerOptions!.mobile.isValid) {
+    if (account.allowMobile && !options.mobile.isValid) {
       this.$Message.error('短信配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowDingQr && !this.registerOptions!.ding.qrAppValid) {
+    if (account.allowDingQr && !options.ding.qrAppValid) {
       this.$Message.error('钉钉配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowAlipayQr && !this.registerOptions!.alipay.qrAppValid) {
+    if (account.allowAlipayQr && !options.alipay.qrAppValid) {
       this.$Message.error('支付宝配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowWechatWorkQr && !this.registerOptions!.wechatWork.qrAppValid) {
+    if (account.allowWechatWorkQr && !options.wechatWork.qrAppValid) {
       this.$Message.error('企业微信配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowWechatQr && !this.registerOptions!.wechat.qrAppValid) {
+    if (account.allowWechatQr && !options.wechat.qrAppValid) {
       this.$Message.error('微信配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowQqQr && !this.registerOptions!.qq.qrAppValid) {
+    if (account.allowQqQr && !options.qq.qrAppValid) {
       this.$Message.error('QQ配置不正确')
       return
     }

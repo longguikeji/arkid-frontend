@@ -159,7 +159,6 @@ export class FreakQQ {
     const obj = new this()
     if (data) {
       obj.appId = data.app_id
-      obj.redirectUri = data.redirect_uri
       obj.appKey = data.app_key
       obj.qrAppValid = data.qr_app_valid
     }
@@ -167,14 +166,12 @@ export class FreakQQ {
   }
 
   appId = ''
-  redirectUri = ''
   appKey = ''
   qrAppValid = false
 
   toData() {
     return {
       app_id: this.appId,
-      redirect_uri: this.redirectUri,
       app_key: this.appKey,
       qr_app_valid: this.qrAppValid,
     }
