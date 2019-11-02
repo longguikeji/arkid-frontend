@@ -121,6 +121,7 @@ export default class UserLogin extends Vue {
   user: User|null = null
 
   thirdPartyType: string = ''
+  uuid: string = ''
 
   dingImgPath: string = require('../../assets/icons/icon-login-dingding.png')
   wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png')
@@ -161,13 +162,7 @@ export default class UserLogin extends Vue {
     return window.location.origin + `/#/oneid/bindthirdparty/${this.thirdPartyType}`
   }
 
-  get qrUrlState() {
-    const state = uuidHex()
-    sessionStorage.setItem('state', state)
-    return state
-  }
-
-  get dingQrUrl() {
+  get dingAuthUrl() {
     let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
     const urlParams = new URLSearchParams({
       appid: this.$app.metaInfo!.ding.qrAppId,
@@ -183,7 +178,7 @@ export default class UserLogin extends Vue {
   get dingQrSrc() {
     let src = `https://login.dingtalk.com/login/qrcode.htm?`
     const srcParams = new URLSearchParams({
-      goto: this.dingQrUrl,
+      goto: this.dingAuthUrl,
       style: 'border:none;background-color:#FFF;',
     })
     src += srcParams.toString()
@@ -195,7 +190,7 @@ export default class UserLogin extends Vue {
     let src = `https://open.weixin.qq.com/connect/qrconnect?`
     const srcParams = new URLSearchParams({
       appid: this.$app.metaInfo!.wechat.appId,
-      state: this.qrUrlState,
+      state: this.uuid,
       redirect_uri: this.redirectUri,
       scope: 'snsapi_login',
       href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O2JvcmRlcjowO30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
@@ -204,12 +199,12 @@ export default class UserLogin extends Vue {
     return src
   }
 
-  get alipayQrSrc() {
+  get alipayAuthUrl() {
     let url = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
     const urlParams = new URLSearchParams({
       app_id: this.$app.metaInfo!.alipay.appId,
       scope: 'auth_base',
-      state: this.qrUrlState,
+      state: this.uuid,
       redirect_uri: this.redirectUri,
     })
     url += urlParams.toString()
@@ -217,13 +212,13 @@ export default class UserLogin extends Vue {
     return url
   }
 
-  get qqQrSrc() {
+  get qqAuthUrl() {
     let src = `https://graph.qq.com/oauth2.0/authorize?`
     const srcParams = new URLSearchParams({
       client_id: this.$app.metaInfo!.qq.appId,
       response_type: 'code',
       redirect_uri: this.redirectUri,
-      state: this.qrUrlState,
+      state: this.uuid,
     })
     src += srcParams.toString()
     return src
@@ -234,7 +229,7 @@ export default class UserLogin extends Vue {
     const srcParams = new URLSearchParams({
       appid: this.$app.metaInfo!.wechatWork.corpId,
       agentid: this.$app.metaInfo!.wechatWork.agentId,
-      state: this.qrUrlState,
+      state: this.uuid,
       redirect_uri: this.redirectUri,
       logintype: 'jssdk',
       href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
@@ -363,7 +358,10 @@ export default class UserLogin extends Vue {
   handleDingMessage(event: MessageEvent) {
     const loginTmpCode = event.data
     const origin = event.origin
-    const url = this.dingQrUrl + `&state=${this.qrUrlState}&loginTmpCode=${loginTmpCode}`
+
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+    const url = this.dingAuthUrl + `&state=${this.uuid}&loginTmpCode=${loginTmpCode}`
 
     if (origin === 'https://login.dingtalk.com') {
       window.location.href = url
@@ -373,6 +371,9 @@ export default class UserLogin extends Vue {
   toggleWechatPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechat' ? '' : 'wechat'
 
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+
     this.createQr({
       id: 'qrContainer',
       src: this.wechatQrSrc,
@@ -381,18 +382,30 @@ export default class UserLogin extends Vue {
 
   toggleAlipayPoptip() {
     this.thirdPartyType = 'alipay'
-    window.location.href = this.alipayQrSrc
+
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+
+    window.location.href = this.alipayAuthUrl
     this.thirdPartyType = ''
   }
 
   toggleQqPoptip() {
     this.thirdPartyType = 'qq'
-    window.location.href = this.qqQrSrc
+
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+
+    window.location.href = this.qqAuthUrl
     this.thirdPartyType = ''
   }
 
   toggleWechatWorkPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechatWork' ? '' : 'wechatWork'
+
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+
     this.createQr({
       id: 'qrContainer',
       src: this.wechatWorkQrSrc,
