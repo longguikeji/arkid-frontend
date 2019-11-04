@@ -1,0 +1,57 @@
+@Library('longgui-ci') _
+
+pipeline {
+    agent any
+
+    parameters {
+        string(name: "DEV_VERSION", description: "the tag of the image to release, like `dev-6-02dbc80`")
+        string(name: "PROD_VERSION", description: "the tag of the image,src to release, like `1.2.3`")
+    }
+
+    stages {
+        stage('pre') {
+            steps {
+                script {
+                    commonFunctions.sendDingTalk("pending", "开始构建")
+                }
+            }
+        }
+        stage("release docker image") {
+            steps {
+                echo "release docker image"
+                script {
+                    // params: String credentials, String registry
+                    commonFunctions.releaseStageImage('', '')
+                    commonFunctions.releaseProdImage('', '')
+                }
+            }
+        }
+        stage("release src") {
+            agent {
+                docker {
+                    image "longguikeji/ark-conventional-changelog:0.1.0"
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    commonFunctions.setSSHEnv()
+                    commonFunctions.releaseSRC()
+                }
+            }
+        }
+    }
+    post {
+        success {
+            script {
+                commonFunctions.sendDingTalk("success", "构建成功")
+            }
+        }
+        failure {
+            script {
+                commonFunctions.sendDingTalk("failure", "构建失败")
+            }
+        }
+    }
+}
+

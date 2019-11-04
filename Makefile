@@ -9,7 +9,7 @@ BASE_COMMIT_ID ?= ""
 
 ci:
 	docker build --build-arg base_commit_id="origin/master" \
-	-t harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION) .
+	-t harbor.longguikeji.com/ark-releases/arkid-frontend:$(VERSION) .
 
 test:
 	npm run test:unit
@@ -28,15 +28,17 @@ build: docker-dev-build
 docker-dev: docker-dev-build docker-dev-push
 
 docker-dev-build:
-	docker build -t harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION) .
+	docker build -t harbor.longguikeji.com/ark-releases/arkid-frontend:$(VERSION) .
 
 docker-dev-push:
-	docker push harbor.longguikeji.com/ark-releases/arkid-fe:$(VERSION)
+	docker push harbor.longguikeji.com/ark-releases/arkid-frontend:$(VERSION)
 
 docker-prod: docker-prod-build docker-prod-push
 
 docker-prod-build:
-	docker build -t longguikeji/arkid-fe:$(VERSION) .
+	docker build -t  harbor.longguikeji.com/ark-releases/arkid-frontend:$(VERSION) .
 
 docker-prod-push:
-	docker push longguikeji/arkid-fe:$(VERSION)
+	docker push harbor.longguikeji.com/ark-releases/arkid-frontend:$(VERSION)
+
+include custom.Makefile

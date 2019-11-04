@@ -1,3 +1,5 @@
+# template start(模版内容标志行，不可删除)
+# typescript项目的基本Dockerfile模版，主要包含test，lint，build相关检查，项目需要根据自身情况修改该模版
 FROM node:8.15 AS build_deps
 WORKDIR /workspace
 COPY *.json *.js *.lock ./
@@ -21,10 +23,4 @@ ARG META
 RUN echo $META > meta.txt \
     && npm run build
 
-FROM nginx:alpine
-ENV TZ Asia/Chongqing
-COPY --from=build /workspace/dist /app/fe/_/s/
-COPY --from=build /workspace/meta.txt /app/fe/_/s/meta.txt
-ADD etc/nginx.default.conf /etc/nginx/conf.d/default.conf
-
-CMD nginx -g "daemon off;"
+# custom start(自定义内容标志行与下面空行，不可删除)
