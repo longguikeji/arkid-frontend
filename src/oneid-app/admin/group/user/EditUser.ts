@@ -1,11 +1,11 @@
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import {cloneDeep} from 'lodash';
-import * as api from '@/services/oneid';
-import * as model from '@/models/oneid';
-import {FORM_RULES} from '@/utils';
+import * as model from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {FORM_RULES} from '@/utils'
+import {cloneDeep} from 'lodash'
+import {Component, Prop, Vue} from 'vue-property-decorator'
 
-import ChooseNode from '@/oneid-app/comps/choose/Choose';
-import './EditUser.less';
+import ChooseNode from '@/oneid-app/comps/choose/Choose'
+import './EditUser.less'
 
 @Component({
   components: {
@@ -82,157 +82,157 @@ import './EditUser.less';
 export default class EditUser extends Vue {
   $refs!: {
     chooseNode: ChooseNode,
-  };
+  }
 
-  @Prop({type: model.User}) user?: model.User;
-  @Prop({type: model.Node}) node?: model.Node;
+  @Prop({type: model.User}) user?: model.User
+  @Prop({type: model.Node}) node?: model.Node
 
-  metaNodes: model.Node[] = [];
+  metaNodes: model.Node[] = []
 
-  showDrawer = false;
-  form: model.User|null = null;
-  isSaving = false;
+  showDrawer = false
+  form: model.User|null = null
+  isSaving = false
 
   chooseNode: {
     metaNode: model.Node;
     title: string;
     multiple: boolean;
     checkedIds: string[];
-  }|null = null;
+  }|null = null
 
   get rules() {
     const mobileOrEmailRquiredRule = {
       trigger: 'blur',
-      validator: (rule: any, value: string, cb: any) => {
-        if (this.form!.mobile || this.form!.privateEmail) {
-          cb();
+      validator: (rule: string, value: string, cb: Function) => {
+        if (this.form!.mobile || this.form!.email) {
+          cb()
         } else {
-          cb(new Error('手机、邮箱不能同时为空'));
+          cb(new Error('手机、邮箱不能同时为空'))
         }
       },
-    };
+    }
 
     return {
       username: [FORM_RULES.required, FORM_RULES.username],
       name: [FORM_RULES.required, FORM_RULES.name],
       mobile: [FORM_RULES.mobile, mobileOrEmailRquiredRule],
       email: [FORM_RULES.email, mobileOrEmailRquiredRule],
-    };
+    }
   }
 
   get isNew() {
-    return !this.form!.id;
+    return !this.form!.id
   }
 
   initForm() {
-    const {user, node} = this;
+    const {user, node} = this
     if (user) {
-      this.form = cloneDeep(user);
+      this.form = cloneDeep(user)
     } else {
-      const form = new model.User();
-      form.nodes = node ? [node] : [];
-      this.form = form;
+      const form = new model.User()
+      form.nodes = node ? [node] : []
+      this.form = form
     }
   }
 
   async show() {
-    this.showDrawer = true;
+    this.showDrawer = true
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children];
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 
   doShowModal(metaNode: model.Node) {
     const checkedIds = this.form!.nodes!
       .filter(n => n.nodeSubject === metaNode.nodeSubject)
-      .map(i => i.id);
+      .map(i => i.id)
 
     this.chooseNode = {
       metaNode,
       title: `选择${metaNode.name}`,
       multiple: true,
       checkedIds,
-    };
-    this.$nextTick(() => this.$refs.chooseNode.show());
+    }
+    this.$nextTick(() => this.$refs.chooseNode.show())
   }
 
   onChooseNodeOk(checkedNodes: model.Node[]) {
-    const {metaNode} = this.chooseNode!;
-    const {nodes} = this.form!;
+    const {metaNode} = this.chooseNode!
+    const {nodes} = this.form!
 
     this.form!.nodes = [
       ...nodes!.filter((i: model.Node) => i.nodeSubject !== metaNode!.nodeSubject),
       ...checkedNodes,
-    ];
+    ]
   }
 
   async remove() {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.User.remove(this.form);
-      this.$Loading.finish();
-      this.$emit('on-save');
-      this.showDrawer = false;
+      await api.User.remove(this.form)
+      this.$Loading.finish()
+      this.$emit('on-save')
+      this.showDrawer = false
     } catch (e) {
-      this.$Loading.error();
-      this.$emit('on-save');
+      this.$Loading.error()
+      this.$emit('on-save')
     }
   }
 
   async doSave(isNext: boolean = false) {
-    const isValid = await this.$refs.form.validate();
+    const isValid = await this.$refs.form.validate()
     if (!isValid) {
-      return;
+      return
     }
 
-    this.$Loading.start();
+    this.$Loading.start()
     try {
       if (this.isNew) {
-        await api.User.create(this.form!);
+        await api.User.create(this.form!)
       } else {
-        await api.User.partialUpdate(this.form!);
+        await api.User.partialUpdate(this.form!)
       }
-      this.$Loading.finish();
-      this.$Message.success('保存成功');
+      this.$Loading.finish()
+      this.$Message.success('保存成功')
 
       if (isNext) {
-        this.initForm();
+        this.initForm()
       } else {
-        this.showDrawer = false;
+        this.showDrawer = false
       }
     } catch (e) {
       if (e.status === 400) {
         if (e.data.username && e.data.username.includes('this value has be used')) {
-          this.$Message.error('保存失败：用户名被占用');
+          this.$Message.error('保存失败：用户名被占用')
         }
         if (e.data.mobile && e.data.mobile.includes('existed')) {
-          this.$Message.error('保存失败：手机号被占用');
+          this.$Message.error('保存失败：手机号被占用')
         }
         if (e.data.email && e.data.email.includes('existed')) {
-          this.$Message.error('保存失败：邮箱被占用');
+          this.$Message.error('保存失败：邮箱被占用')
         }
       }
-      this.$Loading.error();
+      this.$Loading.error()
     }
 
-    this.$emit('on-save');
+    this.$emit('on-save')
   }
 
   async doSaveAndContinue() {
-    this.doSave(true);
+    this.doSave(true)
   }
 
   doCancel() {
-    this.showDrawer = false;
+    this.showDrawer = false
   }
 
   created() {
-    this.initForm();
+    this.initForm()
   }
 
   mounted() {
-    this.loadMetaNodes();
+    this.loadMetaNodes()
   }
 }
