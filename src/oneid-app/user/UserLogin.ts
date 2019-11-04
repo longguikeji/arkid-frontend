@@ -42,7 +42,7 @@ import './UserCommon.less'
       </Form>
       <div
         class="ui-other-login-boundline"
-        v-if="qrAccount.support_ding_qr || qrAccount.support_alipay_qr"
+        v-if="isThirdPartyExist"
       >
         <p>其他登录方式</p>
       </div>
@@ -82,7 +82,7 @@ import './UserCommon.less'
           <div
             :class="thirdPartyType === 'qq' ? 'ui-qr-btn-chosen' : 'ui-qr-btn-unchose'"
             @click="toggleQqPoptip"
-            v-show=""
+            v-show="qrAccount.support_qq_qr"
           >
             <img :src="qqImgPath"/>
             <p>qq</p>
@@ -121,6 +121,7 @@ export default class UserLogin extends Vue {
   user: User|null = null
 
   thirdPartyType: string = ''
+  uuid: string = ''
 
   dingImgPath: string = require('../../assets/icons/icon-login-dingding.png')
   wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png')
@@ -149,12 +150,93 @@ export default class UserLogin extends Vue {
     return this.$app.metaInfo!.account
   }
 
+  get isThirdPartyExist() {
+    const account = this.qrAccount
+    return account.support_ding_qr
+      || account.support_alipay_qr
+      || account.support_work_wechat_qr
+      || account.support_wechat_qr
+      || account.support_qq_qr
+  }
   get redirectUri() {
     return window.location.origin + `/#/oneid/bindthirdparty/${this.thirdPartyType}`
   }
 
-  mounted() {
-    this.loginStateCheck()
+  get dingAuthUrl() {
+    let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
+    const urlParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.ding.qrAppId,
+      response_type: 'code',
+      scope: 'snsapi_login',
+      redirect_uri: this.redirectUri,
+    })
+    url += urlParams.toString()
+
+    return url
+  }
+
+  get dingQrSrc() {
+    let src = `https://login.dingtalk.com/login/qrcode.htm?`
+    const srcParams = new URLSearchParams({
+      goto: this.dingAuthUrl,
+      style: 'border:none;background-color:#FFF;',
+    })
+    src += srcParams.toString()
+
+    return src
+  }
+
+  get wechatQrSrc() {
+    let src = `https://open.weixin.qq.com/connect/qrconnect?`
+    const srcParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.wechat.appId,
+      state: this.uuid,
+      redirect_uri: this.redirectUri,
+      scope: 'snsapi_login',
+      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O2JvcmRlcjowO30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
+    })
+    src += srcParams.toString()
+    return src
+  }
+
+  get alipayAuthUrl() {
+    let url = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
+    const urlParams = new URLSearchParams({
+      app_id: this.$app.metaInfo!.alipay.appId,
+      scope: 'auth_base',
+      state: this.uuid,
+      redirect_uri: this.redirectUri,
+    })
+    url += urlParams.toString()
+
+    return url
+  }
+
+  get qqAuthUrl() {
+    let src = `https://graph.qq.com/oauth2.0/authorize?`
+    const srcParams = new URLSearchParams({
+      client_id: this.$app.metaInfo!.qq.appId,
+      response_type: 'code',
+      redirect_uri: this.redirectUri,
+      state: this.uuid,
+    })
+    src += srcParams.toString()
+    return src
+  }
+
+  get wechatWorkQrSrc() {
+    let src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`
+    const srcParams = new URLSearchParams({
+      appid: this.$app.metaInfo!.wechatWork.corpId,
+      agentid: this.$app.metaInfo!.wechatWork.agentId,
+      state: this.uuid,
+      redirect_uri: this.redirectUri,
+      logintype: 'jssdk',
+      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
+    })
+    src += srcParams.toString()
+
+    return src
   }
 
   get loginType() {
@@ -167,6 +249,10 @@ export default class UserLogin extends Vue {
       loginTypes.push('手机号')
     }
     return loginTypes
+  }
+
+  mounted() {
+    this.loginStateCheck()
   }
 
   loginStateCheck() {
@@ -257,25 +343,9 @@ export default class UserLogin extends Vue {
   }
 
   showDingQrCode() {
-    let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
-    const urlParams = new URLSearchParams({
-      appid: this.$app.metaInfo!.ding.qrAppId,
-      response_type: 'code',
-      scope: 'snsapi_login',
-      redirect_uri: this.redirectUri,
-    })
-    url += urlParams.toString()
-
-    let src = `https://login.dingtalk.com/login/qrcode.htm?`
-    const srcParams = new URLSearchParams({
-      goto: url,
-      style: 'border:none;background-color:#FFF;',
-    })
-    src += srcParams.toString()
-
     this.createQr({
       id:'qrContainer',
-      src,
+      src: this.dingQrSrc,
     })
 
     this.addDingEvent()
@@ -289,19 +359,9 @@ export default class UserLogin extends Vue {
     const loginTmpCode = event.data
     const origin = event.origin
 
-    const state = uuidHex()
-    sessionStorage.setItem('state', state)
-
-    let url = `https://oapi.dingtalk.com/connect/oauth2/sns_authorize?`
-    const urlParams = new URLSearchParams({
-      appid: this.$app.metaInfo!.ding.qrAppId,
-      response_type: 'code',
-      scope: 'snsapi_login',
-      state,
-      redirect_uri: this.redirectUri,
-      loginTmpCode,
-    })
-    url += urlParams.toString()
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+    const url = this.dingAuthUrl + `&state=${this.uuid}&loginTmpCode=${loginTmpCode}`
 
     if (origin === 'https://login.dingtalk.com') {
       window.location.href = url
@@ -311,66 +371,44 @@ export default class UserLogin extends Vue {
   toggleWechatPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechat' ? '' : 'wechat'
 
-    const state = uuidHex()
-    sessionStorage.setItem('state', state)
-
-    let src = `https://open.weixin.qq.com/connect/qrconnect?`
-    const srcParams = new URLSearchParams({
-      appid: this.$app.metaInfo!.wechat.appId,
-      state,
-      redirect_uri: this.redirectUri,
-      scope: 'snsapi_login',
-      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O2JvcmRlcjowO30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
-    })
-    src += srcParams.toString()
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
 
     this.createQr({
       id: 'qrContainer',
-      src,
+      src: this.wechatQrSrc,
     })
   }
 
   toggleAlipayPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'alipay' ? '' : 'alipay'
-    const state = uuidHex()
-    sessionStorage.setItem('state', state)
+    this.thirdPartyType = 'alipay'
 
-    let url = `https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?`
-    const urlParams = new URLSearchParams({
-      app_id: this.$app.metaInfo!.alipay.appId,
-      scope: 'auth_base',
-      state,
-      redirect_uri: this.redirectUri,
-    })
-    url += urlParams.toString()
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
 
-    window.location.href = url
+    window.location.href = this.alipayAuthUrl
+    this.thirdPartyType = ''
   }
 
   toggleQqPoptip() {
-    this.thirdPartyType = this.thirdPartyType === 'qq' ? '' : 'qq'
+    this.thirdPartyType = 'qq'
+
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
+
+    window.location.href = this.qqAuthUrl
+    this.thirdPartyType = ''
   }
 
   toggleWechatWorkPoptip() {
     this.thirdPartyType = this.thirdPartyType === 'wechatWork' ? '' : 'wechatWork'
 
-    const state = uuidHex()
-    sessionStorage.setItem('state', state)
-
-    let src = `https://open.work.weixin.qq.com/wwopen/sso/qrConnect?`
-    const srcParams = new URLSearchParams({
-      appid: this.$app.metaInfo!.wechatWork.corpId,
-      agentid: this.$app.metaInfo!.wechatWork.agentId,
-      state,
-      redirect_uri: this.redirectUri,
-      logintype: 'jssdk',
-      href: 'data:text/css;base64,QGNoYXJzZXQgIlVURi04IjsKLmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIzMHB4O30KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lO30KLmltcG93ZXJCb3ggLmluZm8ge3dpZHRoOiAyMzBweDt9Ci5zdGF0dXNfaWNvbiB7ZGlzcGxheTogbm9uZX0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=',
-    })
-    src += srcParams.toString()
+    this.uuid = uuidHex()
+    sessionStorage.setItem('state', this.uuid)
 
     this.createQr({
       id: 'qrContainer',
-      src,
+      src: this.wechatWorkQrSrc,
     })
   }
 

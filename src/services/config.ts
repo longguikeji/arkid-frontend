@@ -30,6 +30,10 @@ export interface TypeMetaInfo {
     app_id: string;
   }
 
+  qq_config: {
+    app_id: string;
+  }
+
   wechat_config: {
     appid: string;
   }
@@ -40,11 +44,15 @@ export interface TypeMetaInfo {
   }
 
   account_config: {
-    email_register: boolean;
-    mobile_register: boolean;
-    username_register: boolean;
-    email_reset_pwd: boolean;
-    mobile_reset_pwd: boolean;
+    support_alipay_qr: boolean;
+    support_qq_qr: boolean;
+    support_wechat_qr: boolean;
+    support_work_wechat_qr: boolean;
+    support_ding_qr: boolean;
+    support_mobile_register: boolean;
+    support_email_register: boolean;
+    support_mobile: boolean;
+    support_email: boolean;
   }
 }
 
@@ -143,39 +151,16 @@ export class FreakConfig {
     return http.get(this.url()).then(x => models.FreakConfig.fromData(x.data))
   }
 
-  static async patchEmail(config: models.FreakConfig|null) {
+  static async patchConfig(config: models.FreakConfig|null, editType: string) {
     const url = '/siteapi/oneid/config/'
-    const data = {email_config: config!.toData().email_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchMobile(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {sms_config: config!.toData().sms_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchAccount(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {account_config: config!.toData().account_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchDing(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {ding_config: config!.toData().ding_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchAlipay(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {alipay_config: config!.toData().alipay_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchWechatWork(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {work_wechat_config: config!.toData().work_wechat_config}
-    return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
-  }
-  static async patchWechat(config: models.FreakConfig|null) {
-    const url = '/siteapi/oneid/config/'
-    const data = {wechat_config: config!.toData().wechat_config}
+
+    const configPart = editType === 'wechatWork' ? 'work_wechat'
+      : editType === 'mobile' ? 'sms' : editType
+
+    const configType = `${configPart}_config`
+    // tslint:disable-next-line:no-any
+    const configData: any= config!.toData()
+    const data = {[configType]: configData[configType]}
     return http.patch(url, data).then(x => models.FreakConfig.fromData(x.data))
   }
 }

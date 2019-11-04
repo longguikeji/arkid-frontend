@@ -65,6 +65,18 @@ const SMS_VENDORS = [
           </div>
 
           <div>
+            <Checkbox v-model="registerOptions.account.allowQqQr" size="large" class="description">
+              QQ
+            </Checkbox>
+            <div class="link" @click="editType = 'qq'">
+              QQ配置
+            </div>
+            <div :class="\`tag\${registerOptions.qq.qrAppValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.qq.qrAppValid ? '已完成' : '未完成' }}
+            </div>
+          </div>
+
+          <div>
             <Checkbox v-model="registerOptions.account.allowWechatQr" size="large" class="description">
               微信
             </Checkbox>
@@ -148,6 +160,7 @@ const SMS_VENDORS = [
            editType === 'ding' ? '钉钉' :
            editType === 'wechatWork' ? '企业微信' :
            editType === 'wechat' ? '微信' :
+           editType === 'qq' ? 'QQ' :
            editType === 'alipay' ? '支付宝' : '短信'}}</div>
       <div class="body">
         <Form
@@ -251,6 +264,26 @@ const SMS_VENDORS = [
         </Form>
 
         <Form
+          v-if="editType === 'qq'"
+          ref="qq"
+          :model="registerOptions.qq"
+          :rules="qqRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="appId" label="App Id：">
+            <Input type="text" v-model="registerOptions.qq.appId" placeholder="填写 App Id"></Input>
+          </FormItem>
+          <FormItem prop="appKey" label="App Key：">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.qq.appKey"
+              @on-blur="(e) => registerOptions.qq.appKey = e.target.value"
+              placeholder="填写 App Key"></Input>
+          </FormItem>
+        </Form>
+
+        <Form
           v-if="editType === 'wechat'"
           ref="wechat"
           :model="registerOptions.wechat"
@@ -302,7 +335,7 @@ const SMS_VENDORS = [
   `,
 })
 export default class Settings extends Vue {
-  editType: 'email'|'mobile'|'ding'|'alipay'|'wechatWork'|'wechat'|null = null
+  editType: 'email'|'mobile'|'ding'|'alipay'|'wechatWork'|'wechat'|'qq'|null = null
   accountBtnLoading = false
   saveBtnLoading = false
 
@@ -347,6 +380,13 @@ export default class Settings extends Vue {
   get alipayRules() {
     return {
       appId: [FORM_RULES.required],
+      alipayPublicKey: [FORM_RULES.required],
+    }
+  }
+
+  get qqRules() {
+    return {
+      appId: [FORM_RULES.required],
     }
   }
 
@@ -371,6 +411,7 @@ export default class Settings extends Vue {
     registerOptions.alipay.appPrivateKey = ''
     registerOptions.wechatWork.secret = ''
     registerOptions.wechat.secret = ''
+    registerOptions.qq.appKey = ''
     this.registerOptions = registerOptions
   }
 
@@ -398,94 +439,52 @@ export default class Settings extends Vue {
       const ref = this.$refs[this.editType] as Form
       ref.validate((valid: boolean|void) => {
         if (valid) {
-          if (this.editType === 'email') {
-            this.saveEmail()
-          }
-          if (this.editType === 'mobile') {
-            this.saveMobile()
-          }
-          if (this.editType === 'ding') {
-            this.saveDing()
-          }
-          if (this.editType === 'alipay') {
-            this.saveAlipay()
-          }
-          if (this.editType === 'wechatWork') {
-            this.saveWechatWork()
-          }
-          if (this.editType === 'wechat') {
-            this.saveWechat()
-          }
+          this.saveConfig(this.editType as string)
         }
       })
     }
   }
 
   onSaveAccount() {
-    if (!this.registerOptions!.account.allowEmail && !this.registerOptions!.account.allowMobile) {
+    const options = this.registerOptions!
+    const {account} = options
+    if (!account.allowEmail && !account.allowMobile) {
       this.$Message.error('请选择一种注册类型')
       return
     }
-    if (this.registerOptions!.account.allowEmail && !this.registerOptions!.email.isValid) {
+    if (account.allowEmail && !options.email.isValid) {
       this.$Message.error('邮箱配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowMobile && !this.registerOptions!.mobile.isValid) {
+    if (account.allowMobile && !options.mobile.isValid) {
       this.$Message.error('短信配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowDingQr && !this.registerOptions!.ding.qrAppValid) {
+    if (account.allowDingQr && !options.ding.qrAppValid) {
       this.$Message.error('钉钉配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowAlipayQr && !this.registerOptions!.alipay.qrAppValid) {
+    if (account.allowAlipayQr && !options.alipay.qrAppValid) {
       this.$Message.error('支付宝配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowWechatWorkQr && !this.registerOptions!.wechatWork.qrAppValid) {
+    if (account.allowWechatWorkQr && !options.wechatWork.qrAppValid) {
       this.$Message.error('企业微信配置不正确')
       return
     }
-    if (this.registerOptions!.account.allowWechatQr && !this.registerOptions!.wechat.qrAppValid) {
+    if (account.allowWechatQr && !options.wechat.qrAppValid) {
       this.$Message.error('微信配置不正确')
       return
     }
-    this.saveAccount()
+    if (account.allowQqQr && !options.qq.qrAppValid) {
+      this.$Message.error('QQ配置不正确')
+      return
+    }
+    this.saveConfig('account')
   }
-
-  async saveEmail() {
+  async saveConfig(type: string) {
     this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchEmail.bind(this, this.registerOptions))
-    this.saveBtnLoading = false
-  }
-  async saveMobile() {
-    this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchMobile.bind(this, this.registerOptions))
-    this.saveBtnLoading = false
-  }
-  async saveAccount() {
-    this.accountBtnLoading = true
-    this.save(api.FreakConfig.patchAccount.bind(this, this.registerOptions))
-    this.accountBtnLoading = false
-  }
-  async saveDing() {
-    this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchDing.bind(this, this.registerOptions))
-    this.saveBtnLoading = false
-  }
-  async saveAlipay() {
-    this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchAlipay.bind(this, this.registerOptions))
-    this.saveBtnLoading = false
-  }
-  async saveWechatWork() {
-    this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchWechatWork.bind(this, this.registerOptions))
-    this.saveBtnLoading = false
-  }
-  async saveWechat() {
-    this.saveBtnLoading = true
-    this.save(api.FreakConfig.patchWechat.bind(this, this.registerOptions))
+    this.save(api.FreakConfig.patchConfig.bind(this, this.registerOptions, type))
     this.saveBtnLoading = false
   }
 }
