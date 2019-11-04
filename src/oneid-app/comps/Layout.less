@@ -35,6 +35,19 @@
       display: inline-flex;
       flex: 2;
       justify-content: center;
+
+      .ivu-menu-item-active::after {
+        display: none;
+      }
+
+      .ivu-menu-item-active::before {
+        position: absolute;
+        bottom: -2px;
+        width: 24px;
+        height: 5px;
+        background-color: @primary-color;
+        content: '';
+      }
     }
 
     .header-right {
