@@ -1,8 +1,7 @@
-import { Vue, Component, Watch } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import {App, OAuthData} from '@/models/oneid';
-import './AddApp.less';
-
+import {App, OAuthData} from '@/models/oneid'
+import * as api from '@/services/oneid'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import './AddApp.less'
 
 @Component({
   template: html`
@@ -113,85 +112,84 @@ import './AddApp.less';
 })
 
 export default class AddApp extends Vue {
-  showAdd: boolean = false;
-  app: App|null = null;
+  showAdd: boolean = false
+  app: App|null = null
 
   get rules() {
-    const required = {required: true, message: '必填项', trigger: 'blur'};
+    const required = {required: true, message: '必填项', trigger: 'blur'}
     return {
       'name': [required],
       'oauth_app.redirect_uris': [required],
-    };
+    }
   }
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP'];
-  selectedAuthTypes?: string[] = [];
-  clientTypes = ['confidential', 'public'];
-  grantTypes = ['authorization-code', 'implicit', 'password', 'client'];
-  isNew: boolean = true;
-  isFirst: boolean = true;
+  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP']
+  selectedAuthTypes?: string[] = []
+  clientTypes = ['confidential', 'public']
+  grantTypes = ['authorization-code', 'implicit', 'password', 'client']
+  isNew: boolean = true
+  isFirst: boolean = true
 
   constructor() {
-    super();
-    const newApp = new App();
-    newApp.oauth_app = new OAuthData();
-    this.app = newApp;
+    super()
+    const newApp = new App()
+    newApp.oauth_app = new OAuthData()
+    this.app = newApp
   }
 
   @Watch('app.auth_protocols', {deep: true})
   onProtocolsChange(newVal: string[], oldVal: string[]) {
-    const oauthType = this.authTypes[0];
-    const addOauth = newVal.includes(oauthType) && !oldVal.includes(oauthType);
-    const removeOauth = !newVal.includes(oauthType) && oldVal.includes(oauthType);
+    const oauthType = this.authTypes[0]
+    const addOauth = newVal.includes(oauthType) && !oldVal.includes(oauthType)
+    const removeOauth = !newVal.includes(oauthType) && oldVal.includes(oauthType)
     if (addOauth) {
       if (this.isFirst === true){
         this.isFirst = false
         return
       }
-      this.app!.oauth_app = new OAuthData();
+      this.app!.oauth_app = new OAuthData()
     }
     if (removeOauth) {
-      this.app!.oauth_app = null;
+      this.app!.oauth_app = null
     }
   }
 
   showModal(app?: App|null) {
     if (app) {
-      this.app = app;
-      this.isNew = false;
+      this.app = app
+      this.isNew = false
       this.isFirst = true
     } else {
-      this.isNew = true;
+      this.isNew = true
     }
-    this.showAdd = true;
+    this.showAdd = true
   }
 
   resetLogo() {
-    this.app!.logo = '';
+    this.app!.logo = ''
   }
 
   onUploadSuccess(resp: {file_name: string}) {
-    this.app!.logo = resp.file_name;
+    this.app!.logo = resp.file_name
   }
 
   get upload() {
     return {
       headers: api.File.headers(),
       action: api.File.baseUrl(),
-    };
+    }
   }
   get siteLogo() {
-    const icon = this.app!.logo;
-    return icon ? api.File.url(icon) : require('@/assets/icons/auto/defaultapp.svg');
+    const icon = this.app!.logo
+    return icon ? api.File.url(icon) : require('@/assets/icons/auto/defaultapp.svg')
   }
 
   async create() {
     try {
-      await api.App.create(this.getAppParams());
-      this.$Message.success('创建成功');
+      await api.App.create(this.getAppParams())
+      this.$Message.success('创建成功')
     } catch(err) {
-      console.log(err);
-      this.$Message.error('创建失败');
-      return;
+      this.$Message.error('创建失败')
+      return
     }
   }
 
@@ -202,76 +200,74 @@ export default class AddApp extends Vue {
       logo: this.app!.logo,
       auth_protocols: this.app!.auth_protocols,
       index: this.app!.index,
-    };
+    }
 
     if (this.app!.auth_protocols.includes(this.authTypes[0])) {
-      params['oauth_app'] = {
+      params.oauth_app = {
         redirect_uris: this.app!.oauth_app!.redirect_uris,
         client_type: this.app!.oauth_app!.client_type,
         authorization_grant_type: this.app!.oauth_app!.authorization_grant_type,
-      };
+      }
     } else {
-      params['oauth_app'] = null;
+      params.oauth_app = null
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[1])) {
-      params['ldap_app'] = new Object();
+      params.ldap_app = new Object()
     } else {
-      params['ldap_app'] = null;
+      params.ldap_app = null
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[2])) {
-      params['http_app'] = new Object();
+      params.http_app = new Object()
     } else {
-      params['http_app'] = null;
+      params.http_app = null
     }
 
-    return params;
+    return params
   }
 
   async edit() {
     try {
-      await api.App.partialUpdate(this.app!.uid, this.getAppParams());
-      this.$Message.success('保存成功');
+      await api.App.partialUpdate(this.app!.uid, this.getAppParams())
+      this.$Message.success('保存成功')
     } catch(err) {
-      console.log(err);
-      this.$Message.error('保存失败');
-      return;
+      this.$Message.error('保存失败')
+      return
     }
   }
 
   async remove() {
-    const {uid: id} = this.app;
+    const {uid: id} = this.app
     try {
-      await api.App.remove(id);
-      this.$Message.success('删除成功');
+      await api.App.remove(id)
+      this.$Message.success('删除成功')
     } catch(err) {
-      console.log(err);
-      this.$Message.error('删除失败');
-      return;
+      this.$Message.error('删除失败')
+      return
     }
-    this.$emit('on-change');
-    this.showAdd = false;
+    this.$emit('on-change')
+    this.showAdd = false
   }
 
   async doSave() {
-    const valid = await this.$refs.form.validate();
+    const valid = await this.$refs.form.validate()
     if (!valid) {
-      this.$Message.error('请正确填写表单');
-      return;
+      this.$Message.error('请正确填写表单')
+      return
     }
 
     if (this.isNew) {
-      await this.create();
+      await this.create()
     } else {
-      await this.edit();
+      await this.edit()
     }
-    this.$emit('on-change');
-    this.showAdd = false;
+    this.$emit('on-change')
+    this.showAdd = false
   }
 
   doCancel() {
-    this.showAdd = false;
-    this.$emit('on-change');
+    this.showAdd = false
+    this.$emit('on-change')
   }
 }
