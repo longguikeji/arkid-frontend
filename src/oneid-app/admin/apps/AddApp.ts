@@ -128,6 +128,7 @@ export default class AddApp extends Vue {
   clientTypes = ['confidential', 'public'];
   grantTypes = ['authorization-code', 'implicit', 'password', 'client'];
   isNew: boolean = true;
+  isFirst: boolean = true;
 
   constructor() {
     super();
@@ -142,6 +143,10 @@ export default class AddApp extends Vue {
     const addOauth = newVal.includes(oauthType) && !oldVal.includes(oauthType);
     const removeOauth = !newVal.includes(oauthType) && oldVal.includes(oauthType);
     if (addOauth) {
+      if (this.isFirst === true){
+        this.isFirst = false
+        return
+      }
       this.app!.oauth_app = new OAuthData();
     }
     if (removeOauth) {
@@ -153,6 +158,7 @@ export default class AddApp extends Vue {
     if (app) {
       this.app = app;
       this.isNew = false;
+      this.isFirst = true
     } else {
       this.isNew = true;
     }
