@@ -8,13 +8,13 @@
   &--header {
     z-index: 901;
     display: flex;
-    align-items: center;
     flex: none;
-    height: 64px;
-    background-color: @bg-2;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.4);
+    align-items: center;
     min-width: 1200px;
+    height: 64px;
     overflow-x: auto;
+    background-color: @bg-2;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.4);
 
     .header-left {
       display: inline-flex;
@@ -24,8 +24,8 @@
 
       .site-logo {
         .org-name {
-          font-size: 14px;
           font-weight: 400;
+          font-size: 14px;
           color: @color-5;
         }
       }
@@ -35,19 +35,32 @@
       display: inline-flex;
       flex: 2;
       justify-content: center;
+
+      .ivu-menu-item-active::after {
+        display: none;
+      }
+
+      .ivu-menu-item-active::before {
+        position: absolute;
+        bottom: -2px;
+        width: 24px;
+        height: 5px;
+        background-color: @primary-color;
+        content: '';
+      }
     }
 
     .header-right {
       display: inline-flex;
       flex: 1;
-      align-items: center;
       justify-content: flex-end;
+      align-items: center;
       padding-right: 20px;
 
       .workspace-btn {
         margin-right: 20px;
-        font-size: 14px;
         font-weight: 400;
+        font-size: 14px;
         color: @color-3;
 
         &:hover {
@@ -56,15 +69,15 @@
 
       .avatar {
         margin-right: 10px;
-        cursor: pointer;
-        color: @color-2;
         font-weight: 400;
         font-size: 10px;
+        color: @color-2;
+        cursor: pointer;
       }
 
       .username {
-        font-size: 14px;
         font-weight: 400;
+        font-size: 14px;
         color: @color-1;
       }
 
@@ -81,19 +94,21 @@
         cursor: pointer;
 
         span {
-          color: @color-2;
           font-weight: 400;
           font-size: 10px;
+          color: @color-2;
         }
       }
     }
   }
+
   &--body {
     display: flex;
     flex: 1;
     height: 0;
     overflow: hidden;
   }
+
   &--side {
     display: flex;
     flex: none;
@@ -103,12 +118,12 @@
       padding-top: 46px;
 
       .ivu-menu-item {
-        margin: 17px 8px;
-        font-size: 14px;
-        font-weight: 400;
-        color: @color-5;
         display: flex;
         align-items: center;
+        margin: 17px 8px;
+        font-weight: 400;
+        font-size: 14px;
+        color: @color-5;
 
         &-active {
           font-weight: 600;
@@ -121,45 +136,53 @@
       }
     }
   }
+
   &--main {
     display: flex;
     flex: 1;
     width: 0;
     overflow-y: auto;
   }
+
   &--main-wrapper {
     display: flex;
+    flex: 1;
     flex-direction: column;
     width: 0;
-    flex: 1;
     margin: 16px;
 
     .breadcrumb();
   }
+
   &--change-password-form {
-    margin: 100px 10px 178px 0px;
     width: 600px;
+    margin: 100px 10px 178px 0;
   }
+
   &--new-password {
     margin-top: 60px;
   }
+
   &--change-password-header {
     font-size: 20px;
   }
+
   &--change-password-footer {
     display: flex;
     justify-content: center;
 
     .buttons {
-      width: 900px;
       justify-content: space-between;
       align-items: center;
+      width: 900px;
       font-size: 14px;
     }
+
     .right-button {
       width: 74px;
     }
   }
+
   &--password-check {
     margin-top: 54px;
     margin-right: 15px;
