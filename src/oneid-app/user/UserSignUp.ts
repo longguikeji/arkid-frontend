@@ -8,7 +8,7 @@ import './UserCommon.less';
 @Component({
   template: html`
 <SimpleFrame>
-  <div class="ui-signup-page flex-col">
+  <div class="ui-signup-page flex-col" v-if="!isExpired">
   <div v-if="isActivate" class="activate-area">
           <div class="activate-name flex-row"><p>Hi, &nbsp;&nbsp;{{activateName}}</p></div>
           <div class="activate-content flex-row"><p>管理员邀请您加入{{siteName}}, 请完成账号激活流程</p></div>
@@ -111,6 +111,7 @@ import './UserCommon.less';
       </div>
     </div>
   </div>
+  <div v-else>邀请链接已失效，请您重新获取！</div>
 </SimpleFrame>
   `,
 })
@@ -123,6 +124,7 @@ export default class UserSignUp extends Vue {
   };
   isEmailSend: boolean = false;
   isActivate = false;
+  isExpired = false;
   selectedRegisterType: string = '';
   isMobileRegisterAvailable = true;
   isEmailRegisterAvailable = true;
@@ -377,8 +379,12 @@ export default class UserSignUp extends Vue {
       this.selectedRegisterType = this.registerType[0];
       
     } catch(err) {
-      console.log(err);
-      this.$Message.error('验证邀请码失败');
+      const {key: errKey} = err.data
+      if (errKey[0] === 'expired') {
+        this.isExpired = true
+      } else {
+        this.$Message.error('验证邀请码失败');
+      }
     }
   }
 
