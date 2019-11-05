@@ -1,9 +1,9 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import {Form} from 'iview/types/index';
-import {FORM_RULES} from '@/utils';
-import './UserCommon.less';
-import { async } from 'q';
+import * as api from '@/services/oneid'
+import {FORM_RULES} from '@/utils'
+import {Form} from 'iview/types/index'
+import { async } from 'q'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './UserCommon.less'
 
 
 @Component({
@@ -16,7 +16,7 @@ import { async } from 'q';
         </div>
     <div class="flex-row">
       <div class="ui-signup-page--form-wrapper">
-        
+
         <div>
           <Form v-if="!emailForm.email" :label-width="120">
             <FormItem :label="radioGroupName">
@@ -29,10 +29,10 @@ import { async } from 'q';
           </Form>
         </div>
         <div>
-          <Form 
-            v-if="isEmailSendFormShow" 
-            :model="emailSendForm" 
-            :label-width="120" 
+          <Form
+            v-if="isEmailSendFormShow"
+            :model="emailSendForm"
+            :label-width="120"
             :rules="emailFormRules"
             ref="emailSendForm"
           >
@@ -50,10 +50,10 @@ import { async } from 'q';
           </Form>
         </div>
         <div>
-          <Form 
-            v-if="isMobileFormShow" 
-            :label-width="120" 
-            :model="mobileForm" 
+          <Form
+            v-if="isMobileFormShow"
+            :label-width="120"
+            :model="mobileForm"
             class="mobile-form"
             :rules="mobileFormRules"
             ref="mobileForm"
@@ -74,10 +74,10 @@ import { async } from 'q';
           </Form>
         </div>
         <div>
-          <Form 
-            v-if="isCommonFormShow" 
+          <Form
+            v-if="isCommonFormShow"
             :label-width="120"
-            :model="commonRegisterForm" 
+            :model="commonRegisterForm"
             :rules="commonRegisterFormRules"
             ref="commonRegisterForm"
           >
@@ -97,8 +97,8 @@ import { async } from 'q';
         </div>
         <RouterLink :to="{name: 'oneid.login'}" class="simpleframe-route go-to">返回登录页</RouterLink>
       </div>
-      <div 
-        :style="{'visibility': isMobileFormShow? 'visible' : 'hidden' }" 
+      <div
+        :style="{'visibility': isMobileFormShow? 'visible' : 'hidden' }"
         class="form-right-area flex-col">
         <a @click="sendSms" class="simpleframe-route">获取验证码</a>
         <Icon class="mobile-check"
@@ -108,7 +108,7 @@ import { async } from 'q';
         <Icon class="mobile-check"
           v-if="isValidMobile === false"
           type="ios-close-circle" color="#F5222D" size="18"
-        />   
+        />
       </div>
     </div>
   </div>
@@ -122,16 +122,16 @@ export default class UserSignUp extends Vue {
     emailSendForm: Form,
     mobileForm: Form,
     commonRegisterForm: Form,
-  };
-  isEmailSend: boolean = false;
-  isActivate = false;
-  isExpired = false;
-  selectedRegisterType: string = '';
-  isMobileRegisterAvailable = true;
-  isEmailRegisterAvailable = true;
-  radioGroupName = '选择方式:';
-  inviteCode: string = '';
-  activateName = '';
+  }
+  isEmailSend: boolean = false
+  isActivate = false
+  isExpired = false
+  selectedRegisterType: string = ''
+  isMobileRegisterAvailable = true
+  isEmailRegisterAvailable = true
+  radioGroupName = '选择方式:'
+  inviteCode: string = ''
+  activateName = ''
   emailSendForm = {
     email: '',
     sendbutton: '',
@@ -140,37 +140,37 @@ export default class UserSignUp extends Vue {
   emailForm = {
     email: '',
     emailToken: '',
-  };
+  }
 
   mobileForm = {
     mobile: '',
     smsCode: '',
     smsToken: '',
-  };
+  }
 
   commonRegisterForm = {
     username: '',
     password: '',
     passwordAgain: '',
-  };
+  }
 
-  registerType: string[] = [];
-  isValidMobile: boolean|null = null;
+  registerType: string[] = []
+  isValidMobile: boolean|null = null
 
   get siteName() {
-    return this.$app.metaInfo!.org.nameCn;
+    return this.$app.metaInfo!.org.nameCn
   }
 
   get isEmailSendFormShow() {
-    return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('邮箱')) && !this.emailForm.email;
+    return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('邮箱')) && !this.emailForm.email
   }
 
   get isCommonFormShow() {
-    return  this.emailForm.email || (this.selectedRegisterType && this.selectedRegisterType.includes('手机'));
+    return  this.emailForm.email || (this.selectedRegisterType && this.selectedRegisterType.includes('手机'))
   }
 
   get isMobileFormShow() {
-    return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('手机'));
+    return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('手机'))
   }
 
   get mobileFormRules() {
@@ -190,13 +190,13 @@ export default class UserSignUp extends Vue {
       trigger: 'blur',
       validator: (rule: string, value: string, cb: Function) => {
         if (this.commonRegisterForm.password !== this.commonRegisterForm.passwordAgain) {
-          cb(new Error('两次输入的密码不一致, 请重新输入'));
+          cb(new Error('两次输入的密码不一致, 请重新输入'))
         }
         else {
-          cb();
+          cb()
         }
       },
-    };
+    }
 
     return {
       password: [FORM_RULES.required],
@@ -208,24 +208,24 @@ export default class UserSignUp extends Vue {
   get viewMeta() {
     return {
       breadcrumb: false,
-    };
+    }
   }
 
   @Watch('mobileForm.smsCode')
   onSmsCodeChange(val: string) {
     if (/\d{6}$/.test(val)) {
-      this.verifyMobile();
+      this.verifyMobile()
     } else {
-      this.isValidMobile = false;
+      this.isValidMobile = false
     }
   }
 
   onRegisterTypeChange() {
     if (this.$refs.mobileForm) {
-      this.$refs.mobileForm.resetFields();
+      this.$refs.mobileForm.resetFields()
     }
     if(this.$refs.emailSendForm) {
-      this.$refs.emailSendForm.resetFields();
+      this.$refs.emailSendForm.resetFields()
     }
   }
 
@@ -233,28 +233,28 @@ export default class UserSignUp extends Vue {
     this.$refs.commonRegisterForm.validate((isValid) => {
       if (isValid) {
         try {
-          this.$Loading.start();
-          const {username, password} = this.commonRegisterForm;
+          this.$Loading.start()
+          const {username, password} = this.commonRegisterForm
           if (this.emailForm.email) {
-            this.handleEmailSubmit(username, password);
+            this.handleEmailSubmit(username, password)
           }
           else {
             if (!this.isValidMobile) {
-              return;
+              return
             }
-            this.handleMobileSubmit(username, password);
+            this.handleMobileSubmit(username, password)
           }
-          this.$Loading.finish();
-          this.$router.push({name: 'oneid.registersuccess', query: {next: String(this.$route.query.next) || ''}});
+          this.$Loading.finish()
+          this.$router.push({name: 'oneid.registersuccess', query: {next: String(this.$route.query.next) || ''}})
         } catch (e) {
-          this.$Loading.error();
+          this.$Loading.error()
         }
       }
-    });
+    })
   }
 
   async handleEmailSubmit(username: string, password: string) {
-    const {emailToken} = this.emailForm;
+    const {emailToken} = this.emailForm
     try {
       if (this.isActivate) {
         await api.UCenter.activateWithInviteCode({
@@ -262,14 +262,14 @@ export default class UserSignUp extends Vue {
           password,
           email_token: emailToken,
           key: this.inviteCode,
-        });
+        })
       }
       else {
         await api.UCenter.register({
           email_token: emailToken,
           password,
           username,
-        });
+        })
       }
     } catch (e) {
       return
@@ -277,7 +277,7 @@ export default class UserSignUp extends Vue {
   }
 
   async handleMobileSubmit(username: string, password: string) {
-    const {smsToken} = this.mobileForm;
+    const {smsToken} = this.mobileForm
     try {
       if (this.isActivate) {
         await api.UCenter.activateWithInviteCode({
@@ -285,13 +285,13 @@ export default class UserSignUp extends Vue {
           password,
           sms_token: smsToken,
           key: this.inviteCode,
-        });
+        })
       } else {
         await api.UCenter.register({
           sms_token: smsToken,
           password,
           username,
-        });
+        })
       }
     } catch (e) {
       return
@@ -299,153 +299,153 @@ export default class UserSignUp extends Vue {
   }
 
   async verifyMobile() {
-    const {mobile, smsCode} = this.mobileForm;
-    this.$Loading.start();
+    const {mobile, smsCode} = this.mobileForm
+    this.$Loading.start()
     try {
       if (this.isActivate) {
-        const {sms_token} = await api.ApiService.verifySmsWithType(mobile, smsCode, 'activate_user');
-        this.mobileForm.smsToken = sms_token;
+        const {sms_token} = await api.ApiService.verifySmsWithType(mobile, smsCode, 'activate_user')
+        this.mobileForm.smsToken = sms_token
       }
       else {
-        const {sms_token} = await api.ApiService.verifySmsWithType(mobile, smsCode, 'register');
-        this.mobileForm.smsToken = sms_token;
+        const {sms_token} = await api.ApiService.verifySmsWithType(mobile, smsCode, 'register')
+        this.mobileForm.smsToken = sms_token
       }
-      this.$Loading.finish();
-      this.isValidMobile = true;
+      this.$Loading.finish()
+      this.isValidMobile = true
     } catch (e) {
-      this.isValidMobile = false;
-      this.$Loading.error();
+      this.isValidMobile = false
+      this.$Loading.error()
     }
   }
 
   created() {
     if (this.$route.query.email_token) {
-      this.handleEmailRegisterVerify(this.$route.query.email_token as string);
+      this.handleEmailRegisterVerify(this.$route.query.email_token as string)
     }
     else if (this.$route.query.key) {
-      this.handleActivateVerify(this.$route.query.key as string);
+      this.handleActivateVerify(this.$route.query.key as string)
     }
     else if(this.$route.params.activate_email_token) {
-      this.handleEmailActivateVerify(this.$route.params.activate_email_token);
+      this.handleEmailActivateVerify(this.$route.params.activate_email_token)
     }
     else {
       if (this.$app.metaInfo!.account) {
-        this.registerType = [];
-        this.isEmailRegisterAvailable = this.$app.metaInfo!.account.support_email_register;
-        this.isMobileRegisterAvailable = this.$app.metaInfo!.account.support_mobile_register;
+        this.registerType = []
+        this.isEmailRegisterAvailable = this.$app.metaInfo!.account.support_email_register
+        this.isMobileRegisterAvailable = this.$app.metaInfo!.account.support_mobile_register
         if (this.isEmailRegisterAvailable) {
-          this.registerType.push('邮箱注册');
+          this.registerType.push('邮箱注册')
         }
         if (this.isMobileRegisterAvailable) {
-          this.registerType.push('手机号注册');
+          this.registerType.push('手机号注册')
         }
-        this.selectedRegisterType = this.registerType[0];
+        this.selectedRegisterType = this.registerType[0]
       }
     }
   }
 
   mounted() {
     if (this.$app.isLogin) {
-      this.$app.goHome();
+      this.$app.goHome()
     }
   }
 
   async handleActivateVerify(key: string) {
     try {
-      this.radioGroupName = '选择激活方式:';
-      this.registerType = []; 
+      this.radioGroupName = '选择激活方式:'
+      this.registerType = []
 
-      this.isActivate = true;
-      const {private_email, name, mobile} = await api.UCenter.verifyInvite(key);
-      this.activateName = name;
+      this.isActivate = true
+      const {private_email, name, mobile} = await api.UCenter.verifyInvite(key)
+      this.activateName = name
       if (private_email) {
-        this.isEmailRegisterAvailable = true;
-        this.emailSendForm.email = private_email;
-        this.inviteCode = key;
-        this.registerType.push('个人邮箱');
+        this.isEmailRegisterAvailable = true
+        this.emailSendForm.email = private_email
+        this.inviteCode = key
+        this.registerType.push('个人邮箱')
       }
       else {
-        this.isEmailRegisterAvailable = false;
+        this.isEmailRegisterAvailable = false
       }
 
       if (mobile) {
-        this.isMobileRegisterAvailable = true;
-        this.mobileForm.mobile = mobile;
-        this.registerType.push('手机号');
-        this.inviteCode = key;
+        this.isMobileRegisterAvailable = true
+        this.mobileForm.mobile = mobile
+        this.registerType.push('手机号')
+        this.inviteCode = key
       }
       else {
-        this.isMobileRegisterAvailable = false;
+        this.isMobileRegisterAvailable = false
       }
-      this.selectedRegisterType = this.registerType[0];
-      
+      this.selectedRegisterType = this.registerType[0]
+
     } catch(err) {
       const {key: errKey} = err.data
       if (errKey[0] === 'expired') {
         this.isExpired = true
       } else {
-        this.$Message.error('验证邀请码失败');
+        this.$Message.error('验证邀请码失败')
       }
     }
   }
 
   async handleEmailRegisterVerify(token: string) {
     try {
-      const {email} = await api.ApiService.verifyEmail(token, 'register');
-      this.emailForm.email = email;
-      this.emailForm.emailToken = token;
+      const {email} = await api.ApiService.verifyEmail(token, 'register')
+      this.emailForm.email = email
+      this.emailForm.emailToken = token
     } catch(err) {
-      this.$Message.error('验证邮箱失败');
+      this.$Message.error('验证邮箱失败')
     }
   }
 
   async handleEmailActivateVerify(token: string) {
     try {
-      const {email, name, key} = await api.ApiService.verifyEmail(token, 'activate_user');
-      this.emailForm.email = email;
-      this.activateName = name;
-      this.emailForm.emailToken = token;
-      this.inviteCode = key;
-      this.isActivate = true;
+      const {email, name, key} = await api.ApiService.verifyEmail(token, 'activate_user')
+      this.emailForm.email = email
+      this.activateName = name
+      this.emailForm.emailToken = token
+      this.inviteCode = key
+      this.isActivate = true
     } catch(err) {
-      this.$Message.error('验证邮箱失败');
+      this.$Message.error('验证邮箱失败')
     }
   }
 
   async sendEmail() {
     this.$refs.emailSendForm.validate( async (isValid) => {
       if (isValid) {
-        const {email} = this.emailSendForm;
+        const {email} = this.emailSendForm
         try {
           if (this.isActivate) {
-            await api.ApiService.sendActivateEmail(this.inviteCode);
+            await api.ApiService.sendActivateEmail(this.inviteCode)
           }
           else {
-            await api.ApiService.sendRegisterEmail(email);
+            await api.ApiService.sendRegisterEmail(email)
           }
-          this.$Message.success('成功发送邮件');
-          this.isEmailSend = true;
+          this.$Message.success('成功发送邮件')
+          this.isEmailSend = true
         } catch(err) {
-          this.$Message.error('发送邮件失败');
+          this.$Message.error('发送邮件失败')
         }
       }
-    });
+    })
   }
 
   async sendSms() {
     this.$refs.mobileForm.validate( async (isValid) => {
       if (isValid) {
-        const {mobile} = this.mobileForm;
+        const {mobile} = this.mobileForm
         try {
           if (this.isActivate) {
-            await api.ApiService.sendActivateSms(this.inviteCode);
+            await api.ApiService.sendActivateSms(this.inviteCode)
           }
           else {
-            await api.ApiService.sendRegisterSms(mobile);
+            await api.ApiService.sendRegisterSms(mobile)
           }
-          this.$Message.success('成功发送短信');
+          this.$Message.success('成功发送短信')
         } catch(err) {
-          this.$Message.error('发送短信失败');
+          this.$Message.error('发送短信失败')
         }
       }
     })
