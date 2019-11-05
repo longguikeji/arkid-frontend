@@ -204,8 +204,11 @@ export default class EditUser extends Vue {
       }
     } catch (e) {
       if (e.status === 400) {
-        if (e.data.username && e.data.username.includes('this value has be used')) {
+        if (e.data.username && e.data.username.includes('existed')) {
           this.$Message.error('保存失败：用户名被占用')
+        }
+        if (e.data.username && e.data.username.includes('invalid')) {
+          this.$Message.error('保存失败：非法用户名')
         }
         if (e.data.mobile && e.data.mobile.includes('existed')) {
           this.$Message.error('保存失败：手机号被占用')

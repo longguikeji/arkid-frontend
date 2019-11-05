@@ -1,10 +1,8 @@
 import * as api from '@/services/oneid'
 import {FORM_RULES} from '@/utils'
 import {Form} from 'iview/types/index'
-import { async } from 'q'
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
 import './UserCommon.less'
-
 
 @Component({
   template: html`
@@ -188,7 +186,8 @@ export default class UserSignUp extends Vue {
   get commonRegisterFormRules() {
     const passwordDiffCheck = {
       trigger: 'blur',
-      validator: (rule: string, value: string, cb: Function) => {
+      // tslint:disable-next-line:no-any
+      validator: (rule: any, value: any, cb: Function) => {
         if (this.commonRegisterForm.password !== this.commonRegisterForm.passwordAgain) {
           cb(new Error('两次输入的密码不一致, 请重新输入'))
         }
