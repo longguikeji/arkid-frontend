@@ -3,6 +3,7 @@ import * as api from '@/services/oneid';
 import {Form} from 'iview/types/index';
 import {FORM_RULES} from '@/utils';
 import './UserCommon.less';
+import { async } from 'q';
 
 
 @Component({
@@ -187,8 +188,8 @@ export default class UserSignUp extends Vue {
   get commonRegisterFormRules() {
     const passwordDiffCheck = {
       trigger: 'blur',
-      validator: (rule: any, value: string, cb: any) => {
-        if (this.commonRegisterForm.password != this.commonRegisterForm.passwordAgain) {
+      validator: (rule: string, value: string, cb: Function) => {
+        if (this.commonRegisterForm.password !== this.commonRegisterForm.passwordAgain) {
           cb(new Error('两次输入的密码不一致, 请重新输入'));
         }
         else {
@@ -229,27 +230,27 @@ export default class UserSignUp extends Vue {
   }
 
   async handleSubmit() {
-    const isValid = await this.$refs.commonRegisterForm.validate();
-    if (!isValid) {
-      return;
-    }
-    try {
-      this.$Loading.start();
-      const {username, password} = this.commonRegisterForm;
-      if (this.emailForm.email) {
-        this.handleEmailSubmit(username, password);
-      }
-      else {
-        if (!this.isValidMobile) {
-          return;
+    this.$refs.commonRegisterForm.validate((isValid) => {
+      if (isValid) {
+        try {
+          this.$Loading.start();
+          const {username, password} = this.commonRegisterForm;
+          if (this.emailForm.email) {
+            this.handleEmailSubmit(username, password);
+          }
+          else {
+            if (!this.isValidMobile) {
+              return;
+            }
+            this.handleMobileSubmit(username, password);
+          }
+          this.$Loading.finish();
+          this.$router.push({name: 'oneid.registersuccess', query: {next: String(this.$route.query.next) || ''}});
+        } catch (e) {
+          this.$Loading.error();
         }
-        this.handleMobileSubmit(username, password);
       }
-      this.$Loading.finish();
-      this.$router.push({name: 'oneid.registersuccess', query: {next: String(this.$route.query.next) || ''}});
-    } catch (e) {
-      this.$Loading.error();
-    }
+    });
   }
 
   async handleEmailSubmit(username: string, password: string) {
@@ -271,7 +272,7 @@ export default class UserSignUp extends Vue {
         });
       }
     } catch (e) {
-      console.log(e);
+      return
     }
   }
 
@@ -293,7 +294,7 @@ export default class UserSignUp extends Vue {
         });
       }
     } catch (e) {
-      console.log(e);
+      return
     }
   }
 
@@ -394,7 +395,6 @@ export default class UserSignUp extends Vue {
       this.emailForm.email = email;
       this.emailForm.emailToken = token;
     } catch(err) {
-      console.log(err);
       this.$Message.error('验证邮箱失败');
     }
   }
@@ -408,49 +408,46 @@ export default class UserSignUp extends Vue {
       this.inviteCode = key;
       this.isActivate = true;
     } catch(err) {
-      console.log(err);
       this.$Message.error('验证邮箱失败');
     }
   }
 
   async sendEmail() {
-    const isValid = await this.$refs.emailSendForm.validate();
-    if (!isValid) {
-      return;
-    }
-    const {email} = this.emailSendForm;
-    try {
-      if (this.isActivate) {
-        await api.ApiService.sendActivateEmail(this.inviteCode);
+    this.$refs.emailSendForm.validate( async (isValid) => {
+      if (isValid) {
+        const {email} = this.emailSendForm;
+        try {
+          if (this.isActivate) {
+            await api.ApiService.sendActivateEmail(this.inviteCode);
+          }
+          else {
+            await api.ApiService.sendRegisterEmail(email);
+          }
+          this.$Message.success('成功发送邮件');
+          this.isEmailSend = true;
+        } catch(err) {
+          this.$Message.error('发送邮件失败');
+        }
       }
-      else {
-        await api.ApiService.sendRegisterEmail(email);
-      }
-      this.$Message.success('成功发送邮件');
-      this.isEmailSend = true;
-    } catch(err) {
-      console.log(err);
-      this.$Message.error('发送邮件失败');
-    }
+    });
   }
 
   async sendSms() {
-    const isValid = await this.$refs.mobileForm.validate();
-    if (!isValid) {
-      return;
-    }
-    const {mobile} = this.mobileForm;
-    try {
-      if (this.isActivate) {
-        await api.ApiService.sendActivateSms(this.inviteCode);
+    this.$refs.mobileForm.validate( async (isValid) => {
+      if (isValid) {
+        const {mobile} = this.mobileForm;
+        try {
+          if (this.isActivate) {
+            await api.ApiService.sendActivateSms(this.inviteCode);
+          }
+          else {
+            await api.ApiService.sendRegisterSms(mobile);
+          }
+          this.$Message.success('成功发送短信');
+        } catch(err) {
+          this.$Message.error('发送短信失败');
+        }
       }
-      else {
-        await api.ApiService.sendRegisterSms(mobile);
-      }
-      this.$Message.success('成功发送短信');
-    } catch(err) {
-      console.log(err);
-      this.$Message.error('发送短信失败');
-    }
+    })
   }
 }
