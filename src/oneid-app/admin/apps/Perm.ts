@@ -118,6 +118,7 @@ export default class Perm extends Vue {
   columnName = ''
   searchPerm = ''
   wholeNames = ''
+  appName = ''
 
   get menuName(): string {
     return (this.$route.query.tab || this.baseMenuItems[0]) as string
@@ -125,10 +126,6 @@ export default class Perm extends Vue {
 
   get appUID(): string {
     return this.$route.params.uid
-  }
-
-  get appName(): string {
-    return this.$route.params.name
   }
 
   showAdd() {
@@ -139,7 +136,9 @@ export default class Perm extends Vue {
     })
   }
 
-  mounted() {
+  async mounted() {
+    const app = await api.App.fetch(this.appUID)
+    this.appName = app.name
     this.loadData()
   }
 
@@ -158,7 +157,6 @@ export default class Perm extends Vue {
 
   async loadData() {
     await this.loadMetaNodes()
-
     this.subMenuItemList = this.metaNodes.filter(o => o.parent.name === '自定义分组类型')
     this.loadPerms()
   }
