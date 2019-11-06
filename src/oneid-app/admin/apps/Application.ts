@@ -171,7 +171,7 @@ export default class Application extends Vue {
   showPerm(item) {
     this.$router.push({
       name: 'admin.app.perm',
-      params: {uid: item.row.uid, name: item.row.name},
+      params: {uid: item.row.uid},
     })
   }
 
