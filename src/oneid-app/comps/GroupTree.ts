@@ -15,17 +15,21 @@ import './GroupTree.less'
       placeholder="搜索"
       class="search"
     />
-    <ul class="search-result-list" v-if="keyword">
-      <li
-        v-for="item in searchResults"
-        :key="item.id"
-        :class="curNode && curNode.raw.id === item.raw.id ? 'active' : ''"
-        @click="select(item.raw.id)"
-      >
-        <!-- <XIcon :name="getIcon(item)" v-if="showIcon" /> -->
-        <span>{{ item.title }}</span>
+    <ul
+      class="search-result-list"
+      v-if="keyword"
+    >
+      <li v-for="item in searchResults">
+        <Checkbox
+          v-model="item.checked"
+          @on-change="(val) => doCheckChange(item, val)"
+        >
+          <XIcon class= "checkitem" name="folder-green"/>
+          <span>{{ item.title }}</span>
+        </Checkbox>
       </li>
     </ul>
+
     <Breadcrumb class="breadcrumb" v-if="showPath && !keyword">
       <BreadcrumbItem
         v-for="item in path"
@@ -63,6 +67,7 @@ export default class GroupTree extends Vue {
 
   keyword = ''
   searchResults: model.TreeNode[] = []
+  searchNodeIds: string[] = []
 
   @Watch('curNode')
   onCurNodeChange(val: model.TreeNode) {
@@ -73,6 +78,12 @@ export default class GroupTree extends Vue {
     const nodes = this.flattenNodes
     this.searchResults = nodes
       .filter((node: model.TreeNode) => node.title.includes(this.keyword))
+    this.searchNodeIds = this.searchResults.filter(o => o.checked).map(o => o.raw.id)
+  }
+
+  doCheckChange(cur: model.TreeNode, val: boolean) {
+    this.$emit('on-check-change', [], cur)
+    // console.log(checkedIds)
   }
 
   get flattenNodes(): model.TreeNode[] {
