@@ -1,7 +1,7 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import './EditUserPerm.less';
-import { Permission, Node } from '@/models/oneid';
+import { Node, Permission } from '@/models/oneid'
+import * as api from '@/services/oneid'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import './EditUserPerm.less'
 
 @Component({
 
@@ -19,13 +19,13 @@ import { Permission, Node } from '@/models/oneid';
       <div class="ui-choose-base--wrapper">
         <div class="ui-choose-base--left">
           <div class="select-all flex-row">
-            <h3 class="title">权限结果列表:</h3> 
+            <h3 class="title">权限结果列表:</h3>
             <Checkbox @on-change="selectAll">全选</Checkbox>
           </div>
           <Input v-model='searchUser' search clearable placeholder="搜索账号" class="search" @on-change="onUserSearchChange"/>
           <CheckboxGroup v-if="currentPerm" v-model="checkedUsers" :style="{'margin-top': '20px'}">
             <CellGroup>
-              <Cell 
+              <Cell
                 v-for="item in userList.filter(o => !o.hide)"
                 :name="item.uid"
                 class="check-li flex-row"
@@ -71,11 +71,12 @@ import { Permission, Node } from '@/models/oneid';
         <div class="ui-choose-base-result--left">
           <h3 class="title">结果名单:</h3>
           <CellGroup @on-click="onSelectUser" class="name-list">
-            <Cell 
+            <Cell
               v-for="item in allAccounts"
               :name="item.uid"
               class="name-line flex-row"
               :title="item.name"
+              :selected="userId === item.uid"
             />
           </CellGroup>
         </div>
@@ -109,69 +110,70 @@ import { Permission, Node } from '@/models/oneid';
   `,
 })
 export default class Perm extends Vue {
-  currentPerm: Permission|null = null;
-  operationName = "新建权限";
-  allAccounts = null;
-  showResultDetailModal = false;
-  showUserModal = false;
-  userFullInfo = null;
-  userList = [];
-  checkedUserList = [];
-  columnName = '';
-  searchUser = '';
-  userEditTitle = '';
+  currentPerm: Permission|null = null
+  operationName = '新建权限'
+  allAccounts = null
+  showResultDetailModal = false
+  showUserModal = false
+  userFullInfo = null
+  userList = []
+  checkedUserList = []
+  columnName = ''
+  searchUser = ''
+  userEditTitle = ''
+  userId = ''
 
   get checkedUsers() {
-    const users = this.checkedUserList.map(o => o.username);
-    return users;
+    const users = this.checkedUserList.map(o => o.username)
+    return users
   }
 
   set checkedUsers(userNames: string) {
     this.checkedUserList = this.userList.filter(
-      o => userNames.includes(o.username)
-    );
+      o => userNames.includes(o.username),
+    )
   }
 
   selectAll(flag: boolean) {
     if (!flag) {
-      this.checkedUserList = [];
+      this.checkedUserList = []
     }
     else {
-    this.checkedUserList = this.userList.filter(o => 
+    this.checkedUserList = this.userList.filter(o =>
       this.columnName.includes('白名单')?
-      (!this.currentPerm!.reject_owners.map(u => u.uid).includes(o.username)) : 
-      (!this.currentPerm!.permit_owners.map(u => u.uid).includes(o.username)));
+      (!this.currentPerm!.reject_owners.map(u => u.uid).includes(o.username)) :
+      (!this.currentPerm!.permit_owners.map(u => u.uid).includes(o.username)))
     }
   }
 
   async onSaveUser() {
-    const users_status = this.checkedUserList.map(o => 
-      {return {uid: o.username, status: this.columnName.includes('白名单')?1:-1}});
-    const origin_checked_users = this.columnName.includes('白名单')?this.currentPerm!.permit_owners: this.currentPerm!.reject_owners;
+    // tslint:disable:variable-name
+    const users_status = this.checkedUserList.map(o =>({uid: o.username, status: this.columnName.includes('白名单')?1:-1}))
+    const origin_checked_users = this.columnName.includes('白名单')?this.currentPerm!.permit_owners: this.currentPerm!.reject_owners
     origin_checked_users.map(o => {
-      if(users_status.filter(item => item.uid == o.uid).length == 0) {
-        users_status.push({uid: o.uid, status: 0});
+      if(users_status.filter(item => item.uid === o.uid).length === 0) {
+        users_status.push({uid: o.uid, status: 0})
       }
     })
-    
-    let params = {
+
+    const params = {
       user_perm_status: users_status,
     }
-    await api.Perm.partialUpdateOwnersStatus(this.currentPerm!.uid, this.currentPerm!.subject, params);
-    this.$emit('on-save');
+    await api.Perm.partialUpdateOwnersStatus(this.currentPerm!.uid, this.currentPerm!.subject, params)
+    this.$emit('on-save')
   }
 
   getDisableStatus(item) {
-    return this.columnName.includes('白名单')? 
-    this.currentPerm!.reject_owners.map(o => o.uid).includes(item.username) : this.currentPerm!.permit_owners.map(o => o.uid).includes(item.username);
+    return this.columnName.includes('白名单')?
+    this.currentPerm!.reject_owners.map(o => o.uid).includes(item.username) : this.currentPerm!.permit_owners.map(o => o.uid).includes(item.username)
   }
 
   onOk() {
-    this.showResultDetailModal = false;
+    this.showResultDetailModal = false
   }
 
   clearCheckList() {
-    this.checkedUserList = [];
+    this.checkedUserList = []
   }
 
   async showResultDetail(type: string, perm: Permission) {
@@ -180,63 +182,65 @@ export default class Perm extends Vue {
       page_size: 1000000,
       value: true,
     })
-    this.allAccounts = permUserList.data;
-    this.currentPerm = perm;
-    this.showResultDetailModal = true;
+    this.allAccounts = permUserList.data
+    this.currentPerm = perm
+    this.showResultDetailModal = true
   }
 
   async showEdit(columnName: string, perm: Permission) {
-    this.currentPerm = perm;
-    this.columnName = columnName;
+    this.currentPerm = perm
+    this.columnName = columnName
     const owners = await api.Perm.permResultList(perm.uid, {
       owner_subject: 'user',
       page_size: 1000000,
       status: columnName.includes('白名单') ? 1 : -1,
     })
-    const resultData = await api.User.list({page: 1, pageSize:1000000});
-    resultData.results.map(o => o['hide'] = false);
-    this.userList = resultData.results;
-    this.userEditTitle = '账号' + columnName;
+    const resultData = await api.User.list({page: 1, pageSize:1000000})
+    resultData.results.map(o => o.hide = false)
+    this.userList = resultData.results
+    this.userEditTitle = '账号' + columnName
     if (columnName.includes('白名单')) {
-      this.currentPerm.permit_owners = owners.data;
-      this.checkedUserList = this.userList.filter(o => this.currentPerm!.permit_owners.map(p => p.uid).includes(o.username));
+      this.currentPerm.permit_owners = owners.data
+      this.checkedUserList = this.userList.filter(o => this.currentPerm!.permit_owners.map(p => p.uid).includes(o.username))
     }
     else {
-      this.currentPerm.reject_owners = owners.data;
-      this.checkedUserList = this.userList.filter(o => this.currentPerm!.reject_owners.map(p => p.uid).includes(o.username));
+      this.currentPerm.reject_owners = owners.data
+      this.checkedUserList = this.userList.filter(o => this.currentPerm!.reject_owners.map(p => p.uid).includes(o.username))
     }
-    this.showUserModal = true;
+    this.showUserModal = true
   }
 
   onUserSearchChange() {
     this.userList.map(o => {
       if(o.name.includes(this.searchUser)) {
-        o.hide = false;
+        o.hide = false
       }
       else {
-        o.hide = true;
+        o.hide = true
       }
-    });
+    })
   }
 
   async onSelectUser(uid: string) {
-    const permSources = await api.User.retrievePermSource(uid, this.currentPerm!.uid);
-    var tmpUserInfo = new Object();
-    var tmpNodes = new Object();
+    const permSources = await api.User.retrievePermSource(uid, this.currentPerm!.uid)
+    const tmpUserInfo = new Object()
+    const tmpNodes = new Object()
     permSources.data.source.map((o) => {
-      if (tmpUserInfo[o.node_subject] == undefined) {
-        tmpUserInfo[o.node_subject] = [];
+      if (tmpUserInfo[o.node_subject] === undefined) {
+        tmpUserInfo[o.node_subject] = []
       }
-      tmpUserInfo[o.node_subject].push(o.name);
-      
+      tmpUserInfo[o.node_subject].push(o.name)
+
     })
-    tmpUserInfo.status = permSources.data.status;
-    this.userFullInfo = tmpUserInfo;
+    tmpUserInfo.status = permSources.data.status
+    this.userFullInfo = tmpUserInfo
+
+    this.userId = uid
   }
 
   unCheckOrUnSelect(item: string) {
-    const index = this.checkedUserList.indexOf(item);
-    this.checkedUserList.splice(index, 1);
+    const index = this.checkedUserList.indexOf(item)
+    this.checkedUserList.splice(index, 1)
   }
 
 }

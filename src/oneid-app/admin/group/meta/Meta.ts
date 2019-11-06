@@ -1,7 +1,7 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import {Node} from '@/models/oneid';
-import * as api from '@/services/oneid';
-import './Meta.less';
+import {Node} from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './Meta.less'
 
 @Component({
   template: html`
@@ -90,121 +90,129 @@ import './Meta.less';
   `,
 })
 export default class Meta extends Vue {
-  defaultMetaNode: Node|null = null;
-  customMetaNode: Node|null = null;
-  isAddingCustomNode = false;
-  operatingCustomNode: Node|null = null;
+  defaultMetaNode: Node|null = null
+  customMetaNode: Node|null = null
+  isAddingCustomNode = false
+  operatingCustomNode: Node|null = null
 
-  curMetaNode: Node|null = null;
+  curMetaNode: Node|null = null
 
-  customNodeName = null;
+  customNodeName = null
 
   @Watch('curMetaNode')
   onCurMetaNodeChange(val: Node) {
     this.$router.replace({
       name: 'admin.group.node',
       query: {id: val.id},
-    });
+    })
   }
 
   async loadData() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
 
-    this.defaultMetaNode = defaultMetaNode;
-    this.customMetaNode = customMetaNode;
+    this.defaultMetaNode = defaultMetaNode
+    this.customMetaNode = customMetaNode
 
     if (!this.curMetaNode) {
-      this.curMetaNode = defaultMetaNode.children[0];
+      this.curMetaNode = defaultMetaNode.children[0]
     }
   }
 
   onMetaNodeClick(item: Node) {
-    this.curMetaNode = item;
+    this.curMetaNode = item
   }
 
   doStartAddCustomNode() {
-    this.operatingCustomNode = null;
-    this.isAddingCustomNode = true;
+    this.operatingCustomNode = null
+    this.isAddingCustomNode = true
   }
 
   async doAddCustomNode(event: Event) {
-    const name = this.customNodeName;
+    const name = this.customNodeName
     if (!name) {
-      this.isAddingCustomNode = false;
-      return;
+      this.isAddingCustomNode = false
+      return
     }
-    const customRoot = new Node();
-    customRoot.name = this.customMetaNode!.name;
-    customRoot.id = this.customMetaNode!.id;
+    const customRoot = new Node()
+    customRoot.name = this.customMetaNode!.name
+    customRoot.id = this.customMetaNode!.id
 
-    const node = new Node();
-    node.name = name;
-    node.parent = customRoot;
+    const node = new Node()
+    node.name = name
+    node.parent = customRoot
 
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.Node.create(node);
-      this.$Loading.finish();
-      this.isAddingCustomNode = false;
-      this.customNodeName = null;
-      this.loadData();
+      await api.Node.create(node)
+      this.$Loading.finish()
+      this.isAddingCustomNode = false
+      this.customNodeName = null
+      this.loadData()
     } catch(e) {
-      console.log(e);
-      this.$Loading.error();
+      this.$Loading.error()
     }
   }
 
   async doStartRenameCustomNode(item: Node) {
-    this.isAddingCustomNode = false;
-    this.operatingCustomNode = item;
+    this.isAddingCustomNode = false
+    this.operatingCustomNode = item
   }
 
   async doRenameCustomNode(event: Event) {
-    const name = event.target!.value;
+    const name = event.target!.value
     if (!name) {
-      this.operatingCustomNode = null;
-      return;
+      this.operatingCustomNode = null
+      return
     }
-    const node = new Node();
-    node.name = name;
-    node.id = this.operatingCustomNode!.id;
+    const node = new Node()
+    node.name = name
+    node.id = this.operatingCustomNode!.id
 
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.Node.partialUpdate(node);
-      this.$Loading.finish();
-      this.operatingCustomNode = null;
-      this.loadData();
+      await api.Node.partialUpdate(node)
+      this.$Loading.finish()
+      this.operatingCustomNode = null
+      this.loadData()
     } catch(e) {
-      console.log(e);
-      this.$Loading.error();
+      this.$Loading.error()
     }
   }
 
   async doRemoveCustomNode(item: Node) {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.Node.remove(item.id);
-      this.$Loading.finish();
-      this.loadData();
+      await api.Node.remove(item.id)
+      this.$Loading.finish()
+      this.loadData()
     } catch(e) {
-      console.log(e);
-      this.$Loading.error();
+      if (e.status === 400 && e.data.node) {
+        if (e.data.node.includes('protected_by_child_node')) {
+          this.$Message.error('删除失败：存在依赖的节点')
+          return
+        }
+        if (e.data.node.includes('protected_by_child_user')) {
+          this.$Message.error('删除失败：存在依赖的账号')
+          return
+        }
+      }
+      this.$Loading.error()
     }
   }
 
   updated() {
     if (
+      // tslint:disable-next-line:prefer-switch
       this.$route.name === 'admin.group' ||
       this.$route.name === 'admin.group.node'
     ) {
       if (this.curMetaNode && !this.$route.query.id) {
-        this.curMetaNode = this.defaultMetaNode!.children[0];
+        this.curMetaNode = this.defaultMetaNode!.children[0]
       }
     }
   }
 
   async mounted() {
-    this.loadData();
+    this.loadData()
   }
 }
