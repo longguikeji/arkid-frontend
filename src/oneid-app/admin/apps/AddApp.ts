@@ -56,7 +56,7 @@ import './AddApp.less'
             </Select>
           </FormItem>
           <Tabs :animated="false" class="protocol-tab" type="card" v-if="app.auth_protocols.length != 0">
-            <TabPane v-if="app.auth_protocols.includes(authTypes[0])" :label="authTypes[0]" :name="authTypes[0]">
+            <TabPane v-if="app.auth_protocols.includes(authTypes[0]) && app.oauth_app" :label="authTypes[0]" :name="authTypes[0]">
               <FormItem v-if="app.oauth_app.client_id" label="client_id:">
                 <p>{{app.oauth_app.client_id}}</p>
               </FormItem>
@@ -127,7 +127,6 @@ export default class AddApp extends Vue {
   clientTypes = ['confidential', 'public']
   grantTypes = ['authorization-code', 'implicit', 'password', 'client']
   isNew: boolean = true
-  isFirst: boolean = true
 
   constructor() {
     super()
@@ -136,16 +135,11 @@ export default class AddApp extends Vue {
     this.app = newApp
   }
 
-  @Watch('app.auth_protocols', {deep: true})
   onProtocolsChange(newVal: string[], oldVal: string[]) {
     const oauthType = this.authTypes[0]
     const addOauth = newVal.includes(oauthType) && !oldVal.includes(oauthType)
     const removeOauth = !newVal.includes(oauthType) && oldVal.includes(oauthType)
     if (addOauth) {
-      if (this.isFirst === true){
-        this.isFirst = false
-        return
-      }
       this.app!.oauth_app = new OAuthData()
     }
     if (removeOauth) {
@@ -157,10 +151,10 @@ export default class AddApp extends Vue {
     if (app) {
       this.app = app
       this.isNew = false
-      this.isFirst = true
     } else {
       this.isNew = true
     }
+    this.$watch('app.auth_protocols', this.onProtocolsChange, {deep: true})
     this.showAdd = true
   }
 

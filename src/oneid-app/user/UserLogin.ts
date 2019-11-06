@@ -123,11 +123,11 @@ export default class UserLogin extends Vue {
   thirdPartyType: string = ''
   uuid: string = ''
 
-  dingImgPath: string = require('../../assets/icons/icon-login-dingding.png')
-  wechatImgPath: string = require('../../assets/icons/icon-login-wechat.png')
-  alipayImgPath: string = require('../../assets/icons/icon-login-alipay.png')
-  qqImgPath: string = require('../../assets/icons/icon-login-qq.png')
-  wechatWorkImgPath: string = require('../../assets/icons/icon-login-wechatwork.png')
+  dingImgPath: string = require('@/assets/icons/icon-login-dingding.png')
+  wechatImgPath: string = require('@/assets/icons/icon-login-wechat.png')
+  alipayImgPath: string = require('@/assets/icons/icon-login-alipay.png')
+  qqImgPath: string = require('@/assets/icons/icon-login-qq.png')
+  wechatWorkImgPath: string = require('@/assets/icons/icon-login-wechatwork.png')
 
   get isRegisterEnabled() {
     return this.$app.metaInfo!.account.isRegisterEnabled
