@@ -21,6 +21,7 @@ import './GroupTree.less'
     >
       <li v-for="item in searchResults">
         <Checkbox
+          :disabled="item.disableCheckbox"
           v-model="item.checked"
           @on-change="(val) => doCheckChange(item, val)"
         >
@@ -67,7 +68,6 @@ export default class GroupTree extends Vue {
 
   keyword = ''
   searchResults: model.TreeNode[] = []
-  searchNodeIds: string[] = []
 
   @Watch('curNode')
   onCurNodeChange(val: model.TreeNode) {
@@ -78,12 +78,10 @@ export default class GroupTree extends Vue {
     const nodes = this.flattenNodes
     this.searchResults = nodes
       .filter((node: model.TreeNode) => node.title.includes(this.keyword))
-    this.searchNodeIds = this.searchResults.filter(o => o.checked).map(o => o.raw.id)
   }
 
   doCheckChange(cur: model.TreeNode, val: boolean) {
     this.$emit('on-check-change', [], cur)
-    // console.log(checkedIds)
   }
 
   get flattenNodes(): model.TreeNode[] {
