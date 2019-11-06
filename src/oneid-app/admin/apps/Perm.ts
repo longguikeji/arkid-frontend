@@ -1,13 +1,13 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import EditNodePerm from './EditNodePerm';
-import EditUserPerm from './EditUserPerm';
-import './Perm.less';
-import { Permission, Node } from '@/models/oneid';
+import { Node, Permission } from '@/models/oneid'
+import * as api from '@/services/oneid'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import EditNodePerm from './EditNodePerm'
+import EditUserPerm from './EditUserPerm'
+import './Perm.less'
 
 @Component({
   components: {
-    EditNodePerm: EditNodePerm,
+    EditNodePerm,
     EditUserPerm,
   },
   template: html`
@@ -15,20 +15,20 @@ import { Permission, Node } from '@/models/oneid';
     <div class="ui-admin-apps-perm--head flex-row">
       <div class="flex-row">
         <Icon type="ios-alarm" size="30"/>
-        <h2>{{appUID}}的权限</h2>
+        <h2>{{appName}}的权限</h2>
       </div>
-      <Input 
-        v-model="searchPerm" 
-        search clearable 
-        placeholder="搜索权限名称" 
-        class="search" 
+      <Input
+        v-model="searchPerm"
+        search clearable
+        placeholder="搜索权限名称"
+        class="search"
         @on-change="onSearchChange"
       />
     </div>
     <div class="ui-admin-apps-perm--menu flex-row">
-      <Menu mode="horizontal" 
-        :theme="dark" 
-        @on-select="onSelect" 
+      <Menu mode="horizontal"
+        :theme="dark"
+        @on-select="onSelect"
         :active-name="menuName"
       >
         <MenuItem v-for="item in baseMenuItems" :name="item">
@@ -38,9 +38,9 @@ import { Permission, Node } from '@/models/oneid';
           <template slot="title">
           {{ selectedSubMenuItem !== '' ? selectedSubMenuItem : '自定义分组类型的权限' }}
           </template>
-          <MenuItem 
+          <MenuItem
             v-for="item in subMenuItemList"
-            :name="item.name" 
+            :name="item.name"
           >
             {{ item.name }}
           </MenuItem>
@@ -92,111 +92,113 @@ export default class Perm extends Vue {
   $refs: Vue['$refs'] & {
     editNodePerm: EditNodePerm,
     editUserPerm: EditUserPerm,
-  };
+  }
   pagination = {
     total: 0,
     page: 1,
     pageSize: 10,
     pageSizeOpts: [10, 20, 40, 60, 80, 100],
-  };
-  editNode = false;
-  currentPerm: Permission|null = null;
+  }
+  editNode = false
+  currentPerm: Permission|null = null
   get viewMeta() {
     return {
       breadcrumb: [{label: '全部应用', path: {name: 'admin.app'}}, '应用内权限'],
-    };
+    }
   }
-  baseMenuItems = ['账号的权限', '部门的权限', '标签的权限', '角色的权限'];
-  baseTableColumnNames = ['权限ID', '权限名称', '权限白名单', '权限黑名单'];
-  operationName = '新建权限';
-  accessPerm: Permission[] = [];
-  subMenuItemList = [];
-  selectedSubMenuItem = '';
-  innerPerm: Permission[] = [];
-  metaNodes: Node[] = [];
-  currentNode: Node|null = null;
-  columnName = '';
-  searchPerm = '';
-  wholeNames = '';
+  baseMenuItems = ['账号的权限', '部门的权限', '标签的权限', '角色的权限']
+  baseTableColumnNames = ['权限ID', '权限名称', '权限白名单', '权限黑名单']
+  operationName = '新建权限'
+  accessPerm: Permission[] = []
+  subMenuItemList = []
+  selectedSubMenuItem = ''
+  innerPerm: Permission[] = []
+  metaNodes: Node[] = []
+  currentNode: Node|null = null
+  columnName = ''
+  searchPerm = ''
+  wholeNames = ''
+  appName = ''
 
   get menuName(): string {
-    return (this.$route.query.tab || this.baseMenuItems[0]) as string;
+    return (this.$route.query.tab || this.baseMenuItems[0]) as string
   }
 
   get appUID(): string {
-    return this.$route.params.uid;
+    return this.$route.params.uid
   }
 
   showAdd() {
-    this.editNode = false;
+    this.editNode = false
     this.$nextTick(() => {
-      this.editNode = true;
-      this.$nextTick(() => this.$refs.editNodePerm.showAdd(this.appUID));
-    });
+      this.editNode = true
+      this.$nextTick(() => this.$refs.editNodePerm.showAdd(this.appUID))
+    })
   }
 
-  mounted() {
-    this.loadData();
+  async mounted() {
+    const app = await api.App.fetch(this.appUID)
+    this.appName = app.name
+    this.loadData()
   }
 
   onPageChange(page: number) {
-    this.pagination.page = page;
-    this.loadData();
+    this.pagination.page = page
+    this.loadData()
   }
 
   onPageSizeChange(pageSize: number) {
     if (pageSize === this.pagination.pageSize) {
-      return;
+      return
     }
-    this.pagination = {...this.pagination, pageSize};
-    this.loadData();
+    this.pagination = {...this.pagination, pageSize}
+    this.loadData()
   }
 
   async loadData() {
-    await this.loadMetaNodes();
-
-    this.subMenuItemList = this.metaNodes.filter(o => o.parent.name == '自定义分组类型');
-    this.loadPerms();
+    await this.loadMetaNodes()
+    this.subMenuItemList = this.metaNodes.filter(o => o.parent.name === '自定义分组类型')
+    this.loadPerms()
   }
 
   loadPerms() {
-    this.selectedSubMenuItem = '';
+    this.selectedSubMenuItem = ''
     if(this.menuName === this.baseMenuItems[0]) {
-      this.getAccessPermList('user');
-      this.getInnerPermList('user');
-      this.currentNode = null;
+      this.getAccessPermList('user')
+      this.getInnerPermList('user')
+      this.currentNode = null
     }
-    else if (this.menuName == this.baseMenuItems[1]) {
-      this.getAccessPermList('dept');
-      this.getInnerPermList('dept');
-      this.currentNode = this.metaNodes.filter(o => o.id == 'd_root')[0];
+    else if (this.menuName === this.baseMenuItems[1]) {
+      this.getAccessPermList('dept')
+      this.getInnerPermList('dept')
+      this.currentNode = this.metaNodes.filter(o => o.id === 'd_root')[0]
     }
     else if(this.menuName === this.baseMenuItems[2]) {
-      this.getAccessPermList('label');
-      this.getInnerPermList('label');
-      this.currentNode = this.metaNodes.filter(o => o.id == 'g_label')[0];
+      this.getAccessPermList('label')
+      this.getInnerPermList('label')
+      this.currentNode = this.metaNodes.filter(o => o.id === 'g_label')[0]
     }
     else if(this.menuName === this.baseMenuItems[3]) {
-      this.getAccessPermList('role');
-      this.getInnerPermList('role');
-      this.currentNode = this.metaNodes.filter(o => o.id == 'g_role')[0];
+      this.getAccessPermList('role')
+      this.getInnerPermList('role')
+      this.currentNode = this.metaNodes.filter(o => o.id === 'g_role')[0]
     }
     else{
-      this.selectedSubMenuItem = this.menuName;
-      this.currentNode = this.metaNodes.filter(o => o.name == this.menuName)[0];
-      this.getAccessPermList(this.currentNode.nodeSubject);
-      this.getInnerPermList(this.currentNode.nodeSubject);
+      this.selectedSubMenuItem = this.menuName
+      this.currentNode = this.metaNodes.filter(o => o.name === this.menuName)[0]
+      this.getAccessPermList(this.currentNode.nodeSubject)
+      this.getInnerPermList(this.currentNode.nodeSubject)
     }
   }
 
   onSelect(menuName: string) {
-    const {uid} = this.$route.params;
+    const {uid} = this.$route.params
     this.$router.replace({
       name: 'admin.app.perm',
       params: {uid},
       query: {tab: menuName},
-    });
-    this.loadPerms();
+    })
+    this.loadPerms()
   }
 
   async getAccessPermList(type: string) {
@@ -207,7 +209,7 @@ export default class Perm extends Vue {
       page_size: this.pagination.pageSize,
       name: this.searchPerm,
     })
-    this.accessPerm = permList.data.map(perm => Permission.fromData(perm));
+    this.accessPerm = permList.data.map(perm => Permission.fromData(perm))
   }
 
   async getInnerPermList(type: string) {
@@ -219,68 +221,68 @@ export default class Perm extends Vue {
       page: this.pagination.page,
       name: this.searchPerm,
     })
-    this.pagination.total = permList.meta.count;
-    this.innerPerm = permList.data.map(perm => Permission.fromData(perm));
+    this.pagination.total = permList.meta.count
+    this.innerPerm = permList.data.map(perm => Permission.fromData(perm))
   }
 
   showResultDetail(type: string, perm: Permission) {
-    this.$refs.editUserPerm.showResultDetail(type, perm);
+    this.$refs.editUserPerm.showResultDetail(type, perm)
   }
 
   async showEdit(columnName: string, perm: Permission) {
-    this.currentPerm = perm;
-    this.columnName = columnName;
-    if(this.menuName == this.baseMenuItems[0]) {
-      this.$refs.editUserPerm.showEdit(columnName, perm);
+    this.currentPerm = perm
+    this.columnName = columnName
+    if(this.menuName === this.baseMenuItems[0]) {
+      this.$refs.editUserPerm.showEdit(columnName, perm)
     }
     else {
-      this.editNode = false;
+      this.editNode = false
       this.$nextTick(() => {
-        this.editNode = true;
-        this.$nextTick(() => this.$refs.editNodePerm.showEdit(columnName, this.currentNode, perm));
-      });   
+        this.editNode = true
+        this.$nextTick(() => this.$refs.editNodePerm.showEdit(columnName, this.currentNode, perm))
+      })
     }
   }
 
   getNamesColumn(permType: string, columnName: string, h, params) {
-    let names = [];
-    let perm = null;
-    if (columnName == this.baseTableColumnNames[2]) {
-      if (permType == 'access') {
-        perm = this.accessPerm[params.index];
-        names = this.accessPerm[params.index].permit_owners.map(o=> o.name);
+    let names = []
+    let perm = null
+    if (columnName === this.baseTableColumnNames[2]) {
+      if (permType === 'access') {
+        perm = this.accessPerm[params.index]
+        names = this.accessPerm[params.index].permit_owners.map(o=> o.name)
       }
-      else if(permType == 'inner') {
+      else {
         perm = this.innerPerm[params.index]
-        names = this.innerPerm[params.index].permit_owners.map(o=> o.name);
+        names = this.innerPerm[params.index].permit_owners.map(o=> o.name)
       }
     }
-    else if (columnName == this.baseTableColumnNames[3]) {
-      if (permType == 'access') {
-        perm = this.accessPerm[params.index];
-        names = this.accessPerm[params.index].reject_owners.map(o=> o.name);
+    else if (columnName === this.baseTableColumnNames[3]) {
+      if (permType === 'access') {
+        perm = this.accessPerm[params.index]
+        names = this.accessPerm[params.index].reject_owners.map(o=> o.name)
       }
-      else if(permType == 'inner') {
+      else {
         perm = this.innerPerm[params.index]
-        names = this.innerPerm[params.index].reject_owners.map(o=> o.name);
+        names = this.innerPerm[params.index].reject_owners.map(o=> o.name)
       }
     }
     const edit = h('span', {
       class: 'table-btn',
       on: {
         click: () => {
-          if (permType == 'access') {
-            this.showEdit(columnName, this.accessPerm[params.index]);
+          if (permType === 'access') {
+            this.showEdit(columnName, this.accessPerm[params.index])
           }
-          else if (permType == 'inner') {
-            this.showEdit(columnName, this.innerPerm[params.index]);
+          else {
+            this.showEdit(columnName, this.innerPerm[params.index])
           }
-        }
-      }
-    }, '编辑');
-    const nameString = names.join(', ');
-    const maxCharNumber = 40;
-    var elements = [];
+        },
+      },
+    }, '编辑')
+    const nameString = names.join(', ')
+    const maxCharNumber = 40
+    let elements = []
     if(nameString.length > maxCharNumber) {
       elements = [
         nameString.slice(0, maxCharNumber) + '......',
@@ -297,7 +299,7 @@ export default class Perm extends Vue {
         h('div', {
           slot: 'content',
           style: {
-            whiteSpace: 'normal'
+            whiteSpace: 'normal',
           },
         }, names.join(', '))]
     }
@@ -307,28 +309,28 @@ export default class Perm extends Vue {
       },
       on: {
         'on-popper-show': () => {this.getAllNamesList(columnName, perm)},
-      }
-    }, elements); 
+      },
+    }, elements)
 
     return h('div', {
       class: 'permtags',
-    }, [permTooltip, edit]);
-  
+    }, [permTooltip, edit])
+
   }
 
   async getAllNamesList(columnName: string, perm: Permission) {
-    
+
     const owners = await api.Perm.permResultList(perm.uid, {
       uid: perm.uid,
       owner_subject: this.currentNode ? this.currentNode.nodeSubject : 'user',
       page_size: 1000000,
       status: columnName.includes('白名单') ? 1 : -1,
     })
-    columnName.includes('白名单') ? perm.permit_owners = owners.data : perm.reject_owners = owners.data;
+    columnName.includes('白名单') ? perm.permit_owners = owners.data : perm.reject_owners = owners.data
   }
 
   getCommonColumns(permType: string) {
-    var result = [
+    const result = [
       {
         title: this.baseTableColumnNames[0],
         key: 'perm_id',
@@ -343,19 +345,19 @@ export default class Perm extends Vue {
         title: this.baseTableColumnNames[2],
         width: '350px',
         render: (h, params) => {
-          return this.getNamesColumn(permType, this.baseTableColumnNames[2], h, params);
-        }
+          return this.getNamesColumn(permType, this.baseTableColumnNames[2], h, params)
+        },
       },
       {
         title: this.baseTableColumnNames[3],
-        width: this.menuName == this.baseMenuItems[0] ? '350px' : null,
+        width: this.menuName === this.baseMenuItems[0] ? '350px' : null,
         minWidth: 150,
         render: (h, params) => {
-          return this.getNamesColumn(permType, this.baseTableColumnNames[3], h, params);
-        }
+          return this.getNamesColumn(permType, this.baseTableColumnNames[3], h, params)
+        },
       },
     ]
-    if(this.menuName == this.baseMenuItems[0]) {
+    if(this.menuName === this.baseMenuItems[0]) {
       result.push(
         {
           title: '结果名单',
@@ -366,52 +368,52 @@ export default class Perm extends Vue {
               class: 'table-btn',
               on: {
                 click: () => {
-                  if(permType == 'access') {
-                    this.showResultDetail('user', this.accessPerm[params.index]);
+                  if(permType === 'access') {
+                    this.showResultDetail('user', this.accessPerm[params.index])
                   }
-                  else if(permType == 'inner') {
-                    this.showResultDetail('user', this.innerPerm[params.index]);
+                  else {
+                    this.showResultDetail('user', this.innerPerm[params.index])
                   }
-                }
-              }
-            }, '详细信息');
-            
+                },
+              },
+            }, '详细信息')
+
             return h('div', {
-              class: 'perm-results'
-            }, [edit]);
+              class: 'perm-results',
+            }, [edit])
           },
-        }
+        },
       )
     }
-    return result;
+    return result
   }
   get accessColumns() {
-    return this.getCommonColumns('access');
+    return this.getCommonColumns('access')
   }
 
   get innerPermColumns() {
-    var result = this.getCommonColumns('inner');
-    
+    const result = this.getCommonColumns('inner')
+
     const operation = {
       title: '操作',
       width: '120px',
       render: (h, params) => {
-        const dropDownMenu = h('Dropdown-menu', 
+        const dropDownMenu = h('Dropdown-menu',
           {
-            slot: 'list'
-          }, 
-          ['重命名', '删除此权限'].map((item) => 
+            slot: 'list',
+          },
+          ['重命名', '删除此权限'].map((item) =>
             {
-              return h('Dropdown-item', 
+              return h('Dropdown-item',
                 {
                   props: {
                     name: item,
-                  }
+                  },
                 }, item)
-            }
-          )
+            },
+          ),
         )
-        const dropDownSpan = h('span', 
+        const dropDownSpan = h('span',
           {
             class: 'dropdown-column-table-btn',
           },
@@ -420,11 +422,11 @@ export default class Perm extends Vue {
             h('Icon', {
               props: {
                 type: 'ios-arrow-down',
-              }
-            })
-          ]
-        );
-        const dropDown = h('Dropdown', 
+              },
+            }),
+          ],
+        )
+        const dropDown = h('Dropdown',
           {
             props: {
               trigger: 'click',
@@ -432,48 +434,48 @@ export default class Perm extends Vue {
             },
             on: {
               'on-click': (name: string) => {
-                if(name == '重命名') {
-                  this.$refs.editNodePerm.showRename(this.innerPerm[params.index]);
+                if(name === '重命名') {
+                  this.$refs.editNodePerm.showRename(this.innerPerm[params.index])
                 }
-                else if(name == '删除此权限') {
-                  this.deletePerm(this.innerPerm[params.index]);
+                else {
+                  this.deletePerm(this.innerPerm[params.index])
                 }
-              }
-            }
-          }, 
-          [dropDownMenu, dropDownSpan]
-        );
-        return h('div', 
+              },
+            },
+          },
+          [dropDownMenu, dropDownSpan],
+        )
+        return h('div',
           {
             class: 'dropdown-column flex-row',
-          }, 
-          [dropDown]
+          },
+          [dropDown],
         )
-      }
-    };
-    result.push(operation);
-    return result;
+      },
+    }
+    result.push(operation)
+    return result
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children];
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 
   onEditSave() {
-    this.loadData();
+    this.loadData()
   }
 
   onUserEditSave() {
-    this.loadData();
+    this.loadData()
   }
 
   async deletePerm(perm: Permission) {
-    await api.Perm.remove(perm.uid);
-    this.loadData();
+    await api.Perm.remove(perm.uid)
+    this.loadData()
   }
 
   onSearchChange(event) {
-    this.loadPerms();
+    this.loadPerms()
   }
 }

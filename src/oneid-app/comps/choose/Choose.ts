@@ -1,10 +1,10 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import {TreeNode, Node, User} from '@/models/oneid';
-import GroupTree from '@/oneid-app/comps/GroupTree';
-import UserList from './UserList';
-import Selection from './Selection';
-import './Choose.less';
+import {Node, TreeNode, User} from '@/models/oneid'
+import GroupTree from '@/oneid-app/comps/GroupTree'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './Choose.less'
+import Selection from './Selection'
+import UserList from './UserList'
 
 @Component({
   components: {
@@ -82,32 +82,32 @@ import './Choose.less';
   `,
 })
 export default class Choose extends Vue {
-  @Prop({type: Node}) metaNode?: Node;
-  @Prop({type: String, required: true, default: ''}) title!: string;
-  @Prop({type: Boolean, default: false}) showUser!: boolean;
-  @Prop({type: Boolean, default: false}) multiple!: boolean;
-  @Prop({type: Boolean, default: true}) showIcon!: boolean;
-  @Prop({type: Array, default: () => []}) checkedIds!: string[];
-  @Prop({type: Array, default: () => []}) selectedIds!: string[];
-  @Prop({type: Array, default: () => []}) checkedUserIds!: string[];
-  @Prop({type: Array, default: () => []}) selectedUserIds!: string[];
-  @Prop({type: Array, default: () => []}) disabledIds!: string[];
-  @Prop({type: Boolean, default: false}) onlyUser!: boolean;
+  @Prop({type: Node}) metaNode?: Node
+  @Prop({type: String, required: true, default: ''}) title!: string
+  @Prop({type: Boolean, default: false}) showUser!: boolean
+  @Prop({type: Boolean, default: false}) multiple!: boolean
+  @Prop({type: Boolean, default: true}) showIcon!: boolean
+  @Prop({type: Array, default: () => []}) checkedIds!: string[]
+  @Prop({type: Array, default: () => []}) selectedIds!: string[]
+  @Prop({type: Array, default: () => []}) checkedUserIds!: string[]
+  @Prop({type: Array, default: () => []}) selectedUserIds!: string[]
+  @Prop({type: Array, default: () => []}) disabledIds!: string[]
+  @Prop({type: Boolean, default: false}) onlyUser!: boolean
 
-  showModal = false;
+  showModal = false
 
-  activeMetaNode: Node|null = null;
-  metaNodeList: Node[] = [];
+  activeMetaNode: Node|null = null
+  metaNodeList: Node[] = []
 
-  tree: TreeNode|null = null;
+  tree: TreeNode|null = null
 
-  nodeSelection: Node[] = [];
-  userSelection: User[] = [];
+  nodeSelection: Node[] = []
+  userSelection: User[] = []
 
   onUserListCheckChange(array: User[], cur: User) {
     this.userSelection = cur.checked
       ? [...this.userSelection, cur]
-      : this.userSelection.filter(user => user.id !== cur.id);
+      : this.userSelection.filter(user => user.id !== cur.id)
   }
 
   onTreeCheckChange(array: TreeNode[], cur: TreeNode) {
@@ -115,11 +115,11 @@ export default class Choose extends Vue {
       if (cur.type === 'node') {
         this.nodeSelection = cur.checked
           ? [...this.nodeSelection, cur.raw] as Node[]
-          : this.nodeSelection.filter(node => node.id !== cur.raw.id);
-      } else if (cur.type === 'user') {
+          : this.nodeSelection.filter(node => node.id !== cur.raw.id)
+      } else {
         this.userSelection = cur.checked
           ? [...this.userSelection, cur.raw] as User[]
-          : this.userSelection.filter(user => user.id !== cur.raw.id);
+          : this.userSelection.filter(user => user.id !== cur.raw.id)
       }
     }
   }
@@ -127,32 +127,32 @@ export default class Choose extends Vue {
   onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
     if (!this.multiple) {
       if (cur.type === 'node') {
-        this.nodeSelection = [cur.raw!] as Node[];
+        this.nodeSelection = [cur.raw!] as Node[]
       } else {
-        this.userSelection = [cur.raw!] as User[];
+        this.userSelection = [cur.raw!] as User[]
       }
     }
   }
 
   getSelectionIcon(type: string): string {
-    return '';
+    return ''
   }
 
   onSelectionRemoveNode(node: Node) {
-    this.nodeSelection = this.nodeSelection.filter(n => n.id !== node.id);
-    this.$nextTick(() => this.unCheckOrUnSelectTreeNode(node.id));
+    this.nodeSelection = this.nodeSelection.filter(n => n.id !== node.id)
+    this.$nextTick(() => this.unCheckOrUnSelectTreeNode(node.id))
   }
   onSelectionRemoveUser(user: User) {
-    this.userSelection = this.userSelection.filter(u => u.id !== user.id);
-    this.$nextTick(() => this.unCheckOrUnSelectTreeNode(user.id));
+    this.userSelection = this.userSelection.filter(u => u.id !== user.id)
+    this.$nextTick(() => this.unCheckOrUnSelectTreeNode(user.id))
   }
 
   unCheckOrUnSelectTreeNode(id: string) {
     if (this.$refs.tree) {
       if (this.multiple) {
-        this.$refs.tree.unCheck(id);
+        this.$refs.tree.unCheck(id)
       } else {
-        this.$refs.tree.unSelect(id);
+        this.$refs.tree.unSelect(id)
       }
     }
   }
@@ -162,78 +162,78 @@ export default class Choose extends Vue {
       'on-ok',
       this.nodeSelection,
       this.userSelection,
-    );
-    this.showModal = false;
+    )
+    this.showModal = false
   }
 
   onCancel() {
-    this.showModal = false;
+    this.showModal = false
   }
 
   async show() {
-    await this.loadSelection();
+    await this.loadSelection()
     if (this.activeMetaNode) {
-      await this.loadTreeData();
+      await this.loadTreeData()
     } else {
-      this.loadMetaNodeList();
+      this.loadMetaNodeList()
     }
     this.$nextTick(() => {
-      this.showModal = true;
-    });
+      this.showModal = true
+    })
   }
 
   @Watch('activeMetaNode')
-  onMetaNodeChange(activeMetaNode: Node) {
+  async onMetaNodeChange(activeMetaNode: Node) {
+    await this.loadSelection()
     if (activeMetaNode) {
-      this.tree = null;
-      this.loadTreeData();
+      this.tree = null
+      await this.loadTreeData()
     }
   }
 
   async loadMetaNodeList() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children];
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 
   async loadTreeData() {
-    const hierachy = await api.Node.tree(this.activeMetaNode!.id);
+    const hierachy = await api.Node.tree(this.activeMetaNode!.id)
     // TODO (kaishun): node, user 两者的 id 可能重复， 需处理
     const selectionIds = [
       ...this.nodeSelection.map(n => n.id),
       ...this.userSelection.map(u => u.id),
-    ];
+    ]
     const options = {
       showUser: this.showUser,
       checkedIds: selectionIds,
       selectedIds: selectionIds,
       disabledIds: this.disabledIds,
-    };
-
-    this.tree = TreeNode.fromNode(Node.fromData(hierachy), options);
+    }
+    this.tree = TreeNode.fromNode(Node.fromData(hierachy), options)
   }
 
   async loadSelection() {
     const nodes: Node[] = this.multiple
       ? await api.Node.listFromIds(this.checkedIds)
-      : await api.Node.listFromIds(this.selectedIds);
+      : await api.Node.listFromIds(this.selectedIds)
 
     const users: User[] = this.multiple
       ? await api.User.listFromIds(this.checkedUserIds)
-      : await api.User.listFromIds(this.selectedUserIds);
+      : await api.User.listFromIds(this.selectedUserIds)
 
-    this.nodeSelection = nodes;
-    this.userSelection = users;
+    this.nodeSelection = nodes
+    this.userSelection = users
   }
 
   created() {
     if (this.metaNode) {
-      this.activeMetaNode = this.metaNode;
+      this.activeMetaNode = this.metaNode
     }
   }
 
   updated() {
     if (this.metaNode) {
-      this.activeMetaNode = this.metaNode;
+      this.activeMetaNode = this.metaNode
     }
   }
 }
