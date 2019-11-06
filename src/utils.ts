@@ -318,7 +318,7 @@ const getRegexRule = (message: string, regex: RegExp) => {
 
 export const FORM_RULES = {
   required: { required: true, message: '必填项', trigger: 'blur' },
-  username: getRegexRule('4到16位（字母，数字，下划线，减号）', /^[a-zA-Z0-9_-]{4,16}$/),
+  username: getRegexRule('4到16位（小写字母，数字）', /^[a-z0-9]{4,16}$/),
   name: getRegexRule('2到16位（汉字，字母，数字，下划线，减号）', /^[\w\u4e00-\u9fa5_-]{2,16}$/),
   mobile: getRegexRule('手机号码格式有误', /^(1)\d{10}$/),
   email: getRegexRule('邮箱格式有误', /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/),
