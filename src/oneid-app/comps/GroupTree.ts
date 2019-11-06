@@ -1,8 +1,9 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import {findTreeNode, findTreePath} from '@/utils';
-import * as model from '@/models/oneid';
-import './GroupTree.less';
+import * as model from '@/models/oneid'
+import {findTreeNode, findTreePath} from '@/utils'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './GroupTree.less'
 
+/* tslint:disable: max-classes-per-file*/
 @Component({
   template: html`
   <div class="ui-group-tree-component">
@@ -50,52 +51,52 @@ import './GroupTree.less';
   `,
 })
 export default class GroupTree extends Vue {
-  @Prop({type: model.TreeNode, required: true}) data!: model.TreeNode;
-  @Prop({type: Boolean, default: false}) showPath!: boolean;
-  @Prop({type: Boolean, default: true}) showIcon!: boolean;
-  @Prop({type: Boolean, default: false}) multiple!: boolean;
-  @Prop({type: Boolean, default: false}) showHeadCount!: boolean;
+  @Prop({type: model.TreeNode, required: true}) data!: model.TreeNode
+  @Prop({type: Boolean, default: false}) showPath!: boolean
+  @Prop({type: Boolean, default: true}) showIcon!: boolean
+  @Prop({type: Boolean, default: false}) multiple!: boolean
+  @Prop({type: Boolean, default: false}) showHeadCount!: boolean
 
-  tree: model.TreeNode|null = null;
-  curNode: model.TreeNode|null = null;
-  checkedNodes: model.TreeNode[] = [];
+  tree: model.TreeNode|null = null
+  curNode: model.TreeNode|null = null
+  checkedNodes: model.TreeNode[] = []
 
-  keyword = '';
-  searchResults: model.TreeNode[] = [];
+  keyword = ''
+  searchResults: model.TreeNode[] = []
 
   @Watch('curNode')
   onCurNodeChange(val: model.TreeNode) {
-    this.$emit('node-change', val.raw);
+    this.$emit('node-change', val.raw)
   }
 
   doSearch() {
-    const nodes = this.flattenNodes;
+    const nodes = this.flattenNodes
     this.searchResults = nodes
-      .filter((node: model.TreeNode) => node.title.includes(this.keyword));
+      .filter((node: model.TreeNode) => node.title.includes(this.keyword))
   }
 
   get flattenNodes(): model.TreeNode[] {
-    const results: model.TreeNode[] = [];
-    return results.concat(...this.tree!.children.map(n => n.flattenNodes()));
+    const results: model.TreeNode[] = []
+    return results.concat(...this.tree!.children.map(n => n.flattenNodes()))
   }
 
   get path() {
-    const {curNode} = this;
+    const {curNode} = this
     if (!curNode) {
-      return [this.tree];
+      return [this.tree]
     }
-    const path = this.getPath(curNode);
+    const path = this.getPath(curNode)
     const result = path
       .filter(i => i.type === 'node')
-      .filter(i => i.raw.name !== 'root');
-    return result;
+      .filter(i => i.raw.name !== 'root')
+    return result
   }
 
   renderItem(h: Vue.CreateElement, {node}) {
-    const {curNode} = this;
-    const {node: {raw, type, title}, nodeKey} = node;
+    const {curNode} = this
+    const {node: {raw, type, title}, nodeKey} = node
 
-    const isCurrent = curNode && curNode.nodeKey === nodeKey;
+    const isCurrent = curNode && curNode.nodeKey === nodeKey
 
     return h(TreeItem, {
       props: {
@@ -108,85 +109,85 @@ export default class GroupTree extends Vue {
       nativeOn: {
         click: () => {
           if (isCurrent) {
-            return;
+            return
           }
-          this.select(node.node.raw.id);
+          this.select(node.node.raw.id)
         },
       },
-    });
+    })
   }
 
   select(id: number) {
-    this.flattenNodes.forEach(n => n.selected = false);
-    this.toggleSelect(id, true);
+    this.flattenNodes.forEach(n => n.selected = false)
+    this.toggleSelect(id, true)
   }
 
   unSelect(id: number) {
-    this.toggleSelect(id, false);
+    this.toggleSelect(id, false)
   }
 
   toggleSelect(id: number, positive: boolean) {
-    const curNode = findTreeNode(this.tree.children, n => n.raw.id === id);
+    const curNode = findTreeNode(this.tree.children, n => n.raw.id === id)
     if (curNode) {
-      curNode.selected = positive;
-      this.curNode = curNode;
+      curNode.selected = positive
+      this.curNode = curNode
       this.$nextTick(() => {
-        this.onSelectChange(this.$refs.tree.getSelectedNodes(), curNode);
-      });
+        this.onSelectChange(this.$refs.tree.getSelectedNodes(), curNode)
+      })
     }
   }
 
   unCheck(id: number) {
-    const node = this.flattenNodes.find(n => n.raw.id === id)!;
-    node.checked = false;
-    this.$forceUpdate();
+    const node = this.flattenNodes.find(n => n.raw.id === id)!
+    node.checked = false
+    this.$forceUpdate()
   }
 
   onCheckChange(array: model.TreeNode[], cur: model.TreeNode) {
-    this.$emit('on-check-change', array, cur);
+    this.$emit('on-check-change', array, cur)
   }
 
   onSelectChange(array: model.TreeNode[], cur: model.TreeNode) {
-    this.$emit('on-select-change', array, cur);
+    this.$emit('on-select-change', array, cur)
   }
 
   getPath(node: model.TreeNode) {
     return findTreePath(this.tree, (n: model.TreeNode) => {
       if (n.raw.id === node.raw.id) {
         if (!n.parent) {
-          return true;
+          return true
         } else if (n.parent.raw.id === node.parent!.raw.id) {
-          return true;
+          return true
         }
       }
-      return false;
-    });
+      return false
+    })
   }
 
   getIcon(node: model.TreeNode): string {
     return node.type === 'node' ? 'folder-green'
       : node.type === 'user' ? 'icon-accout'
-      : '';
+      : ''
   }
 
   onMountedOrUpdated() {
-    const [node] = this.$refs.tree.getSelectedNodes();
+    const [node] = this.$refs.tree.getSelectedNodes()
     if (node) {
       // iview tree 使用 render 函数自定义节点渲染内容时，select事件不会被触发
-      this.select(node.raw.id);
+      this.select(node.raw.id)
     }
   }
 
   created() {
-    this.tree = this.data;
+    this.tree = this.data
   }
 
   mounted() {
-    this.onMountedOrUpdated();
+    this.onMountedOrUpdated()
   }
 
   updated() {
-    this.onMountedOrUpdated();
+    this.onMountedOrUpdated()
   }
 }
 
@@ -200,8 +201,8 @@ export default class GroupTree extends Vue {
   `,
 })
 class TreeItem extends Vue {
-  @Prop(Boolean) readonly disabled?: boolean;
-  @Prop(Boolean) readonly active?: boolean;
-  @Prop(String) readonly icon!: string;
-  @Prop(String) readonly title!: string;
+  @Prop(Boolean) readonly disabled?: boolean
+  @Prop(Boolean) readonly active?: boolean
+  @Prop(String) readonly icon!: string
+  @Prop(String) readonly title!: string
 }
