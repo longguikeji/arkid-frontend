@@ -1,98 +1,12 @@
 @import '../../utils.less';
 
-.ui-group-tree-component {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  ul, li {
-    list-style: none;
-  }
-
-  .search {
-    flex: none;
-    width: auto;
-    margin: 0 20px;
-    margin-bottom: 16px;
-  }
-
-  ul.search-result-list {
-    padding: 0 20px;
-    li {
-      height: 28px;
-      padding: 0 12px;
-      display: flex;
-      align-items: center;
-      border-radius: 4px;
-      overflow: hidden;
-
-      line-height: 28px;
-      font-size:14px;
-      font-weight:400;
-      color: @color-2;
-
-      &.active {
-        font-weight:600;
-        background: #2A2A2A;
-      }
-
-      &:not(.active) {
-        &:not(.disabled) {
-          &:hover {
-            background: #2A2A2A;
-          }
-        }
-      }
-
-      span {
-        margin-left: 6px;
-      }
-    }
-  }
-
-  .breadcrumb {
-    margin-bottom: 10px;
-    padding: 0 20px;
-  }
-}
-
-.ui-group-tree-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 20px;
-}
-
-.ui-group-tree {
-  position: relative;
-
-  .ivu-tree-arrow {
-    position: relative;
-    z-index: 2;
-    &-open {}
-  }
-
-  .ivu-tree-arrow i {
-    font-size: 18px;
-  }
-
-  .ivu-icon-ios-arrow-forward {
-    &:before {
-      content: "\F341";
-    }
-  }
-
-}
-
 .ui-tree-item {
   display: inline-block;
-  padding: 0 6px;
-
   height: 28px;
+  padding: 0 6px;
+  font-weight: 400;
+  font-size: 14px;
   line-height: 28px;
-  font-size:14px;
-  font-weight:400;
   color: @color-2;
   background: unset;
 
@@ -110,20 +24,20 @@
 
     > span {
       width: 160px;
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
   &.active {
-    font-weight:600;
+    font-weight: 600;
     color: @color-1;
 
     .ui-tree-item-bg {
       background-color: @bg-3;
-      cursor: pointer;
       opacity: 0.6;
+      cursor: pointer;
     }
   }
 
@@ -133,13 +47,102 @@
 
       .ui-tree-item-bg:hover {
         background-color: @bg-3;
-        cursor: pointer;
         opacity: 0.6;
+        cursor: pointer;
       }
     }
   }
 
   .icon {
     margin-right: 8px;
+  }
+}
+
+.ui-group-tree-component {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  ul,
+  li {
+    list-style: none;
+  }
+
+  .search {
+    flex: none;
+    width: auto;
+    margin: 0 20px;
+    margin-bottom: 16px;
+  }
+
+  ul.search-result-list {
+    padding: 0 20px;
+
+    li {
+      display: flex;
+      align-items: center;
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 4px;
+      overflow: hidden;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 28px;
+      color: @color-2;
+
+      &.active {
+        font-weight: 600;
+        background: #2A2A2A;
+      }
+
+      &:not(.active) {
+        &:not(.disabled) {
+          &:hover {
+            background: #2A2A2A;
+          }
+        }
+      }
+
+      span {
+        margin-left: 6px;
+      }
+    }
+
+    .checkitem {
+      margin-left: 10px;
+    }
+  }
+
+  .breadcrumb {
+    padding: 0 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.ui-group-tree-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 0 20px;
+  overflow-y: auto;
+}
+
+.ui-group-tree {
+  position: relative;
+
+  .ivu-tree-arrow {
+    position: relative;
+    z-index: 2;
+    &-open {}
+  }
+
+  .ivu-tree-arrow i {
+    font-size: 18px;
+  }
+
+  .ivu-icon-ios-arrow-forward {
+    &::before {
+      content: "\F341";
+    }
   }
 }

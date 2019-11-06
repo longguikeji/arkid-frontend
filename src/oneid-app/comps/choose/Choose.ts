@@ -207,7 +207,7 @@ export default class Choose extends Vue {
       showUser: this.showUser,
       checkedIds: selectionIds,
       selectedIds: selectionIds,
-      disabledIds: this.disabledIds,
+      disableCheckboxIds: this.disabledIds,
     }
     this.tree = TreeNode.fromNode(Node.fromData(hierachy), options)
   }
