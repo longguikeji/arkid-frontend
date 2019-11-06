@@ -149,7 +149,6 @@ export default class Meta extends Vue {
       this.customNodeName = null
       this.loadData()
     } catch(e) {
-      console.log(e)
       this.$Loading.error()
     }
   }
@@ -176,7 +175,6 @@ export default class Meta extends Vue {
       this.operatingCustomNode = null
       this.loadData()
     } catch(e) {
-      console.log(e)
       this.$Loading.error()
     }
   }
@@ -188,7 +186,6 @@ export default class Meta extends Vue {
       this.$Loading.finish()
       this.loadData()
     } catch(e) {
-      console.log(e)
       if (e.status === 400 && e.data.node) {
         if (e.data.node.includes('protected_by_child_node')) {
           this.$Message.error('删除失败：存在依赖的节点')
@@ -205,6 +202,7 @@ export default class Meta extends Vue {
 
   updated() {
     if (
+      // tslint:disable-next-line:prefer-switch
       this.$route.name === 'admin.group' ||
       this.$route.name === 'admin.group.node'
     ) {

@@ -1,6 +1,5 @@
 import uuid from 'uuid/v4'
 
-
 export const uuidHex = () => (
   uuid(null, [] as number[])
     .map(x => x.toString(16).padStart(2, '0'))
@@ -8,15 +7,16 @@ export const uuidHex = () => (
 )
 
 // sleep - `await sleep(1.2)` 休眠 1.2秒
-export const sleep = (seconds: number) => new Promise(res => setTimeout(() => res(true), seconds * 1000))
+export const sleep = async (seconds: number) => new Promise(res => setTimeout(() => res(true), seconds * 1000))
 
 // FIXME: use raf
-export const sleepRaf = (seconds: number) => new Promise(res => setTimeout(() => res(true), seconds * 1000))
+export const sleepRaf = async (seconds: number) => new Promise(res => setTimeout(() => res(true), seconds * 1000))
 
 // TODO: 简化
 export function fmtTime(time: Date) {
   return `${
     'getFullYear,getMonth,getDate'.split(',').map(
+      // tslint:disable:ban-ts-ignore
       // @ts-ignore
       x => String(time[x]() + (x === 'getMonth' ? 1 : 0)).padStart(2, '0'),
     ).join('-')
@@ -52,6 +52,7 @@ export function findTreeNode<T>(treeNodes: LG.TreeChild<T>, fn: (node: LG.TreeNo
   return result
 }
 
+// tslint:disable:no-any
 export function findTreePath(tree: any, fn: any) {
   const nodes = [tree]
   let target = null
@@ -153,7 +154,6 @@ export function loadCss(css: string) {
   // document.getElementsByTagName('head')[0].
 }
 
-
 export function dragOverClass(
   ev: MouseEvent,
   opt: {isAdd: boolean & 'leave', cls: string, silent: boolean},
@@ -176,14 +176,14 @@ export function dragOverClass(
     }
   } catch (ex) {
     if (silent) {
-      console.warn('dragOverClass err', ex)
+      // console.warn('dragOverClass err', ex)
     } else {
       throw ex
     }
   }
 }
 
-export function readFile(f: File): Promise<string> {
+export async function readFile(f: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = evt => {
@@ -197,14 +197,12 @@ export function readFile(f: File): Promise<string> {
   })
 }
 
-
 function addNameToDataURL(dataURL: string, name: string): string {
   return dataURL.replace(';base64', `;name=${name};base64`)
 }
 
-
 interface ProcessResult {dataURL: string; name: string; size: number; type: string}
-export function processFile(file: File, {fillName = true} = {}): Promise<ProcessResult> {
+export async function processFile(file: File, {fillName = true} = {}): Promise<ProcessResult> {
   const { name, size, type } = file
   return new Promise((resolve) => {
     const reader = new FileReader()
@@ -221,12 +219,10 @@ export function processFile(file: File, {fillName = true} = {}): Promise<Process
   })
 }
 
-
 export function isDingtalk() {
   // @ts-ignore
   return !!window.dingtalk
 }
-
 
 export function pDefer(): {promise: Promise<any>; resolve: any; reject: any} {
   const deferred: any = {}
@@ -238,7 +234,6 @@ export function pDefer(): {promise: Promise<any>; resolve: any; reject: any} {
 
   return deferred
 }
-
 
 /**
  * childrenFn > childrenKey
@@ -269,6 +264,7 @@ export function walkTree(
     childrenFn = node => node[childrenKey]
   }
 
+  // tslint:disable: no-shadowed-variable
   const processNode = (node, pNode, level, index) => {
     if (!childFirst) {
       ctx.level = level
@@ -306,6 +302,7 @@ export function walkTree(
 
 const getRegexRule = (message: string, regex: RegExp) => {
   return {
+    // tslint:disable:no-any
     trigger: 'blur', validator: (rule: any, value: string, cb: any) => {
       if (regex.test(value) || !value) {
         cb()

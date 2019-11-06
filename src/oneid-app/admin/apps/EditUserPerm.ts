@@ -147,10 +147,11 @@ export default class Perm extends Vue {
   }
 
   async onSaveUser() {
+    // tslint:disable:variable-name
     const users_status = this.checkedUserList.map(o =>({uid: o.username, status: this.columnName.includes('白名单')?1:-1}))
     const origin_checked_users = this.columnName.includes('白名单')?this.currentPerm!.permit_owners: this.currentPerm!.reject_owners
     origin_checked_users.map(o => {
-      if(users_status.filter(item => item.uid == o.uid).length == 0) {
+      if(users_status.filter(item => item.uid === o.uid).length === 0) {
         users_status.push({uid: o.uid, status: 0})
       }
     })
@@ -225,7 +226,7 @@ export default class Perm extends Vue {
     const tmpUserInfo = new Object()
     const tmpNodes = new Object()
     permSources.data.source.map((o) => {
-      if (tmpUserInfo[o.node_subject] == undefined) {
+      if (tmpUserInfo[o.node_subject] === undefined) {
         tmpUserInfo[o.node_subject] = []
       }
       tmpUserInfo[o.node_subject].push(o.name)
