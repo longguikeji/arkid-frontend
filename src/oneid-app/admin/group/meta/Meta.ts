@@ -189,6 +189,16 @@ export default class Meta extends Vue {
       this.loadData();
     } catch(e) {
       console.log(e);
+      if (e.status === 400 && e.data.node) {
+        if (e.data.node.includes('protected_by_child_node')) {
+          this.$Message.error('删除失败：存在依赖的节点');
+          return;
+        }
+        if (e.data.node.includes('protected_by_child_user')) {
+          this.$Message.error('删除失败：存在依赖的账号');
+          return;
+        }
+      }
       this.$Loading.error();
     }
   }

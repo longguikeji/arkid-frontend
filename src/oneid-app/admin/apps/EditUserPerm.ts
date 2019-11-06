@@ -76,6 +76,7 @@ import { Permission, Node } from '@/models/oneid';
               :name="item.uid"
               class="name-line flex-row"
               :title="item.name"
+              :selected="userId === item.uid"
             />
           </CellGroup>
         </div>
@@ -120,6 +121,7 @@ export default class Perm extends Vue {
   columnName = '';
   searchUser = '';
   userEditTitle = '';
+  userId = ''
 
   get checkedUsers() {
     const users = this.checkedUserList.map(o => o.username);
@@ -232,6 +234,8 @@ export default class Perm extends Vue {
     })
     tmpUserInfo.status = permSources.data.status;
     this.userFullInfo = tmpUserInfo;
+
+    this.userId = uid
   }
 
   unCheckOrUnSelect(item: string) {
