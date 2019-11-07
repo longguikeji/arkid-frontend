@@ -30,7 +30,7 @@ import './Layout.less';
         </RouterLink>
 
         <UserAva class="avatar" :user="$app.user" />
-        <Dropdown @on-click="dropDownClick" style="cursor: pointer;">
+        <Dropdown @on-click="dropDownClick" style="cursor: pointer;" placement="bottom-end">
           <span class="username">{{ username }}</span>
           <Icon type="md-arrow-dropdown" size="22" color="#666666"></Icon>
           <DropdownMenu slot="list">
