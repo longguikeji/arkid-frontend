@@ -74,6 +74,7 @@ export default class AppList extends Vue {
   async loadApps() {
     const {visibility, keyword} = this
     const {results: apps, count: total} = await api.App.list({
+      pageSize: 100000,
       keyword,
       nodeId: this.group ? this.group.id : undefined,
       username: this.user ? this.user.username : undefined,
