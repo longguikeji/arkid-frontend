@@ -1,7 +1,7 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import * as model from '@/models/oneid';
-import * as api from '@/services/oneid';
-import './AppList.less';
+import * as model from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './AppList.less'
 
 @Component({
   template: html`
@@ -47,47 +47,48 @@ import './AppList.less';
   `,
 })
 export default class AppList extends Vue {
-  @Prop({type: model.Node}) group?: model.Node;
-  @Prop({type: model.User}) user?: model.User;
+  @Prop({type: model.Node}) group?: model.Node
+  @Prop({type: model.User}) user?: model.User
 
-  visibility: 'all'|'visible' = 'all';
-  keyword = '';
-  apps: any[] = [];
-  activeApp: any|null = null;
-  defaultLogo: string = require('../../../../assets/icons/icon-applicationlist@2x.png');
+  visibility: 'all'|'visible' = 'all'
+  keyword = ''
+  apps: model.App[] = []
+  activeApp: model.App|null = null
+  defaultLogo: string = require('../../../../assets/icons/icon-applicationlist@2x.png')
 
   @Watch('keyword')
   onKeywordChange() {
-    this.loadApps();
+    this.loadApps()
   }
 
   @Watch('visibility')
   onIsAllChange() {
-    this.loadApps();
+    this.loadApps()
   }
 
   @Watch('activeApp')
-  onActiveAppChange(app: any) {
-    this.$emit('on-select', app);
+  onActiveAppChange(app: model.App) {
+    this.$emit('on-select', app)
   }
 
   async loadApps() {
-    const {visibility, keyword} = this;
+    const {visibility, keyword} = this
     const {results: apps, count: total} = await api.App.list({
+      pageSize: 100000,
       keyword,
       nodeId: this.group ? this.group.id : undefined,
       username: this.user ? this.user.username : undefined,
       ownerAccess: (visibility === 'visible') ? true : undefined,
-    });
-    this.apps = apps;
+    })
+    this.apps = apps
   }
 
-  doClickApp(app: any) {
-    this.activeApp = app;
+  doClickApp(app: model.App) {
+    this.activeApp = app
   }
 
   async mounted() {
-    await this.loadApps();
-    this.activeApp = this.apps[0];
+    await this.loadApps()
+    this.activeApp = this.apps[0]
   }
 }
