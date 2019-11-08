@@ -1,9 +1,8 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import {Form} from 'iview/types/index';
-import {FORM_RULES} from '@/utils';
-import './Layout.less';
-
+import * as api from '@/services/oneid'
+import {FORM_RULES} from '@/utils'
+import {Form} from 'iview/types/index'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import './Layout.less'
 
 @Component({
   template: html`
@@ -30,7 +29,7 @@ import './Layout.less';
         </RouterLink>
 
         <UserAva class="avatar" :user="$app.user" />
-        <Dropdown @on-click="dropDownClick" style="cursor: pointer;">
+        <Dropdown @on-click="dropDownClick" style="cursor: pointer;" placement="bottom-end">
           <span class="username">{{ username }}</span>
           <Icon type="md-arrow-dropdown" size="22" color="#666666"></Icon>
           <DropdownMenu slot="list">
@@ -84,9 +83,9 @@ import './Layout.less';
       </div>
       <div class="flex-row">
         <div class="lg-layout--change-password-form">
-          <Form 
+          <Form
             :label-width="220"
-            :model="changePasswordForm" 
+            :model="changePasswordForm"
             :rules="changePasswordFormRules"
             ref="changePasswordForm"
           >
@@ -103,7 +102,7 @@ import './Layout.less';
             </div>
           </Form>
         </div>
-        <div 
+        <div
           class="lg-layout--password-check flex-col">
           <Icon class="lg-layout--password-check"
             v-if="isValidPassword === true"
@@ -112,7 +111,7 @@ import './Layout.less';
           <Icon class="lg-layout--password-check"
             v-if="isValidPassword === false"
             type="ios-close-circle" color="#F5222D" size="18"
-          />   
+          />
         </div>
       </div>
       <div slot="footer" class="lg-layout--change-password-footer flex-row">
@@ -129,11 +128,11 @@ import './Layout.less';
   `,
 })
 export default class Layout extends Vue {
-  showChangePassword: boolean = false;
+  showChangePassword: boolean = false
   $refs!: {
     changePasswordForm: Form,
-  };
-  isValidPassword: boolean|null = null;
+  }
+  isValidPassword: boolean|null = null
 
   changePasswordForm = {
     oldPassword: '',
@@ -143,44 +142,44 @@ export default class Layout extends Vue {
 
   @Watch('changePasswordForm.oldPassword')
   onOldPasswordChange(val: string) {
-    this.verifyPassword(val);
+    this.verifyPassword(val)
   }
 
   async verifyPassword(password: string) {
     try {
-      await api.UCenter.verifyPassword(this.$app.user!.username, password);
-      this.isValidPassword = true;
+      await api.UCenter.verifyPassword(this.$app.user!.username, password)
+      this.isValidPassword = true
     }
     catch (e) {
-      this.isValidPassword = false;
-      console.log(e);
+      this.isValidPassword = false
     }
   }
 
   get siteName() {
-    return this.$app.metaInfo!.org.nameCn;
+    return this.$app.metaInfo!.org.nameCn
   }
 
   get username() {
-    return this.$app.user!.name;
+    return this.$app.user!.name
   }
 
   get changePasswordFormRules() {
     const passwordDiffCheck = {
       trigger: 'blur',
+      // tslint:disable-next-line:no-any
       validator: (rule: any, value: string, cb: any) => {
-        if (this.changePasswordForm.newPassword != this.changePasswordForm.passwordAgain) {
-          cb(new Error('两次输入的密码不一致'));
+        if (this.changePasswordForm.newPassword !== this.changePasswordForm.passwordAgain) {
+          cb(new Error('两次输入的密码不一致'))
         }
         else {
-          cb();
+          cb()
         }
       },
-    };
+    }
     return {
       oldPassword: [FORM_RULES.required],
       newPassword: [
-        FORM_RULES.required, 
+        FORM_RULES.required,
         FORM_RULES.password,
       ],
       passwordAgain: [
@@ -188,9 +187,8 @@ export default class Layout extends Vue {
         FORM_RULES.password,
         passwordDiffCheck,
       ],
-    };
+    }
   }
-
 
   get topMenu() {
     const adminMenu = [
@@ -200,7 +198,7 @@ export default class Layout extends Vue {
       {title: '配置管理', name: 'admin.config'},
       {title: '子管理员', name: 'admin.manager'},
       {title: '操作日志', name: 'admin.oplog'},
-    ];
+    ]
     const wsMenu = this.$app.user && this.$app.user.is_extern_user ? [
       {title: '我的应用', name: 'workspace.apps'},
       {title: '个人资料', name: 'workspace.userinfo'},
@@ -208,46 +206,46 @@ export default class Layout extends Vue {
       {title: '我的应用', name: 'workspace.apps'},
       {title: '通讯录', name: 'workspace.contacts'},
       {title: '个人资料', name: 'workspace.userinfo'},
-    ];
+    ]
     return this.isAdminPage ? adminMenu
       : this.isWorkspacePage ? wsMenu
-      : [];
+      : []
   }
 
   get topMenuActiveName() {
-    const menu = this.topMenu.find(i => this.$route.name!.startsWith(i.name));
+    const menu = this.topMenu.find(i => this.$route.name!.startsWith(i.name))
     if(menu) {
-      return menu.name;
+      return menu.name
     } else {
-      return '';
+      return ''
     }
   }
 
   get sideMenu() {
-    const {name} = this.$route;
+    const {name} = this.$route
     if (name) {
       if (name.startsWith('admin.account')) {
         return [
           {title: '所有账号', icon: 'allaccount', name: 'admin.account'},
           {title: '账号配置', icon: 'accountsettings', name: 'admin.account.settings'},
           {title: '账号同步', icon: 'synchronous', name: 'admin.account.thirdparty'},
-        ];
+        ]
       }
     }
-    return null;
+    return null
   }
 
   get sideMenuActiveName() {
     if (this.$route.name === 'admin.account.perm') {
-      return 'admin.account';
+      return 'admin.account'
     }
     return this.sideMenu
       ? this.sideMenu.find(i => this.$route.name === i.name)!.name
-      : '';
+      : ''
   }
 
   get breadcrumb() {
-    const name = this.$route.name!;
+    const name = this.$route.name!
     const map = new Map([
       ['admin.account', [
         {title: '账号管理', name: 'admin.account'},
@@ -271,68 +269,68 @@ export default class Layout extends Vue {
         {title: '应用管理', name: 'admin.app'},
         '权限管理',
       ]],
-    ]);
-    return map.get(name);
+    ])
+    return map.get(name)
   }
 
   get sideMenuActiveTitle() {
     if (this.$route.name === 'admin.account.perm') {
-      return '应用内权限';
+      return '应用内权限'
     }
     return this.sideMenu
       ? this.sideMenu.find(i => this.$route.name === i.name)!.title
-      : '';
+      : ''
   }
 
   get isWorkspacePage() {
-    return (this.$route.name || '').startsWith('workspace');
+    return (this.$route.name || '').startsWith('workspace')
   }
 
   get isAdminPage() {
-    return (this.$route.name || '').startsWith('admin');
+    return (this.$route.name || '').startsWith('admin')
   }
 
   dropDownClick(menuName: string) {
     if (menuName === 'logout') {
-      this.$app.logout();
+      this.$app.logout()
     }
     else {
-      this.showChangePassword = true;
-      this.$refs.changePasswordForm.resetFields();
+      this.showChangePassword = true
+      this.$refs.changePasswordForm.resetFields()
     }
   }
 
   doCancel() {
-    this.showChangePassword = false;
+    this.showChangePassword = false
   }
 
   async doSave() {
     if (!this.isValidPassword) {
-      this.$Message.error('原密码错误，请重新输入');
-      return;
+      this.$Message.error('原密码错误，请重新输入')
+      return
     }
 
-    const isValid = await this.$refs.changePasswordForm.validate();
+    // tslint:disable: await-promise
+    const isValid = await this.$refs.changePasswordForm.validate()
     if (!isValid) {
-      return;
+      return
     }
 
     try {
       await api.UCenter.resetPasswordWithOldPassword(
-        this.$app.user.username, 
-        this.changePasswordForm.oldPassword, 
-        this.changePasswordForm.newPassword);
-      this.$Message.success('修改密码成功');
-      this.showChangePassword = false;
+        this.$app.user.username,
+        this.changePasswordForm.oldPassword,
+        this.changePasswordForm.newPassword)
+      this.$Message.success('修改密码成功')
+      this.showChangePassword = false
     } catch (e) {
-      this.$Message.error('修改密码失败');
-      console.log(e);
+      this.$Message.error('修改密码失败')
     }
   }
 
   async goToResetPassword() {
-    this.showChangePassword = false;
-    await api.logout();
-    this.$router.push({name: 'oneid.password'});
+    this.showChangePassword = false
+    await api.logout()
+    this.$router.push({name: 'oneid.password'})
   }
 }

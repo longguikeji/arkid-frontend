@@ -157,7 +157,7 @@ export default class Perm extends Vue {
 
   async loadData() {
     await this.loadMetaNodes()
-    this.subMenuItemList = this.metaNodes.filter(o => o.parent.name === '自定义分组类型')
+    this.subMenuItemList = this.metaNodes.filter(o => o.parent.name === '自定义分类')
     this.loadPerms()
   }
 

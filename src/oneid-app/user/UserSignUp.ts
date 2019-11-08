@@ -379,8 +379,7 @@ export default class UserSignUp extends Vue {
       this.selectedRegisterType = this.registerType[0]
 
     } catch(err) {
-      const {key: errKey} = err.data
-      if (errKey[0] === 'expired') {
+      if (err.status === 400 && err.data.key) {
         this.isExpired = true
       } else {
         this.$Message.error('验证邀请码失败')

@@ -104,10 +104,10 @@ export default class EditUser extends Vue {
     const mobileOrEmailRquiredRule = {
       trigger: 'blur',
       validator: (rule: string, value: string, cb: Function) => {
-        if (this.form!.mobile || this.form!.email) {
+        if (this.form!.mobile || this.form!.privateEmail) {
           cb()
         } else {
-          cb(new Error('手机、邮箱不能同时为空'))
+          cb(new Error('手机、个人邮箱不能同时为空'))
         }
       },
     }
@@ -116,7 +116,7 @@ export default class EditUser extends Vue {
       username: [FORM_RULES.required, FORM_RULES.username],
       name: [FORM_RULES.required, FORM_RULES.name],
       mobile: [FORM_RULES.mobile, mobileOrEmailRquiredRule],
-      email: [FORM_RULES.email, mobileOrEmailRquiredRule],
+      privateEmail: [FORM_RULES.email, mobileOrEmailRquiredRule],
     }
   }
 
