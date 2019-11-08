@@ -85,7 +85,7 @@ import './EditUserPerm.less'
             <h3 class="title">权限来源:</h3>
             <Tooltip class="title-tooltip">
               <XIcon name="doubt" size="14px"/>
-              <div slot="content">XXXXX</div>
+              <div slot="content">账号对应权限来源</div>
             </Tooltip>
           </div>
           <div>
