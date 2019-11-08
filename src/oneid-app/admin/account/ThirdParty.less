@@ -2,15 +2,20 @@
 
 .ui-account-thirdparty-page {
   display: flex;
-  flex-direction: column;
   flex: 1 0 auto;
-  background-color: @bg-2;
+  flex-direction: column;
   padding: 30px;
+  background-color: @bg-2;
+
+  ul,
+  li {
+    list-style: none;
+  }
 
   &-wrapper {
     display: flex;
-    flex-direction: column;
     flex: 1 0 auto;
+    flex-direction: column;
   }
 
   &-subtitle {
@@ -18,17 +23,19 @@
     align-items: center;
     margin-bottom: 50px;
 
-    &:before {
-      content: '';
+    &::before {
       display: inline-flex;
       width: 6px;
       height: 14px;
-      background-color: @primary-color;
       margin-right: 6px;
+      background-color: @primary-color;
+      content: '';
     }
+
     h5 {
       font-size: 14px;
     }
+
     span {
       font-size: 12px;
     }
@@ -46,22 +53,60 @@
     .third-party-list-wrapper {
       padding-right: 30px;
       border-right: 1px solid @bg-1;
+
       ul.third-party-list {
         width: 280px;
+
         li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           height: 50px;
+          padding: 0 6px;
+          margin: 4px 0;
           border-radius: 4px;
           overflow: hidden;
-          margin: 4px 0;
-          padding: 0 6px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
           font-size: 14px;
+
+          .action {
+            visibility: hidden;
+
+            &-activate {
+              color: @primary-color;
+            }
+
+            &-deactivate {
+              color: #ED4013;
+            }
+          }
+
+          .status {
+            display: inline-flex;
+            visibility: hidden;
+            font-size: 12px;
+
+            &-no::after,
+            &-ok::after {
+              padding: 0 4px;
+              border-radius: 2px;
+            }
+
+            &-no::after {
+              background-color: @bg-4;
+              content: '未激活';
+            }
+
+            &-ok::after {
+              padding: 0 4px;
+              background-color: #0E6237;
+              content: '已激活';
+            }
+          }
 
           &:hover,
           &.active {
             background-color: @bg-3;
+
             .status,
             .action {
               visibility: visible;
@@ -72,48 +117,22 @@
             margin-right: 6px;
           }
           .name {}
-          .status {
-            display: inline-flex;
-            visibility: hidden;
-            font-size: 12px;
-
-            &-no:after,
-            &-ok:after {
-              padding: 0 4px;
-              border-radius: 2px;
-            }
-
-            &-no:after {
-              content: '未激活';
-              background-color: @bg-4;
-            }
-            &-ok:after {
-              content: '已激活';
-              padding: 0 4px;
-              background-color: #0E6237;
-            }
-          }
-          .action {
-            visibility: hidden;
-            &-activate {
-              color: @primary-color;
-            }
-            &-deactivate {
-              color: #ED4013;
-            }
-          }
         }
       }
     }
+
     .form-wrapper {
       display: flex;
       flex-direction: column;
+
       .form {
         width: 738px;
       }
+
       .btns {
         display: flex;
         justify-content: center;
+
         .submit-btn {
           margin-right: 12px;
         }
@@ -122,27 +141,26 @@
 
     .no-data {
       display: flex;
-      flex-direction: column;
       flex: 1 0 auto;
+      flex-direction: column;
       align-items: center;
+
       &-icon {
         width: 134px;
         height: 134px;
       }
+
       &-info {
         margin-top: 48px;
         font-size: 14px;
         color: @color-2;
       }
+
       &-help {
         margin-top: 12px;
         font-size: 12px;
         color: @color-5;
       }
     }
-  }
-
-  ul, li {
-    list-style: none;
   }
 }

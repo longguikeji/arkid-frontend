@@ -5,60 +5,59 @@
 
   li {
     position: relative;
-    padding-left: 138px;
     min-height: 1em;
-    margin: 0 0 15px 0;
+    padding-left: 138px;
+    margin: 0 0 15px;
     font-size: 14px;
     color: @color-3;
 
-    &:before {
-      color: @color-2;
-      content: attr(data-label);
+    &::before {
       position: absolute;
       left: 0;
+      color: @color-2;
+      content: attr(data-label);
     }
   }
 }
 
-
 .ws-apps {
   &--app-box-wrap {
-    background: @bg-2;
     display: flex;
     flex: auto;
+    background: @bg-2;
   }
 
   &--app-box {
     width: 1000px;
-    margin: 0 auto;
     padding: 10px 0 0;
+    margin: 0 auto;
 
     &-header {
       align-items: center;
-      padding: 30px 16px 30px;
+      padding: 30px 16px;
     }
 
     &-main {
       flex: 1;
-      overflow-y: auto;
       justify-content: center;
       margin-bottom: 10px;
+      overflow-y: auto;
 
       ul {
         list-style: none;
       }
 
       .card-list {
-        margin: 0 0 0 20px;
         flex-wrap: wrap;
+        margin: 0 0 0 20px;
 
         li {
-          width: 270px;
-          height: 60px;
-          margin-bottom: 20px;
-          margin-right: 50px;
           justify-content: center;
           align-items: center;
+          width: 270px;
+          height: 60px;
+          margin-right: 50px;
+          margin-bottom: 20px;
           border-radius: 4px;
           cursor: pointer;
 
@@ -69,9 +68,9 @@
           .logo {
             justify-content: center;
             align-items: center;
-            margin: 0 10px;
             width: 40px;
             height: 40px;
+            margin: 0 10px;
             border-radius: 4px;
             overflow: hidden;
 
@@ -81,21 +80,24 @@
               height: auto;
             }
           }
+
           .name-intro {
-            height: 40px;
             justify-content: space-between;
+            height: 40px;
           }
+
           .name {
-            font-size:14px;
             font-weight: bold;
+            font-size: 14px;
+            line-height: 1.2em;
             color: @color-2;
-            line-height: 1.2em;
           }
+
           .intro {
-            font-size:12px;
-            font-weight:400;
-            color: @color-3;
+            font-weight: 400;
+            font-size: 12px;
             line-height: 1.2em;
+            color: @color-3;
           }
         }
       }

@@ -30,7 +30,7 @@
       <Form
         v-if="form"
         :model="form"
-        style="width: 300px"
+        style="width: 300px;"
       >
         <FormItem
           v-for="item in formFields"
@@ -194,8 +194,9 @@
       .config-block {
         display: flex;
         flex: 0 1 auto;
-        width: 30%;
         flex-direction: column;
+        width: 30%;
+
         &:last-child {
           margin-top: 24px;
         }

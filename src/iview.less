@@ -2,42 +2,63 @@
 @import './utils.less';
 @import './menu.less';
 
-@ui-disabled-color           : #7b8497;
+@ui-disabled-color: #7b8497;
 
-@slider-disabled-color       : @ui-disabled-color;
+@slider-disabled-color: @ui-disabled-color;
 
 // Base
-@body-background        : @bg-body;
-@component-background   : @bg-2;
-@title-color            : @color-1;
-@text-color             : @color-2;
-@link-color             : @primary-color;
-@btn-default-bg         : @bg-2;
-@btn-default-border     : #3E3E3E;
-@btn-disable-color      : @color-3;
-@btn-disable-bg         : #3E3E3E;
-@btn-primary-color      : @text-color;
+@body-background: @bg-body;
+
+@component-background: @bg-2;
+
+@title-color: @color-1;
+
+@text-color: @color-2;
+
+@link-color: @primary-color;
+
+@btn-default-bg: @bg-2;
+
+@btn-default-border: #3E3E3E;
+
+@btn-disable-color: @color-3;
+
+@btn-disable-bg: #3E3E3E;
+
+@btn-primary-color: @text-color;
 
 // Border color
-@border-color-base      : @bg-body;  // outside
-@border-color-split     : #292929;  // inside
-@border-width-base      : 1px;       // width of the border for a component
-@border-style-base      : solid;     // style of a components border
+@border-color-base: @bg-body;  // outside
+
+@border-color-split: #292929;  // inside
+
+@border-width-base: 1px;       // width of the border for a component
+
+@border-style-base: solid;     // style of a components border
 
 // Background color
-@table-thead-bg               : @bg-3;
-@table-td-stripe-bg           : @bg-3;
-@table-td-hover-bg            : @bg-3;
-@table-td-highlight-bg        : @bg-3;
+@table-thead-bg: @bg-3;
+
+@table-td-stripe-bg: @bg-3;
+
+@table-td-hover-bg: @bg-3;
+
+@table-td-highlight-bg: @bg-3;
 
 // Input
-@input-color                 : @text-color;
-@input-bg                    : @bg-3;
-@input-border-color          : @input-bg;
-@input-disabled-bg           : #3E3E3E;
-@input-placeholder-color     : @btn-disable-color;
-@input-hover-border-color    : @primary-color;
-@input-focus-border-color    : @primary-color;
+@input-color: @text-color;
+
+@input-bg: @bg-3;
+
+@input-border-color: @input-bg;
+
+@input-disabled-bg: #3E3E3E;
+
+@input-placeholder-color: @btn-disable-color;
+
+@input-hover-border-color: @primary-color;
+
+@input-focus-border-color: @primary-color;
 
 .@{input-prefix-cls} {
   &::selection {
@@ -49,8 +70,8 @@
   }
 
   &:focus {
-    box-shadow: none;
     border-color: @primary-color;
+    box-shadow: none;
   }
 
   &:hover {
@@ -61,19 +82,28 @@
 // Seletct
 .@{select-prefix-cls} {
   &-selection {
-    background-color: @input-bg;
     border-color: @bg-3;
+    background-color: @input-bg;
+  }
+
+  &-input {
+    &[disabled] {
+      color: @ui-disabled-color;
+    }
   }
 }
+
 .@{select-prefix-cls}-item {
-  &-selected ,&-selected:hover{
+  &-selected,
+  &-selected:hover {
     color: @text-color;
   }
 }
 
 .@{table-prefix-cls} {
   background-color: @bg-2;
-  &-wrapper{
+
+  &-wrapper {
     border: none;
 
     > .@{spin-prefix-cls}-fix {
@@ -81,21 +111,30 @@
       opacity: 0.9;
     }
   }
-  &:before{
+
+  &::before {
     display: none;
   }
+
+  &::after {
+    background: @bg-2;
+  }
+
   td {
     background-color: @bg-2;
   }
 }
+
 .@{drawer-prefix-cls} {
   &-content {
     background-color: @component-background;
   }
+
   &-mask {
     background-color: rgba(0, 0, 0, 0.5);
   }
 }
+
 .@{divider-prefix-cls} {
   background: #3E3E3E;
 }
@@ -104,17 +143,21 @@
 .@{modal-prefix-cls} {
   &-header {
     border-bottom: 1px solid @bg-1;
+
     p,
     &-inner {
       color: @color-1;
     }
   }
+
   &-footer {
     border-top: 1px solid @bg-1;
   }
+
   &-content {
     background-color: @bg-2;
   }
+
   &-mask {
     background-color: rgba(0, 0, 0, 0.5);
   }
@@ -122,21 +165,26 @@
 
 // Poptip
 @poptip-arrow-color: transparent;
+
 .@{poptip-prefix-cls} {
   &-inner {
     background-color: @bg-3;
   }
-  &-popper{
-    &[x-placement^="top"] .@{poptip-arrow}:after {
+
+  &-popper {
+    &[x-placement^="top"] .@{poptip-arrow}::after {
       border-top-color: @bg-3;
     }
-    &[x-placement^="right"] .@{poptip-arrow}:after {
+
+    &[x-placement^="right"] .@{poptip-arrow}::after {
       border-right-color: @bg-3;
     }
-    &[x-placement^="bottom"] .@{poptip-arrow}:after {
+
+    &[x-placement^="bottom"] .@{poptip-arrow}::after {
       border-bottom-color: @bg-3;
     }
-    &[x-placement^="left"] .@{poptip-arrow}:after {
+
+    &[x-placement^="left"] .@{poptip-arrow}::after {
       border-left-color: @bg-3;
     }
   }
@@ -146,6 +194,7 @@
 .@{select-dropdown-prefix-cls} {
   background-color: @bg-3;
 }
+
 .ivu-dropdown-item:hover {
   background: @bg-1 !important;
 }
@@ -153,9 +202,10 @@
 .ivu-btn-default:hover {
   background: @btn-default-bg;
 }
+
 .@{checkbox-prefix-cls}-inner {
-  background-color: @bg-4;
   border-color: @color-6;
+  background-color: @bg-4;
 
   .@{checkbox-prefix-cls}-checked &::after {
     border-width: 1px;
@@ -164,6 +214,7 @@
 
 .ivu-message-notice-content {
   background: @bg-3;
+
   .ivu-message-info {
     .ivu-icon {
       color: #2C8CF0;
@@ -176,14 +227,6 @@
   color: @ui-disabled-color;
 }
 
-/* #5 */
-.@{select-prefix-cls} {
-  &-input {
-    &[disabled] {
-      color: @ui-disabled-color;
-    }
-  }
-}
 /* }}} */
 
 /* menu 内嵌入 badge */
@@ -191,18 +234,20 @@
   &-item .@{css-prefix}icon {
     margin-right: 6px;
   }
+
   &-submenu-title .@{css-prefix}icon {
     margin-right: 8px;
   }
 }
 
-
 // avator size:xl, xxl
 @avatar-bg: @primary-color;
+
 .@{avatar-prefix-cls} {
   &-xl {
     .avatar-size(70px, 40px);
   }
+
   &-xxl {
     .avatar-size(100px, 60px);
   }
@@ -210,18 +255,18 @@
 
 /* page 样式调整 */
 .@{page-prefix-cls} {
-  color: @color-2;
-  font-size: 14px;
   font-weight: 400;
+  font-size: 14px;
+  color: @color-2;
 
   .@{page-prefix-cls}-total {
   }
 
   .@{page-prefix-cls}-prev {
     border: 1px solid @color-4;
-    background-color: @bg-2;
     font-size: 14px;
     color: @color-2;
+    background-color: @bg-2;
   }
 
   .@{page-prefix-cls}-disabled {
@@ -232,9 +277,9 @@
 
   .@{page-prefix-cls}-item {
     border: 1px solid @color-4;
-    background-color: @bg-2;
     font-size: 14px;
     color: @color-2;
+    background-color: @bg-2;
 
     &:hover {
       border: 1px solid @primary-color;
@@ -246,13 +291,13 @@
   }
 
   .@{page-prefix-cls}-item-jump-prev {
-    &:after {
+    &::after {
       color: @color-4;
     }
   }
 
   .@{page-prefix-cls}-item-jump-next {
-    &:after {
+    &::after {
       color: @color-4;
     }
   }
@@ -271,13 +316,13 @@
     .@{page-prefix-cls}-options-sizer {
       .@{select-prefix-cls} {
         .@{select-prefix-cls}-dropdown {
-          background: @bg-2;
           border: 1px solid @bg-3;
+          background: @bg-2;
         }
 
         .@{select-prefix-cls}-selection {
-          background-color: @bg-2;
           border: 1px solid @color-4;
+          background-color: @bg-2;
 
           &:hover {
             border: 1px solid @primary-color;
@@ -288,13 +333,6 @@
 
     .@{page-prefix-cls}-options-elevator {
     }
-  }
-}
-
-/* table 样式调整 */
-.@{table-prefix-cls} {
-  &:after {
-    background: @bg-2;
   }
 }
 
@@ -312,7 +350,7 @@
   }
 
   .@{radio-prefix-cls}-inner {
-    background-color: @bg-2;
     border-color: @color-6;
+    background-color: @bg-2;
   }
 }

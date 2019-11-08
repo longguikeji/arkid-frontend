@@ -1,71 +1,68 @@
 @import 'color/colors.less';
 
-@primary-color  : #006064;
-// #006064
+@primary-color: #006064;
 
-@bg-1 : #0F0F0F;
-@bg-2 : #1B1B1B;
-@bg-3 : #2A2A2A;
-@bg-4 : #454445;
-@bg-5 : #0E0E0E;
+@bg-1: #0F0F0F;
+@bg-2: #1B1B1B;
+@bg-3: #2A2A2A;
+@bg-4: #454445;
+@bg-5: #0E0E0E;
+
 @bg-body: @bg-1;
 
-@color-1 : #FFFFFF;
-@color-2 : #CDCDCD;
-@color-3 : #828282;
-@color-4 : #3E3E3E;
-@color-5 : #666666;
-@color-6 : #575757;
-@color-7 : #B8B8B8;
-@color-8 : #1BBE6B;
-@color-9 : #ED4013;
-
+@color-1: #FFFFFF;
+@color-2: #CDCDCD;
+@color-3: #828282;
+@color-4: #3E3E3E;
+@color-5: #666666;
+@color-6: #575757;
+@color-7: #B8B8B8;
+@color-8: #1BBE6B;
+@color-9: #ED4013;
 
 @c-heading: @gray-9;
 
 @min-width: 1280px;
 @max-width: 1600px;
 
-
 // 顶导高度
 @h-header: 64px;
 
 .breadcrumb() {
   .breadcrumb {
-    height: 52px;
-    background-color: @bg-2;
-    border-bottom: 1px solid @bg-1;
-
     display: flex;
     flex: none;
     justify-content: flex-start;
     align-items: center;
+    height: 52px;
     padding-left: 31px;
+    border-bottom: 1px solid @bg-1;
+    background-color: @bg-2;
 
     .ivu-breadcrumb {
-      &> span {
-        font-size: 14px;
+      & > span {
         font-weight: 400;
+        font-size: 14px;
 
-        &> a {
+        & > a {
           color: @color-5 !important;
         }
 
-        &> span {
-          margin: 0px 5px !important;
+        & > span {
+          margin: 0 5px !important;
           color: @color-5 !important;
         }
       }
 
-      &> span:nth-last-child(2) {
-        &> span {
-          margin: 0px 5px !important;
+      & > span:nth-last-child(2) {
+        & > span {
+          margin: 0 5px !important;
           color: @color-1 !important;
         }
       }
 
-      &> span:last-child {
-        &> span:first-child {
+      & > span:last-child {
+        & > span:first-child {
           color: @color-1 !important;
         }
       }
@@ -77,42 +74,43 @@
   display: inline-block;
   width: @size;
   height: @size;
+  border-radius: 50%;
   line-height: @size;
   text-align: center;
-  border-radius: 50%;
 
   &.fa-caret-right:hover {
-    background-color: rgba(180, 180, 180, 0.39);;
+    background-color: rgba(180, 180, 180, 0.39);
   }
 
   &.absolute {
     position: absolute;
-    left: -13px;
     top: 3px;
+    left: -13px;
   }
+
   &.expand {
     transform: rotateZ(90deg);
   }
 }
-
 
 .mk-simple-flex() {
   .flex-row,
   .flex-col {
     display: flex;
   }
+
   .flex-col {
     flex-direction: column;
   }
+
   .flex-row {
     flex-direction: row;
   }
+
   .flex-auto {
     flex: auto;
   }
 }
-
-
 
 .mk-lg-base() {
   // XXX: set by iview
@@ -122,8 +120,8 @@
   // }
 
   .list {
-    margin: 1em 0;
     padding-left: 40px;
+    margin: 1em 0;
   }
 
   .ui-page-width {
@@ -135,39 +133,39 @@
   }
 
   .g-full-height-view {
-    flex: auto;
-    display: flex;
-    flex-direction: column;
     position: fixed;
-    left: 0;
     top: 0;
+    left: 0;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
     width: 100vw;
     height: 100vh;
     background: white;
   }
-
 }
-
 
 .mk-lg-icon() {
   .lg-icon-tree-node {
     &-child {
       display: inline-flex;
-      content: url('./assets/icons/icon-tree-child@2x.png');
       width: 18px;
       height: 14px;
+      content: url('./assets/icons/icon-tree-child@2x.png');
     }
+
     &-folder {
       display: inline-flex;
-      content: url('./assets/icons/icon-tree-folder@2x.png');
       width: 16px;
       height: auto;
+      content: url('./assets/icons/icon-tree-folder@2x.png');
     }
+
     &-employees {
       display: inline-flex;
-      content: url('./assets/icons/icon-tree-employees@2x.png');
       width: 16px;
       height: auto;
+      content: url('./assets/icons/icon-tree-employees@2x.png');
     }
   }
 
@@ -180,6 +178,7 @@
       &-userinfo {
         content: url('./assets/icons/icon-Personalinformation@2x.png');
       }
+
       &-security {
         content: url('./assets/icons/icon-Accountsecurity@2x.png');
       }
@@ -189,9 +188,11 @@
       &-in {
         content: url('./assets/icons/icon-Organizationalstructure@2x.png');
       }
+
       &-role {
         content: url('./assets/icons/icon-Rolemanagement@2x.png');
       }
+
       &-ext {
         content: url('./assets/icons/icon-externalaccount@2x.png');
       }
@@ -201,21 +202,27 @@
       &-company {
         content: url('./assets/icons/icon-Enterprisessetting@2x.png');
       }
+
       &-launch {
         content: url('./assets/icons/icon-Startpage@2x.png');
       }
+
       &-contact-field {
         content: url('./assets/icons/icon-fields@2x.png');
       }
+
       &-password {
         content: url('./assets/icons/icon-Changepassword@2x.png');
       }
+
       &-locale {
         content: url('./assets/icons/icon-timezone@2x.png');
       }
+
       &-admin {
         content: url('./assets/icons/icon-director@2x.png');
       }
+
       &-subadmin {
         content: url('./assets/icons/icon-childadministrator@2x.png');
       }
