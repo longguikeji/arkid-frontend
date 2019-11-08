@@ -2,36 +2,37 @@
 
 .ui-s-frame {
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  color: black;
-  flex: 1;
   height: 100vh;
+  color: black;
+  background-color: white;
 
   .ui-s-frame--org-info {
-    margin-bottom: 100px;
     display: flex;
+    margin-bottom: 100px;
+
     .logo-line {
       align-items: center;
+
       .org-logo {
         display: block;
-        margin-right: 20px;
         width: 50px;
         height: 50px;
+        margin-right: 20px;
         background-size: cover;
       }
-      
     }
+
     .ui-site-logo {
       height: 50px;
+
       .org-name {
-        font-size: 20px;
         font-weight: 600;
+        font-size: 20px;
       }
     }
   }
 }
-
-

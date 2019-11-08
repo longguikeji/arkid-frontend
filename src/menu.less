@@ -1,53 +1,58 @@
 .@{menu-prefix-cls} {
-  &-horizontal{
-    &.@{menu-prefix-cls}-light{
-      &:after{
+  &-horizontal {
+    &.@{menu-prefix-cls}-light {
+      &::after {
         display: none;
       }
     }
   }
 
-  &-light{
+  &-light {
     background: @component-background;
   }
 
-  &-light&-horizontal &-item, &-light&-horizontal &-submenu{
+  &-light&-horizontal &-item,
+  &-light&-horizontal &-submenu {
     color: @color-5;
 
     &-active {
-      color: @primary-color;
-
-      font-weight: 600;
-      border-bottom: 0px;
       display: flex;
       justify-content: center;
+      border-bottom: 0;
+      font-weight: 600;
+      color: @primary-color;
 
-      &:after {
-        content: '';
-        height: 5px;
-        width: 24px;
+      &::after {
         position: absolute;
         bottom: -2px;
+        width: 24px;
+        height: 5px;
         background-color: @primary-color;
+        content: '';
       }
     }
+
     &-active:hover {
-      &:after {
+      &::after {
         //width: 100%;
       }
     }
-    &:hover{
-      border-bottom: 0px solid transparent;
+
+    &:hover {
+      border-bottom: 0 solid transparent;
     }
   }
-  
-  &-dark&-horizontal &-item, &-dark&-horizontal &-submenu{
-    &-active, &:hover{
+
+  &-dark&-horizontal &-item,
+  &-dark&-horizontal &-submenu {
+    &-active,
+    &:hover {
       color: @component-background;
     }
   }
 
-  &-primary&-horizontal &-item, &-primary&-horizontal &-submenu{
+  &-primary&-horizontal &-item,
+  &-primary&-horizontal &-submenu {
     color: @component-background;
   }
 
@@ -57,31 +62,35 @@
     border-radius: 4px;
   }
 
-  &-light&-vertical &-item{
-    &-active:not(.@{menu-prefix-cls}-submenu){
+  &-light&-vertical &-item {
+    &-active:not(.@{menu-prefix-cls}-submenu) {
       background: @bg-3;
-      &:after {
+
+      &::after {
         display: none;
       }
     }
   }
 
-  &-dark&-vertical &-item, &-dark&-vertical &-submenu-title{
-    &:hover{
+  &-dark&-vertical &-item,
+  &-dark&-vertical &-submenu-title {
+    &:hover {
       color: @component-background;
     }
   }
 
-  &-dark&-vertical &-submenu &-item{
-    &:hover{
+  &-dark&-vertical &-submenu &-item {
+    &:hover {
       color: @component-background;
     }
-    &-active,&-active:hover{
+
+    &-active,
+    &-active:hover {
       color: @component-background;
     }
   }
 
-  &-dark&-vertical &-child-item-active > &-submenu-title{
+  &-dark&-vertical &-child-item-active > &-submenu-title {
     color: @component-background;
   }
 }

@@ -3,15 +3,16 @@
 .ui-group-meta-page {
   flex: 1;
 
-  ul, li {
+  ul,
+  li {
     list-style: none;
   }
 
   &-side {
+    flex: none;
     width: 304px;
     padding: 30px 20px 0;
     margin-right: 1px;
-    flex: none;
     overflow-y: auto;
     background-color: @bg-2;
 
@@ -20,14 +21,13 @@
         background-color: @bg-3 !important;
       }
     }
-    
-    .title {
-      font-size:16px;
-      font-weight:600;
-      color: @color-2;
-      line-height:22px;
 
+    .title {
       margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: @color-2;
     }
   }
 
@@ -38,17 +38,17 @@
 
     .meta-node-title {
       display: flex;
+      align-items: center;
       margin-top: 20px;
       margin-bottom: 10px;
-      align-items: center;
 
       &.custom-title {
         justify-content: space-between;
 
         .add {
-          cursor: pointer;
           display: flex;
           align-items: center;
+          cursor: pointer;
         }
       }
 
@@ -61,26 +61,7 @@
         margin-right: 6px;
       }
     }
-    ul.default-list,
-    ul.custom-list {
-      li {
-        margin-bottom: 1px;
-        display: flex;
-        align-items: center;
-        height: 30px;
-        cursor: pointer;
 
-        &.active,
-        &:hover {
-          background-color: @bg-3;
-          border-radius: 4px;
-        }
-
-        span {
-          margin-left: 18px;
-        }
-      }
-    }
     ul.custom-list {
       li {
         justify-content: space-between;
@@ -88,22 +69,45 @@
 
         > span {
           width: 140px;
-          white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          white-space: nowrap;
         }
 
         .icon-more {
           display: none;
           margin-right: 12px;
           cursor: pointer;
+
           &:hover {
-            background-color: @bg-2;
             border-radius: 4px;
+            background-color: @bg-2;
           }
         }
+
         &:hover .icon-more {
           display: inline-flex;
+        }
+      }
+    }
+
+    ul.default-list,
+    ul.custom-list {
+      li {
+        display: flex;
+        align-items: center;
+        height: 30px;
+        margin-bottom: 1px;
+        cursor: pointer;
+
+        &.active,
+        &:hover {
+          border-radius: 4px;
+          background-color: @bg-3;
+        }
+
+        span {
+          margin-left: 18px;
         }
       }
     }
@@ -120,30 +124,31 @@
     }
 
     input {
-      background-color: @bg-2;
       font-size: 14px;
+      background-color: @bg-2;
 
-      &:hover, &:focus {
+      &:hover,
+      &:focus {
         border-width: 2px;
       }
     }
 
-    &> div:last-child {
-      padding-top: 6px;
+    & > div:last-child {
       float: right;
+      padding-top: 6px;
 
-      &> span {
-        font-size: 12px;
+      & > span {
         font-weight: 400;
+        font-size: 12px;
         cursor: pointer;
       }
 
-      &> span:first-child {
-        color: @color-9;
+      & > span:first-child {
         padding-right: 10px;
+        color: @color-9;
       }
 
-      &> span:last-child {
+      & > span:last-child {
         color: @primary-color;
       }
     }

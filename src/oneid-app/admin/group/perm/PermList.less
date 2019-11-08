@@ -2,8 +2,8 @@
 
 .ui-permlist-comp {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   margin: 0 30px;
 
   &--header {
@@ -18,33 +18,33 @@
       display: inline-flex;
       width: 50px;
       height: 50px;
+      margin-right: 12px;
       border: none;
       border-radius: 5px;
       overflow: hidden;
-      margin-right: 12px;
     }
   }
+
   &--body {
     .perm-title {
+      display: inline-flex;
+      align-items: center;
       margin-top: 30px;
       margin-bottom: 20px;
-      display: inline-flex;
-      font-size: 14px;
       font-weight: 600;
-      align-items: center;
+      font-size: 14px;
 
-      &:before {
-        content: '';
+      &::before {
         display: inline-flex;
         width: 6px;
         height: 14px;
-        background-color: @primary-color;
         margin-right: 10px;
+        background-color: @primary-color;
+        content: '';
       }
     }
     .table {}
   }
-
 }
 
 .ui-operate-cell {
@@ -52,46 +52,52 @@
   justify-content: center;
 
   .text {}
+
   .white-space,
   .dropdown {
     flex: 1;
-    text-align: left;
     padding-left: 20px;
+    text-align: left;
   }
 }
 
 .ui-source-cell {
   display: flex;
   justify-content: center;
+
   .poptip-btn {
     color: @primary-color;
     cursor: pointer;
   }
 
   .text {}
+
   .white-space,
   .poptip {
     flex: 1;
-    text-align: left;
     padding-left: 20px;
+    text-align: left;
   }
 }
 
 .ui-poptip-content {
-  ul, li {
+  ul,
+  li {
     list-style: none;
   }
 
   ul {
-    &:first {
+    &:first-child {
       border-bottom: 1px solid @bg-1 !important;
     }
+
     li {
       .meta-node-name {
         color: #CDCDCD !important;
       }
+
       .node-name {
-        color: #666;
+        color: #666666;
       }
     }
   }

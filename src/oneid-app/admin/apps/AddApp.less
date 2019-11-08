@@ -1,14 +1,17 @@
 @import '../../../utils.less';
 
 .ui-admin-apps-app-add {
-  .body{
+  .body {
     display: flex;
     justify-content: center;
+
     .upload-area {
       align-items: center;
     }
+
     .form {
       width: 900px;
+
       .ivu-select-multiple {
         .ivu-select-item-selected {
           background: @bg-2;
@@ -23,64 +26,74 @@
         width: 466px;
         overflow-wrap: break-word;
       }
+
       .ivu-tabs-bar {
         border-bottom: 1px solid @color-4;
       }
+
       .subtitle {
         align-items: center;
         margin-bottom: 20px;
-        font-size: 18px;
         font-weight: 600;
+        font-size: 18px;
         color: @color-2;
-      
-        &:before {
-          content: '';
+
+        &::before {
           display: inline-flex;
           width: 6px;
           height: 18px;
           margin-right: 10px;
           background: @primary-color;
+          content: '';
         }
       }
+
       .set-image-area {
-        align-items: center;
         justify-content: space-between;
+        align-items: center;
+
         .upload {
           margin-right: 25px;
         }
+
         .logo {
-          margin-left: 30px;
-          border-radius: 10px; 
-          height: 70px;
           width: 70px;
+          height: 70px;
+          margin-left: 30px;
+          border-radius: 10px;
         }
       }
+
       .ivu-tabs {
         overflow: visible;
       }
+
       .ivu-tag {
         background-color: @color-4;
       }
+
       .ivu-tabs-nav-scroll {
         margin-left: 300px;
+
         .ivu-tabs-tab {
           border: 1px solid @color-4;
           color: @color-5;
           background-color: @color-4;
         }
+
         .ivu-tabs-tab-active {
-          background-color: @bg-2;
           border-bottom: 1px solid @bg-2;
           color: @primary-color;
+          background-color: @bg-2;
         }
       }
-
     }
   }
 
   .header {
     display: flex;
     justify-content: center;
+
     .header-title {
       width: 900px;
     }
@@ -91,8 +104,8 @@
     justify-content: center;
 
     .buttons {
-      width: 900px;
       justify-content: space-between;
+      width: 900px;
     }
   }
 }

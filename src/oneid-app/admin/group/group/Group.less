@@ -3,7 +3,8 @@
 .ui-group-page {
   flex: 1;
 
-  ul, li {
+  ul,
+  li {
     list-style: none;
   }
 
@@ -12,17 +13,17 @@
     align-items: center;
     padding: 0 10px;
     margin-bottom: 20px;
-    font-size: 18px;
     font-weight: 600;
+    font-size: 18px;
     color: @color-2;
 
-    &:before {
-      content: '';
+    &::before {
       display: inline-flex;
       width: 6px;
       height: 18px;
       margin-right: 10px;
       background: @primary-color;
+      content: '';
     }
   }
 
@@ -37,10 +38,12 @@
       width: 160px;
       height: 160px;
     }
+
     &-info {
       font-size: 14px;
       color: @color-2;
     }
+
     &-help {
       margin-top: 10px;
       font-size: 12px;
@@ -50,6 +53,7 @@
 
   .node-detail-no-data {
     margin-top: 170px;
+
     &-icon {
       width: 270px;
       height: 270px;
@@ -57,25 +61,25 @@
   }
 
   &-side {
+    flex: none;
     width: 304px;
     padding: 30px 0;
     margin-right: 1px;
-    flex: none;
     background-color: @bg-2;
 
     .title {
-      font-size:16px;
-      font-weight:600;
-      color: @color-2;
-      line-height:22px;
-
       margin-bottom: 16px;
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 22px;
+      color: @color-2;
     }
   }
 
   &-tree-group {
     .subtitle {
       font-size: 14px;
+
       &-wrapper {
         display: flex;
         flex: 1;
@@ -83,16 +87,17 @@
 
         > h4 {
           width: 160px;
-          white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 
       .add {
-        cursor: pointer;
         display: flex;
         align-items: center;
+        cursor: pointer;
+
         .icon {
           margin-right: 6px;
         }
@@ -106,23 +111,25 @@
 
     .title {
       display: flex;
-      font-size: 22px;
       font-weight: 600;
-      color: @color-2;
+      font-size: 22px;
       line-height: 32px;
+      color: @color-2;
     }
 
     &-header {
       padding: 0 30px;
+
       button {
         margin-left: 16px;
       }
     }
 
     &-content {
-      margin-top: 40px;
       padding: 0 30px;
+      margin-top: 40px;
       overflow-y: auto;
+
       .group-list-block {
         ul {
           padding-left: 20px;
@@ -132,9 +139,9 @@
             align-items: center;
             height: 33px;
             padding: 0 8px;
-            cursor: pointer;
             font-size: 14px;
             color: @color-2;
+            cursor: pointer;
 
             &:not(:last-child) {
               border-bottom: 1px solid @bg-1;
@@ -146,6 +153,7 @@
           }
         }
       }
+
       .user-list-block {
         margin-top: 30px;
       }

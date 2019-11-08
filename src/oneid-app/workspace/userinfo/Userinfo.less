@@ -2,16 +2,17 @@
 
 .ui-workspace-userinfo {
   &-page-wrap {
-    background: @bg-2;
     display: flex;
     flex: auto;
+    background: @bg-2;
   }
+
   &-page {
     // flex: auto;
     display: flex;
     width: 1000px;
-    margin: 0 auto;
     padding: 50px 0 0;
+    margin: 0 auto;
   }
 
   &--logo {
@@ -21,14 +22,15 @@
   &--main {
     flex: auto;
   }
+
   &--summary {
     padding: 15px 0 30px;
     margin-bottom: 30px;
     border-bottom: 1px solid @bg-1;
 
     h4 {
-      font-size: 24px;
       margin-bottom: 18px;
+      font-size: 24px;
     }
   }
 }
@@ -36,13 +38,15 @@
 .ui-edit-user {
   .avatar-help {
     width: 210px;
-    color: #828282;
-    line-height: 1.5;
     margin-bottom: 1.5em;
+    line-height: 1.5;
+    color: #828282;
   }
+
   .avatar {
-    float: right; 
+    float: right;
   }
+
   .use-default-avatar {
     margin-left: 25px;
   }
@@ -60,11 +64,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
   .title {
     display: block;
-    text-align: center;
     font-size: 20px;
+    text-align: center;
   }
+
   .form {
     input {
       width: 400px;
@@ -74,6 +80,7 @@
 
 .ui-workspace-userinfo-verify-password {
   height: 370px;
+
   .title {
     margin-top: 110px;
     margin-bottom: 102px;
@@ -82,26 +89,33 @@
 
 .ui-workspace-userinfo-reset-email {
   height: 370px;
+
   .title {
     margin-top: 110px;
     margin-bottom: 60px;
   }
+
   .send-email-btn {
     margin-left: 16px;
   }
+
   .alert {
     width: 400px;
   }
+
   .ivu-modal-wrap * {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
+
   .ivu-alert-info {
     border: 1px solid #1F5072;
-    background-color: rgba(44,140,240,0.1);
+    background-color: rgba(44, 140, 240, 0.1);
   }
+
   .ivu-alert {
     color: #CDCDCD;
   }
+
   .ivu-alert-info .ivu-alert-icon {
     color: #2C8CF0;
   }
@@ -111,18 +125,17 @@
   width: 800px;
 
   &-wrapper {
-    z-index: 1001;
-    background-color: @bg-2;
     position: fixed;
+    z-index: 1001;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: @bg-2;
   }
 
   .title {
@@ -138,22 +151,22 @@
     width: 400px;
     margin-top: 106px;
   }
+
   .back-link {
     width: 400px;
-    font-size: 14px;
     margin-top: 6px;
+    font-size: 14px;
     text-align: center;
   }
 }
 
 .ui-reset-email-callback-page {
-  width: 100vw;
-  height: 100vh;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 100vh;
 
   &-wrapper {
     display: flex;
@@ -165,16 +178,19 @@
   .icon {
     margin-bottom: 64px;
   }
+
   .title {
+    margin-bottom: 10px;
     font-size: 20px;
     color: @color-2;
-    margin-bottom: 10px;
   }
+
   .info {
+    margin-bottom: 80px;
     font-size: 12px;
     color: @color-2;
-    margin-bottom: 80px;
   }
+
   .btn {
     width: 360px;
   }

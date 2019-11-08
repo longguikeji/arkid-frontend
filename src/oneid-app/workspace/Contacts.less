@@ -3,43 +3,44 @@
 .ui-contact-page {
   margin-left: -16px;
 
-  ul, li {
+  ul,
+  li {
     list-style: none;
   }
 
   &--side {
-    background: @bg-2;
-    margin: -16px 16px -16px 0;
     width: 240px;
     padding: 20px 6px 0;
+    margin: -16px 16px -16px 0;
     font-size: 14px;
+    background: @bg-2;
 
     li {
       &.title {
         display: flex;
         align-items: center;
-
-        color: white;
         margin: 25px 0 8px;
         line-height: 1em;
+        color: white;
+
         .icon {
           margin-right: 8px;
         }
       }
 
       &.node {
-        margin: 1px 0;
         height: 30px;
-        line-height: 30px;
         padding: 0 24px;
+        margin: 1px 0;
+        line-height: 30px;
 
         &.active {
           background: @bg-3;
         }
+
         &:not(.active):hover {
           background: @bg-3;
         }
-
       }
     }
   }
@@ -51,17 +52,19 @@
   &--header-wrapper {
     border-bottom: 1px solid @bg-1;
   }
+
   &--header {
+    justify-content: space-between;
+    align-items: center;
     width: 900px;
     height: 80px;
     padding: 0 20px;
-    justify-content: space-between;
-    align-items: center;
 
     .cat-name {
-      font-size: 16px;
       font-weight: 600;
+      font-size: 16px;
     }
+
     .company {
       margin-right: 12px;
     }
@@ -73,15 +76,12 @@
 
   &--main-wrapper {
     flex: 1;
-    overflow: hidden;
     justify-content: center;
+    overflow: hidden;
   }
+
   &--main {
     width: 900px;
-
-    .detail {
-      flex: 1;
-    }
 
     .org {
       width: 400px;
@@ -89,8 +89,8 @@
 
       .org-wrapper {
         display: flex;
-        flex-direction: column;
         flex: 1;
+        flex-direction: column;
       }
 
       .org-main {
@@ -101,16 +101,18 @@
       ul.dept-list,
       ul.user-list {
         padding: 0 20px;
+
         li {
+          align-items: center;
           height: 50px;
           padding: 0 14px;
-          align-items: center;
           border-bottom: 1px solid @bg-1;
           cursor: pointer;
 
           &.active {
             background-color: @bg-3;
           }
+
           &:not(.active) {
             &:hover {
               background-color: @bg-3;
@@ -120,22 +122,26 @@
       }
 
       ul.path-list {
-        padding: 0 20px;
-        height: 64px;
         align-items: center;
+        height: 64px;
+        padding: 0 20px;
 
+        /* stylelint-disable-next-line no-descending-specificity */
         li {
-          font-size: 14px;
           font-weight: 400;
+          font-size: 14px;
           line-height: 22px;
-          color: #666;
+          color: #666666;
 
           &.active {
             color: white;
           }
+
+          /* stylelint-disable-next-line no-descending-specificity */
           &:not(.active) {
             .path-name {
               cursor: pointer;
+
               &:hover {
                 // color: #0050B3;
               }
@@ -147,64 +153,73 @@
           }
         }
       }
+
       .dept-list {
         .folder-icon {
           margin-right: 8px;
         }
+
         .name {
-          font-size: 14px;
           font-weight: 600;
+          font-size: 14px;
           // color: #17233D;
           line-height: 20px;
         }
+
         .sub {
-          font-size: 14px;
           font-weight: 400;
+          font-size: 14px;
           // color: #0050B3;
           line-height: 20px;
+
           .child-icon {
             margin-right: 4px;
           }
         }
       }
+
       .user-list {
         .avatar {
-          margin-right: 16px;
           justify-content: center;
           align-items: center;
           width: 26px;
           height: 26px;
+          margin-right: 16px;
           border-radius: 100%;
           // overflow: hidden;
         }
+
         .name {
-          font-size:14px;
-          font-weight:400;
+          font-weight: 400;
+          font-size: 14px;
           // color: #17233D;
-          line-height:20px;
+          line-height: 20px;
         }
       }
+
       .search-title {
         padding: 20px;
 
         span {
-          font-size:14px;
-          font-weight:400;
-          color:rgba(128,134,149,1);
-          line-height:22px;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 22px;
+          color: rgba(128, 134, 149, 1);
         }
       }
+
       .dept-title,
       .user-title {
         padding: 0 20px;
-        font-size:12px;
-        font-weight:400;
+        font-weight: 400;
+        font-size: 12px;
         // color:rgba(128,134,149,1);
-        line-height:17px;
+        line-height: 17px;
       }
     }
 
     .detail {
+      flex: 1;
       padding-left: 20px;
       overflow-y: auto;
 
@@ -225,12 +240,14 @@
         &-intro {
           display: flex;
           flex-direction: column;
-          width: 260px;
           justify-content: center;
+          width: 260px;
+
           h4 {
             font-size: 14px;
             color: @color-2;
           }
+
           p {
             margin-top: 20px;
             color: @color-5;
@@ -239,23 +256,25 @@
       }
 
       .intro {
-        margin: 20px 0 20px 0;
         justify-content: space-between;
         align-items: center;
+        margin: 20px 0;
 
         .intro-left {
           height: 70px;
+
           .name {
-            font-size:24px;
-            font-weight:600;
+            font-weight: 600;
+            font-size: 24px;
             // color:rgba(23,35,61,1);
-            line-height:33px;
+            line-height: 33px;
           }
+
           .company {
-            font-size:14px;
-            font-weight:400;
+            font-weight: 400;
+            font-size: 14px;
             // color:rgba(128,134,149,1);
-            line-height:20px;
+            line-height: 20px;
           }
         }
 
@@ -267,8 +286,11 @@
           border-radius: 100%;
         }
       }
+
       .field-list {
+        /* stylelint-disable-next-line no-descending-specificity */
         ul {
+          /* stylelint-disable-next-line no-descending-specificity */
           li {
             position: relative;
             margin-bottom: 18px;
@@ -276,22 +298,24 @@
             .title {
               display: inline-flex;
               width: 118px;
-              font-size:14px;
-              font-weight:400;
-              color:rgba(128,134,149,1);
-              line-height:20px;
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 20px;
+              color: rgba(128, 134, 149, 1);
             }
+
             .value {
               display: inline-flex;
-              font-size:14px;
-              font-weight:400;
-              color:rgba(23,35,61,1);
-              line-height:20px;
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 20px;
+              color: rgba(23, 35, 61, 1);
             }
+
             .ivu-icon {
               position: absolute;
-              left: -18px;
               top: 4px;
+              left: -18px;
             }
           }
         }

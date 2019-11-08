@@ -7,69 +7,78 @@
   .ui-choose-base--head {
     display: flex;
     align-items: center;
-    
+
     .head-title {
       margin-right: 20px;
       font-size: 20px;
     }
+
     .perm-name {
       font-size: 12px;
       color: @color-6;
     }
   }
+
   .ui-choose-base--wrapper {
     .ui-choose-base-result--left {
-      overflow-y: auto;
-      padding: 10px 20px;
       width: 190px;
+      padding: 10px 20px;
+      overflow-y: auto;
       border-right: solid 1px @bg-1;
+
       .title {
-        padding: 10px 0;
         display: inline-flex;
         align-items: center;
-        &:before {
-          content: '';
+        padding: 10px 0;
+
+        &::before {
           display: inline-flex;
           width: 6px;
           height: 18px;
-          background-color: @primary-color;
           margin-right: 10px;
+          background-color: @primary-color;
+          content: '';
         }
       }
+
       .name-list {
         .name-line {
+          align-items: center;
           width: 160px;
           height: 28px;
-          align-items: center;
         }
       }
     }
+
     .ui-choose-base--right {
       .right-title {
         display: flex;
         align-items: center;
         margin-bottom: 20px;
+
         .title-tooltip {
           margin-left: -5px;
         }
       }
 
       .perm-source {
-        margin: 0px 0 12px 37px;
+        margin: 0 0 12px 37px;
         font-size: 14px;
+
         .perm-value {
           margin-left: 10px;
           color: @color-5;
-          
         }
       }
-
     }
-    .ui-choose-base--left, .ui-choose-base--right {
+
+    .ui-choose-base--left,
+    .ui-choose-base--right {
       flex: 1;
+
       .search {
         width: 350px;
-        margin: 10px 20px 0px;
+        margin: 10px 20px 0;
       }
     }
   }
@@ -82,26 +91,29 @@
     display: flex;
     align-items: center;
   }
+
   .select-all,
   .clear-list {
-    margin-right: 20px;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    margin-right: 20px;
   }
+
   .check-li {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 28px;
-    margin-left: 10px;
     margin-right: 20px;
+    margin-left: 10px;
+
     .ivu-cell-title {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
       // flex-direction: row;
       width: 346px;
       height: 28px;
-      justify-content: space-between;
-      align-items: center;
     }
   }
 }
