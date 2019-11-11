@@ -1,3 +1,4 @@
+// tslint:disable:max-classes-per-file
 interface DingUserData {
   account: string;
   uid: string;
@@ -59,6 +60,9 @@ export interface UserData {
   is_manager: boolean;
   is_admin: boolean;
   is_extern_user: boolean;
+  password: string
+  require_reset_password: boolean
+  has_password: boolean
 }
 
 export class User {
@@ -100,6 +104,9 @@ export class User {
     obj.isAdmin = data.is_admin;
     obj.hasAccessToAdmin = data.is_admin || data.is_manager;
     obj.isExternUser = data.is_extern_user;
+    obj.password = data.password
+    obj.requireResetPassword = data.require_reset_password
+    obj.hasPassword = data.has_password
     return obj;
   }
 
@@ -124,7 +131,9 @@ export class User {
   isAdmin: boolean = false;
   hasAccessToAdmin: boolean = false;
   isExternUser: boolean = false;
-
+  password: string = ''
+  requireResetPassword: boolean = false
+  hasPassword: boolean = false
 
   toData() {
     const data = {
@@ -144,6 +153,9 @@ export class User {
       roles: this.roles ? this.roles.map((role: Role) => role.toData()) : null,
       nodes: this.nodes ? this.nodes.map((node: Node) => node.toData()) : null,
       is_settled: this.is_settled,
+      password: this.password,
+      require_reset_password: this.requireResetPassword,
+      has_password: this.hasPassword,
     };
     if (!data.posix_user) {
       delete data.posix_user;
