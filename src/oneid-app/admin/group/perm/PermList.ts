@@ -1,8 +1,9 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import * as model from '@/models/oneid';
-import * as api from '@/services/oneid';
-import './PermList.less';
+import * as model from '@/models/oneid'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './PermList.less'
 
+/* tslint:disable:max-classes-per-file */
 @Component({
   template: html`
   <div class="ui-permlist-comp">
@@ -30,15 +31,15 @@ import './PermList.less';
   `,
 })
 export default class PermList extends Vue {
-  @Prop({type: Object, required: true}) app!: any;
-  @Prop({type: String}) groupId?: string;
-  @Prop({type: String}) username?: string;
+  @Prop({type: Object, required: true}) app!: model.App
+  @Prop({type: String}) groupId?: string
+  @Prop({type: String}) username?: string
 
-  defaultMetaNode: model.Node|null = null;
-  customMetaNode: model.Node|null = null;
+  defaultMetaNode: model.Node|null = null
+  customMetaNode: model.Node|null = null
 
-  permList: any[]|null = null;
-  defaultLogo: string = require('../../../../assets/icons/icon-applicationlist@2x.png');
+  permList: model.Permission[]|null = null
+  defaultLogo: string = require('../../../../assets/icons/icon-applicationlist@2x.png')
 
   get columns() {
     return this.username ? [
@@ -52,27 +53,27 @@ export default class PermList extends Vue {
       {title: '权限名称', key: 'name', width: 140},
       {title: '分组权限', minWidth: 140, render: this.renderOperateCell, align: 'center'},
       {title: '权限结果', width: 100, render: this.renderResultCell, align: 'center'},
-    ];
+    ]
   }
 
   async refresh() {
-    await this.loadPermList();
+    await this.loadPermList()
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.defaultMetaNode = defaultMetaNode;
-    this.customMetaNode = customMetaNode;
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.defaultMetaNode = defaultMetaNode
+    this.customMetaNode = customMetaNode
   }
 
   async loadPermList() {
     if (!this.groupId && !this.username) {
-      return;
+      return
     }
-    const {groupId, username, app} = this;
+    const {groupId, username, app} = this
     const {results: permList, count: total} = groupId
       ? await api.Perm.groupPermList(groupId, {appId: app.uid})
-      : await api.Perm.userPermList(username!, {appId: app.uid});
+      : await api.Perm.userPermList(username!, {appId: app.uid})
 
     this.permList = permList.map(i => ({
       ...i.perm,
@@ -80,10 +81,10 @@ export default class PermList extends Vue {
       status: i.status,
       value: i.value,
       node_perm_value: i.node_perm_value,
-    }));
+    }))
   }
 
-  renderSourceCell(h: Vue.CreateElement, {row: perm}: any) {
+  renderSourceCell(h: Vue.CreateElement, {row: perm}: model.Permission) {
     return h(SourceCell, {
       props: {
         value: perm.node_perm_value,
@@ -92,45 +93,44 @@ export default class PermList extends Vue {
         defaultMetaNode: this.defaultMetaNode,
         customMetaNode: this.customMetaNode,
       },
-    });
+    })
   }
 
-  renderOperateCell(h: Vue.CreateElement, {row: perm}: any) {
+  renderOperateCell(h: Vue.CreateElement, {row: perm}: model.Permission) {
     return h(OperateCell, {
       props: {permId: perm.uid, status: perm.status},
       on: {'on-click': (val: string) => {
-        const status = parseInt(val);
+        const status = Math.floor(Number(val))
         if (status !== perm.status) {
-          this.updateOwerPerm(perm.uid, status);
+          this.updateOwerPerm(perm.uid, status)
         }
       }},
-    });
+    })
   }
 
-  renderResultCell(h: Vue.CreateElement, {row: perm}: any) {
-    return h('span', perm.value ? '是' : '否');
+  renderResultCell(h: Vue.CreateElement, {row: perm}: model.Permission) {
+    return h('span', perm.value ? '是' : '否')
   }
 
   async updateOwerPerm(permId: string, status: number) {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
       if (this.username) {
-        await api.Perm.updateUserPerm(this.username, permId, status);
+        await api.Perm.updateUserPerm(this.username, permId, status)
       } else {
-        await api.Perm.updateNodePerm(this.groupId!, permId, status);
+        await api.Perm.updateNodePerm(this.groupId!, permId, status)
       }
-      this.$Loading.finish();
-      this.refresh();
+      this.$Loading.finish()
+      this.refresh()
     } catch (e) {
-      console.log(e);
-      this.$Loading.error();
-      this.refresh();
+      this.$Loading.error()
+      this.refresh()
     }
   }
 
   async mounted() {
-    await this.loadMetaNodes();
-    await this.loadPermList();
+    await this.loadMetaNodes()
+    await this.loadPermList()
   }
 }
 
@@ -160,14 +160,14 @@ export default class PermList extends Vue {
   `,
 })
 class OperateCell extends Vue {
-  @Prop({type: String, required: true}) permId!: string;
-  @Prop({type: Number, required: true}) status!: number;
+  @Prop({type: String, required: true}) permId!: string
+  @Prop({type: Number, required: true}) status!: number
 
   get text() {
     return this.status === 1 ? '是'
       : this.status === -1 ? '否'
       : this.status === 0 ? '默认'
-      : '';
+      : ''
   }
 }
 
@@ -202,35 +202,35 @@ class OperateCell extends Vue {
   `,
 })
 class SourceCell extends Vue {
-  @Prop({type: Boolean}) value?: boolean;
-  @Prop({type: String, required: true}) username!: string;
-  @Prop({type: String, required: true}) permId!: string;
-  @Prop({type: model.Node, required: true}) defaultMetaNode!: model.Node;
-  @Prop({type: model.Node, required: true}) customMetaNode!: model.Node;
+  @Prop({type: Boolean}) value?: boolean
+  @Prop({type: String, required: true}) username!: string
+  @Prop({type: String, required: true}) permId!: string
+  @Prop({type: model.Node, required: true}) defaultMetaNode!: model.Node
+  @Prop({type: model.Node, required: true}) customMetaNode!: model.Node
 
   get text() {
-    return this.value ? '是' : '否';
+    return this.value ? '是' : '否'
   }
 
-  source: {
+  source: Array<{
     name: string,
     id: string,
     nodeSubject: string,
-  }[]|null = null;
+  }>|null = null
 
   async loadSource() {
-    const data = await api.User.retrievePerm(this.username, this.permId);
+    const data = await api.User.retrievePerm(this.username, this.permId)
     const source = data.source.map(i => ({
       nodeSubject: i.node_subject,
       id: i.node_uid,
       name: i.name,
-    }));
-    this.source = source;
+    }))
+    this.source = source
   }
 
   onPopperShow() {
     if (!this.source) {
-      this.loadSource();
+      this.loadSource()
     }
   }
 
