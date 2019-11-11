@@ -183,14 +183,6 @@ export class User {
     })
   }
 
-  static async retrievePermSource(userName, permUID) {
-    return http.get(this.url() + `${userName}/perm/${permUID}/`).then(x => {
-      return {
-        data: x.data,
-      }
-    })
-  }
-
   static async partialUpdate(user: model.User) {
     const url = this.url({detail: true, id: user.username})
     const data = user.toData()

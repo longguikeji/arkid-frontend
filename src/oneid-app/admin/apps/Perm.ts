@@ -333,7 +333,7 @@ export default class Perm extends Vue {
     const result = [
       {
         title: this.baseTableColumnNames[0],
-        key: 'perm_id',
+        key: 'uid',
         width: '200px',
       },
       {

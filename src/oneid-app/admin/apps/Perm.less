@@ -16,13 +16,24 @@
   &--menu {
     margin-top: 20px;
 
+    .ivu-menu-item {
+      display: flex;
+      justify-content: center;
+    }
+
     .ivu-menu-light.ivu-menu-horizontal {
       .ivu-menu-item-active {
-        justify-content: center;
-
         &::after {
-          width: 124px;
+          display: none;
+        }
+
+        &::before {
+          position: absolute;
+          bottom: -2px;
+          width: 100px;
           height: 1px;
+          background-color: @primary-color;
+          content: '';
         }
       }
     }

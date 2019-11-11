@@ -88,17 +88,23 @@ import './EditUserPerm.less'
               <div slot="content">账号对应权限来源</div>
             </Tooltip>
           </div>
-          <div>
-            <p class="perm-source" v-if="userFullInfo">账号: <span class="perm-value" v-if="userFullInfo.status == '1'">是</span></p>
-            <p class="perm-source" v-if="userFullInfo">部门: <span class="perm-value" v-if="userFullInfo.dept">{{ userFullInfo.dept.join() }}</span></p>
-            <p class="perm-source" v-if="userFullInfo">角色: <span class="perm-value" v-if="userFullInfo.role">{{ userFullInfo.role.join() }}</span></p>
-            <p class="perm-source" v-if="userFullInfo">标签: <span class="perm-value" v-if="userFullInfo.label">{{ userFullInfo.label.join() }}</span></p>
-
-            <div v-for="(value, key, index) in userFullInfo">
-              <p class="perm-source" v-if="!['dept', 'role', 'label', 'status'].includes(key)"> {{ key }}: <span class="perm-value" >
-                {{ value.join(', ') }}
-              </span></p><br>
-            </div>
+          <div v-if="userFullInfo">
+            <p class="perm-source" >账号: <span class="perm-value" v-if="userFullInfo.status == '1'">是</span></p>
+            <ul
+              class="perm-source"
+              v-if="userFullInfo"
+              v-for="metaNode in [...defaultMetaNode.children, ...customMetaNode.children]"
+            >
+              <li >
+                <span class="meta-node-name">{{ metaNode.name }}:</span>
+                <span
+                  v-for="node in userFullInfo.filter(i => i.nodeSubject === metaNode.nodeSubject)"
+                  class="node-name"
+                >
+                  {{ node.name }}
+                </span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -122,6 +128,8 @@ export default class Perm extends Vue {
   searchUser = ''
   userEditTitle = ''
   userId = ''
+  defaultMetaNode: Node|null = null
+  customMetaNode: Node|null = null
 
   get checkedUsers() {
     const users = this.checkedUserList.map(o => o.username)
@@ -222,18 +230,14 @@ export default class Perm extends Vue {
   }
 
   async onSelectUser(uid: string) {
-    const permSources = await api.User.retrievePermSource(uid, this.currentPerm!.uid)
-    const tmpUserInfo = new Object()
-    const tmpNodes = new Object()
-    permSources.data.source.map((o) => {
-      if (tmpUserInfo[o.node_subject] === undefined) {
-        tmpUserInfo[o.node_subject] = []
-      }
-      tmpUserInfo[o.node_subject].push(o.name)
-
-    })
-    tmpUserInfo.status = permSources.data.status
-    this.userFullInfo = tmpUserInfo
+    const permSources = await api.User.retrievePerm(uid, this.currentPerm!.uid)
+    const source = permSources.source.map(i => ({
+      nodeSubject: i.node_subject,
+      id: i.node_uid,
+      name: i.name,
+    }))
+    source.status = permSources.status
+    this.userFullInfo = source
 
     this.userId = uid
   }
@@ -243,4 +247,13 @@ export default class Perm extends Vue {
     this.checkedUserList.splice(index, 1)
   }
 
+  mounted() {
+    this.loadMetaNodes()
+  }
+
+  async loadMetaNodes() {
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.defaultMetaNode = defaultMetaNode
+    this.customMetaNode = customMetaNode
+  }
 }
