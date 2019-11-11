@@ -77,6 +77,7 @@ import './Layout.less'
       v-model="showChangePassword"
       width="800"
       height="560"
+      :closable="!mustChangePassword"
     >
       <div slot="header">
         <span class="lg-layout--change-password-header">修改密码</span>
@@ -89,6 +90,9 @@ import './Layout.less'
             :rules="changePasswordFormRules"
             ref="changePasswordForm"
           >
+            <FormItem>
+              <div v-if="mustChangePassword">根据管理员设置，您需要重置个人登录密码</div>
+            </FormItem>
             <FormItem prop="oldPassword" label="验证原密码">
               <Input type="password" v-model="changePasswordForm.oldPassword" placeholder="输入原密码"></Input>
             </FormItem>
@@ -118,7 +122,7 @@ import './Layout.less'
         <div class="buttons flex-row">
           <a href="javascript: void(0)" @click="goToResetPassword">忘记密码？去重置</a>
           <div>
-            <Button class="right-button" type="default" @click="doCancel">取消</Button>
+            <Button class="right-button" type="default" @click="doCancel" v-if="!mustChangePassword">取消</Button>
             <Button class="right-button" type="primary" @click="doSave">确定</Button>
           </div>
         </div>
@@ -129,6 +133,7 @@ import './Layout.less'
 })
 export default class Layout extends Vue {
   showChangePassword: boolean = false
+  mustChangePassword: boolean = false
   $refs!: {
     changePasswordForm: Form,
   }
@@ -321,8 +326,9 @@ export default class Layout extends Vue {
         this.$app.user.username,
         this.changePasswordForm.oldPassword,
         this.changePasswordForm.newPassword)
-      this.$Message.success('修改密码成功')
+      this.$Message.success('修改密码成功,请重新登录')
       this.showChangePassword = false
+      this.$router.push({name: 'oneid.login'})
     } catch (e) {
       this.$Message.error('修改密码失败')
     }
@@ -332,5 +338,12 @@ export default class Layout extends Vue {
     this.showChangePassword = false
     await api.logout()
     this.$router.push({name: 'oneid.password'})
+  }
+
+  mounted() {
+    if (this.$app.user!.require_reset_password) {
+      this.showChangePassword = true
+      this.mustChangePassword = true
+    }
   }
 }

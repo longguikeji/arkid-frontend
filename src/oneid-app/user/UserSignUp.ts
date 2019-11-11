@@ -93,6 +93,25 @@ import './UserCommon.less'
             </FormItem>
           </Form>
         </div>
+        <div>
+          <Form
+            v-if="isLoginFormShow"
+            :label-width="120"
+            :model="loginForm"
+            :rules="loginFormRules"
+            ref="loginForm"
+          >
+            <FormItem prop="username" label="用户名">
+              <Input type="text" v-model="loginForm.username" placeholder="设置用户名" disabled></Input>
+            </FormItem>
+            <FormItem prop="password" label="初始密码">
+              <Input type="password" v-model="loginForm.password" placeholder="输入管理员分配的个人密码"></Input>
+            </FormItem>
+            <FormItem prop="submit">
+              <Button type="primary" @click="login" style="width: 100%;" class="simpleframe-btn register-button">登录</Button>
+            </FormItem>
+          </Form>
+        </div>
         <RouterLink :to="{name: 'oneid.login'}" class="simpleframe-route go-to">返回登录页</RouterLink>
       </div>
       <div
@@ -120,6 +139,7 @@ export default class UserSignUp extends Vue {
     emailSendForm: Form,
     mobileForm: Form,
     commonRegisterForm: Form,
+    loginForm: Form,
   }
   isEmailSend: boolean = false
   isActivate = false
@@ -130,6 +150,12 @@ export default class UserSignUp extends Vue {
   radioGroupName = '选择方式:'
   inviteCode: string = ''
   activateName = ''
+
+  loginForm = {
+    username: '',
+    password: '',
+  }
+
   emailSendForm = {
     email: '',
     sendbutton: '',
@@ -171,6 +197,10 @@ export default class UserSignUp extends Vue {
     return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('手机'))
   }
 
+  get isLoginFormShow() {
+    return this.registerType && (this.selectedRegisterType && this.selectedRegisterType.includes('初始'))
+  }
+
   get mobileFormRules() {
     return {
       mobile: [FORM_RULES.required, FORM_RULES.mobile],
@@ -180,6 +210,12 @@ export default class UserSignUp extends Vue {
   get emailFormRules() {
     return {
       email: [FORM_RULES.required, FORM_RULES.email],
+    }
+  }
+
+  get loginFormRules() {
+    return {
+      password: [FORM_RULES.required, FORM_RULES.password],
     }
   }
 
@@ -355,8 +391,16 @@ export default class UserSignUp extends Vue {
       this.registerType = []
 
       this.isActivate = true
-      const {private_email, name, mobile} = await api.UCenter.verifyInvite(key)
+      const {
+        private_email,
+        name,
+        mobile,
+        has_password,
+        username,
+      } = await api.UCenter.verifyInvite(key)
+
       this.activateName = name
+
       if (private_email) {
         this.isEmailRegisterAvailable = true
         this.emailSendForm.email = private_email
@@ -376,8 +420,16 @@ export default class UserSignUp extends Vue {
       else {
         this.isMobileRegisterAvailable = false
       }
-      this.selectedRegisterType = this.registerType[0]
 
+      if (has_password) {
+        this.loginForm.username = username
+        this.registerType.push('初始密码')
+      }
+      else {
+        this.hasPassword = false
+      }
+
+      this.selectedRegisterType = this.registerType[0]
     } catch(err) {
       if (err.status === 400 && err.data.key) {
         this.isExpired = true
@@ -444,6 +496,28 @@ export default class UserSignUp extends Vue {
           this.$Message.success('成功发送短信')
         } catch(err) {
           this.$Message.error('发送短信失败')
+        }
+      }
+    })
+  }
+
+  login() {
+    this.$refs.loginForm.validate( async (valid) => {
+      if (valid) {
+        try {
+          const user = await api.login({
+            username: this.loginForm.username,
+            password: this.loginForm.password,
+          })
+
+          this.$app.onLogin({
+          isLogin: true,
+          ...user,
+          })
+
+          this.$router.push('workspace/app')
+        } catch (e) {
+          this.$Message.error('登录失败')
         }
       }
     })

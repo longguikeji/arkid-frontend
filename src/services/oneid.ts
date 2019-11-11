@@ -191,6 +191,11 @@ export class User {
     })
   }
 
+  static async resetPassword(username: string, data: object) {
+    const url = this.url() + `${username}/password/`
+    return http.patch(url, data)
+  }
+
   static async partialUpdate(user: model.User) {
     const url = this.url({detail: true, id: user.username})
     const data = user.toData()

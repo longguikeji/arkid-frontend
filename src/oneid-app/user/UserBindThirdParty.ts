@@ -135,7 +135,7 @@ export default class UserBindThirdParty extends Vue {
     }
 
     return {
-      password: [FORM_RULES.required],
+      password: [FORM_RULES.required, FORM_RULES.password],
       passwordAgain: [FORM_RULES.required, passwordDiffCheck],
       username: [FORM_RULES.required, FORM_RULES.username],
     }
