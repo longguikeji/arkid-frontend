@@ -186,14 +186,17 @@ class OperateCell extends Vue {
       <span class="poptip-btn">查看来源</span>
       <div class="ui-poptip-content" slot="content" v-if="source">
         <ul v-for="metaNodes in [defaultMetaNode.children, customMetaNode.children]">
-          <li v-for="metaNode in metaNodes">
-            <span class="meta-node-name">{{ metaNode.name }}</span>
-            <span
-              v-for="node in source.filter(i => i.nodeSubject === metaNode.nodeSubject)"
-              class="node-name"
-            >
-              {{ node.name }}
-            </span>
+          <li class="flex-row" v-for="metaNode in metaNodes">
+            <div class="meta-node-name">
+              <span>{{ metaNode.name }}:</span>
+            </div>
+            <div>
+              <span
+                class="node-name"
+              >
+                {{ source.filter(i => i.nodeSubject === metaNode.nodeSubject).map(i => i.name).join(', ') }}
+              </span>
+            </div>
           </li>
         </ul>
       </div>

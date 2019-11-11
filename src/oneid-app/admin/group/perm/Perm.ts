@@ -13,12 +13,6 @@ import PermList from './PermList'
   },
   template: html`
   <div class="ui-group-perm-page">
-    <div class="breadcrumb">
-      <Breadcrumb>
-        <BreadcrumbItem :to="{name: 'admin.group'}">分组管理</BreadcrumbItem>
-        <BreadcrumbItem>分组权限管理</BreadcrumbItem>
-      </Breadcrumb>
-    </div>
     <div class="ui-group-perm-page--header">
       <img :src="user.avatar ? $fileUrl(user.avatar) : defaultAvatar" v-if="user" />
       <span>{{ title }}</span>
