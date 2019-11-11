@@ -95,14 +95,16 @@ import './EditUserPerm.less'
               v-if="userFullInfo"
               v-for="metaNode in [...defaultMetaNode.children, ...customMetaNode.children]"
             >
-              <li >
-                <span class="meta-node-name">{{ metaNode.name }}:</span>
-                <span
-                  v-for="node in userFullInfo.filter(i => i.nodeSubject === metaNode.nodeSubject)"
-                  class="node-name"
-                >
-                  {{ node.name }}
-                </span>
+              <li class="flex-row">
+                <div class="meta-node-name"><span>{{ metaNode.name }}:</span></div>
+                <div>
+                  <span
+                    v-for="node in userFullInfo.filter(i => i.nodeSubject === metaNode.nodeSubject)"
+                    class="node-name"
+                  >
+                    {{ node.name }}
+                  </span>
+                </div>
               </li>
             </ul>
           </div>
