@@ -183,14 +183,6 @@ export class User {
     })
   }
 
-  static async retrievePermSource(userName, permUID) {
-    return http.get(this.url() + `${userName}/perm/${permUID}/`).then(x => {
-      return {
-        data: x.data,
-      }
-    })
-  }
-
   static async resetPassword(username: string, data: object) {
     const url = this.url() + `${username}/password/`
     return http.patch(url, data)
