@@ -85,7 +85,10 @@ import './EditUserPerm.less'
             <h3 class="title">权限来源:</h3>
             <Tooltip class="title-tooltip">
               <XIcon name="doubt" size="14px"/>
-              <div slot="content">账号对应权限来源</div>
+              <div slot="content">权限来源包括以下两类：
+                <p>1. 用户所在分类或上级分类被列入白名单</p>
+                <p>2. 用户自身被列入白名单</p>
+              </div>
             </Tooltip>
           </div>
           <div v-if="userFullInfo">

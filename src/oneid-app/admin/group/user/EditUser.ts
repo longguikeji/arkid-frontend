@@ -5,11 +5,13 @@ import {cloneDeep} from 'lodash'
 import {Component, Prop, Vue} from 'vue-property-decorator'
 
 import ChooseNode from '@/oneid-app/comps/choose/Choose'
+import ResetPassword from '@/oneid-app/comps/ResetPassword'
 import './EditUser.less'
 
 @Component({
   components: {
     ChooseNode,
+    ResetPassword,
   },
   template: html`
   <div>
@@ -41,6 +43,10 @@ import './EditUser.less'
         <FormItem prop="name" label="姓名">
           <Input type="text" v-model="form.name" :maxlength="16" placeholder="请输入 姓名"></Input>
         </FormItem>
+        <FormItem prop="password" label="登录密码">
+          <Button type="primary" @click="showResetPassword()">设置/重置</Button>
+          <div>一般用于新增账号时用户的快速激活，或用户无法重置密码时，管理员手动重置密码这两个场景</div>
+        </FormItem>
         <FormItem prop="mobile" label="手机">
           <Input type="text" v-model="form.mobile" placeholder="请输入 手机"></Input>
         </FormItem>
@@ -70,6 +76,13 @@ import './EditUser.less'
       </div>
     </Drawer>
 
+    <ResetPassword
+      ref="resetPassword"
+      :username="form.username"
+      :isNew="isNew"
+      @confirm="getPassword"
+    />
+
     <ChooseNode
       v-if="chooseNode"
       v-bind="chooseNode"
@@ -82,6 +95,7 @@ import './EditUser.less'
 export default class EditUser extends Vue {
   $refs!: {
     chooseNode: ChooseNode,
+    resetPassword: ResetPassword,
   }
 
   @Prop({type: model.User}) user?: model.User
@@ -104,10 +118,10 @@ export default class EditUser extends Vue {
     const mobileOrEmailRquiredRule = {
       trigger: 'blur',
       validator: (rule: string, value: string, cb: Function) => {
-        if (this.form!.mobile || this.form!.privateEmail) {
+        if (this.form!.mobile || this.form!.privateEmail || this.form!.password) {
           cb()
         } else {
-          cb(new Error('手机、个人邮箱不能同时为空'))
+          cb(new Error('登录密码，手机号和个人邮箱至少填写一项'))
         }
       },
     }
@@ -142,6 +156,16 @@ export default class EditUser extends Vue {
   async loadMetaNodes() {
     const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
     this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
+  }
+
+  showResetPassword() {
+    this.$nextTick(() => this.$refs.resetPassword.show())
+  }
+
+  getPassword(data: {password: string, requireResetPassword: boolean}) {
+    this.form!.password = data.password
+    this.form!.requireResetPassword = data.requireResetPassword
+    this.form!.hasPassword = true
   }
 
   doShowModal(metaNode: model.Node) {
