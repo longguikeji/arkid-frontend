@@ -1,11 +1,11 @@
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import * as model from '@/models/oneid';
-import ChooseNode from '@/oneid-app/comps/choose/Choose';
-import './EditNodePerm.less';
-import { FORM_RULES } from '@/utils';
+import * as model from '@/models/oneid'
+import ChooseNode from '@/oneid-app/comps/choose/Choose'
+import * as api from '@/services/oneid'
+import { FORM_RULES } from '@/utils'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import './EditNodePerm.less'
 
-const required = {required: true, message: 'Required', trigger: 'blur'};
+const required = {required: true, message: 'Required', trigger: 'blur'}
 
 @Component({
   components: {
@@ -66,30 +66,30 @@ const required = {required: true, message: 'Required', trigger: 'blur'};
 export default class EditPerm extends Vue {
   $refs!: {
     chooseNode: ChooseNode,
-  };
-  drawerWidth = 580;
-  drawerClassName = 'lg-edit-dept';
-  labelPosition = 'left';
-  labelWidth = 85;
+  }
+  drawerWidth = 580
+  drawerClassName = 'lg-edit-dept'
+  labelPosition = 'left'
+  labelWidth = 85
 
-  currentPerm: model.Permission|null = null;
+  currentPerm: model.Permission|null = null
   rules = {
     name: [FORM_RULES.required],
     'sub_account.domain': [FORM_RULES.required],
     'sub_account.username': [FORM_RULES.required],
     'sub_account.password': [FORM_RULES.required],
-  };
-  showDrawer = false;
-  isSaving = false;
-  operationName = "新建权限";
-  showModal = false;
-  nodeTitle = '';
-  appUID = '';
-  metaNodes: model.Node[] = [];
-  modalMetaNode: model.Node|null = null;
-  user: model.User|null = null;
-  node: model.Node|null = null;
-  form: model.User|null = null;
+  }
+  showDrawer = false
+  isSaving = false
+  operationName = '新建权限'
+  showModal = false
+  nodeTitle = ''
+  appUID = ''
+  metaNodes: model.Node[] = []
+  modalMetaNode: model.Node|null = null
+  user: model.User|null = null
+  node: model.Node|null = null
+  form: model.User|null = null
 
   chooseNode: {
     metaNode: Node;
@@ -97,13 +97,13 @@ export default class EditPerm extends Vue {
     selectedIds: string[];
     checkedIds: string[];
     multiple: boolean;
-  }|null = null;
+  }|null = null
 
   async showEdit(columnName: string, node: model.Node, perm: model.Permission) {
-    this.operationName = '编辑权限';
-    this.currentPerm = perm;
-    this.modalMetaNode = node;
-    this.nodeTitle = this.modalMetaNode.name + columnName;
+    this.operationName = '编辑权限'
+    this.currentPerm = perm
+    this.modalMetaNode = node
+    this.nodeTitle = this.modalMetaNode.name + columnName
     const owners = await api.Perm.permResultList(perm.uid, {
       uid: perm.uid,
       owner_subject: node.nodeSubject,
@@ -111,10 +111,10 @@ export default class EditPerm extends Vue {
       status: columnName.includes('白名单') ? 1 : -1,
     })
     if (columnName.includes('白名单')) {
-      perm.permit_owners = owners.data;
+      perm.permit_owners = owners.data
     }
     else {
-      perm.reject_owners = owners.data;
+      perm.reject_owners = owners.data
     }
     this.chooseNode = {
       title: `选择${this.modalMetaNode.name}`,
@@ -122,21 +122,21 @@ export default class EditPerm extends Vue {
       checkedIds: columnName.includes('白名单') ? perm.permit_owners.map(o => o.uid) : perm.reject_owners.map(o => o.uid),
       disabledIds: columnName.includes('白名单') ? perm.reject_owners.map(o => o.uid) : perm.permit_owners.map(o => o.uid),
       multiple: true,
-    };
-    this.$nextTick(() => this.$refs.chooseNode.show());
+    }
+    this.$nextTick(() => this.$refs.chooseNode.show())
   }
 
   showAdd(appUID: string) {
-    this.operationName = '新建权限';
-    this.appUID = appUID;
-    this.currentPerm = model.Permission.fromData();
-    this.showDrawer = true;
+    this.operationName = '新建权限'
+    this.appUID = appUID
+    this.currentPerm = model.Permission.fromData()
+    this.showDrawer = true
   }
 
   showRename(perm: model.Permission) {
-    this.currentPerm = perm;
-    this.operationName = '重命名';
-    this.showDrawer = true;
+    this.currentPerm = perm
+    this.operationName = '重命名'
+    this.showDrawer = true
   }
 
   showAddAccount(appUID: string) {
@@ -154,74 +154,76 @@ export default class EditPerm extends Vue {
 
   async create() {
     try {
-      await api.Dept.create(this.form);
-      this.$Message.success('创建成功');
+      await api.Dept.create(this.form)
+      this.$Message.success('创建成功')
     } catch (e) {
-      this.$Message.error('创建失败');
+      this.$Message.error('创建失败')
     }
   }
 
   async edit() {
     try {
-      await api.Dept.partialUpdate(this.form);
-      this.$Message.success('编辑成功');
+      await api.Dept.partialUpdate(this.form)
+      this.$Message.success('编辑成功')
     } catch (e) {
-      this.$Message.error('编辑失败');
+      this.$Message.error('编辑失败')
     }
   }
 
   async remove() {
     try {
-      await api.Dept.remove(this.form);
-      this.$Message.success('删除成功');
-      this.form = null;
-      this.showDrawer = false;
-      this.$emit('on-save');
+      await api.Dept.remove(this.form)
+      this.$Message.success('删除成功')
+      this.form = null
+      this.showDrawer = false
+      this.$emit('on-save')
     } catch (e) {
-      this.$Message.error('删除失败');
+      this.$Message.error('删除失败')
     }
   }
 
   async doSave() {
-    if(this.operationName == '新建权限') {
-      await api.Perm.create({scope: this.appUID, name: this.currentPerm.name});
+    // tslint:disable:prefer-switch
+    if (this.operationName === '新建权限') {
+      await api.Perm.create({scope: this.appUID, name: this.currentPerm.name})
     }
     else if (this.operationName === '重命名') {
-      await api.Perm.partialUpdate(this.currentPerm.uid, {name: this.currentPerm.name});
+      await api.Perm.partialUpdate(this.currentPerm.uid, {name: this.currentPerm.name})
     }
     else if (this.operationName === '新建账号') {
-      await api.Perm.create({scope: this.appUID, sub_account: this.currentPerm.sub_account});
+      await api.Perm.create({scope: this.appUID, sub_account: this.currentPerm.sub_account})
     }
     else if (this.operationName === '编辑账号') {
-      await api.Perm.partialUpdate(this.currentPerm.uid, {sub_account: this.currentPerm.sub_account});
+      await api.Perm.partialUpdate(this.currentPerm.uid, {sub_account: this.currentPerm.sub_account})
     }
 
-    this.showDrawer = false;
-    this.$emit('on-save');
+    this.showDrawer = false
+    this.$emit('on-save')
   }
 
   doCancel() {
-    this.showDrawer = false;
+    this.showDrawer = false
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children];
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 
   async onChooseNodeOk(checkedNodes: model.Node[]) {
-    let nodes_status = checkedNodes.map(o => {return {uid: o.id, status: this.nodeTitle.includes('白名单')?1:-1}});
-    const origin_checked_nodes = this.nodeTitle.includes('白名单')?this.currentPerm.permit_owners: this.currentPerm.reject_owners;
+    // tslint:disable:variable-name
+    const nodes_status = checkedNodes.map(o =>({uid: o.id, status: this.nodeTitle.includes('白名单')?1:-1}))
+    const origin_checked_nodes = this.nodeTitle.includes('白名单')?this.currentPerm.permit_owners: this.currentPerm.reject_owners
     origin_checked_nodes.map(o => {
-      if(nodes_status.filter(item => item.uid == o.uid).length == 0) {
-        nodes_status.push({uid: o.uid, status: 0});
+      if(nodes_status.filter(item => item.uid === o.uid).length === 0) {
+        nodes_status.push({uid: o.uid, status: 0})
       }
     })
 
-    let params = {
+    const params = {
       node_perm_status: nodes_status,
     }
-    await api.Perm.partialUpdateOwnersStatus(this.currentPerm.uid, this.currentPerm.nodeSubject, params);
-    this.$emit('on-save');
+    await api.Perm.partialUpdateOwnersStatus(this.currentPerm.uid, this.currentPerm.nodeSubject, params)
+    this.$emit('on-save')
   }
 }
