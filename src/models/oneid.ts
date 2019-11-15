@@ -535,6 +535,7 @@ export class Permission {
     obj.ownersList = data.permit_owners.results ? data.permit_owners.results: []
     obj.permit_owners = data.permit_owners.results
     obj.reject_owners = data.reject_owners.results
+    obj.sub_account = data.sub_account
     if (data.permit_owners.results.length !== 0) {
       obj.ownersString = data.permit_owners.results.map(o => o.name).join(',')
     }
@@ -551,6 +552,11 @@ export class Permission {
   ownersString: string = '小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，小杨，小马，小刘，小林，'
   permit_owners: PermOwnerData[] = []// 白名单
   reject_owners: PermOwnerData[] = []// 黑名单
+  sub_account: {
+    domain: string,
+    username: string,
+    password: string,
+  } = {domain: '', username: '', password: ''}
 }
 
 export class OAuthData {
