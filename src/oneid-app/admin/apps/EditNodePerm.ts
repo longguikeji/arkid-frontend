@@ -3,6 +3,7 @@ import * as api from '@/services/oneid';
 import * as model from '@/models/oneid';
 import ChooseNode from '@/oneid-app/comps/choose/Choose';
 import './EditNodePerm.less';
+import { FORM_RULES } from '@/utils';
 
 const required = {required: true, message: 'Required', trigger: 'blur'};
 
@@ -30,11 +31,20 @@ const required = {required: true, message: 'Required', trigger: 'blur'};
         ref="form"
         class="form"
       >
-        <FormItem prop="name" :model="operationName" label="权限名称" v-if="operationName == '重命名'">
+        <FormItem prop="name" :model="operationName" label="权限名称" v-if="operationName === '重命名'">
           <Input v-model="currentPerm.name" type="text"></Input>
         </FormItem>
-        <FormItem prop="name" label="权限名称" v-if="operationName != '重命名'">
+        <FormItem prop="name" label="权限名称" v-if="operationName === '新建权限'">
           <Input type="text" v-model="currentPerm.name" placeholder="填写权限名称"></Input>
+        </FormItem>
+        <FormItem prop="sub_account.domain" label="登录地址" v-if="operationName.indexOf('账号') > 0">
+          <Input type="text" v-model="currentPerm.sub_account.domain" placeholder="填写登录地址"></Input>
+        </FormItem>
+        <FormItem prop="sub_account.username" label="用户名" v-if="operationName.indexOf('账号') > 0">
+          <Input type="text" v-model="currentPerm.sub_account.username" placeholder="填写用户名"></Input>
+        </FormItem>
+        <FormItem prop="sub_account.password" label="登录密码" v-if="operationName.indexOf('账号') > 0">
+          <Input type="password" v-model="currentPerm.sub_account.password" placeholder="填写登录密码"></Input>
         </FormItem>
       </Form>
       <div class="drawer-footer flex-row flex-auto">
@@ -64,7 +74,10 @@ export default class EditPerm extends Vue {
 
   currentPerm: model.Permission|null = null;
   rules = {
-    name: {required: true, message: 'Required', trigger: 'blur'},
+    name: [FORM_RULES.required],
+    'sub_account.domain': [FORM_RULES.required],
+    'sub_account.username': [FORM_RULES.required],
+    'sub_account.password': [FORM_RULES.required],
   };
   showDrawer = false;
   isSaving = false;
@@ -126,6 +139,19 @@ export default class EditPerm extends Vue {
     this.showDrawer = true;
   }
 
+  showAddAccount(appUID: string) {
+    this.operationName = '新建账号'
+    this.appUID = appUID
+    this.currentPerm = model.Permission.fromData()
+    this.showDrawer = true
+  }
+
+  showEditAccount(perm: model.Permission) {
+    this.operationName = '编辑账号'
+    this.currentPerm = perm
+    this.showDrawer = true
+  }
+
   async create() {
     try {
       await api.Dept.create(this.form);
@@ -160,8 +186,14 @@ export default class EditPerm extends Vue {
     if(this.operationName == '新建权限') {
       await api.Perm.create({scope: this.appUID, name: this.currentPerm.name});
     }
-    else {
+    else if (this.operationName === '重命名') {
       await api.Perm.partialUpdate(this.currentPerm.uid, {name: this.currentPerm.name});
+    }
+    else if (this.operationName === '新建账号') {
+      await api.Perm.create({scope: this.appUID, sub_account: this.currentPerm.sub_account});
+    }
+    else if (this.operationName === '编辑账号') {
+      await api.Perm.partialUpdate(this.currentPerm.uid, {sub_account: this.currentPerm.sub_account});
     }
 
     this.showDrawer = false;

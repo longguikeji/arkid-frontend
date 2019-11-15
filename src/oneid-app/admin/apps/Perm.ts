@@ -48,7 +48,13 @@ import './Perm.less'
       </Menu>
     </div>
     <div class="perm-title">
-      <h3 class="subtitle">应用访问权限</h3>
+      <div class="inner flex-row">
+        <h3 class="subtitle">应用访问权限</h3>
+        <div class="new-perm">
+          <Icon type="md-add-circle" size="15" class="icon" />
+          <a class="add-perm" @click="showAddAccount" href="javascript: void(0)">新账号</a>
+        </div>
+       </div>
       <div class="table-wrapper">
         <Table
           :border="true"
@@ -133,6 +139,14 @@ export default class Perm extends Vue {
     this.$nextTick(() => {
       this.editNode = true
       this.$nextTick(() => this.$refs.editNodePerm.showAdd(this.appUID))
+    })
+  }
+
+  showAddAccount() {
+    this.editNode = false
+    this.$nextTick(() => {
+      this.editNode = true
+      this.$nextTick(() => this.$refs.editNodePerm.showAddAccount(this.appUID))
     })
   }
 
@@ -388,7 +402,52 @@ export default class Perm extends Vue {
     return result
   }
   get accessColumns() {
-    return this.getCommonColumns('access')
+    const result = this.getCommonColumns('access')
+    const operation = {
+      title: '操作',
+      width: '120px',
+      render: (h, params) => {
+        if (params.index === 0) {
+          return
+        }
+        const editSpan = h('span',
+          {
+            class: 'dropdown-column-table-btn',
+            on: {
+              'click': () => {
+                this.$refs.editNodePerm.showEditAccount(this.accessPerm[params.index])
+              },
+            },
+          },
+          [
+            h('span', '编辑'),
+          ],)
+        const DelSpan = h('span',
+          {
+            class: 'dropdown-column-table-btn',
+            style: 'margin-left: 20px; color: red',
+            on: {
+              'click': () => {
+                if (confirm(`是否确定删除${this.accessPerm[params.index].sub_account.username}？`)) {
+                  this.deletePerm(this.accessPerm[params.index])
+                }
+              },
+            },
+          },
+          [
+            h('span', '删除'),
+          ],)
+
+        return h('div',
+          {
+            class: 'dropdown-column flex-row',
+          },
+          [editSpan, DelSpan],
+        )
+      },
+    }
+    result.push(operation)
+    return result
   }
 
   get innerPermColumns() {
