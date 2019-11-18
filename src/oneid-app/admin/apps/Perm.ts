@@ -415,7 +415,10 @@ export default class Perm extends Vue {
             class: 'dropdown-column-table-btn',
             on: {
               'click': () => {
-                this.$refs.editNodePerm.showEditAccount(this.accessPerm[params.index])
+                this.$nextTick(() => {
+                  this.editNode = true
+                  this.$nextTick(() => this.$refs.editNodePerm.showEditAccount(this.accessPerm[params.index]))
+                })
               },
             },
           },
@@ -494,7 +497,10 @@ export default class Perm extends Vue {
             on: {
               'on-click': (name: string) => {
                 if(name === '重命名') {
-                  this.$refs.editNodePerm.showRename(this.innerPerm[params.index])
+                  this.$nextTick(() => {
+                    this.editNode = true
+                    this.$nextTick(() => this.$refs.editNodePerm.showRename(this.innerPerm[params.index]))
+                  })
                 }
                 else {
                   this.deletePerm(this.innerPerm[params.index])
