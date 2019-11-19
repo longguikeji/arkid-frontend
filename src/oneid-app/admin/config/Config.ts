@@ -1,9 +1,9 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import {Config as ConfigApi} from '@/services/config';
-import {File as FileApi} from '@/services/oneid';
-import './Config.less';
-import UserLogin from '../../user/UserLogin';
-import {buildStyle} from '../../user/utils';
+import {Config as ConfigApi} from '@/services/config'
+import {File as FileApi} from '@/services/oneid'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import UserLogin from '../../user/UserLogin'
+import {buildStyle} from '../../user/utils'
+import './Config.less'
 
 const getColorList = () => `
 EF5350
@@ -23,15 +23,16 @@ FF6F00
 E65100
 6D4C41
 424242
-`.trim().split(/\n/g);
+`.trim().split(/\n/g)
 
 @Component
 class LoginPreview extends UserLogin {
-  @Prop({type: Object, required: true}) siteLogo!: object;
+  @Prop({type: Object, required: true}) siteLogo!: object
+  // tslint:disable-next-line:no-empty
   loginStateCheck() {}
 }
 
-
+// tslint:disable-next-line: max-classes-per-file
 @Component({
   components: {
     LoginPreview,
@@ -70,8 +71,8 @@ class LoginPreview extends UserLogin {
               <span>选择主色:</span>
               <p>主色包括但不限于主要按钮底色、文字按钮颜色、页面标题装饰色以及部分icon的颜色</p>
               <RadioGroup
-                class="flex-col" 
-                v-model="colorType" 
+                class="flex-col"
+                v-model="colorType"
                 vertical
               >
                 <div class="default-color flex-row">
@@ -79,7 +80,7 @@ class LoginPreview extends UserLogin {
                       <Icon type="social-apple"></Icon>
                       <span>预置颜色</span>
                   </Radio>
-                  <Select 
+                  <Select
                     class="color-selector"
                     :disabled="colorType != 'default-color'"
                     @on-change="onSelectColorChange"
@@ -90,10 +91,10 @@ class LoginPreview extends UserLogin {
                       </div>
                       <span>{{ '#' + selectColor }}</span>
                     </div>
-                    <Option 
-                      class="flex-row" 
-                      v-for="c in colorList" 
-                      :value="c" 
+                    <Option
+                      class="flex-row"
+                      v-for="c in colorList"
+                      :value="c"
                       :key="c"
                     >
                       <div class="color-bar" :style="{backgroundColor: '#' + c, 'width': '48px'}">
@@ -105,13 +106,13 @@ class LoginPreview extends UserLogin {
                 <div class="default-color flex-row">
                   <Radio label="custom-color">
                     <Icon type="social-android"></Icon>
-                    <span>自定义颜色</span>                 
+                    <span>自定义颜色</span>
                   </Radio>
                   <div>
                     <span class="color-symbol">#</span>
-                    <Input 
-                      :disabled="colorType == 'default-color'" 
-                      class="color-custom" 
+                    <Input
+                      :disabled="colorType == 'default-color'"
+                      class="color-custom"
                       v-model="customColor"
                       @on-change="onInputColorChange"
                       placeholder="输入色值"
@@ -127,7 +128,7 @@ class LoginPreview extends UserLogin {
           <div class="right-info flex-col">
             <div class="right-preview-title"> 预览 </div>
             <div class="right-image-area">
-              <div class="right-image">     
+              <div class="right-image">
                 <LoginPreview class="image-preview" ref="loginPreview"
                   :siteLogo="{logo: siteLogo, name: companyName}"
                 />
@@ -135,12 +136,12 @@ class LoginPreview extends UserLogin {
               </div>
             </div>
             <div class="preview">
-              <a href="javascript: void(0)" @click="previewLarge">查看大图预览</a>  
+              <a href="javascript: void(0)" @click="previewLarge">查看大图预览</a>
             </div>
-          </div>     
+          </div>
         </div>
       </div>
-      
+
     </div>
     <div class="ui-admin-config-save flex-row">
       <div class="button-area flex-col">
@@ -167,135 +168,137 @@ class LoginPreview extends UserLogin {
 export default class Config extends Vue {
   $refs: Vue['$refs'] & {
     loginPreview: LoginPreview,
-  };
+  }
 
-  defaultColor = '006064';
+  defaultColor = '006064'
 
-  config: any = null;
-  loading = true;
-  isSaving = false;
-  customColor_ = '';
+  // tslint:disable-next-line:no-any
+  config: any = null
+  loading = true
+  isSaving = false
+  // tslint:disable-next-line:variable-name
+  customColor_ = ''
 
-  colorList = getColorList();
-  colorType: 'default-color'|'custom-color' = 'default-color';
+  colorList = getColorList()
+  colorType: 'default-color'|'custom-color' = 'default-color'
 
-  selectColor = '';
-  companyLogo = '';
-  companyName = '';
-  showPreviewLarge = false;
-  styleEl = null;
+  selectColor = ''
+  companyLogo = ''
+  companyName = ''
+  showPreviewLarge = false
+  styleEl = null
   get customColor() {
-    return this.customColor_;
+    return this.customColor_
   }
   set customColor(val: string) {
-    this.customColor_ = val;
+    this.customColor_ = val
   }
 
   get upload() {
     return {
       headers: FileApi.headers(),
       action: FileApi.baseUrl(),
-    };
+    }
   }
 
   get siteLogo() {
-    const icon = this.companyLogo;
-    return icon ? FileApi.url(icon) : require('@/assets/icons/auto/defaultcompany.svg');
+    const icon = this.companyLogo
+    return icon ? FileApi.url(icon) : require('@/assets/icons/auto/defaultcompany.svg')
   }
 
   previewLarge() {
-    this.showPreviewLarge = true;
+    this.showPreviewLarge = true
   }
 
   @Watch('colorType')
   onColorTypeChange(val: string) {
     if (val === 'custom-color') {
-      this.customColor = this.selectColor;
+      this.customColor = this.selectColor
     } else {
       if (this.colorList.indexOf(this.selectColor) === -1) {
-        this.selectColor = this.defaultColor;
+        this.selectColor = this.defaultColor
       }
     }
   }
 
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 
   async loadData() {
-    const data = await ConfigApi.retrieve();
-    this.config = data;
+    const data = await ConfigApi.retrieve()
+    this.config = data
 
-    const {nameCn, icon, color} = data.org;
+    const {nameCn, icon, color} = data.org
 
-    this.companyLogo = icon || '';
-    this.companyName = nameCn;
-    this.selectColor = color || this.defaultColor;
+    this.companyLogo = icon || ''
+    this.companyName = nameCn
+    this.selectColor = color || this.defaultColor
 
     if (this.colorList.indexOf(this.selectColor) === -1) {
-      this.colorType = 'custom-color';
+      this.colorType = 'custom-color'
     }
 
-    this.loading = false;
+    this.loading = false
   }
 
   goAccountConfig() {
-    this.$router.push({name: 'admin.account.settings'});
+    this.$router.push({name: 'admin.account.settings'})
   }
 
   resetLogo() {
-    this.companyLogo = '';
+    this.companyLogo = ''
   }
 
   onUploadSuccess(resp: {file_name: string}) {
-    this.companyLogo = resp.file_name;
+    this.companyLogo = resp.file_name
   }
 
   async doSave() {
-    this.isSaving = true;
+    this.isSaving = true
     try {
       await ConfigApi.partialUpdate({
         company_config: {
           name_cn: this.companyName,
           icon: this.companyLogo,
-          color: this.colorType == 'default-color'? this.selectColor : this.customColor,
+          color: this.colorType === 'default-color'? this.selectColor : this.customColor,
         },
-      });
-    } catch(ex) {}
+      })
+    } catch(ex) {return}
 
-    this.isSaving = false;
-    await ConfigApi.refreshMeta();
+    this.isSaving = false
+    await ConfigApi.refreshMeta()
 
-    this.$app.metaInfo = ConfigApi.cachedMeta();
-    this.createStyle(this.$app.metaInfo.org.color);
+    this.$app.metaInfo = ConfigApi.cachedMeta()
+    this.createStyle(this.$app.metaInfo.org.color)
   }
 
   cancel() {
-
+    return
   }
 
   createStyle(color: string) {
     if (this.styleEl)
     {
-      document.body.removeChild(this.styleEl);
+      document.body.removeChild(this.styleEl)
     }
-    const el = this.styleEl = document.createElement('style');
-    el.textContent = buildStyle(color);
-    document.body.appendChild(el);
+    const el = this.styleEl = document.createElement('style')
+    el.textContent = buildStyle(color)
+    document.body.appendChild(el)
   }
 
   destroyed() {
     if (this.styleEl)
     {
-      document.body.removeChild(this.styleEl);
+      document.body.removeChild(this.styleEl)
     }
   }
 
   onSelectColorChange(event) {
-    this.createStyle(event);
+    this.createStyle(event)
   }
 
   onInputColorChange(event) {
-    this.createStyle(this.customColor);
+    this.createStyle(this.customColor)
   }
 }
