@@ -585,6 +585,55 @@ export class Account {
   }
 }
 
+export class Minio {
+  static fromData(data: TypeMetaInfo['minio_config']) {
+    const obj = new this()
+    if (data) {
+      obj.endPoint = data.end_point
+      obj.accessKey = data.access_key
+      obj.secretKey = data.secret_key
+      obj.secure = data.secure
+      obj.location = data.location
+      obj.bucket = data.bucket
+    }
+    return obj
+  }
+  endPoint = ''
+  accessKey = ''
+  secretKey = ''
+  secure = false
+  location = ''
+  bucket = ''
+  toData() {
+    return {
+      end_point: this.endPoint,
+      access_key: this.accessKey,
+      secret_key: this.secretKey,
+      secure: this.secure,
+      location: this.location,
+      bucket: this.bucket,
+    }
+  }
+}
+
+export class StorageConfig {
+  static fromData(data) {
+    const obj = new this()
+    obj.method = data.method
+    obj.minio = Minio.fromData(data.minio_config)
+    return obj
+  }
+  method = ''
+  minio!: Minio|null
+
+  toData() {
+    return {
+      method: this.method,
+      minio_config: this.minio ? this.minio.toData() : null,
+    }
+  }
+}
+
 export class Config {
 
   static fromData(data: TypeMetaInfo) {

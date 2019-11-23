@@ -54,6 +54,15 @@ export interface TypeMetaInfo {
     support_mobile: boolean;
     support_email: boolean;
   }
+
+  minio_config: {
+    end_point: string;
+    access_key: string;
+    secret_key: string;
+    secure: boolean;
+    location: string;
+    bucket: string;
+  }
 }
 
 export class Config {
@@ -78,6 +87,17 @@ export class Config {
     const data = config.toData ? config.toData() : config
     return http.patch(this.url(), data)
       .then(x => models.Config.fromData(x.data))
+  }
+
+  static async getStorageData() {
+    return http.get(this.url({action: 'storage'}))
+      .then(x => models.StorageConfig.fromData(x.data))
+  }
+
+  static async updateStorage(storage: models.StorageConfig) {
+    const data = storage.toData ? storage.toData() : storage
+    return http.patch(this.url({action: 'storage'}), data)
+      .then(x => models.StorageConfig.fromData(x.data))
   }
 
   static async retrieveMetaPermList() {
