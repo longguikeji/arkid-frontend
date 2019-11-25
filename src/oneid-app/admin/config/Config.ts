@@ -1,6 +1,8 @@
 import { Minio, StorageConfig } from '@/models/config'
 import {Config as ConfigApi} from '@/services/config'
 import {File as FileApi} from '@/services/oneid'
+import { FORM_RULES } from '@/utils'
+import { Form } from 'iview'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import UserLogin from '../../user/UserLogin'
 import {buildStyle} from '../../user/utils'
@@ -223,7 +225,7 @@ class LoginPreview extends UserLogin {
             </div>
             <div class="ui-file-config-save">
               <div class="button-area flex-col">
-                <Button class="save-button" type="primary" :loading="isSaving" @click="doStorageSave">保存</Button>
+                <Button class="save-button" type="primary" :loading="isSaving" @click="checkMinioForm">保存</Button>
               </div>
             </div>
           </div>
@@ -236,6 +238,7 @@ class LoginPreview extends UserLogin {
 export default class Config extends Vue {
   $refs!: Vue['$refs'] & {
     loginPreview: LoginPreview,
+    minioForm: Form,
   }
 
   minioForm: Minio|null = null
@@ -277,6 +280,16 @@ export default class Config extends Vue {
   get siteLogo() {
     const icon = this.companyLogo
     return icon ? FileApi.url(icon) : require('@/assets/icons/auto/defaultcompany.svg')
+  }
+
+  get minioFormRules() {
+    return {
+      endPoint: [FORM_RULES.required],
+      accessKey: [FORM_RULES.required],
+      secretKey: [FORM_RULES.required],
+      location: [FORM_RULES.required],
+      bucket: [FORM_RULES.required],
+    }
   }
 
   previewLarge() {
@@ -352,6 +365,18 @@ export default class Config extends Vue {
 
     this.$app.metaInfo = ConfigApi.cachedMeta()
     this.createStyle(this.$app.metaInfo.org.color)
+  }
+
+  checkMinioForm() {
+    if (this.storageMethod === 'local') {
+      this.doStorageSave()
+    } else {
+      this.$refs.minioForm.validate( async valid => {
+        if (valid) {
+          this.doStorageSave()
+        }
+      })
+    }
   }
 
   async doStorageSave() {
