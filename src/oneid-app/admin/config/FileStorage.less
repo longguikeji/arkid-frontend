@@ -1,0 +1,47 @@
+@import '../../../utils.less';
+
+.ui-file-config {
+  padding: 20px 40px 20px 30px;
+  background-color: @bg-2;
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+
+    .subtitle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      color: @color-2;
+
+      &::before {
+        display: inline-flex;
+        width: 6px;
+        height: 14px;
+        margin-right: 10px;
+        background: @primary-color;
+        content: '';
+      }
+    }
+
+    .radio {
+      margin: 30px 10px 10px 0;
+    }
+
+    .ui-file-config-save {
+      bottom: 50px;
+
+      .button-area {
+        width: 1000px;
+
+        .save-button {
+          width: 74px;
+          margin: 83px 0 50px 440px;
+        }
+      }
+    }
+  }
+}
