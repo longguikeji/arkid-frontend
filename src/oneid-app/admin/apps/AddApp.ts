@@ -1,4 +1,4 @@
-import {App, OAuthData} from '@/models/oneid'
+import {App, OAuthData, SamlData} from '@/models/oneid'
 import * as api from '@/services/oneid'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import './AddApp.less'
@@ -93,6 +93,17 @@ import './AddApp.less'
                 </FormItem>
               </div>
             </TabPane>
+            <TabPane v-if="app.auth_protocols.includes(authTypes[3])" :label="authTypes[3]" :name="authTypes[3]">
+              <FormItem prop="app.saml_app.entity_id" label="entity_id">
+                <Input type="text" v-model="app.saml_app.entity_id" placeholder="请输入 entity_id..."></Input>
+              </FormItem>
+              <FormItem prop="app.saml_app.acs" label="acs">
+                <Input type="text" v-model="app.saml_app.acs" placeholder="请输入 acs..."></Input>
+              </FormItem>
+              <FormItem prop="app.saml_app.sls" label="sls">
+                <Input type="text" v-model="app.saml_app.sls" placeholder="请输入 sls..."></Input>
+              </FormItem>
+            </TabPane>
           </Tabs>
         </Form>
       </div>
@@ -122,7 +133,7 @@ export default class AddApp extends Vue {
       'oauth_app.redirect_uris': [required],
     }
   }
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP']
+  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML2']
   selectedAuthTypes?: string[] = []
   clientTypes = ['confidential', 'public']
   grantTypes = ['authorization-code', 'implicit', 'password', 'client']
@@ -132,6 +143,7 @@ export default class AddApp extends Vue {
     super()
     const newApp = new App()
     newApp.oauth_app = new OAuthData()
+    newApp.saml_app = new SamlData()
     this.app = newApp
   }
 
@@ -216,6 +228,16 @@ export default class AddApp extends Vue {
       params.http_app = new Object()
     } else {
       params.http_app = null
+    }
+
+    if (this.app!.auth_protocols.includes(this.authTypes[3])) {
+      params.saml_app = {
+        entity_id: this.app!.saml_app!.entity_id,
+        acs: this.app!.saml_app!.acs,
+        sls: this.app!.saml_app!.sls,
+      }
+    } else {
+      params.saml_app = null
     }
 
     return params
