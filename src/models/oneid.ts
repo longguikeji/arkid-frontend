@@ -571,6 +571,8 @@ export class SamlData {
   entity_id = ''
   acs = ''
   sls = ''
+  cert = ''
+  xmldata = ''
 }
 
 export interface AccessPermData {

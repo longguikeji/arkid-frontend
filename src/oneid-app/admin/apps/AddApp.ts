@@ -94,14 +94,29 @@ import './AddApp.less'
               </div>
             </TabPane>
             <TabPane v-if="app.auth_protocols.includes(authTypes[3])" :label="authTypes[3]" :name="authTypes[3]">
-              <FormItem prop="app.saml_app.entity_id" label="entity_id">
+              <FormItem prop="saml_app.entity_id" label="entity_id:">
                 <Input type="text" v-model="app.saml_app.entity_id" placeholder="请输入 entity_id..."></Input>
               </FormItem>
-              <FormItem prop="app.saml_app.acs" label="acs">
+              <FormItem prop="saml_app.acs" label="acs:">
                 <Input type="text" v-model="app.saml_app.acs" placeholder="请输入 acs..."></Input>
               </FormItem>
-              <FormItem prop="app.saml_app.sls" label="sls">
+              <FormItem prop="saml_app.sls" label="sls:">
                 <Input type="text" v-model="app.saml_app.sls" placeholder="请输入 sls..."></Input>
+              </FormItem>
+              <FormItem prop="saml_app.cert" label="证书(x509):">
+                <Input type="textarea" v-model="app.saml_app.cert" placeholder="请输入 证书内容..."></Input>
+              </FormItem>
+              <FormItem prop="saml_app.xmldata" label="上传元数据文档:">
+                <Upload
+                  name="xmlFile"
+                  action=""
+                  accept=".xml"
+                  :show-upload-list="false"
+                  :before-upload="handleBeforeUpload"
+                  :max-size="100"
+                >
+                  <Button>上传文件</Button>
+                </Upload>
               </FormItem>
             </TabPane>
           </Tabs>
@@ -235,6 +250,8 @@ export default class AddApp extends Vue {
         entity_id: this.app!.saml_app!.entity_id,
         acs: this.app!.saml_app!.acs,
         sls: this.app!.saml_app!.sls,
+        cert: this.app!.saml_app!.cert,
+        xmldata: this.app!.saml_app!.xmldata,
       }
     } else {
       params.saml_app = null
@@ -285,5 +302,14 @@ export default class AddApp extends Vue {
   doCancel() {
     this.showAdd = false
     this.$emit('on-change')
+  }
+
+  handleBeforeUpload(file: File) {
+    const reader = new FileReader()
+    reader.readAsText(file)
+    reader.onload = (e) => {
+      this.app!.saml_app!.xmldata = e.target!.result as string
+    }
+    return false
   }
 }
