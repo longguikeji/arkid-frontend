@@ -93,7 +93,7 @@ import './AddApp.less'
                 </FormItem>
               </div>
             </TabPane>
-            <TabPane v-if="app.auth_protocols.includes(authTypes[3])" :label="authTypes[3]" :name="authTypes[3]">
+            <TabPane v-if="app.auth_protocols.includes(authTypes[3]) && app.saml_app" :label="authTypes[3]" :name="authTypes[3]">
               <FormItem prop="saml_app.entity_id" label="entity_id:">
                 <Input type="text" v-model="app.saml_app.entity_id" placeholder="请输入 entity_id..."></Input>
               </FormItem>
@@ -148,7 +148,7 @@ export default class AddApp extends Vue {
       'oauth_app.redirect_uris': [required],
     }
   }
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML2']
+  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML']
   selectedAuthTypes?: string[] = []
   clientTypes = ['confidential', 'public']
   grantTypes = ['authorization-code', 'implicit', 'password', 'client']
@@ -171,6 +171,16 @@ export default class AddApp extends Vue {
     }
     if (removeOauth) {
       this.app!.oauth_app = null
+    }
+
+    const samlType = this.authTypes[3]
+    const addSaml = newVal.includes(samlType) && !oldVal.includes(samlType)
+    const removeSaml = !newVal.includes(samlType) && oldVal.includes(samlType)
+    if (addSaml) {
+      this.app!.saml_app = new SamlData()
+    }
+    if (removeSaml) {
+      this.app!.saml_app = null
     }
   }
 
