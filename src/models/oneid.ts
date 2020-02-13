@@ -598,6 +598,47 @@ export interface AppData {
   access_perm: AccessPermData
 }
 
+export interface OrgData {
+  oid: string,
+  name: string,
+  owner: string,
+  dept_uid: string,
+  group_uid: string,
+  direct_uid: string,
+  manager_uid: string,
+  label_uid: string,
+  role_uid: string
+}
+
+export class Org {
+  static fromData(data?: OrgData) {
+    const obj = new this()
+    if (!data) {
+      return obj
+    }
+    obj.oid = data.oid
+    obj.name = data.name
+    obj.owner = data.owner
+    obj.dept_uid = data.dept_uid
+    obj.group_uid = data.group_uid
+    obj.direct_uid = data.direct_uid
+    obj.manager_uid = data.manager_uid
+    obj.label_uid = data.label_uid
+    obj.role_uid = data.role_uid
+
+    return obj
+  }
+  oid: string = ''
+  name: string = ''
+  owner: string = ''
+  dept_uid: string = ''
+  group_uid: string = ''
+  direct_uid: string = ''
+  manager_uid: string = ''
+  label_uid: string = ''
+  role_uid: string = ''
+}
+
 export class App {
   static fromData(data?: AppData) {
     const obj = new this()

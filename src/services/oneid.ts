@@ -710,6 +710,12 @@ export class UCenter extends API {
     window.localStorage.setItem(ONEID_TOKEN, token)
     return model.User.exchangeCurrentUserData(resp.data)
   }
+
+  static async getCurrentOrganization() {
+    const url = this.url({action: 'org'})
+    const resp =  await http.get(url)
+    return resp.data
+  }
 }
 
 export const login = UCenter.login.bind(UCenter)

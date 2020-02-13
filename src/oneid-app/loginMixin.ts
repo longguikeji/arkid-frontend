@@ -111,8 +111,9 @@ export default class LoginMixin extends Vue {
     return !!route.name && route.name.startsWith('admin');
   }
 
-  onLogin(user: {}): void {
+  async onLogin(user: {}) {
     this.user = user;
+    console.log(await api.UCenter.getCurrentOrganization())
   }
 
   async logout() {
