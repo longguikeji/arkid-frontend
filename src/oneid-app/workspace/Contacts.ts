@@ -344,7 +344,7 @@ export default class Contact extends Vue {
   }
 
   async mounted() {
-    const [a, b] = await nodeApi.metaNode();
+    const [a, b] = await nodeApi.metaNode(await this.$app.org());
     // console.log(a, b);
     this.cats = [a, b];
 

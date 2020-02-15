@@ -2,6 +2,7 @@ import {Vue, Component, Watch, Prop, Mixins} from 'vue-property-decorator';
 import * as api from '../services/oneid';
 import {injectLoginRequired} from '../services/base';
 import {Route} from 'vue-router';
+import {Org} from '@/models/oneid';
 
 
 @Component({})
@@ -111,9 +112,8 @@ export default class LoginMixin extends Vue {
     return !!route.name && route.name.startsWith('admin');
   }
 
-  async onLogin(user: {}) {
+  onLogin(user: {}): void {
     this.user = user;
-    console.log(await api.UCenter.getCurrentOrganization())
   }
 
   async logout() {
@@ -134,6 +134,10 @@ export default class LoginMixin extends Vue {
         ...cachedUser
       });
     }
+  }
+
+  async org(): Promise<Org> {
+    return await api.UCenter.getCurrentOrganization()
   }
 
 }

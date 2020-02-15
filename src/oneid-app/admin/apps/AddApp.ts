@@ -206,7 +206,7 @@ export default class AddApp extends Vue {
 
   async create() {
     try {
-      await api.App.create(this.getAppParams())
+      await api.App.create(await this.$app.org(), this.getAppParams())
       this.$Message.success('创建成功')
     } catch(err) {
       this.$Message.error('创建失败')
@@ -262,7 +262,7 @@ export default class AddApp extends Vue {
 
   async edit() {
     try {
-      await api.App.partialUpdate(this.app!.uid, this.getAppParams())
+      await api.App.partialUpdate(await this.$app.org(), this.app!.uid, this.getAppParams())
       this.$Message.success('保存成功')
     } catch(err) {
       this.$Message.error('保存失败')
@@ -273,7 +273,7 @@ export default class AddApp extends Vue {
   async remove() {
     const {uid: id} = this.app
     try {
-      await api.App.remove(id)
+      await api.App.remove(await this.$app.org(), id)
       this.$Message.success('删除成功')
     } catch(err) {
       this.$Message.error('删除失败')

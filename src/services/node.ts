@@ -26,8 +26,8 @@ export class Node {
     return '/siteapi/oneid/node';
   }
 
-  static async metaNode() {
-    const url = '/siteapi/oneid/meta/node/';
+  static async metaNode(org: model.Org) {
+    const url = `/siteapi/oneid/org/${org.oid}/meta/node/`;
     const resp = await http.get(url);
     const [defaultMetaNode, customMetaNode] = resp.data;
     return [

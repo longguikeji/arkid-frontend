@@ -192,7 +192,7 @@ export default class Choose extends Vue {
   }
 
   async loadMetaNodeList() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org())
     this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 

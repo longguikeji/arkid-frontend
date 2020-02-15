@@ -241,7 +241,7 @@ export default class Edit extends Vue {
     this.nodeScopeObjs = nodeScopeObjs;
     this.userScopeObjs = userScopeObjs;
 
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org());
     this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children];
 
     this.showDrawer = true;

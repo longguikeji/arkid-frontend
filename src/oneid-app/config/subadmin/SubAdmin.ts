@@ -114,7 +114,7 @@ export default class SubAdmin extends Vue {
 
   async loadData() {
     const adminList = await api.Role.subAdminList();
-    const {results: appList} = await api.App.list();
+    const {results: appList} = await api.App.list(await this.$app.org());
     const {results: deptList} = await api.Dept.list();
 
     this.adminList = adminList.map(({role, users}) => ({

@@ -154,7 +154,7 @@ export default class Application extends Vue {
   }
 
   async loadData() {
-    const {results: appList, count} = await api.App.list({...this.pagination})
+    const {results: appList, count} = await api.App.list(await this.$app.org(), {...this.pagination})
     this.appList = appList.map(app => App.fromData(app))
     this.pagination.total = count
   }
@@ -209,7 +209,7 @@ export default class Application extends Vue {
   }
 
   async onSearchChange(event) {
-    const {results: appList, count} = await api.App.list({keyword: this.searchText})
+    const {results: appList, count} = await api.App.list(await this.$app.org(), {keyword: this.searchText})
     this.appList = appList.map(app => App.fromData(app))
   }
 

@@ -169,7 +169,7 @@ export default class Edit extends Vue {
     this.basicPermOptions = [];
   }
   async loadAppPermOptions() {
-    const {results: appPermOptions} = await api.App.list();
+    const {results: appPermOptions} = await api.App.list(await this.$app.org());
     this.appPermOptions = appPermOptions;
   }
 

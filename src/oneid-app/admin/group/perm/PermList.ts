@@ -61,7 +61,7 @@ export default class PermList extends Vue {
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org())
     this.defaultMetaNode = defaultMetaNode
     this.customMetaNode = customMetaNode
   }

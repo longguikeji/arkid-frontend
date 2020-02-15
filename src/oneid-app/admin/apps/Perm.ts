@@ -151,7 +151,7 @@ export default class Perm extends Vue {
   }
 
   async mounted() {
-    const app = await api.App.fetch(this.appUID)
+    const app = await api.App.fetch(await this.$app.org(), this.appUID)
     this.appName = app.name
     this.loadData()
   }
@@ -523,7 +523,7 @@ export default class Perm extends Vue {
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org())
     this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 

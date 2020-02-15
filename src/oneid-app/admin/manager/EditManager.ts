@@ -152,7 +152,7 @@ export default class EditManager extends Vue {
 
   async loadOptions() {
     const {results: basicPermOptions} = await api.Config.retrieveMetaPermList();
-    const {results: appPermOptions} = await api.App.list();
+    const {results: appPermOptions} = await api.App.list(await this.$app.org());
 
     this.basicPermOptions = basicPermOptions;
     this.appPermOptions = appPermOptions;

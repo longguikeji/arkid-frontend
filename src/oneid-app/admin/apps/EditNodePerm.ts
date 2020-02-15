@@ -206,7 +206,7 @@ export default class EditPerm extends Vue {
   }
 
   async loadMetaNodes() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org())
     this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
   }
 

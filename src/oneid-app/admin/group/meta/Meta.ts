@@ -108,7 +108,7 @@ export default class Meta extends Vue {
   }
 
   async loadData() {
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode(await this.$app.org())
 
     this.defaultMetaNode = defaultMetaNode
     this.customMetaNode = customMetaNode

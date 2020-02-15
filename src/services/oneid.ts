@@ -235,8 +235,8 @@ export class User {
 }
 
 export class App {
-  static url({detail = false, id, action}: {detail?: boolean; id?: string; action?: string;} = {}) {
-    let url = '/siteapi/oneid/app'
+  static url({oid, detail = false, id, action}: {oid: string, detail?: boolean; id?: string; action?: string;} = {}) {
+    let url = `/siteapi/oneid/org/${oid}/app`
     if (detail) {
       url += `/${id}`
     }
@@ -248,6 +248,7 @@ export class App {
   }
 
   static async list(
+    org: model.Org,
     params?: {
       keyword: string,
       pageSize?: number;
@@ -265,20 +266,20 @@ export class App {
       page_size: params.pageSize || 10,
       owner_access: params.ownerAccess,
     }} : {}
-    const resp = await http.get(this.url(), data)
+    const resp = await http.get(this.url({oid: org.oid}), data)
     return resp.data
   }
-  static async fetch(id: string) {
-    return http.get(this.url({detail: true, id})).then(x => x.data)
+  static async fetch(org: model.Org, id: string) {
+    return http.get(this.url({oid: org.oid, detail: true, id})).then(x => x.data)
   }
-  static async create(data) {
-    return http.post(this.url(), data).then(x => x.data)
+  static async create(org: model.Org, data) {
+    return http.post(this.url({oid: org.oid}), data).then(x => x.data)
   }
-  static async partialUpdate(id: string, data) {
-    return http.patch(this.url({detail: true, id}), data).then(x => x.data)
+  static async partialUpdate(org: model.Org, id: string, data) {
+    return http.patch(this.url({oid: org.oid, detail: true, id}), data).then(x => x.data)
   }
-  static async remove(id: string) {
-    return http.delete(this.url({detail: true, id})).then(x => x.data)
+  static async remove(org: model.Org, id: string) {
+    return http.delete(this.url({oid: org.oid, detail: true, id})).then(x => x.data)
   }
 }
 

@@ -152,7 +152,8 @@
           grantType,
         } = this.form;
         try {
-          await api.App.create({
+          await api.App.create(await this.$app.org(),
+          {
             name,
             remark,
             oauth_app: {
@@ -180,7 +181,7 @@
           grantType,
         } = this.form;
         try {
-          await api.App.partialUpdate(id, {
+          await api.App.partialUpdate(await this.$app.org(), id, {
             name,
             remark,
             oauth_app: {
@@ -201,7 +202,7 @@
       async remove() {
         const {uid: id} = this.form;
         try {
-          await api.App.remove(id);
+          await api.App.remove(await this.$app.org(), id);
           this.$Message.success('删除成功');
         } catch(err) {
           console.log(err);
