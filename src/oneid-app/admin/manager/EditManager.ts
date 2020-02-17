@@ -221,7 +221,7 @@ export default class EditManager extends Vue {
     const userIds = form.users.map(u => u.id);
 
     if (this.isNew) {
-      const newManager = await api.Manager.create(form);
+      const newManager = await api.Manager.create(await this.$app.org(), form);
       await api.Node.Manager.updateUsers(newManager.id, {userIds});
     } else {
       await api.Node.Manager.partialUpdate(form);

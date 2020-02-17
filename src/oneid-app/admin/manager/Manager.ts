@@ -82,7 +82,7 @@ export default class Manager extends Vue {
   }
 
   async loadData() {
-    const managerGroupList = await api.Manager.list();
+    const managerGroupList = await api.Manager.list(await this.$app.org());
     this.managerGroupList = managerGroupList;
   }
 }

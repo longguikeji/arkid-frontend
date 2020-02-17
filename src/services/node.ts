@@ -138,13 +138,13 @@ export class Node {
 }
 
 export class Manager extends Node {
-  static async create(node: model.Node) {
-    const url = `/siteapi/oneid/group/manager/group/`;
+  static async create(org: model.Org, node: model.Node) {
+    const url = `/siteapi/oneid/group/${org.manager_uid}/group/`;
     const resp = await http.post(url, node.toData());
     return model.Node.fromData(resp.data);
   }
-  static async list() {
-    const url = `/siteapi/oneid/node/g_manager/node/`;
+  static async list(org: model.Org) {
+    const url = `/siteapi/oneid/node/g_${org.manager_uid}/node/`;
     const resp = await http.get(url);
 
     const nodes = resp.data.nodes.map(n => model.Node.fromData(n));

@@ -131,8 +131,8 @@ export default class Group extends Vue {
   }
 
   get nodeTypeName() {
-    return ['dept', 'role', 'label'].includes(this.metaNode!.nodeSubject)
-      ? this.metaNode!.name
+    return ['dept', 'direct', 'role', 'label'].includes(this.metaNode!.nodeSubject)
+      ? this.metaNode!.name.split('-')[1]
       : '分组';
   }
 
