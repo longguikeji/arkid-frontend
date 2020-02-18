@@ -664,7 +664,7 @@ export default class Oplog extends Vue {
   }
 
   async loadData() {
-    const {results: recordList, count} = await api.OperationRecord.list({
+    const {results: recordList, count} = await api.OperationRecord.list(await this.$app.org(), {
       page: this.pagination.page,
       pageSize: this.pagination.pageSize,
       subjects: this.comps.subject.query.items.filter(x => x.selected).map(x => x.value),
@@ -694,7 +694,7 @@ export default class Oplog extends Vue {
   }
 
   async viewRecordDetail(id: string) {
-    const record = await api.OperationRecord.getRecordWithDetail(id);
+    const record = await api.OperationRecord.getRecordWithDetail(await this.$app.org(), id);
     this.currentRecord =  OperationRecord.fromData(record);
     this.showModal = true;
   }

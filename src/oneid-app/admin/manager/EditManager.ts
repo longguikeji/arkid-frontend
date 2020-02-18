@@ -161,7 +161,7 @@ export default class EditManager extends Vue {
   async loadForm() {
     const {id} = this.$route.params;
     if (!this.isNew) {
-      const managerList = await api.Node.Manager.list();
+      const managerList = await api.Node.Manager.list(await this.$app.org());
       this.form = managerList.find(i => i.id === id);
 
       this.permIds = this.form!.managerGroup!.perms.map(i => i.id);

@@ -780,15 +780,18 @@ export function getCachedUser() {
 }
 
 export class OperationRecord {
-  static url({detail = false, id}: {detail?: boolean; id?: string;} = {}) {
-    let url = '/siteapi/oneid/log'
+  static url({oid, detail = false, id}: {oid: string, detail?: boolean; id?: string;} = {}) {
     if (detail) {
-      url += `/${id}`
+      return `/siteapi/oneid/log/${id}`
+    } else {
+      // TODO@saas: 本地版如何区分组织日志与超管日志
+      return `/siteapi/oneid/log`
+      // return `/siteapi/oneid/org/${oid}/log`
     }
-    return `${url}/`
   }
 
   static async list(
+    org: model.Org,
     params?: {
       days?: number,
       user?: string,
@@ -813,12 +816,12 @@ export class OperationRecord {
     if (summary && summary.length) {
       data.summary = summary
     }
-    const resp = await http.get(this.url(), {params: data})
+    const resp = await http.get(this.url({oid: org.oid}), {params: data})
     return resp.data
   }
 
-  static async getRecordWithDetail(id: string) {
-    const resp = await http.get(this.url({detail: true, id}))
+  static async getRecordWithDetail(org: model.Org, id: string) {
+    const resp = await http.get(this.url({oid: org.oid, detail: true, id}))
     return resp.data
   }
 }

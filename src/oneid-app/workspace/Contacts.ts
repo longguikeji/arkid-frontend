@@ -346,6 +346,13 @@ export default class Contact extends Vue {
   async mounted() {
     const [a, b] = await nodeApi.metaNode(await this.$app.org());
     // console.log(a, b);
+
+    for (let i = 0; i < a.children.length; i++) {
+      if (a.children[i].nodeSubject == 'manager') {
+        a.children.splice(i, 1)
+        break
+      }
+    }
     this.cats = [a, b];
 
     this.cNode = a.children[0];
