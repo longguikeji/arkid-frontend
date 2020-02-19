@@ -226,7 +226,7 @@ export default class LoginConfig extends Vue {
   }
 
   async loadData() {
-    const data = await ConfigApi.retrieve()
+    const data = await ConfigApi.retrieve(this.$app.org())
     this.config = data
 
     const {nameCn, icon, color} = data.org
@@ -257,7 +257,7 @@ export default class LoginConfig extends Vue {
   async doSave() {
     this.isSaving = true
     try {
-      await ConfigApi.partialUpdate({
+      await ConfigApi.partialUpdateOrg(await this.$app.org(),{
         company_config: {
           name_cn: this.companyName,
           icon: this.companyLogo,

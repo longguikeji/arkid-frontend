@@ -1,4 +1,4 @@
-import {TypeMetaInfo} from '../services/config'
+import {TypeMetaInfo, OrgTypeMetaInfo} from '../services/config'
 // tslint:disable: max-classes-per-file
 
 // ********************************************************************************************************
@@ -429,7 +429,7 @@ export class FreakConfig {
 // ********************************************************************************************************
 
 export class Org {
-  static fromData(data: TypeMetaInfo['company_config']) {
+  static fromData(data: OrgTypeMetaInfo['company_config']) {
     const obj = new this()
 
     if (data) {
@@ -666,6 +666,23 @@ export class Config {
       wechat_config: this.wechat ? this.wechat.toData() : null,
       qq_config: this.qq ? this.qq.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
+      company_config: this.org ? this.org.toData() : null,
+    }
+  }
+}
+
+export class OrgConfig {
+
+  static fromData(data: OrgTypeMetaInfo) {
+    const obj = new this()
+    obj.org = Org.fromData(data.company_config)
+    return obj
+  }
+
+  org!: Org
+
+  toData() {
+    return {
       company_config: this.org ? this.org.toData() : null,
     }
   }

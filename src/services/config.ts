@@ -1,8 +1,9 @@
+import Org from '../models/oneid'
 import * as models from '../models/config'
 import {delayIt, getUuid, http} from './base'
 
-export interface TypeMetaInfo {
-  company_config: {
+export interface OrgTypeMetaInfo {
+    company_config: {
     name_cn: string;
     fullname_cn: string;
     name_en: string;
@@ -13,7 +14,9 @@ export interface TypeMetaInfo {
     domain: string;
     display_name: string;
   }
+}
 
+export interface TypeMetaInfo {
   sms_config: object
 
   ding_config: {
@@ -66,8 +69,11 @@ export interface TypeMetaInfo {
 }
 
 export class Config {
-  static url({detail = false, id = '', action = ''} = {}) {
+  static url({oid = '', detail = false, id = '', action = ''} = {}) {
     let url = '/siteapi/oneid/config'
+    if (oid) {
+      url = `/siteapi/org/${oid}/config`
+    }
     if (detail) {
       url += `/${id}`
     }
@@ -78,15 +84,26 @@ export class Config {
     return `${url}/`
   }
 
-  static async retrieve() {
-    return http.get(this.url())
-      .then(x => models.Config.fromData(x.data))
+  static async retrieve(org?: Org) {
+    if (org) {
+      return http.get(this.url({oid: org.oid}))
+          .then(x => models.OrgConfig.fromData(x.data))
+    } else {
+      return http.get(this.url())
+          .then(x => models.Config.fromData(x.data))
+    }
   }
 
   static async partialUpdate(config: models.Config) {
     const data = config.toData ? config.toData() : config
     return http.patch(this.url(), data)
       .then(x => models.Config.fromData(x.data))
+  }
+
+  static async partialUpdateOrg(org: Org, config: models.OrgConfig) {
+    const data = config.toData() ? config.toData() : config
+    return http.patch(this.url({oid: org.oid}), data)
+      .then(x => models.OrgConfig.fromData(x.data))
   }
 
   static async getStorageData() {
@@ -100,8 +117,11 @@ export class Config {
       .then(x => models.StorageConfig.fromData(x.data))
   }
 
-  static async retrieveMetaPermList() {
-    const url = '/siteapi/oneid/meta/perm/'
+  static async retrieveMetaPermList(org?: Org) {
+    let url = '/siteapi/oneid/meta/perm/'
+    if (org) {
+      url = `/siteapi/oneid/org/${org.oid}/meta/perm`
+    }
     const resp = await http.get(url)
     const results = resp.data.map((i: {uid: string, name: string}) => ({
       id: i.uid,
@@ -112,9 +132,14 @@ export class Config {
     }
   }
 
-  static async retrieveMeta() {
-    const url = '/siteapi/oneid/meta/'
-    return http.get(url).then(x => models.Config.fromData(x.data as TypeMetaInfo))
+  static async retrieveMeta(org?: Org) {
+    let url = '/siteapi/oneid/meta/'
+    if (org) {
+      url = `/siteapi/oneid/org/${org.oid}/meta/`
+      return http.get(url).then(x => models.OrgConfig.fromData(x.data as OrgTypeMetaInfo))
+    } else {
+      return http.get(url).then(x => models.Config.fromData(x.data as TypeMetaInfo))
+    }
   }
 
   static async refreshMeta() {
