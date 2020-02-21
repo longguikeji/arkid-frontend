@@ -1,6 +1,6 @@
 import {Vue, Component, Watch, Prop, Mixins} from 'vue-property-decorator';
 
-import {Config} from '@/models/config';
+import {AllConfig} from '@/models/config';
 import {Config as ConfigService} from '@/services/config';
 import {File} from '@/services/oneid';
 import LoginMixin from './loginMixin';
@@ -25,7 +25,7 @@ declare module "vue/types/vue" {
 
 })
 export default class App extends Mixins(LoginMixin) {
-  metaInfo: Config|null = null;
+  metaInfo: AllConfig|null = null;
 
   created() {
     // @ts-ignore

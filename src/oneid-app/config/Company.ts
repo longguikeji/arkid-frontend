@@ -104,7 +104,7 @@ export default class Company extends Vue {
     try {
       await configApi.Config.partialUpdate(this.form!);
       this.$Loading.finish();
-      await configApi.Config.refreshMeta();
+      await configApi.Config.refreshMeta(await this.$app.org());
       this.$app.loadBaseInfo();
     } catch (e) {
       console.log(e);

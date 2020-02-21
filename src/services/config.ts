@@ -72,7 +72,7 @@ export class Config {
   static url({oid = '', detail = false, id = '', action = ''} = {}) {
     let url = '/siteapi/oneid/config'
     if (oid) {
-      url = `/siteapi/org/${oid}/config`
+      url = `/siteapi/oneid/org/${oid}/config`
     }
     if (detail) {
       url += `/${id}`
@@ -85,13 +85,12 @@ export class Config {
   }
 
   static async retrieve(org?: Org) {
+    const data = (await http.get(this.url())).data
+    let orgData = {}
     if (org) {
-      return http.get(this.url({oid: org.oid}))
-          .then(x => models.OrgConfig.fromData(x.data))
-    } else {
-      return http.get(this.url())
-          .then(x => models.Config.fromData(x.data))
+      orgData = (await http.get(this.url({oid: org.oid}))).data
     }
+    return models.AllConfig.fromData(data, orgData)
   }
 
   static async partialUpdate(config: models.Config) {
@@ -101,7 +100,7 @@ export class Config {
   }
 
   static async partialUpdateOrg(org: Org, config: models.OrgConfig) {
-    const data = config.toData() ? config.toData() : config
+    const data = config.toData ? config.toData() : config
     return http.patch(this.url({oid: org.oid}), data)
       .then(x => models.OrgConfig.fromData(x.data))
   }
@@ -133,20 +132,19 @@ export class Config {
   }
 
   static async retrieveMeta(org?: Org) {
-    let url = '/siteapi/oneid/meta/'
+    const data = (await http.get('/siteapi/oneid/meta/')).data
+    let orgData = {}
     if (org) {
-      url = `/siteapi/oneid/org/${org.oid}/meta/`
-      return http.get(url).then(x => models.OrgConfig.fromData(x.data as OrgTypeMetaInfo))
-    } else {
-      return http.get(url).then(x => models.Config.fromData(x.data as TypeMetaInfo))
+      orgData = (await http.get(`/siteapi/oneid/org/${org.oid}/meta/`)).data
     }
+    return models.AllConfig.fromData(data, orgData)
   }
 
-  static async refreshMeta() {
-    window.cachedConfig = await this.retrieveMeta()
+  static async refreshMeta(org?: Org) {
+    window.cachedConfig = await this.retrieveMeta(org)
   }
 
-  static cachedMeta(): models.Config {
+  static cachedMeta(): models.AllConfig {
     return window.cachedConfig
   }
 

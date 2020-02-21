@@ -644,14 +644,12 @@ export class Config {
     obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
     obj.wechat = Wechat.fromData(data.wechat_config)
     obj.qq = QQ.fromData(data.qq_config)
-    obj.org = Org.fromData(data.company_config)
     obj.account = Account.fromData(data.account_config)
     obj.sms = data.sms_config
 
     return obj
   }
   ding!: Ding
-  org!: Org
   account!: Account
   sms!: object
   alipay!: Alipay
@@ -666,13 +664,11 @@ export class Config {
       wechat_config: this.wechat ? this.wechat.toData() : null,
       qq_config: this.qq ? this.qq.toData() : null,
       ding_config: this.ding ? this.ding.toData() : null,
-      company_config: this.org ? this.org.toData() : null,
     }
   }
 }
 
 export class OrgConfig {
-
   static fromData(data: OrgTypeMetaInfo) {
     const obj = new this()
     obj.org = Org.fromData(data.company_config)
@@ -683,6 +679,44 @@ export class OrgConfig {
 
   toData() {
     return {
+      company_config: this.org ? this.org.toData() : null,
+    }
+  }
+}
+
+// TODO@saas: refactor this
+export class AllConfig {
+
+  static fromData(data: TypeMetaInfo, org: OrgTypeMetaInfo) {
+    const obj = new this()
+
+    obj.ding = Ding.fromData(data.ding_config)
+    obj.alipay = Alipay.fromData(data.alipay_config)
+    obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
+    obj.wechat = Wechat.fromData(data.wechat_config)
+    obj.qq = QQ.fromData(data.qq_config)
+    obj.account = Account.fromData(data.account_config)
+    obj.sms = data.sms_config
+    obj.org = Org.fromData(org.company_config)
+
+    return obj
+  }
+  ding!: Ding
+  account!: Account
+  sms!: object
+  alipay!: Alipay
+  wechatWork!: WechatWork
+  wechat!: Wechat
+  qq!: QQ
+  org!: Org
+
+  toData() {
+    return {
+      alipay_config: this.alipay ? this.alipay.toData() : null,
+      work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
+      wechat_config: this.wechat ? this.wechat.toData() : null,
+      qq_config: this.qq ? this.qq.toData() : null,
+      ding_config: this.ding ? this.ding.toData() : null,
       company_config: this.org ? this.org.toData() : null,
     }
   }
