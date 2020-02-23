@@ -207,7 +207,7 @@ class EditInfo extends Vue {
         <h4>{{ user.name || user.username }}</h4>
       </div>
 
-      <UserInfoList :user="user" />
+      <UserInfoList :user="user" :orgUser="orgUser"/>
 
     </div>
   </div>
@@ -224,9 +224,14 @@ class EditInfo extends Vue {
 })
 export default class UserMy extends Vue {
   showEdit = false;
+  orgUser = {};
 
   get user() {
     return this.$app.user;
+  }
+
+  async created() {
+    this.orgUser = await UCenterApi.getCurrentOrgUser(this.$app.user.username)
   }
 
   doShowEdit() {

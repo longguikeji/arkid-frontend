@@ -1,6 +1,6 @@
 import {Vue, Component, Watch, Prop} from 'vue-property-decorator';
 import {throttle} from 'lodash';
-import {User, Node} from '@/models/oneid';
+import {OrgUser, User, Node} from '@/models/oneid';
 import * as oneidApi from '@/services/oneid';
 import {Node as nodeApi, UcenterNode as ucenterNodeApi} from '@/services/node';
 import {findTreePath} from '@/utils';
@@ -18,13 +18,14 @@ import './Contacts.less';
     </div>
   </div>
   <div class="field-list flex-col flex-auto">
-    <UserInfoList :user="user" />
+    <UserInfoList :user="user" :orgUser="orgUser"/>
   </div>
 </div>
   `,
 })
 class UserInfo extends Vue {
   @Prop() user!: any;
+  @Prop() orgUser!: any;
 }
 
 @Component({
@@ -149,7 +150,7 @@ class UserInfo extends Vue {
 
         <div class="detail flex-col">
           <div class="detail-wrapper">
-            <UserInfo v-if="user" :key="user.id" :user="user" />
+            <UserInfo v-if="user" :key="user.id" :user="user" :orgUser="orgUser" />
             <template v-else>
               <div class="placeholder">
                 <XIcon name="account-empty" class="placeholder-icon"/>
@@ -180,6 +181,7 @@ class Group extends Vue {
 
   users: User[]|null = null;
   user: User|null = null;
+  orgUser: OrgUser|null = null;
 
   keyword: string|null = null;
   searchResult: {depts: Node[], users: User[]}|null = null;
@@ -250,7 +252,8 @@ class Group extends Vue {
     this.curDept = dept;
   }
   async goToUser(user: User) {
-    this.user = await oneidApi.User.retrieveColleague(user.username);
+    this.orgUser = await oneidApi.User.retrieveColleague(user.username, await this.$app.org());
+    this.user = this.orgUser.user
   }
 
   async getDeptUsers() {

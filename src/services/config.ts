@@ -93,16 +93,14 @@ export class Config {
     return models.AllConfig.fromData(data, orgData)
   }
 
-  static async partialUpdate(config: models.Config) {
-    const data = config.toData ? config.toData() : config
-    return http.patch(this.url(), data)
-      .then(x => models.Config.fromData(x.data))
-  }
-
-  static async partialUpdateOrg(org: Org, config: models.OrgConfig) {
-    const data = config.toData ? config.toData() : config
-    return http.patch(this.url({oid: org.oid}), data)
-      .then(x => models.OrgConfig.fromData(x.data))
+  static async partialUpdate(config: models.AllConfig, org?: Org) {
+    let configData = config.toConfigData ? config.toConfigData() : config
+    let orgData = config.toOrgData ? config.toOrgData() : config
+    configData = (await http.patch(this.url(), configData)).data
+    if (org) {
+      orgData = (await http.patch(this.url({oid: org.oid}), orgData)).data
+    }
+    return models.AllConfig.fromData(configData, orgData)
   }
 
   static async getStorageData() {

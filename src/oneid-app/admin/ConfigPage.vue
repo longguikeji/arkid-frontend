@@ -106,7 +106,7 @@
 
     methods: {
       async loadData() {
-        this.config = await api.Config.retrieve();
+        this.config = await api.Config.retrieve(await this.$app.org());
       },
 
       showEdit() {
@@ -122,7 +122,7 @@
 
       async edit() {
         try {
-          this.config = await api.Config.partialUpdate(this.form);
+          this.config = await api.Config.partialUpdate(this.form, await this.$app.org());
           this.$Message.success('修改成功');
         } catch (e) {
           console.log(e);

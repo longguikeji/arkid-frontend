@@ -257,13 +257,13 @@ export default class LoginConfig extends Vue {
   async doSave() {
     this.isSaving = true
     try {
-      await ConfigApi.partialUpdateOrg(await this.$app.org(), {
+      await ConfigApi.partialUpdate({
         company_config: {
           name_cn: this.companyName,
           icon: this.companyLogo,
           color: this.colorType === 'default-color'? this.selectColor : this.customColor,
         },
-      })
+      }, await this.$app.org())
     } catch(ex) {return}
 
     this.isSaving = false

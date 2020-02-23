@@ -720,4 +720,19 @@ export class AllConfig {
       company_config: this.org ? this.org.toData() : null,
     }
   }
+
+  toConfigData(){
+    return {
+      alipay_config: this.alipay ? this.alipay.toData() : null,
+      work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
+      wechat_config: this.wechat ? this.wechat.toData() : null,
+      qq_config: this.qq ? this.qq.toData() : null,
+      ding_config: this.ding ? this.ding.toData() : null,
+    }
+  }
+  toOrgData() {
+    return {
+      company_config: this.org ? this.org.toData() : null
+    }
+  }
 }

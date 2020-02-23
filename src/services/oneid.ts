@@ -174,13 +174,12 @@ export class User {
     })
   }
 
-  static async retrieveColleague(id) {
-    const url = '/siteapi/oneid/ucenter/user' + `/${id}/`
-    return http.get(url).then((x) => {
-      const user = x.data
-      const nodes = new Array()
-      return model.User.fromData({...user, nodes})
-    })
+  static async retrieveColleague(id, org: model.Org) {
+    const url = `/siteapi/oneid/org/${org.oid}/user/${id}/`
+    let data = (await http.get(url)).data
+    const nodes = new Array()
+    data.user.nodes = nodes
+    return model.OrgUser.fromData(data)
   }
 
   static async resetPassword(username: string, data: object) {
@@ -717,6 +716,13 @@ export class UCenter extends API {
     const resp =  await http.get(url)
     return resp.data
   }
+
+  static async getCurrentOrgUser(id: string) {
+    const org = await this.getCurrentOrganization()
+    const url = `/siteapi/oneid/org/${org.oid}/user/${id}/`
+    const resp = await http.get(url)
+    return model.OrgUser.fromData(resp.data)
+  }
 }
 
 export const login = UCenter.login.bind(UCenter)
@@ -784,9 +790,7 @@ export class OperationRecord {
     if (detail) {
       return `/siteapi/oneid/log/${id}`
     } else {
-      // TODO@saas: 本地版如何区分组织日志与超管日志
-      return `/siteapi/oneid/log`
-      // return `/siteapi/oneid/org/${oid}/log`
+      return `/siteapi/oneid/org/${oid}/log`
     }
   }
 

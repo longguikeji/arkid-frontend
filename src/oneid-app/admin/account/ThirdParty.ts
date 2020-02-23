@@ -61,7 +61,7 @@ import './ThirdParty.less';
   `,
 })
 export default class ThirdParty extends Vue {
-  config: model.Config|null = null;
+  config: model.AllConfig|null = null;
 
   activeName: string|null = null;
   data: {

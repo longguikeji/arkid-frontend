@@ -67,6 +67,46 @@ export interface UserData {
   has_password: boolean
 }
 
+export interface OrgUserData {
+  user: UserData,
+  remark: string,
+  position: string
+  hiredate: string,
+  employee_number: string,
+}
+
+export class OrgUser {
+  static fromData(data?: OrgUserData) {
+    const obj = new this()
+    if (!data) {
+      return obj
+    }
+    obj.user = User.fromData(data.user)
+    obj.remark = data.remark
+    obj.position = data.position
+    obj.hiredate = data.hiredate
+    obj.employeeNumber = data.employee_number
+    return obj
+  }
+
+  user: User = {}
+  remark: string = ''
+  position: string = ''
+  hiredate: string = ''
+  employeeNumber: string = ''
+
+  toData() {
+    const data = {
+      user: this.user ? this.user.toData() : null,
+      remark: this.remark,
+      position: this.position,
+      hiredate: this.hiredate,
+      employee_number: this.employeeNumber,
+    }
+    return data
+  }
+}
+
 export class User {
   static exchangeCurrentUserData(rawData: UserData) {
     const {is_admin, is_manager} = rawData
@@ -683,6 +723,7 @@ export const SUBJECT_CHOICES = {
   'ucenter_activate': '激活',
 
   'config': '系统配置',
+  'org_config': '组织配置',
 
   'user_create': '创建用户',
   'user_update': '修改用户信息',

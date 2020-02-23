@@ -2,7 +2,7 @@ import {Vue, Component, Prop} from 'vue-property-decorator';
 import {sideMenu} from './menu';
 import * as configApi from '@/services/config';
 import * as oneidApi from '@/services/oneid';
-import {Config} from '@/models/config';
+import {AllConfig} from '@/models/config';
 // import {Form} from 'iview';
 import './index.less';
 
@@ -57,7 +57,7 @@ export default class Company extends Vue {
   $refs!: {
     form: Form,
   };
-  form: Config|null = null;
+  form: AllConfig|null = null;
 
   get viewMeta() {
     return {
@@ -88,7 +88,7 @@ export default class Company extends Vue {
   }
 
   async loadData() {
-    this.form = await configApi.Config.retrieve();
+    this.form = await configApi.Config.retrieve(await this.$app.org());
   }
 
   onUploadSuccess(resp: {file_name: string}) {
@@ -102,7 +102,7 @@ export default class Company extends Vue {
     }
     this.$Loading.start();
     try {
-      await configApi.Config.partialUpdate(this.form!);
+      await configApi.Config.partialUpdate(this.form!, await this.$app.org());
       this.$Loading.finish();
       await configApi.Config.refreshMeta(await this.$app.org());
       this.$app.loadBaseInfo();
