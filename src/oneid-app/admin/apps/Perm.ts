@@ -185,17 +185,17 @@ export default class Perm extends Vue {
     else if (this.menuName === this.baseMenuItems[1]) {
       this.getAccessPermList('dept')
       this.getInnerPermList('dept')
-      this.currentNode = this.metaNodes.filter(o => o.id === 'd_root')[0]
+      this.currentNode = this.metaNodes.filter(o => o.nodeSubject === 'dept')[0]
     }
     else if(this.menuName === this.baseMenuItems[2]) {
       this.getAccessPermList('label')
       this.getInnerPermList('label')
-      this.currentNode = this.metaNodes.filter(o => o.id === 'g_label')[0]
+      this.currentNode = this.metaNodes.filter(o => o.nodeSubject === 'label')[0]
     }
     else if(this.menuName === this.baseMenuItems[3]) {
       this.getAccessPermList('role')
       this.getInnerPermList('role')
-      this.currentNode = this.metaNodes.filter(o => o.id === 'g_role')[0]
+      this.currentNode = this.metaNodes.filter(o => o.nodeSubject === 'role')[0]
     }
     else{
       this.selectedSubMenuItem = this.menuName
