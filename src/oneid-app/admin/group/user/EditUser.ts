@@ -128,7 +128,7 @@ export default class EditUser extends Vue {
 
     return {
       username: [FORM_RULES.required, FORM_RULES.username],
-      name: [FORM_RULES.required, FORM_RULES.name],
+      name: [FORM_RULES.required],
       mobile: [FORM_RULES.mobile, mobileOrEmailRquiredRule],
       privateEmail: [FORM_RULES.email, mobileOrEmailRquiredRule],
     }
