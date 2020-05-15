@@ -127,8 +127,7 @@ export class User {
 
     const resp = await http.get(this.url(), data)
     const results = resp.data.results.map(item => {
-      const {user, nodes} = item
-      return model.User.fromData({...user, nodes})
+      return model.User.fromData(item)
     })
     return {
       count: resp.data.count,
@@ -169,8 +168,7 @@ export class User {
   static async retrieve(id) {
     const url = this.url({detail: true, id})
     return http.get(url).then((x) => {
-      const {user, nodes} = x.data
-      return model.User.fromData({...user, nodes})
+      return model.User.fromData(x.data)
     })
   }
 
