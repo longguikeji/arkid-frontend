@@ -1,5 +1,6 @@
 import * as model from '@/models/oneid'
 import * as api from '@/services/oneid'
+import * as config from '@/services/config'
 import {FORM_RULES} from '@/utils'
 import {cloneDeep} from 'lodash'
 import {Component, Prop, Vue} from 'vue-property-decorator'
@@ -48,7 +49,12 @@ import './EditUser.less'
           <div>一般用于新增账号时用户的快速激活，或用户无法重置密码时，管理员手动重置密码这两个场景</div>
         </FormItem>
         <FormItem prop="mobile" label="手机">
-          <Input type="text" v-model="form.mobile" placeholder="请输入 手机"></Input>
+          <div class="international-mobile flex-row">
+            <Select v-model="areaCode" placeholder="请选择 国际区号">
+              <Option v-for="item in internationalCodeList" :value="item" :key="item">{{ item }}</Option>
+            </Select>
+            <Input type="text" v-model="form.mobile" placeholder="请输入 手机"></Input>
+          </div>
         </FormItem>
         <FormItem prop="privateEmail" label="个人邮箱">
           <Input type="text" v-model="form.privateEmail" placeholder="请输入 邮箱"></Input>
@@ -103,9 +109,11 @@ export default class EditUser extends Vue {
 
   metaNodes: model.Node[] = []
 
-  showDrawer = false
+  showDrawer: boolean = false
   form: model.User|null = null
-  isSaving = false
+  isSaving: boolean = false
+  areaCode: string = '86'
+  internationalCodeList: string[] = []
 
   chooseNode: {
     metaNode: model.Node;
@@ -156,6 +164,11 @@ export default class EditUser extends Vue {
   async loadMetaNodes() {
     const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
     this.metaNodes = [...defaultMetaNode.children, ...customMetaNode.children]
+  }
+
+  async loadInternationalMobile() {
+    const result = await config.Config.getInternationalMobile()
+    this.internationalCodeList = result.map((e: any) => e.state_code)
   }
 
   showResetPassword() {
@@ -211,6 +224,10 @@ export default class EditUser extends Vue {
       return
     }
 
+    if(this.form!.mobile) {
+      this.form!.mobile = `+${this.areaCode} ${this.form!.mobile}`
+    }
+
     this.$Loading.start()
     try {
       if (this.isNew) {
@@ -261,5 +278,6 @@ export default class EditUser extends Vue {
 
   mounted() {
     this.loadMetaNodes()
+    this.loadInternationalMobile()
   }
 }

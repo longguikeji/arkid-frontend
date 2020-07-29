@@ -13,7 +13,8 @@ import './UserList.less';
       placeholder="搜索"
       on-change="onUserKeywordChange"
     />
-    <ul class="user-list">
+    <ul v-if="!loading" class="user-list" id="user-list-scroll">
+      <li v-if="pagination.page !==1 " @click="handlePreviousPage"><span>上一页</span></li>
       <li v-for="item in displayUserList">
         <span class="user-name">{{ item.name }}</span>
         <Checkbox
@@ -21,7 +22,11 @@ import './UserList.less';
           :value="item.checked"
         ></Checkbox>
       </li>
+      <li v-if="pagination.total > 50 && pagination.total/50 > pagination.page" @click="handleNextPage"><span>下一页</span></li>
     </ul>
+    <div class="loading-spin" v-else>
+      <Spin>加载中...</Spin>
+    </div>
   </div>
   `,
 })
@@ -29,8 +34,14 @@ export default class UserList extends Vue {
   @Prop({type: Array, default: () => []}) userSelection!: User[];
 
   userKeyword: string = '';
+  loading: boolean = false;
   userList: User[] = [];
   displayUserList: User[] = [];
+  pagination = {
+    total: 0,
+    page: 1,
+    pageSize: 50,
+  };
 
   @Watch('userList', {deep: true, immediate: true})
   onUserListChange() {
@@ -51,10 +62,23 @@ export default class UserList extends Vue {
     this.displayUserList = [...userList];
   }
 
+  handlePreviousPage() {
+    this.pagination.page -= 1;
+    this.loadUser()
+  }
+
+  handleNextPage() {
+    this.pagination.page += 1;
+    this.loadUser()
+  }
+
   async loadUser() {
-    const {userKeyword: keyword} = this;
-    const {results} = await api.User.list({keyword});
+    const {userKeyword: keyword, pagination} = this;
+    this.loading = true
+    const {results, count} = await api.User.list({...pagination, keyword});
     this.userList = results;
+    this.pagination.total = count;
+    this.loading = false
   }
 
   onUserCheckChange(user: User, val: boolean) {

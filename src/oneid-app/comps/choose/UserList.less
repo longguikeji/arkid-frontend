@@ -1,12 +1,16 @@
 @import '../../../utils.less';
 
 .ui-choose-userlist {
+  height: 390px;
   padding: 0 20px;
 
   ul.user-list {
+    height: 355px;
     margin-top: 12px;
+    overflow-y: scroll;
 
     li {
+      position: relative;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -21,5 +25,13 @@
         margin-left: 10px;
       }
     }
+  }
+
+  .loading-spin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 355px;
+    margin-top: 12px;
   }
 }

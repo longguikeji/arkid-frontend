@@ -40,6 +40,7 @@ import UserList from './UserList'
       <div class="ui-choose-base--middle" v-if="!activeMetaNode">
         <h3 class="title">选择</h3>
         <UserList
+          v-if="showModal"
           :userSelection="userSelection"
           @on-check-change="onUserListCheckChange"
         />
