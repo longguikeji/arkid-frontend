@@ -90,6 +90,10 @@ export class Config {
       .then(x => models.Config.fromData(x.data))
   }
 
+  static async getInternationalMobile() {
+    return http.get(this.url({action: 'i18n_mobile'})).then(x => x.data)
+  }
+
   static async getStorageData() {
     return http.get(this.url({action: 'storage'}))
       .then(x => models.StorageConfig.fromData(x.data))
@@ -135,6 +139,7 @@ export class Config {
     const url = `/siteapi/oneid/task/${id}/result/`
     return http.get(url).then(x => x.data)
   }
+
   static async updateAdmin(username: string, oldMobileSmsToken: string, newMobileSmsToken: string) {
     const url = this.url({action: 'admin'})
     const data = {

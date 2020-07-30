@@ -128,7 +128,7 @@ export default class UserList extends Vue {
   async loadData() {
     const {pagination, node, keyword} = this;
     const data = this.node
-      ? await api.Node.user(node.id!)
+      ? await api.Node.user(node!.id, {...pagination, keyword})
       : await api.User.list({...pagination, keyword});
     this.table = data.results;
     this.pagination.total = data.count;
@@ -145,6 +145,7 @@ export default class UserList extends Vue {
     this.pagination.page = page;
     this.loadData();
   }
+
   onPageSizeChange(pageSize: number) {
     if (pageSize === this.pagination.pageSize) {
       return;

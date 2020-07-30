@@ -100,9 +100,15 @@ export class Node {
     const resp = await http.get(url);
     return resp.data;
   }
-  static async user(id: string) {
+  static async user(id: string, opt?: {page?: number, pageSize?: number, keyword?: string}) {
+    const data = opt ? {params: {
+      page: opt.page || 1,
+      page_size: opt.pageSize || 1000,
+      keyword: opt.keyword || '',
+    }} : {page: 1, page_size: 1000}
+
     const url = `${this.baseUrl}/${id}/user/`;
-    const resp = await http.get(url);
+    const resp = await http.get(url, data);
     return resp.data;
   }
   static async removeUsers(id: string, users: model.User[]) {
