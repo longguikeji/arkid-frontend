@@ -1,13 +1,19 @@
 import * as model from '@/models/oneid'
-import * as api from '@/services/oneid'
 import * as config from '@/services/config'
-import {FORM_RULES} from '@/utils'
+import * as api from '@/services/oneid'
+import {FORM_RULES, getRegexRule} from '@/utils'
 import {cloneDeep} from 'lodash'
-import {Component, Prop, Vue} from 'vue-property-decorator'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
 
 import ChooseNode from '@/oneid-app/comps/choose/Choose'
 import ResetPassword from '@/oneid-app/comps/ResetPassword'
 import './EditUser.less'
+
+interface InternationalMobile {
+  number_length: number
+  start_digital: number[]
+  state_code: string
+}
 
 @Component({
   components: {
@@ -27,7 +33,7 @@ import './EditUser.less'
     >
       <div class="title">{{ isNew ? "添加账号" : "编辑账号" }}</div>
       <Form
-        v-if="showDrawer"
+        v-if="showDrawer && rules"
         :model="form"
         :rules="rules"
         labelPosition="right"
@@ -51,7 +57,7 @@ import './EditUser.less'
         <FormItem prop="mobile" label="手机">
           <div class="international-mobile flex-row">
             <Select v-model="areaCode" placeholder="请选择 国际区号">
-              <Option v-for="item in internationalCodeList" :value="item" :key="item">{{ item }}</Option>
+              <Option v-for="item in internationalMobileList" :value="item.state_code" :key="item.state_code">{{ item.state_code }}</Option>
             </Select>
             <Input type="text" v-model="form.mobile" placeholder="请输入 手机"></Input>
           </div>
@@ -112,8 +118,8 @@ export default class EditUser extends Vue {
   showDrawer: boolean = false
   form: model.User|null = null
   isSaving: boolean = false
-  areaCode: string = '86'
-  internationalCodeList: string[] = []
+  areaCode: string = ''
+  internationalMobileList: InternationalMobile[] = []
 
   chooseNode: {
     metaNode: model.Node;
@@ -123,7 +129,13 @@ export default class EditUser extends Vue {
   }|null = null
 
   get rules() {
-    const mobileOrEmailRquiredRule = {
+    const current = this.internationalMobileList.find((e: InternationalMobile) => e.state_code === this.areaCode)
+
+    if(!current) {
+      return
+    }
+
+    const mobileOrEmailRequiredRule = {
       trigger: 'blur',
       validator: (rule: string, value: string, cb: Function) => {
         if (this.form!.mobile || this.form!.privateEmail || this.form!.password) {
@@ -134,11 +146,13 @@ export default class EditUser extends Vue {
       },
     }
 
+    const mobileRule = getRegexRule('手机号码格式有误', new RegExp(`^([${current.start_digital.join('')}])\\d{${current.number_length - 1}}$`))
+
     return {
       username: [FORM_RULES.required, FORM_RULES.username],
       name: [FORM_RULES.required],
-      mobile: [FORM_RULES.mobile, mobileOrEmailRquiredRule],
-      privateEmail: [FORM_RULES.email, mobileOrEmailRquiredRule],
+      mobile: [mobileRule, mobileOrEmailRequiredRule],
+      privateEmail: [FORM_RULES.email, mobileOrEmailRequiredRule],
     }
   }
 
@@ -168,7 +182,8 @@ export default class EditUser extends Vue {
 
   async loadInternationalMobile() {
     const result = await config.Config.getInternationalMobile()
-    this.internationalCodeList = result.map((e: any) => e.state_code)
+    this.internationalMobileList = result
+    this.areaCode = result[0].state_code
   }
 
   showResetPassword() {

@@ -300,7 +300,7 @@ export function walkTree(
   }
 }
 
-const getRegexRule = (message: string, regex: RegExp) => {
+export const getRegexRule = (message: string, regex: RegExp) => {
   return {
     // tslint:disable:no-any
     trigger: 'blur', validator: (rule: any, value: string, cb: any) => {
