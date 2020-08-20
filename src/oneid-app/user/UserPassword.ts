@@ -183,7 +183,7 @@ export default class UserPassword extends Vue {
   async sendSms() {
     const {mobileForm} = this;
     const {username, mobile} = mobileForm;
-    const mobile_regex = RegExp(/^(1)\d{10}$/);
+    const mobile_regex = RegExp(/(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/);
     if (!mobile_regex.test(mobile)) {
       return;
     }
