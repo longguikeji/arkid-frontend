@@ -217,6 +217,13 @@ const SMS_VENDORS = [
           <FormItem prop="badging" label="短信落款：">
             <Input type="text" v-model="registerOptions.mobile.badging" placeholder="填写短信落款"></Input>
           </FormItem>
+          </FormItem>
+          <FormItem prop="template_i18n" label="国际短信模板：">
+            <Input type="text" v-model="registerOptions.mobile.templateI18n" placeholder="填写国际短信模板"></Input>
+          </FormItem>
+          <FormItem prop="badging_i18n" label="国际短信落款：">
+            <Input type="text" v-model="registerOptions.mobile.badgingI18n" placeholder="填写国际短信落款"></Input>
+          </FormItem>
         </Form>
 
         <Form
