@@ -148,7 +148,7 @@ export default class AddApp extends Vue {
       'oauth_app.redirect_uris': [required],
     }
   }
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML2']
+  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML']
   selectedAuthTypes?: string[] = []
   clientTypes = ['confidential', 'public']
   grantTypes = ['authorization-code', 'implicit', 'password', 'client']

@@ -297,7 +297,9 @@ export interface FreakSMSInterface {
   access_key: string,
   access_secret: string,
   template_code: string,
+  template_code_i18n: string,
   signature: string,
+  signature_i18n: string,
   is_valid: boolean,
 }
 
@@ -312,6 +314,8 @@ export class FreakSMS {
       obj.template = data.template_code
       obj.badging = data.signature
       obj.isValid = data.is_valid
+      obj.templateI18n = data.template_code_i18n
+      obj.badgingI18n = data.signature_i18n
     }
     return obj
   }
@@ -320,6 +324,8 @@ export class FreakSMS {
   accessSecret = ''
   template = ''
   badging = ''
+  badgingI18n = ''
+  templateI18n = ''
   isValid = false
 
   toData() {
@@ -329,6 +335,8 @@ export class FreakSMS {
       access_secret: this.accessSecret,
       template_code: this.template,
       signature: this.badging,
+      template_code_i18n: this.templateI18n,
+      signature_i18n: this.badgingI18n,
       // is_valid: this.isValid,
     }
   }
