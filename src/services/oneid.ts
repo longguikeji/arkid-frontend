@@ -601,7 +601,7 @@ export class UCenter extends API {
   }
 
   static async apps() {
-    return http.get(this.url({action: 'apps'})).then(x => x.data)
+    return http.get(`${this.url({action: 'apps'})}?page_size=1000000`).then(x => x.data)
   }
 
   static async resetPassword(params) {
