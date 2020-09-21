@@ -230,6 +230,18 @@ export class User {
     const resp = await http.get(url)
     return resp.data
   }
+  static async convertIntra(user) {
+    const url = `/siteapi/oneid/user/${user.username}/convert/intra/`
+    const data = user.toData()
+    const resp = await http.patch(url, data)
+    return resp.data
+  }
+  static async convertExtern(user) {
+    const url = `/siteapi/oneid/user/${user.username}/convert/extern/`
+    const data = user.toData()
+    const resp = await http.patch(url, data)
+    return resp.data
+  }
 }
 
 export class App {

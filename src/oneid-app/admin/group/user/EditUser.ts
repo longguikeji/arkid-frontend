@@ -31,7 +31,10 @@ interface InternationalMobile {
       :transfer="true"
       className="ui-edit-user"
     >
-      <div class="title">{{ isNew ? "添加账号" : "编辑账号" }}</div>
+      <div class="title">
+        <span>{{ isNew ? "添加账号" : "编辑账号" }}</span>
+        <Button @click="doConvertExternOrIntra()">切换为{{ isExternUser ? "内部" : "外部" }}账号</Button>
+      </div>
       <Form
         v-if="showDrawer && rules"
         :model="form"
@@ -77,6 +80,9 @@ interface InternationalMobile {
             readonly
             :placeholder="'请添加' + item.name"
            ></Input>
+        </FormItem>
+        <FormItem v-if="customUser" prop="customUser" label="Custom">
+          <pre>{{customUser}}</pre>
         </FormItem>
       </Form>
       <div class="drawer-footer flex-row flex-auto">
@@ -160,6 +166,19 @@ export default class EditUser extends Vue {
     return !this.form!.id
   }
 
+  get isExternUser() {
+    return this.form!.isExternUser
+  }
+
+  get customUser() {
+    const data = this.form!.custom_user ? JSON.stringify(this.form!.custom_user, null, 2) : ''
+    if(!data) {
+      return ''
+    }
+
+    return data
+  }
+
   initForm() {
     const {user, node} = this
     if (user) {
@@ -184,6 +203,14 @@ export default class EditUser extends Vue {
     const result = await config.Config.getInternationalMobile()
     this.internationalMobileList = result
     this.areaCode = result[0].state_code
+
+    result.forEach(item => {
+      if(this.form!.mobile.indexOf(item.state_code) > 0) {
+        this.areaCode = item.state_code
+      }
+    })
+
+    this.form!.mobile = this.form!.mobile.replace(`+${this.areaCode} `, '')
   }
 
   showResetPassword() {
@@ -239,16 +266,17 @@ export default class EditUser extends Vue {
       return
     }
 
+    const user = cloneDeep(this.form!)
     if(this.form!.mobile) {
-      this.form!.mobile = `+${this.areaCode} ${this.form!.mobile}`
+      user!.mobile = `+${this.areaCode} ${this.form!.mobile}`
     }
 
     this.$Loading.start()
     try {
       if (this.isNew) {
-        await api.User.create(this.form!)
+        await api.User.create(user)
       } else {
-        await api.User.partialUpdate(this.form!)
+        await api.User.partialUpdate(user)
       }
       this.$Loading.finish()
       this.$Message.success('保存成功')
@@ -277,6 +305,20 @@ export default class EditUser extends Vue {
     }
 
     this.$emit('on-save')
+  }
+
+  async doConvertExternOrIntra() {
+    this.form!.isExternUser = !this.form!.isExternUser
+    try {
+      if(this.form!.isExternUser) {
+        await api.User.convertExtern(this.form!)
+      } else {
+        await api.User.convertIntra(this.form!)
+      }
+      this.$Message.success('切换成功')
+    } catch(e) {
+      this.$Message.success('切换失败')
+    }
   }
 
   async doSaveAndContinue() {
