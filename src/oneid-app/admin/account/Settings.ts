@@ -99,6 +99,18 @@ const SMS_VENDORS = [
               {{ registerOptions.wechatWork.qrAppValid ? '已完成' : '未完成' }}
             </div>
           </div>
+
+          <div>
+            <Checkbox v-model="registerOptions.account.allowGithub" size="large" class="description">
+              Github
+            </Checkbox>
+            <div class="link" @click="editType = 'github'">
+              Github配置
+            </div>
+            <div :class="\`tag\${registerOptions.github.clientValid ? ' tag-finished' : ''}\`">
+              {{ registerOptions.github.clientValid ? '已完成' : '未完成' }}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -159,6 +171,7 @@ const SMS_VENDORS = [
         {{ editType === 'email' ? '邮箱' :
            editType === 'ding' ? '钉钉' :
            editType === 'wechatWork' ? '企业微信' :
+           editType === 'github' ? 'Github' :
            editType === 'wechat' ? '微信' :
            editType === 'qq' ? 'QQ' :
            editType === 'alipay' ? '支付宝' : '短信'}}</div>
@@ -332,6 +345,26 @@ const SMS_VENDORS = [
               placeholder="填写 Secret"></Input>
           </FormItem>
         </Form>
+
+        <Form
+          v-if="editType === 'github'"
+          ref="github"
+          :model="registerOptions.github"
+          :rules="githubRules"
+          labelPosition="right"
+          :labelWidth="130"
+        >
+          <FormItem prop="clientId" label="Client Id：">
+            <Input type="text" v-model="registerOptions.github.clientId" placeholder="填写 Client Id"></Input>
+          </FormItem>
+          <FormItem prop="clientSecret" label="Client Secret">
+            <Input type="password"
+              value="************"
+              @on-focus="(e) => e.target.value = registerOptions.github.clientSecret"
+              @on-blur="(e) => registerOptions.github.clientSecret = e.target.value"
+              placeholder="填写 Client Secret"></Input>
+          </FormItem>
+        </Form>
       </div>
       <div class="footer">
         <Button @click="onCancel">取消</Button>
@@ -410,6 +443,12 @@ export default class Settings extends Vue {
     }
   }
 
+  get githubRules() {
+    return {
+      clientId: [FORM_RULES.required],
+    }
+  }
+
   async loadData() {
     const registerOptions = await api.FreakConfig.get()
     registerOptions.mobile.accessSecret = ''
@@ -417,6 +456,7 @@ export default class Settings extends Vue {
     registerOptions.ding.qrAppSecret = ''
     registerOptions.alipay.appPrivateKey = ''
     registerOptions.wechatWork.secret = ''
+    registerOptions.github.clientSecret = ''
     registerOptions.wechat.secret = ''
     registerOptions.qq.appKey = ''
     this.registerOptions = registerOptions
@@ -477,6 +517,10 @@ export default class Settings extends Vue {
     }
     if (account.allowWechatWorkQr && !options.wechatWork.qrAppValid) {
       this.$Message.error('企业微信配置不正确')
+      return
+    }
+    if (account.allowGithub && !options.github.clientValid) {
+      this.$Message.error('Github配置不正确')
       return
     }
     if (account.allowWechatQr && !options.wechat.qrAppValid) {
