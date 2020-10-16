@@ -242,6 +242,36 @@ export class FreakWechatWork {
   }
 }
 
+export interface FreakGithubInterface {
+  client_id: string,
+  client_secret: string,
+  client_valid: boolean,
+}
+
+export class FreakGithub {
+  static fromData(data: FreakGithubInterface | null) {
+    const obj = new this()
+    if (data) {
+      obj.clientId = data.client_id
+      obj.clientSecret = data.client_secret
+      obj.clientValid = data.client_valid
+    }
+    return obj
+  }
+
+  clientId = ''
+  clientSecret = ''
+  clientValid = false
+
+  toData() {
+    return {
+      client_id: this.clientId,
+      client_secret: this.clientSecret,
+      client_valid: this.clientValid,
+    }
+  }
+}
+
 export interface FreakAccountInterface {
   allow_register: boolean,
   allow_mobile: boolean,
@@ -249,6 +279,7 @@ export interface FreakAccountInterface {
   allow_ding_qr: boolean,
   allow_alipay_qr: boolean,
   allow_work_wechat_qr: boolean,
+  allow_github: boolean,
   allow_wechat_qr: boolean,
   allow_qq_qr: boolean,
 }
@@ -264,6 +295,7 @@ export class FreakAccount {
       obj.allowDingQr = data.allow_ding_qr
       obj.allowAlipayQr = data.allow_alipay_qr
       obj.allowWechatWorkQr = data.allow_work_wechat_qr
+      obj.allowGithub = data.allow_github
       obj.allowWechatQr = data.allow_wechat_qr
       obj.allowQqQr = data.allow_qq_qr
     }
@@ -275,6 +307,7 @@ export class FreakAccount {
   allowDingQr = false
   allowAlipayQr = false
   allowWechatWorkQr = false
+  allowGithub = false
   allowWechatQr = false
   allowQqQr = false
 
@@ -286,6 +319,7 @@ export class FreakAccount {
       allow_ding_qr: this.allowDingQr,
       allow_alipay_qr: this.allowAlipayQr,
       allow_work_wechat_qr: this.allowWechatWorkQr,
+      allow_github: this.allowGithub,
       allow_wechat_qr: this.allowWechatQr,
       allow_qq_qr: this.allowQqQr,
     }
@@ -388,6 +422,7 @@ export interface FreakConfigInterface {
   email_config: FreakEmailInterface | null,
   alipay_config: FreakAlipayInterface | null,
   work_wechat_config: FreakWechatWorkInterface | null,
+  github_config: FreakGithubInterface | null,
   wechat_config: FreakWechatInterface | null,
   qq_config: FreakQQInterface | null,
 }
@@ -404,6 +439,7 @@ export class FreakConfig {
       obj.email = FreakEmail.fromData(data.email_config)
       obj.alipay = FreakAlipay.fromData(data.alipay_config)
       obj.wechatWork = FreakWechatWork.fromData(data.work_wechat_config)
+      obj.github = FreakGithub.fromData(data.github_config)
       obj.wechat = FreakWechat.fromData(data.wechat_config)
       obj.qq = FreakQQ.fromData(data.qq_config)
     }
@@ -416,6 +452,7 @@ export class FreakConfig {
   email!: FreakEmail
   alipay!: FreakAlipay
   wechatWork!: FreakWechatWork
+  github!: FreakGithub
   wechat!: FreakWechat
   qq!: FreakQQ
 
@@ -428,6 +465,7 @@ export class FreakConfig {
       email_config: this.email ? this.email.toData() : null,
       alipay_config: this.alipay ? this.alipay.toData() : null,
       work_wechat_config: this.wechatWork ? this.wechatWork.toData() : null,
+      github_config: this.github ? this.github.toData() : null,
       wechat_config: this.wechat ? this.wechat.toData() : null,
       qq_config: this.qq ? this.qq.toData() : null,
     }
