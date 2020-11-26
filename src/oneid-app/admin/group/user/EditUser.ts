@@ -59,7 +59,7 @@ interface InternationalMobile {
         </FormItem>
         <FormItem prop="mobile" label="手机">
           <div class="international-mobile flex-row">
-            <Select v-model="areaCode" placeholder="请选择 国际区号">
+            <Select v-model="areaCode" clearable placeholder="请选择 国际区号">
               <Option v-for="item in internationalMobileList" :value="item.state_code" :key="item.state_code">{{ item.state_code }}</Option>
             </Select>
             <Input type="text" v-model="form.mobile" placeholder="请输入 手机"></Input>
@@ -137,10 +137,6 @@ export default class EditUser extends Vue {
   get rules() {
     const current = this.internationalMobileList.find((e: InternationalMobile) => e.state_code === this.areaCode)
 
-    if(!current) {
-      return
-    }
-
     const mobileOrEmailRequiredRule = {
       trigger: 'blur',
       validator: (rule: string, value: string, cb: Function) => {
@@ -152,7 +148,9 @@ export default class EditUser extends Vue {
       },
     }
 
-    const mobileRule = getRegexRule('手机号码格式有误', new RegExp(`^([${current.start_digital.join('')}])\\d{${current.number_length - 1}}$`))
+    const mobileRule = current ?
+      getRegexRule('手机号码格式有误', new RegExp(`^([${current.start_digital.join('')}])\\d{${current.number_length - 1}}$`))
+      : FORM_RULES.mobile
 
     return {
       username: [FORM_RULES.required, FORM_RULES.username],
@@ -202,7 +200,7 @@ export default class EditUser extends Vue {
   async loadInternationalMobile() {
     const result = await config.Config.getInternationalMobile()
     this.internationalMobileList = result
-    this.areaCode = result[0].state_code
+    this.areaCode = ''
 
     result.forEach(item => {
       if(this.form!.mobile.indexOf(item.state_code) > 0) {
