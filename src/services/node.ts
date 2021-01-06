@@ -91,7 +91,7 @@ export class Node {
   }
   static async tree(id: string) {
     const url = `${this.baseUrl}/${id}/tree/`;
-    const data = {params: {user_required: true}};
+    const data = {params: {user_required: false}};
     const resp = await http.get(url, data);
     return resp.data;
   }
