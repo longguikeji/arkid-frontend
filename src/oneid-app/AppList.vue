@@ -54,7 +54,7 @@
       const vm = this;
 
       const clientTypes = ['confidential', 'public'];
-      const grantTypes = ['authorization-code', 'implicit', 'password', 'client'];
+      const grantTypes = ['authorization-code', 'implicit', 'password', 'client-credentials'];
 
       return {
         gridOptions: {

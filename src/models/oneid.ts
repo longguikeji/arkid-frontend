@@ -568,6 +568,14 @@ export class OAuthData {
   authorization_grant_type = 'authorization-code'
 }
 
+export class OIDCData {
+  client_id = ''
+  client_secret = ''
+  redirect_uris = ''
+  client_type = 'confidential'
+  response_type = 'code'
+}
+
 export class SamlData {
   entity_id = ''
   acs = ''
@@ -592,6 +600,7 @@ export interface AppData {
   logo: string
   index: string
   oauth_app: OAuthData|null
+  oidc_app: OIDCData|null
   ldap_app?: object|null
   http_app?: object|null
   saml_app?: SamlData|null
@@ -614,6 +623,7 @@ export class App {
     obj.ldap_app = data.ldap_app
     obj.http_app = data.http_app
     obj.saml_app = data.saml_app
+    obj.oidc_app = data.oidc_app
     obj.auth_protocols = data.auth_protocols
     if (data.access_perm) {
       obj.permit_owners = data.access_perm.permit_owners.results
@@ -628,6 +638,7 @@ export class App {
   logo: string = ''
   index: string = ''
   oauth_app?: OAuthData|null = null
+  oidc_app?: OIDCData|null = null
   ldap_app?: object|null = null
   http_app?: object|null = null
   saml_app?: SamlData|null = null
