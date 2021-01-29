@@ -286,7 +286,7 @@ export default class AddApp extends Vue {
         response_type: this.app!.oidc_app!.response_type,
       }
     } else {
-      params.oauth_app = null
+      params.oidc_app = null
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[2])) {
