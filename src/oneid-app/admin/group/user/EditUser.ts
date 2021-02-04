@@ -1,4 +1,5 @@
 import * as model from '@/models/oneid'
+import AddNewField from '@/oneid-app/comps/AddNewField'
 import * as config from '@/services/config'
 import * as api from '@/services/oneid'
 import {FORM_RULES, getRegexRule} from '@/utils'
@@ -19,6 +20,7 @@ interface InternationalMobile {
   components: {
     ChooseNode,
     ResetPassword,
+    AddNewField,
   },
   template: html`
   <div>
@@ -81,14 +83,18 @@ interface InternationalMobile {
             :placeholder="'请添加' + item.name"
            ></Input>
         </FormItem>
-        <FormItem v-if="customUser" prop="customUser" label="Custom">
-          <pre>{{customUser}}</pre>
+
+        <Divider>自定义数据</Divider>
+
+        <FormItem :key="field.uuid" v-for="field of customFields" :label="field.name">
+          <Input type="text" v-model="form.custom_user[field.uuid]" :placeholder="'请输入'+field.name"></Input>
         </FormItem>
       </Form>
       <div class="drawer-footer flex-row flex-auto">
         <Button type="default" @click="doCancel">取消</Button>
         <Button type="error" @click="remove" v-if="!isNew">删除</Button>
         <div class="flex-row flex-auto"></div>
+        <Button type="primary" @click="openAddNewField">添加自定义字段</Button>
         <Button type="primary" @click="doSave()" :loading="isSaving">{{ isNew ? '添加' : '保存' }}</Button>
         <Button type="primary" @click="doSaveAndContinue()" :loading="isSaving" v-if="isNew">保存并继续添加</Button>
       </div>
@@ -107,32 +113,13 @@ interface InternationalMobile {
       ref="chooseNode"
       @on-ok="onChooseNodeOk"
     />
+    <Modal v-model="isShowAddNewField" @on-visible-change="onAddNewFieldChange">
+      <AddNewField :type="addNewFieldType"/>
+    </Modal>
   </div>
   `,
 })
 export default class EditUser extends Vue {
-  $refs!: {
-    chooseNode: ChooseNode,
-    resetPassword: ResetPassword,
-  }
-
-  @Prop({type: model.User}) user?: model.User
-  @Prop({type: model.Node}) node?: model.Node
-
-  metaNodes: model.Node[] = []
-
-  showDrawer: boolean = false
-  form: model.User|null = null
-  isSaving: boolean = false
-  areaCode: string = ''
-  internationalMobileList: InternationalMobile[] = []
-
-  chooseNode: {
-    metaNode: model.Node;
-    title: string;
-    multiple: boolean;
-    checkedIds: string[];
-  }|null = null
 
   get rules() {
     const current = this.internationalMobileList.find((e: InternationalMobile) => e.state_code === this.areaCode)
@@ -167,14 +154,42 @@ export default class EditUser extends Vue {
   get isExternUser() {
     return this.form!.isExternUser
   }
+  $refs!: {
+    chooseNode: ChooseNode,
+    resetPassword: ResetPassword,
+  }
 
-  get customUser() {
-    const data = this.form!.custom_user ? JSON.stringify(this.form!.custom_user, null, 2) : ''
-    if(!data) {
-      return ''
+  @Prop({type: model.User}) user?: model.User
+  @Prop({type: model.Node}) node?: model.Node
+
+  metaNodes: model.Node[] = []
+
+  showDrawer: boolean = false
+  form: model.User|null = null
+  isSaving: boolean = false
+  areaCode: string = ''
+  internationalMobileList: InternationalMobile[] = []
+
+  chooseNode: {
+    metaNode: model.Node;
+    title: string;
+    multiple: boolean;
+    checkedIds: string[];
+  }|null = null
+
+  isShowAddNewField = false
+  get addNewFieldType(){
+    if(this.isExternUser){
+      return 'extern_user'
     }
-
-    return data
+    return 'user'
+  }
+  customFields:any[] = []
+  openAddNewField() {
+    this.isShowAddNewField = true
+  }
+  async onAddNewFieldChange() {
+    this.customFields = await api.CustomFieldConfig.getList(this.addNewFieldType)
   }
 
   initForm() {
@@ -327,8 +342,10 @@ export default class EditUser extends Vue {
     this.showDrawer = false
   }
 
-  created() {
+  async created() {
     this.initForm()
+
+    this.customFields = await api.CustomFieldConfig.getList('user')
   }
 
   mounted() {

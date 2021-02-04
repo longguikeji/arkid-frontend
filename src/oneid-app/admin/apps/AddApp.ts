@@ -1,4 +1,4 @@
-import {App, OAuthData, SamlData} from '@/models/oneid'
+import {App, OAuthData, OIDCData, SamlData} from '@/models/oneid'
 import * as api from '@/services/oneid'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import './AddApp.less'
@@ -79,21 +79,44 @@ import './AddApp.less'
                 </Input>
               </FormItem>
             </TabPane>
-            <TabPane v-if="app.auth_protocols.includes(authTypes[1])" :label="authTypes[1]" :name="authTypes[1]">
+            <TabPane v-if="app.auth_protocols.includes(authTypes[1]) && app.oidc_app" :label="authTypes[1]" :name="authTypes[1]">
+              <FormItem v-if="app.oidc_app.client_id" label="client_id:">
+                <p>{{app.oidc_app.client_id}}</p>
+              </FormItem>
+              <FormItem v-if="app.oidc_app.client_secret" label="client_secret:">
+                <p class="client-secret">{{app.oidc_app.client_secret}}</p>
+              </FormItem>
+              <FormItem prop="oidc_app.client_type" label="client_type:">
+                <Select placeholder="请选择" v-model="app.oidc_app.client_type">
+                  <Option v-for="item in clientTypes" :key="item" :value="item">{{ item }}</Option>
+                </Select>
+              </FormItem>
+              <FormItem prop="oidc_app.response_type" label="response_type:">
+                <Select placeholder="请输入" v-model="app.oidc_app.response_type">
+                  <Option v-for="item in responseTypes" :key="item" :value="item">{{ item }}</Option>
+                </Select>
+              </FormItem>
+              <FormItem prop="oidc_app.redirect_uris" label="redirect_uris:">
+                <Input placeholder="请输入" type="textarea" :autosize="true" v-model="app.oidc_app.redirect_uris"
+                  placeholder="请输入 redirect_uris...">
+                </Input>
+              </FormItem>
+            </TabPane>
+            <TabPane v-if="app.auth_protocols.includes(authTypes[2])" :label="authTypes[2]" :name="authTypes[2]">
               <div v-if="app.ldap_app && app.ldap_app.more_detail" >
                 <FormItem v-for="item in app.ldap_app.more_detail" :label="item.name">
                   <p>{{ item.value }}</p>
                 </FormItem>
               </div>
             </TabPane>
-            <TabPane v-if="app.auth_protocols.includes(authTypes[2])" :label="authTypes[2]" :name="authTypes[2]">
+            <TabPane v-if="app.auth_protocols.includes(authTypes[3])" :label="authTypes[3]" :name="authTypes[3]">
               <div v-if="app.http_app && app.http_app.more_detail" >
                 <FormItem v-for="item in app.http_app.more_detail" :label="item.name">
                   <p>{{ item.value }}</p>
                 </FormItem>
               </div>
             </TabPane>
-            <TabPane v-if="app.auth_protocols.includes(authTypes[3])" :label="authTypes[3]" :name="authTypes[3]">
+            <TabPane v-if="app.auth_protocols.includes(authTypes[4])" :label="authTypes[4]" :name="authTypes[4]">
               <FormItem prop="saml_app.entity_id" label="entity_id:">
                 <Input type="text" v-model="app.saml_app.entity_id" placeholder="请输入 entity_id..."></Input>
               </FormItem>
@@ -146,18 +169,21 @@ export default class AddApp extends Vue {
     return {
       'name': [required],
       'oauth_app.redirect_uris': [required],
+      'oidc_app.redirect_uris': [required],
     }
   }
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP', 'SAML']
+  authTypes = ['OAuth 2.0', 'OIDC', 'LDAP', 'HTTP', 'SAML']
   selectedAuthTypes?: string[] = []
   clientTypes = ['confidential', 'public']
-  grantTypes = ['authorization-code', 'implicit', 'password', 'client']
+  grantTypes = ['authorization-code', 'implicit', 'password', 'client-credentials']
+  responseTypes = ['code', 'id_token', 'id_token token', 'code token', 'code id_token', 'code id_token token']
   isNew: boolean = true
 
   constructor() {
     super()
     const newApp = new App()
     newApp.oauth_app = new OAuthData()
+    newApp.oidc_app = new OIDCData()
     newApp.saml_app = new SamlData()
     this.app = newApp
   }
@@ -171,6 +197,26 @@ export default class AddApp extends Vue {
     }
     if (removeOauth) {
       this.app!.oauth_app = null
+    }
+
+    const oidcType = this.authTypes[1]
+    const addOIDC = newVal.includes(oidcType) && !oldVal.includes(oidcType)
+    const removeOIDC = !newVal.includes(oidcType) && oldVal.includes(oidcType)
+    if (addOIDC) {
+      this.app!.oidc_app = new OIDCData()
+    }
+    if (removeOIDC) {
+      this.app!.oidc_app = null
+    }
+
+    const samlType = this.authTypes[4]
+    const addSAML = newVal.includes(samlType) && !oldVal.includes(samlType)
+    const removeSAML = !newVal.includes(samlType) && oldVal.includes(samlType)
+    if (addSAML) {
+      this.app!.saml_app = new SamlData()
+    }
+    if (removeSAML) {
+      this.app!.saml_app = null
     }
   }
 
@@ -234,18 +280,28 @@ export default class AddApp extends Vue {
     }
 
     if (this.app!.auth_protocols.includes(this.authTypes[1])) {
+      params.oidc_app = {
+        redirect_uris: this.app!.oidc_app!.redirect_uris,
+        client_type: this.app!.oidc_app!.client_type,
+        response_type: this.app!.oidc_app!.response_type,
+      }
+    } else {
+      params.oidc_app = null
+    }
+
+    if (this.app!.auth_protocols.includes(this.authTypes[2])) {
       params.ldap_app = new Object()
     } else {
       params.ldap_app = null
     }
 
-    if (this.app!.auth_protocols.includes(this.authTypes[2])) {
+    if (this.app!.auth_protocols.includes(this.authTypes[3])) {
       params.http_app = new Object()
     } else {
       params.http_app = null
     }
 
-    if (this.app!.auth_protocols.includes(this.authTypes[3])) {
+    if (this.app!.auth_protocols.includes(this.authTypes[4])) {
       params.saml_app = {
         entity_id: this.app!.saml_app!.entity_id,
         acs: this.app!.saml_app!.acs,

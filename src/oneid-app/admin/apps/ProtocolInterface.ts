@@ -1,6 +1,6 @@
-import { Vue, Component } from 'vue-property-decorator';
-import {App} from '@/models/oneid';
-import './ProtocolInterface.less';
+import {App} from '@/models/oneid'
+import { Component, Vue } from 'vue-property-decorator'
+import './ProtocolInterface.less'
 
 
 @Component({
@@ -41,18 +41,38 @@ import './ProtocolInterface.less';
                 <p>{{ item.value }}</p>
               </FormItem>
             </TabPane>
-            <TabPane v-if="app.ldap_app" :label="authTypes[1]" :name="authTypes[1]">
+            <TabPane v-if="app.oidc_app" :label="authTypes[1]" :name="authTypes[1]">
+              <FormItem label="client_id:">
+                <p>{{ app.oidc_app.client_id }}</p>
+              </FormItem>
+              <FormItem label="client_secret:">
+                <p class="client-secret">{{ app.oidc_app.client_secret }}</p>
+              </FormItem>
+              <FormItem label="client_type:">
+                <p>{{ app.oidc_app.client_type }}</p>
+              </FormItem>
+              <FormItem label="response_type:">
+                <p>{{ app.oidc_app.response_type }}</p>
+              </FormItem>
+              <FormItem label="redirect_uris:">
+                <p>{{ app.oidc_app.redirect_uris }}</p>
+              </FormItem>
+              <FormItem v-for="item in app.oidc_app.more_detail" :label="item.name">
+                <p>{{ item.value }}</p>
+              </FormItem>
+            </TabPane>
+            <TabPane v-if="app.ldap_app" :label="authTypes[2]" :name="authTypes[2]">
               <FormItem v-for="item in app.ldap_app.more_detail" :label="item.name">
                 <p>{{ item.value }}</p>
               </FormItem>
             </TabPane>
-            <TabPane v-if="app.http_app" :label="authTypes[2]" :name="authTypes[2]">
+            <TabPane v-if="app.http_app" :label="authTypes[3]" :name="authTypes[3]">
               <FormItem v-for="item in app.http_app.more_detail" :label="item.name">
                 <p>{{ item.value }}</p>
               </FormItem>
             </TabPane>
           </Tabs>
-          
+
         </Form>
       </div>
       <div slot="footer" class="footer flex-row">
@@ -69,18 +89,18 @@ import './ProtocolInterface.less';
 })
 
 export default class ProtocolInterface extends Vue {
-  showProtocolInterface: boolean = false;
-  app?: App | null = null;
+  showProtocolInterface: boolean = false
+  app?: App | null = null
 
-  authTypes = ['OAuth 2.0', 'LDAP', 'HTTP'];
+  authTypes = ['OAuth 2.0', 'OIDC', 'LDAP', 'HTTP', 'SAML']
 
   showModal(app: App) {
-    this.app = app;
-    this.showProtocolInterface = true;
+    this.app = app
+    this.showProtocolInterface = true
   }
 
   async quit() {
-    this.showProtocolInterface = false;
+    this.showProtocolInterface = false
   }
 
 }
