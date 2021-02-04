@@ -31,7 +31,7 @@ def ci() {
         """
     }
     sh """#!/bin/bash
-        make VERSION=${env.DOCKER_IMAGE_BUILD_VERSION} ci | tee ${env.TEMP_LOG}
+        docker build --build-arg base_commit_id="origin/master" -t harbor.longguikeji.com/ark-releases/arkid-fe:${env.DOCKER_IMAGE_BUILD_VERSION} . | tee ${env.TEMP_LOG}
         ExitCode=\${PIPESTATUS[0]}
         if [ \${ExitCode} -eq 0 ]; then
             StatusContent="success"
