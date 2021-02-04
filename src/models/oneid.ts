@@ -100,7 +100,7 @@ export class User {
     obj.depts = data.depts && data.depts.map(d => Dept.fromData(d))
     obj.roles = data.roles && data.roles.map(r => Role.fromData(r))
     obj.nodes = data.nodes && data.nodes.map(n => Node.fromData(n))
-    obj.custom_user = data.custom_user
+    obj.custom_user = data.custom_user && data.custom_user.data ? data.custom_user.data : {}
     obj.is_settled = data.is_settled
     obj.isManager = data.is_manager
     obj.isAdmin = data.is_admin
@@ -127,7 +127,7 @@ export class User {
   depts: Dept[]|null = null
   roles: Role[]|null = null
   nodes: Node[]|null = null
-  custom_user: CustomUserFieldData|null = null
+  custom_user: any
   is_settled: boolean = false
   isManager: boolean = false
   isAdmin: boolean = false
@@ -150,6 +150,9 @@ export class User {
       private_email: this.privateEmail,
       // user_id: this.id,
       username: this.username,
+      custom_user: {
+        data: this.custom_user,
+      },
       ding_user: this.dingUser && this.dingUser.toData(),
       depts: this.depts ? this.depts.map((dept: Dept) => dept.toData()) : null,
       roles: this.roles ? this.roles.map((role: Role) => role.toData()) : null,
@@ -255,6 +258,7 @@ interface NodeHierarchyData {
   node_uid?: string
   remark?: string
   uid: string
+  custom : any
 
   parent_node_uid?: string
   visibility?: number
@@ -275,10 +279,14 @@ export class Node {
       return obj
     }
 
+
     obj.nodeSubject = data.info ? data.info.node_subject : data.node_subject!
     obj.headcount = data.headcount!
     obj.name = data.info ? data.info.name : data.name!
+    obj.remark = data.info ? data.info.remark : data.remark!
     obj.id = data.info ? data.info.node_uid : data.node_uid!
+    obj.custom = data.custom && data.custom.data ? data.custom.data : {}
+
 
     obj.visibility = data.visibility
     obj.nodeScope = data.node_scope || []
@@ -300,6 +308,9 @@ export class Node {
 
   name = ''
   id = ''
+  type = ''
+  remark = ''
+  custom:any = {}
   parent: Node|null = null
   children: Node[] = []
   users: User[] = []
@@ -328,6 +339,11 @@ export class Node {
     return {
       node_uid: this.id,
       name: this.name,
+      remark : this.remark,
+      custom : {
+        data: this.custom,
+      },
+      node_subject: this.nodeSubject,
       visibility: this.visibility,
       node_scope: this.nodeScope,
       user_scope: this.userScope,

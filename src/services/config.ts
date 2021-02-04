@@ -85,7 +85,7 @@ export class Config {
 
   static async partialUpdate(config: models.Config) {
     const data = config.toData ? config.toData() : config
-    delete data.company_config;
+    delete data.company_config
     return http.patch(this.url(), data)
       .then(x => models.Config.fromData(x.data))
   }
@@ -149,6 +149,25 @@ export class Config {
     }
     const resp = await http.put(url, data)
     return resp.data
+  }
+
+}
+
+export class CustomFieldConfig {
+
+  static async getList(subject:string){
+    const url = `/siteapi/oneid/config/custom/field/${subject}/`
+    return http.get(url).then(x => x.data)
+  }
+
+  static async createField(subject:string,data:object){
+    const url = `/siteapi/oneid/config/custom/field/${subject}/`
+    return http.post(url,data).then(x => x.data)
+  }
+
+  static async deleteField(subject:string,uuid:string){
+    const url = `/siteapi/oneid/config/custom/field/${subject}/${uuid}/`
+    return http.delete(url).then(x => x.data)
   }
 }
 

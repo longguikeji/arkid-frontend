@@ -11,11 +11,12 @@
     ]
   },
   "rules": {
-    "no-any": true,
+    "no-any": false,
     "no-empty-interface": true,
     "no-console": true,
     "no-eval": true,
     "no-var-requires": true,
+    "max-classes-per-file": ["warning", 1],
     "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
     "no-empty": true,
     "prefer-for-of": true,

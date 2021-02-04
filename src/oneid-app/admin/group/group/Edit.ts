@@ -1,15 +1,17 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import {cloneDeep} from 'lodash';
-import * as api from '@/services/oneid';
-import {Node, User} from '@/models/oneid';
-import ChooseNode from '@/oneid-app/comps/choose/Choose';
-import './Edit.less';
+import {Node, User} from '@/models/oneid'
+import AddNewField from '@/oneid-app/comps/AddNewField'
+import ChooseNode from '@/oneid-app/comps/choose/Choose'
+import * as api from '@/services/oneid'
+import {cloneDeep} from 'lodash'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './Edit.less'
 
-const required = {required: true, message: 'Required', trigger: 'blur'};
+const required = {required: true, message: 'Required', trigger: 'blur'}
 
 @Component({
   components: {
     ChooseNode,
+    AddNewField,
   },
   template: html`
   <div>
@@ -57,11 +59,22 @@ const required = {required: true, message: 'Required', trigger: 'blur'};
             :autosize="{minRows: 2,maxRows: 5}"
           />
         </FormItem>
+        <FormItem prop="remark" :label="'备注'">
+          <Input type="text" v-model="form.remark" :placeholder="'请输入' + metaNode.name + '备注'"></Input>
+        </FormItem>
+
+        <Divider>自定义数据</Divider>
+
+        <FormItem :key="field.uuid" v-for="field of customFields" :label="field.name">
+          <Input type="text" v-model="form.custom[field.uuid]" :placeholder="'请输入'+field.name"></Input>
+        </FormItem>
+
       </Form>
       <div class="drawer-footer flex-row flex-auto">
         <Button type="default" @click="doCancel">取消</Button>
         <Button type="error" @click="openRemoveModal" v-if="!isNew">删除</Button>
         <div class="flex-row flex-auto"></div>
+        <Button type="primary" @click="openAddNewField">添加自定义字段</Button>
         <Button type="primary" @click="doSave" :loading="isSaving">{{ isNew ? '添加' : '保存' }}</Button>
       </div>
     </Drawer>
@@ -79,13 +92,18 @@ const required = {required: true, message: 'Required', trigger: 'blur'};
       ref="chooseVisibilityScope"
       @on-ok="onChooseVisibilityScopeOk"
     />
+
+    <Modal v-model="isShowAddNewField" @on-visible-change="onAddNewFieldChange">
+      <AddNewField :type="addNewFieldType"/>
+    </Modal>
   </div>
   `,
 })
 export default class Edit extends Vue {
-  @Prop({type: Node}) node?: Node;
-  @Prop({type: Node}) parent?: Node;
-  @Prop({type: Node, required: true}) metaNode!: Node;
+  @Prop({type: Node}) node?: Node
+  @Prop({type: Node}) parent?: Node
+  @Prop({type: Node, required: true}) metaNode!: Node
+
 
   visibilityOptions = [
     {value: 1, label: '所有人可见'},
@@ -93,98 +111,111 @@ export default class Edit extends Vue {
     {value: 3, label: '组内成员及其下属分组可见'},
     {value: 5, label: '所有人不可见'},
     {value: 4, label: '只对部分人可见'},
-  ];
-  form: Node|null = null;
-  nodeScopeObjs: Node[] = [];
-  userScopeObjs: User[] = [];
-  metaNodeList: Node[] = [];
+  ]
+  form: Node|null = null
+  nodeScopeObjs: Node[] = []
+  userScopeObjs: User[] = []
+  metaNodeList: Node[] = []
 
   rules = {
     name: required,
-  };
-  showDrawer = false;
-  isSaving = false;
+  }
+  showDrawer = false
+  isSaving = false
 
-  chooseNode: any|null = null;
-  chooseVisibilityScope: any|null = null;
+  chooseNode: any|null = null
+  chooseVisibilityScope: any|null = null
+
+
+  customFields: any[] = []
+  get addNewFieldType(){
+    return 'node'
+  }
+  isShowAddNewField = false
+  openAddNewField() {
+    this.isShowAddNewField = true
+  }
+  async onAddNewFieldChange() {
+    this.customFields = await api.CustomFieldConfig.getList(this.addNewFieldType)
+  }
 
   get isNew() {
-    return !this.form!.id;
+    return !this.form!.id
   }
 
   get visibilityScope() {
-    const {metaNodeList, nodeScopeObjs, userScopeObjs} = this;
+    const {metaNodeList, nodeScopeObjs, userScopeObjs} = this
     if (metaNodeList.length === 0) {
-      return '';
+      return ''
     }
 
-    const metaMap = new Map();
-    metaNodeList.forEach((node: Node) => metaMap.set(node.nodeSubject, node));
-    const getMetaName = (node: Node) => metaMap.get(node.nodeSubject).name;
+    const metaMap = new Map()
+    metaNodeList.forEach((node: Node) => metaMap.set(node.nodeSubject, node))
+    const getMetaName = (node: Node) => metaMap.get(node.nodeSubject).name
 
     return [
       ...nodeScopeObjs.map(i => `${getMetaName(i)}-${i.name}`),
       ...userScopeObjs.map(i => i.name),
-    ].join('，');
+    ].join('，')
   }
 
   async create() {
     try {
-      await api.Node.create(this.form!);
-      this.$Message.success('创建成功');
+      await api.Node.create(this.form!)
+      this.$Message.success('创建成功')
     } catch (e) {
-      console.log(e);
-      this.$Message.error('创建失败');
+      // console.log(e)
+      this.$Message.error('创建失败')
     }
   }
 
   async edit() {
     try {
-      await api.Node.partialUpdate(this.form!);
-      this.$Message.success('编辑成功');
+      await api.Node.partialUpdate(this.form!)
+      this.$Message.success('编辑成功')
     } catch (e) {
-      console.log(e);
-      this.$Message.error('编辑失败');
+      // console.log(e)
+      this.$Message.error('编辑失败')
     }
   }
 
   async remove() {
     try {
-      await api.Node.remove(this.form!.id);
-      this.$Message.success('删除成功');
-      this.showDrawer = false;
-      this.$emit('on-save');
+      await api.Node.remove(this.form!.id)
+      this.$Message.success('删除成功')
+      this.showDrawer = false
+      this.$emit('on-save')
     } catch (e) {
       if (e.status === 400 && e.data.node) {
         if (e.data.node.includes('protected_by_child_node')) {
-          this.$Message.error('删除失败：存在依赖的节点');
-          return;
+          this.$Message.error('删除失败：存在依赖的节点')
+          return
         }
         if (e.data.node.includes('protected_by_child_user')) {
-          this.$Message.error('删除失败：存在依赖的账号');
-          return;
+          this.$Message.error('删除失败：存在依赖的账号')
+          return
         }
       }
-      this.$Message.error('删除失败');
+      this.$Message.error('删除失败')
     }
   }
 
   async doSave() {
-    const isValid = await this.$refs.form.validate();
+    const isValid = await this.$refs.form.validate()
     if (!isValid) {
-      return;
+      return
     }
     if (this.isNew) {
-      await this.create();
+      await this.create()
     } else {
-      await this.edit();
+      await this.edit()
     }
-    this.$emit('on-save');
-    this.showDrawer = false;
+    this.$emit('on-save')
+    this.showDrawer = false
   }
 
   doCancel() {
-    this.showDrawer = false;
+    this.showDrawer = false
   }
 
   doShowModal() {
@@ -192,15 +223,15 @@ export default class Edit extends Vue {
       title: `选择${this.metaNode.name}`,
       metaNode: this.metaNode,
       selectedIds: [this.form!.parent!.id],
-    };
-    this.$nextTick(() => this.$refs.chooseNode.show());
+    }
+    this.$nextTick(() => this.$refs.chooseNode.show())
   }
 
   onChooseNodeOk(checkedNodes: Node[]) {
-    const [parent] = checkedNodes;
+    const [parent] = checkedNodes
     if (parent) {
-      this.form!.parent = parent;
-      this.$forceUpdate();
+      this.form!.parent = parent
+      this.$forceUpdate()
     }
   }
 
@@ -211,15 +242,15 @@ export default class Edit extends Vue {
       multiple: true,
       checkedIds: this.form!.nodeScope,
       checkedUserIds: this.form!.userScope,
-    };
-    this.$nextTick(() => this.$refs.chooseVisibilityScope.show());
+    }
+    this.$nextTick(() => this.$refs.chooseVisibilityScope.show())
   }
 
   onChooseVisibilityScopeOk(nodes: Node[], users: User[]) {
-    this.nodeScopeObjs = nodes;
-    this.userScopeObjs = users;
-    this.form!.nodeScope = this.nodeScopeObjs.map(n => n.id);
-    this.form!.userScope = this.userScopeObjs.map(u => u.id);
+    this.nodeScopeObjs = nodes
+    this.userScopeObjs = users
+    this.form!.nodeScope = this.nodeScopeObjs.map(n => n.id)
+    this.form!.userScope = this.userScopeObjs.map(u => u.id)
   }
 
   openRemoveModal() {
@@ -227,40 +258,42 @@ export default class Edit extends Vue {
       title: '确认要删除此 部门？',
       content: '删除后无法恢复，您将无法继续使用该部门.',
       onOk: () => this.remove(),
-    });
+    })
   }
 
   async show() {
-    const {nodeScope, userScope} = this.form!;
+    const {nodeScope, userScope} = this.form!
     const nodeScopeObjs = nodeScope.length > 0
       ? await api.Node.listFromIds(nodeScope)
-      : [];
+      : []
     const userScopeObjs = userScope.length > 0
       ? await api.User.listFromIds(userScope)
-      : [];
-    this.nodeScopeObjs = nodeScopeObjs;
-    this.userScopeObjs = userScopeObjs;
+      : []
+    this.nodeScopeObjs = nodeScopeObjs
+    this.userScopeObjs = userScopeObjs
 
-    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode();
-    this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children];
+    const [defaultMetaNode, customMetaNode] = await api.Node.metaNode()
+    this.metaNodeList = [...defaultMetaNode.children, ...customMetaNode.children]
 
-    this.showDrawer = true;
+    this.showDrawer = true
   }
 
   onVisiableChange(val: boolean) {
     if (!val) {
-      this.$nextTick(() => this.$emit('on-hide'));
+      this.$nextTick(() => this.$emit('on-hide'))
     }
   }
 
-  created() {
-    const {metaNode, node, parent} = this;
+  async created() {
+    const {metaNode, node, parent} = this
     if (node) {
-      this.form = cloneDeep(node);
+      this.form = cloneDeep(node)
     } else {
-      const form = new Node();
-      form.parent = parent || metaNode;
-      this.form = form;
+      const form = new Node()
+      form.parent = parent || metaNode
+      this.form = form
     }
+
+    this.customFields = await api.CustomFieldConfig.getList(this.addNewFieldType)
   }
 }
