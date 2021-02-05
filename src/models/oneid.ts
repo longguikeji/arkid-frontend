@@ -171,7 +171,7 @@ export class User {
       require_reset_password: this.requireResetPassword,
       has_password: this.hasPassword,
       is_extern_user: this.isExternUser,
-      hiredate: this.hiredate,
+      hiredate: this.hiredate || null,
     }
     if (!data.posix_user) {
       delete data.posix_user
