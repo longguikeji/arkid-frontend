@@ -1,9 +1,9 @@
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import EditUser from './EditUser';
-import ChooseNode from '@/oneid-app/comps/choose/Choose';
-import {Node, User} from '@/models/oneid';
-import './UserList.less';
+import {Node, User} from '@/models/oneid'
+import ChooseNode from '@/oneid-app/comps/choose/Choose'
+import * as api from '@/services/oneid'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import EditUser from './EditUser'
+import './UserList.less'
 
 @Component({
   components: {
@@ -24,7 +24,7 @@ import './UserList.less';
         >
           <Button type="primary">批量导入/修改</Button>
         </Upload>
-        
+
         <Button :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="doMove">调整分组</Button>
         <Button :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="removeFromNode">移出分组</Button>
         <Button :disabled="table && table.length === 0" v-if="isGroupPage">调整排序</Button>
@@ -82,31 +82,31 @@ export default class UserList extends Vue {
   $refs!: {
     editUser: EditUser,
     chooseNode: ChooseNode,
-  };
+  }
 
-  @Prop({type: Node}) metaNode?: Node;
-  @Prop({type: Node}) node?: Node;
+  @Prop({type: Node}) metaNode?: Node
+  @Prop({type: Node}) node?: Node
 
-  keyword = '';
-  table: User[]|null = null;
-  tableSelection: User[] = [];
+  keyword = ''
+  table: User[]|null = null
+  tableSelection: User[] = []
   pagination = {
     total: 0,
     page: 1,
     pageSize: 10,
     pageSizeOpts: [10, 20, 40, 60, 80, 100],
-  };
-  curInviteHref = '';
+  }
+  curInviteHref = ''
 
   editUser: {
     node?: Node,
     user?: User,
-  }|null = null;
+  }|null = null
 
-  chooseNode: any|null = null;
+  chooseNode: any|null = null
 
   get isGroupPage() {
-    return this.$route.name!.startsWith('admin.group');
+    return this.$route.name!.startsWith('admin.group')
   }
 
   get columns() {
@@ -116,99 +116,100 @@ export default class UserList extends Vue {
       {title: '登录账号', width: 200, render: this.renderUsernameCell},
       {title: '姓名', key: 'name', width: 140},
       {title: '手机号', key: 'mobile', width: 140},
-      {title: '邮箱', key: 'email', width: 200},
-      {title: '注册方式', key: '', width: 140},
+      {title: '个人邮箱', key: 'privateEmail', width: 200},
+      {title: '企业邮箱', key: 'email', width: 200},
+      {title: '注册方式', key: 'originVerbose', width: 140},
       {title: '是否为子管理员', minWidth: 140, render: (h: Vue.CreateElement, {row: user}: {row: User}) => {
-        return h('span', user.isManager ? '是' : '否');
+        return h('span', user.isManager ? '是' : '否')
       }},
       {title: '操作', width: 300, render: this.renderActionCell},
-    ];
+    ]
   }
 
   async loadData() {
-    const {pagination, node, keyword} = this;
+    const {pagination, node, keyword} = this
     const data = this.node
       ? await api.Node.user(node!.id, {...pagination, keyword})
-      : await api.User.list({...pagination, keyword});
-    this.table = data.results;
-    this.pagination.total = data.count;
+      : await api.User.list({...pagination, keyword})
+    this.table = data.results
+    this.pagination.total = data.count
 
-    this.$emit('ready');
+    this.$emit('ready')
   }
 
   doSearch(event: Event) {
-    this.keyword = event.target!.value;
-    this.loadData();
+    this.keyword = event.target!.value
+    this.loadData()
   }
 
   onPageChange(page: number) {
-    this.pagination.page = page;
-    this.loadData();
+    this.pagination.page = page
+    this.loadData()
   }
 
   onPageSizeChange(pageSize: number) {
     if (pageSize === this.pagination.pageSize) {
-      return;
+      return
     }
-    this.pagination = {...this.pagination, pageSize};
-    this.loadData();
+    this.pagination = {...this.pagination, pageSize}
+    this.loadData()
   }
 
   goAdd() {
-    this.editUser = null;
+    this.editUser = null
     this.$nextTick(() => {
-      this.editUser = {node: this.node};
-      this.$nextTick(() => this.$refs.editUser.show());
-    });
+      this.editUser = {node: this.node}
+      this.$nextTick(() => this.$refs.editUser.show())
+    })
   }
 
   async goEdit(user: User) {
     // retrieve API 返回的数据才包含属性: '所属部门', '角色'
-    const fulluser = await api.User.retrieve(user.username);
+    const fulluser = await api.User.retrieve(user.username)
 
-    this.editUser = null;
+    this.editUser = null
     this.$nextTick(() => {
-      this.editUser = {user: fulluser};
-      this.$nextTick(() => this.$refs.editUser.show());
-    });
+      this.editUser = {user: fulluser}
+      this.$nextTick(() => this.$refs.editUser.show())
+    })
   }
 
   onEditSave() {
-    this.loadData();
+    this.loadData()
   }
 
   async goInvite(user: User) {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      const data = await api.UCenter.invite(user.username);
+      const data = await api.UCenter.invite(user.username)
       const invitePage = this.$router.resolve({
         name: 'oneid.signup',
         query: {key: data.key},
-      });
-      this.curInviteHref = window.location.origin + window.location.pathname + invitePage.href;
+      })
+      this.curInviteHref = window.location.origin + window.location.pathname + invitePage.href
       this.$Message.info({
         content: '邀请链接已经复制到剪贴板，快去邀请ta激活账号吧！',
-        duration: 4
-      });
+        duration: 4,
+      })
 
-      await this.$copyText(this.curInviteHref);
-      this.$Loading.finish();
+      await this.$copyText(this.curInviteHref)
+      this.$Loading.finish()
     } catch (e) {
-      this.$Loading.error();
-      console.log(e);
+      this.$Loading.error()
+      // console.log(e)
     }
   }
 
   renderUsernameCell(h: Vue.CreateElement, {row: user}: {row: User}) {
-    const username = h('span', user.username);
-    const settled = h('span', {class: 'ui-user-is-settled'}, '已激活');
-    return user.is_settled ? [username, settled] : [username];
+    const username = h('span', user.username)
+    const settled = h('span', {class: 'ui-user-is-settled'}, '已激活')
+    return user.is_settled ? [username, settled] : [username]
   }
 
   renderActionCell(h: Vue.CreateElement, {row: user}: {row: User}) {
     return h(ActionCell, {
       props: {
-        user: user,
+        user,
       },
       on: {
         'on-edit': () => this.goEdit(user),
@@ -217,49 +218,49 @@ export default class UserList extends Vue {
           query: {username: user.username},
         }),
         'on-activate': () => this.goInvite(user),
-      }
-    });
+      },
+    })
   }
 
   onTableSelectionChange(selection: User[]) {
-    this.tableSelection = selection;
+    this.tableSelection = selection
   }
 
   doRemove() {
     this.$Modal.confirm({
       title: '确认要删除选中的成员',
       onOk: this.remove,
-    });
+    })
   }
 
   async doExport() {
-    console.log('doExport');
-    const usernames = this.tableSelection.map(user => user.username);
-    const data = await api.User.export(usernames);
-    let blob = new Blob([data], {
-        type: 'text/csv',
-      });
-      let filename = 'users.csv';
+    // console.log('doExport')
+    const usernames = this.tableSelection.map(user => user.username)
+    const data = await api.User.export(usernames)
+    const blob = new Blob([data], {
+        type: 'text/csv',
+      })
+      const filename = 'users.csv'
       if (typeof window.navigator.msSaveBlob !== 'undefined') {
-        window.navigator.msSaveBlob(blob, filename);
+        window.navigator.msSaveBlob(blob, filename)
       } else {
-        var blobURL = window.URL.createObjectURL(blob);
-        var tempLink = document.createElement('a');
-        tempLink.style.display = 'none';
-        tempLink.href = blobURL;
-        tempLink.setAttribute('download', filename);
-        if (typeof tempLink.download === 'undefined') {
-          tempLink.setAttribute('target', '_blank');
-        }
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-        window.URL.revokeObjectURL(blobURL);
+        const blobURL = window.URL.createObjectURL(blob)
+        const tempLink = document.createElement('a')
+        tempLink.style.display = 'none'
+        tempLink.href = blobURL
+        tempLink.setAttribute('download', filename)
+        if (typeof tempLink.download === 'undefined') {
+          tempLink.setAttribute('target', '_blank')
+        }
+        document.body.appendChild(tempLink)
+        tempLink.click()
+        document.body.removeChild(tempLink)
+        window.URL.revokeObjectURL(blobURL)
       }
   }
 
   onUploadSuccess(resp: {file_name: string}) {
-    this.$Message.success('导入成功');
+    this.$Message.success('导入成功')
   }
 
   get upload() {
@@ -267,33 +268,33 @@ export default class UserList extends Vue {
       headers: api.File.headers(),
       action: api.User.getImportUsersURL(),
       data: this.node && {node_uid: this.node.id},
-    };
+    }
   }
 
   async remove() {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
       // TODO (kaishun): 改用批量删除接口
-      await Promise.all(this.tableSelection.map(user => api.User.remove(user)));
-      this.$Loading.finish();
-      this.$emit('on-update');
-      this.loadData();
+      await Promise.all(this.tableSelection.map(user => api.User.remove(user)))
+      this.$Loading.finish()
+      this.$emit('on-update')
+      this.loadData()
     } catch (e) {
-      console.log(e);
-      this.$Loading.error();
+      // console.log(e)
+      this.$Loading.error()
     }
   }
 
   async removeFromNode() {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.Node.removeUsers(this.node!.id, this.tableSelection);
-      this.$Loading.finish();
-      this.$emit('on-update');
-      this.loadData();
+      await api.Node.removeUsers(this.node!.id, this.tableSelection)
+      this.$Loading.finish()
+      this.$emit('on-update')
+      this.loadData()
     } catch (e) {
-      console.log(e);
-      this.$Loading.error();
+      // console.log(e)
+      this.$Loading.error()
     }
   }
 
@@ -302,25 +303,25 @@ export default class UserList extends Vue {
       metaNode: this.metaNode,
       title: '选择部门',
       multiple: true,
-    };
-    this.$nextTick(() => this.$refs.chooseNode.show());
+    }
+    this.$nextTick(() => this.$refs.chooseNode.show())
   }
 
   async onChooseNodeOk(nodes: Node[]) {
-    this.$Loading.start();
+    this.$Loading.start()
     try {
-      await api.Node.moveUsers(this.node!.id, this.tableSelection, nodes);
-      this.$Loading.finish();
-      this.$emit('on-update');
-      this.loadData();
+      await api.Node.moveUsers(this.node!.id, this.tableSelection, nodes)
+      this.$Loading.finish()
+      this.$emit('on-update')
+      this.loadData()
     } catch (e) {
-      console.log(e);
-      this.$Loading.error();
+      // console.log(e)
+      this.$Loading.error()
     }
   }
 
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 }
 
@@ -335,5 +336,5 @@ export default class UserList extends Vue {
   `,
 })
 class ActionCell extends Vue {
-  @Prop({type: Object, required: true}) user!: User;
+  @Prop({type: Object, required: true}) user!: User
 }

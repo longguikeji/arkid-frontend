@@ -17,7 +17,7 @@
     "no-eval": true,
     "no-var-requires": true,
     "max-classes-per-file": ["warning", 1],
-    "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
+    "only-arrow-functions": [false, "allow-declarations", "allow-named-functions"],
     "no-empty": true,
     "prefer-for-of": true,
     "indent": [true, "spaces", 2],

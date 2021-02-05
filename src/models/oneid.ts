@@ -65,6 +65,9 @@ export interface UserData {
   password: string
   require_reset_password: boolean
   has_password: boolean
+  hiredate:string
+  origin_verbose:string
+  created:string
 }
 
 export class User {
@@ -109,6 +112,9 @@ export class User {
     obj.password = data.password
     obj.requireResetPassword = data.require_reset_password
     obj.hasPassword = data.has_password
+    obj.hiredate = data.hiredate
+    obj.originVerbose = data.origin_verbose
+    obj.created = data.created
     return obj
   }
 
@@ -123,6 +129,7 @@ export class User {
   privateEmail: string = ''
   id: string = ''
   username: string = ''
+  hiredate: string = ''
   dingUser: DingUser|null = null
   depts: Dept[]|null = null
   roles: Role[]|null = null
@@ -136,6 +143,8 @@ export class User {
   password: string = ''
   requireResetPassword: boolean = false
   hasPassword: boolean = false
+  originVerbose:string = ''
+  created:string = ''
 
   toData() {
     const data = {
@@ -162,6 +171,7 @@ export class User {
       require_reset_password: this.requireResetPassword,
       has_password: this.hasPassword,
       is_extern_user: this.isExternUser,
+      hiredate: this.hiredate,
     }
     if (!data.posix_user) {
       delete data.posix_user

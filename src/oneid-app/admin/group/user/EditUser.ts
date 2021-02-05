@@ -51,7 +51,7 @@ interface InternationalMobile {
         </FormItem>
         <FormItem prop="username" label="用户名" v-else>
           <Input type="text" v-model="form.username" :maxlength="16" placeholder="请输入 用户名" readonly></Input>
-        </FormItem>
+          </FormItem>
         <FormItem prop="name" label="姓名">
           <Input type="text" v-model="form.name" :maxlength="16" placeholder="请输入 姓名"></Input>
         </FormItem>
@@ -70,9 +70,9 @@ interface InternationalMobile {
         <FormItem prop="privateEmail" label="个人邮箱">
           <Input type="text" v-model="form.privateEmail" placeholder="请输入 邮箱"></Input>
         </FormItem>
-        <FormItem prop="email" label="邮箱">
-          <Input type="text" v-model="form.email" placeholder="请输入 邮箱"></Input>
-        </FormItem>
+
+        <Divider>分组信息</Divider>
+
         <FormItem
           prop="nodes" :label="item.name"
           v-for="item in metaNodes" :key="item.id">
@@ -84,10 +84,47 @@ interface InternationalMobile {
            ></Input>
         </FormItem>
 
-        <Divider>自定义数据</Divider>
+        <Divider>默认字段</Divider>
+
+        <FormItem prop="employeeNumber" label="员工编号">
+          <Input type="text" v-model="form.employeeNumber" placeholder="请输入 员工编号"></Input>
+        </FormItem>
+
+        <FormItem prop="email" label="企业邮箱">
+          <Input type="text" v-model="form.email" placeholder="请输入 企业邮箱"></Input>
+        </FormItem>
+
+        <FormItem prop="gender" label="性别">
+          <RadioGroup v-model="form.gender">
+            <Radio label="1">男</Option>
+            <Radio label="2">女</Option>
+          </RadioGroup>
+        </FormItem>
+
+        <FormItem prop="hiredate" label="入职时间">
+          <DatePicker format="yyyy/MM/dd" type="date" v-model="form.hiredate"></DatePicker>
+        </FormItem>
+
+        <FormItem prop="position" label="地址">
+          <Input type="text" v-model="form.position" placeholder="请输入 地址"></Input>
+        </FormItem>
+
+        <FormItem prop="remark" label="备注">
+          <Input type="text" v-model="form.remark" placeholder="请输入 备注"></Input>
+        </FormItem>
+
+        <Divider>自定义字段</Divider>
 
         <FormItem :key="field.uuid" v-for="field of customFields" :label="field.name">
           <Input type="text" v-model="form.custom_user[field.uuid]" :placeholder="'请输入'+field.name"></Input>
+        </FormItem>
+
+        <FormItem v-if="!isNew">
+          <div>{{'注册时间：'+new Date(form.created).toLocaleString()}}</div>
+          <div>{{'注册方式：'+form.originVerbose}}</div>
+          <div v-if="form.isExternUser">外部账号</div>
+          <div v-else>内部账号</div>
+          <div v-if="form.isManager">子管理员</div>
         </FormItem>
       </Form>
       <div class="drawer-footer flex-row flex-auto">
