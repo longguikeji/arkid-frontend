@@ -18,7 +18,7 @@ import './UserList.less'
     <Button :disabled="!(pagination.total > 50 && pagination.total/50 > pagination.page)" @click="handleNextPage">下一页</Button>
     <ul v-if="!loading" class="user-list" id="user-list-scroll">
       <li v-for="item in displayUserList">
-        <span class="user-name">{{ item.name }}</span>
+        <span class="user-name">{{ item.name+'  ('+item.username+')' }}</span>
         <Checkbox
           @on-change="val => onUserCheckChange(item, val)"
           :value="item.checked"
