@@ -127,7 +127,7 @@ export class User {
   depts: Dept[]|null = null
   roles: Role[]|null = null
   nodes: Node[]|null = null
-  custom_user: any
+  custom_user: any = {}
   is_settled: boolean = false
   isManager: boolean = false
   isAdmin: boolean = false
