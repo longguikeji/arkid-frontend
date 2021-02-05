@@ -111,9 +111,7 @@ export default class GroupTree extends Vue {
       props: {
         active: isCurrent,
         icon: this.showIcon ? this.getIcon(node.node) : '',
-        title: this.showHeadCount && type !== 'user'
-          ? `${title} ( ${raw.headcount } 人 )`
-          : title,
+        title,
       },
       nativeOn: {
         click: () => {
