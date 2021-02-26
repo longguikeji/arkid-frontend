@@ -21,7 +21,7 @@ import './Layout.less'
         </Menu>
       </div>
       <div class="header-right">
-        <RouterLink :to="{name: 'admin.account'}" v-if="isWorkspacePage && $app.user.hasAccessToAdmin">
+        <RouterLink :to="managerFirstRouter" v-if="isWorkspacePage && $app.user.hasAccessToAdmin">
           <Button class="workspace-btn">管理后台</Button>
         </RouterLink>
         <RouterLink :to="{name: 'home'}" v-else-if="isAdminPage">
@@ -195,8 +195,17 @@ export default class Layout extends Vue {
     }
   }
 
+  get managerFirstRouter(){
+    return this.$app.user && this.$app.user.is_manager ? {name: 'admin.group'} : {name: 'admin.account'}
+  }
+
   get topMenu() {
-    const adminMenu = [
+    const adminMenu = this.$app.user && this.$app.user.is_manager ? [
+      {title: '分组管理', name: 'admin.group'},
+      {title: '应用管理', name: 'admin.app'},
+      {title: '配置管理', name: 'admin.config'},
+      {title: '操作日志', name: 'admin.oplog'},
+    ] : [
       {title: '账号管理', name: 'admin.account'},
       {title: '分组管理', name: 'admin.group'},
       {title: '应用管理', name: 'admin.app'},

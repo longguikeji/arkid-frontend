@@ -1,10 +1,10 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import GroupTree from '@/oneid-app/comps/GroupTree';
-import UserList from '../user/UserList';
-import Edit from './Edit';
-import {TreeNode, Node} from '@/models/oneid';
-import * as api from '@/services/oneid';
-import './Group.less';
+import {Node, TreeNode} from '@/models/oneid'
+import GroupTree from '@/oneid-app/comps/GroupTree'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import UserList from '../user/UserList'
+import Edit from './Edit'
+import './Group.less'
 
 @Component({
   components: {
@@ -74,7 +74,7 @@ import './Group.less';
                 @click="$refs.tree.select(item.id);"
                 class="flex-row"
               >
-                <span>{{ item.name }} ( {{ item.headcount }}人 )</span>
+                <span>{{ item.name }}</span>
                 <Icon type="ios-arrow-forward" color="#D8D8D8"></Icon>
               </li>
             </ul>
@@ -104,106 +104,106 @@ import './Group.less';
   `,
 })
 export default class Group extends Vue {
-  metaNodeId: string|null = null;
-  metaNode: Node|null = null;
-  tree: TreeNode|null = null;
-  curNode: Node|null = null;
+  metaNodeId: string|null = null
+  metaNode: Node|null = null
+  tree: TreeNode|null = null
+  curNode: Node|null = null
 
   editData: {
     metaNode: Node,
     node?: Node,
     parent?: Node,
-  }|null = null;
+  }|null = null
 
   @Watch('$route')
   onRouteChange(route) {
-    this.metaNodeId = this.$route.query.id as string;
+    this.metaNodeId = this.$route.query.id as string
   }
 
   @Watch('metaNodeId')
   onMetaNodeIdChange() {
-    this.tree = null;
-    this.$nextTick(() => this.loadData());
+    this.tree = null
+    this.$nextTick(() => this.loadData())
   }
 
   get loading() {
-    return !this.tree;
+    return !this.tree
   }
 
   get nodeTypeName() {
     return ['dept', 'role', 'label'].includes(this.metaNode!.nodeSubject)
       ? this.metaNode!.name
-      : '分组';
+      : '分组'
   }
 
   async loadData() {
-    const metaNode = await api.Node.retrieve(this.metaNodeId!);
-    this.metaNode = metaNode;
-    await this.loadTreeData();
+    const metaNode = await api.Node.retrieve(this.metaNodeId!)
+    this.metaNode = metaNode
+    await this.loadTreeData()
   }
 
   async refresh() {
-    this.loadTreeData();
+    this.loadTreeData()
   }
 
   async loadTreeData() {
-    const hierarchy = await api.Node.tree(this.metaNode!.id);
-    const node = Node.fromData(hierarchy);
+    const hierarchy = await api.Node.tree(this.metaNode!.id)
+    const node = Node.fromData(hierarchy)
 
-    const isSameTree = this.tree && this.tree.raw.id === node.id;
+    const isSameTree = this.tree && this.tree.raw.id === node.id
     const expandIds = isSameTree
       ? this.tree!.flattenNodes().filter(i => i.expand).map(i => i.raw.id) as string[]
-      : node.children.map(i => i.id);
+      : node.children.map(i => i.id)
 
     const selectedNode = isSameTree && this.curNode
       ? this.curNode
-      : node.children[0];
+      : node.children[0]
 
     const options = {
       showUser: false,
       expandIds,
       selectedIds: selectedNode ? [selectedNode.id] : [],
-    };
-    const tree = TreeNode.fromNode(node, options);
+    }
+    const tree = TreeNode.fromNode(node, options)
 
     if (!selectedNode) {
-      this.curNode = null;
+      this.curNode = null
     }
 
-    this.tree = null;
-    this.$nextTick(() => this.tree = tree);
+    this.tree = null
+    this.$nextTick(() => this.tree = tree)
   }
 
   onNodeChange(val: Node) {
-    this.curNode = val;
+    this.curNode = val
   }
 
   goAddLevelOne() {
-    this.editData = {metaNode: this.metaNode!};
-    this.$nextTick(() => this.$refs.edit.show());
+    this.editData = {metaNode: this.metaNode!}
+    this.$nextTick(() => this.$refs.edit.show())
   }
 
   goAdd() {
-    this.editData = {metaNode: this.metaNode!, parent: this.curNode!};
-    this.$nextTick(() => this.$refs.edit.show());
+    this.editData = {metaNode: this.metaNode!, parent: this.curNode!}
+    this.$nextTick(() => this.$refs.edit.show())
   }
 
   async goEdit() {
-    const node = await api.Node.retrieve(this.curNode!.id);
+    const node = await api.Node.retrieve(this.curNode!.id)
     // TODO (kaishun): remove this
-    node.parent = this.curNode!.parent;
+    node.parent = this.curNode!.parent
 
-    this.editData = {metaNode: this.metaNode!, node};
-    this.$nextTick(() => this.$refs.edit.show());
+    this.editData = {metaNode: this.metaNode!, node}
+    this.$nextTick(() => this.$refs.edit.show())
   }
 
   onEditHide() {
     // 用this.$nextTick, 则没有隐藏时的过渡效果
-    setTimeout(() => this.editData = null, 500);
+    setTimeout(() => this.editData = null, 500)
   }
 
   created() {
-    this.metaNodeId = this.$route.query.id as string;
+    this.metaNodeId = this.$route.query.id as string
   }
 }
 

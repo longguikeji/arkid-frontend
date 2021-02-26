@@ -1,12 +1,12 @@
 // import {routes as authRoutes} from './auth';
-import Admin from './Admin';
-import {routes as accountRoutes} from './account';
-import {routes as groupRoutes} from './group';
-import {routes as appRoutes} from './apps';
-import {routes as configRoutes} from './config';
-import {routes as oplogRoutes} from './oplog';
-import {routes as managerRoutes} from './manager';
-import ConfigPage from './ConfigPage.vue';
+import {routes as accountRoutes} from './account'
+import Admin from './Admin'
+import {routes as appRoutes} from './apps'
+import {routes as configRoutes} from './config'
+import ConfigPage from './ConfigPage.vue'
+import {routes as groupRoutes} from './group'
+import {routes as managerRoutes} from './manager'
+import {routes as oplogRoutes} from './oplog'
 
 export const routes = [
   {
@@ -25,4 +25,22 @@ export const routes = [
       ...managerRoutes,
     ],
   },
-];
+]
+
+export const mRoutes = [
+  {
+    path: '/admin',
+    component: Admin,
+    name: 'admin',
+    meta: {
+      matchNav: 'admin',
+    },
+    children: [
+      ...groupRoutes,
+      ...appRoutes,
+      ...configRoutes,
+      ...oplogRoutes,
+      ...managerRoutes,
+    ],
+  },
+]
