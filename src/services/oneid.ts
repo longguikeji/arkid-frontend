@@ -66,13 +66,13 @@ export class Dept {
 
   static async tree() {
     const url = this.url({detail: true, id: 'root', action: 'tree'})
-    const data = {params: {user_required: true}}
+    const data = {params: {user_required: false}}
     return http.get(url, data)
       .then(x => model.Dept.fromTreeData(x.data).tree)
   }
   static async hierarchy() {
     const url = this.url({detail: true, id: 'root', action: 'tree'})
-    const data = {params: {user_required: true}}
+    const data = {params: {user_required: false}}
     const resp = await http.get(url, data)
     return model.Dept.fromHierarchyData(resp.data)
   }

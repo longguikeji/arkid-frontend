@@ -1,10 +1,10 @@
-import {Vue, Component, Watch, Prop} from 'vue-property-decorator';
-import {throttle} from 'lodash';
-import {User, Node} from '@/models/oneid';
-import * as oneidApi from '@/services/oneid';
-import {Node as nodeApi, UcenterNode as ucenterNodeApi} from '@/services/node';
-import {findTreePath} from '@/utils';
-import './Contacts.less';
+import {Node, User} from '@/models/oneid'
+import {Node as nodeApi, UcenterNode as ucenterNodeApi} from '@/services/node'
+import * as oneidApi from '@/services/oneid'
+import {findTreePath} from '@/utils'
+import {throttle} from 'lodash'
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './Contacts.less'
 
 @Component({
   template: html`
@@ -14,7 +14,7 @@ import './Contacts.less';
       <span class="name flex-auto">{{ user.name }}</span>
     </div>
     <div class="avatar">
-      <UserAva :user="user" size="xl" />
+      <UserAva :user="user" size="large" />
     </div>
   </div>
   <div class="field-list flex-col flex-auto">
@@ -24,7 +24,7 @@ import './Contacts.less';
   `,
 })
 class UserInfo extends Vue {
-  @Prop() user!: any;
+  @Prop() user!: any
 }
 
 @Component({
@@ -36,7 +36,7 @@ class UserInfo extends Vue {
 <div class="ui-contact-page--group flex-auto flex-col">
     <div class="ui-contact-page--header-wrapper flex-row">
       <div class="ui-contact-page--header flex-row">
-        <span class="cat-name">{{ node.name }}<template v-if="!loading"> ({{ nodeData.headcount }}人)</template></span>
+        <span class="cat-name">{{ node.name }}<template v-if="!loading"></template></span>
         <Input
           search
           :placeholder="searchHint"
@@ -75,7 +75,7 @@ class UserInfo extends Vue {
                   class="flex-row"
                 >
                   <XIcon name="folder-green" class="folder-icon"/>
-                  <span class="name flex-auto">{{ item.name }} ({{ item.headcount }}人)</span>
+                  <span class="name flex-auto">{{ item.name }}</span>
                   <span class="sub">
                     <XIcon name="thechild" class="child-icon"/>
                     下级
@@ -119,7 +119,7 @@ class UserInfo extends Vue {
                     class="flex-row"
                   >
                     <XIcon name="folder-green" class="folder-icon"/>
-                    <span class="name flex-auto">{{ item.name }} ({{ item.headcount }}人)</span>
+                    <span class="name flex-auto">{{ item.name }}</span>
                   </li>
                 </ul>
               </template>
@@ -171,141 +171,141 @@ class UserInfo extends Vue {
 })
 class Group extends Vue {
 
-  @Prop() node!: Node;
+  @Prop() node!: Node
 
-  loading = true;
+  loading = true
 
-  nodeData: Node|null = null;
-  curDept: Node|null = null;
+  nodeData: Node|null = null
+  curDept: Node|null = null
 
-  users: User[]|null = null;
-  user: User|null = null;
+  users: User[]|null = null
+  user: User|null = null
 
-  keyword: string|null = null;
-  searchResult: {depts: Node[], users: User[]}|null = null;
+  keyword: string|null = null
+  searchResult: {depts: Node[], users: User[]}|null = null
 
   doSearchChange = throttle((event) => {
-    this.keyword = event.target.value;
-  }, 500);
+    this.keyword = event.target.value
+  }, 500)
 
   get searchHint() {
-    return `在${this.node.name}里搜索分组、账号`;
+    return `在${this.node.name}里搜索分组、账号`
   }
 
   get path(): string[] {
     if (this.curDept) {
-      const {id} = this.curDept;
-      const results = findTreePath(this.nodeData, (n: Node) => n.id === id);
-      return results;
+      const {id} = this.curDept
+      const results = findTreePath(this.nodeData, (n: Node) => n.id === id)
+      return results
     }
 
-    return [];
+    return []
   }
 
   get subNodes(): Node[] {
     if (this.curDept) {
-      return this.curDept.children;
+      return this.curDept.children
     }
 
-    return [];
+    return []
   }
 
   @Watch('curDept')
   onCurDeptChange() {
-    this.getDeptUsers();
+    this.getDeptUsers()
   }
 
   @Watch('keyword')
   onKeywordChange(keyword: string, prev: string) {
     if (keyword) {
       if (!prev) {
-        this.user = null;
+        this.user = null
       }
 
-      this.doSearch(keyword);
+      this.doSearch(keyword)
     } else {
       if (prev) {
-        this.user = null;
+        this.user = null
       }
 
-      this.doClear();
+      this.doClear()
     }
   }
 
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 
   async loadData() {
-    const tree = Node.fromData(await ucenterNodeApi.tree(this.node.id));
+    const tree = Node.fromData(await ucenterNodeApi.tree(this.node.id))
 
-    this.nodeData = tree;
-    this.curDept = tree;
+    this.nodeData = tree
+    this.curDept = tree
 
-    this.loading = false;
+    this.loading = false
   }
 
   goToDept(dept: Node) {
-    this.users = [];
-    this.curDept = dept;
+    this.users = []
+    this.curDept = dept
   }
   async goToUser(user: User) {
-    this.user = await oneidApi.User.retrieveColleague(user.username);
+    this.user = await oneidApi.User.retrieveColleague(user.username)
   }
 
   async getDeptUsers() {
-    this.users = this.curDept ? this.curDept.users : [];
+    this.users = this.curDept ? this.curDept.users : []
   }
 
   async doSearch(keyword: string) {
-    const kw = keyword.toLocaleLowerCase();
-    const userMap: {[uid: string]: boolean} = {};
-    const depts: Node[] = [];
-    const users: User[] = [];
+    const kw = keyword.toLocaleLowerCase()
+    const userMap: {[uid: string]: boolean} = {}
+    const depts: Node[] = []
+    const users: User[] = []
 
     // return keyword ? apps.filter(item => item.name.toLocaleLowerCase().includes(kw))
 
-    const m = (name: string) => name.toLocaleLowerCase().includes(kw);
+    const m = (name: string) => name.toLocaleLowerCase().includes(kw)
     const p = (node: Node) => {
       if (m(node.name)) {
-        depts.push(node);
+        depts.push(node)
       }
 
       node.users.forEach(u => {
         if (!userMap[u.username] && m(u.name || u.username)) {
-          users.push(u);
+          users.push(u)
         }
-      });
+      })
 
-      node.children.forEach(p);
-    };
+      node.children.forEach(p)
+    }
     // const result = {
     //   depts: depts.filter(dept => dept.name.includes(keyword)),
     //   users: users.filter(user => user.name.includes(keyword)),
     // };
-    this.nodeData!.children.forEach(p);
+    this.nodeData!.children.forEach(p)
 
     this.searchResult = {
       depts,
       users,
-    };
+    }
   }
 
   doClear() {
-    this.keyword = null;
-    this.searchResult = null;
+    this.keyword = null
+    this.searchResult = null
   }
 
   formatName(name: string): string {
-    const re = /[\u4e00-\u9fa5]/;
-    const isCn = re.test(name);
-    const result = isCn ? name.slice(name.length - 2) : name.slice(0, 2) ;
+    const re = /[\u4e00-\u9fa5]/
+    const isCn = re.test(name)
+    const result = isCn ? name.slice(name.length - 2) : name.slice(0, 2)
 
-    return result;
+    return result
   }
 
   formatImgSource(key: string) {
-    return oneidApi.File.url(key);
+    return oneidApi.File.url(key)
   }
 }
 
@@ -336,19 +336,19 @@ class Group extends Vue {
   `,
 })
 export default class Contact extends Vue {
-  cats: Node[] = [];
-  cNode: Node|null = null;
+  cats: Node[] = []
+  cNode: Node|null = null
 
   selNode(node: Node) {
-    this.cNode = node;
+    this.cNode = node
   }
 
   async mounted() {
-    const [a, b] = await nodeApi.metaNode();
+    const [a, b] = await nodeApi.metaNode()
     // console.log(a, b);
-    this.cats = [a, b];
+    this.cats = [a, b]
 
-    this.cNode = a.children[0];
+    this.cNode = a.children[0]
   }
 
 }
