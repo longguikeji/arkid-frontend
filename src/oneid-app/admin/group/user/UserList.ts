@@ -111,8 +111,8 @@ export default class UserList extends Vue {
 
   get columns() {
     return [
-      {type: 'selection', width: 50, align: 'center'},
-      // {title: 'ID', key: 'id', width: 100},
+      {type: 'selection', width: 50, align: 'center', fixed: 'left'},
+      {title: '序号', type: 'index', width: 60, fixed: 'left' },
       {title: '登录账号', width: 200, render: this.renderUsernameCell},
       {title: '姓名', key: 'name', width: 140},
       {title: '手机号', key: 'mobile', width: 140},
