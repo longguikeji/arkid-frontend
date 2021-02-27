@@ -71,7 +71,7 @@ export default class GroupTree extends Vue {
 
   @Watch('curNode')
   onCurNodeChange(val: model.TreeNode) {
-    this.$emit('node-change', val.raw)
+    this.$emit('node-change', val.raw, val)
   }
 
   doSearch() {
