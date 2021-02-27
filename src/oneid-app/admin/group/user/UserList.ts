@@ -128,9 +128,12 @@ export default class UserList extends Vue {
 
   async loadData() {
     const {pagination, node, keyword} = this
+    this.$app.loadingStart()
     const data = this.node
       ? await api.Node.user(node!.id, {...pagination, keyword})
       : await api.User.list({...pagination, keyword})
+    this.$app.loadingEnd()
+
     this.table = data.results
     this.pagination.total = data.count
 
