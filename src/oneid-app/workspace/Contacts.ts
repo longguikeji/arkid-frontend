@@ -237,15 +237,28 @@ class Group extends Vue {
   }
 
   async loadData() {
-    const tree = Node.fromData(await ucenterNodeApi.tree(this.node.id))
+    // ucenterNodeApi.tree(this.node.id).then((data)=>{
+    //   const tree1 = Node.fromData(data)
+    // })
 
+    const tree = Node.fromData(await oneidApi.Node.node(this.node.id))
     this.nodeData = tree
     this.curDept = tree
 
     this.loading = false
   }
 
-  goToDept(dept: Node) {
+  async goToDept(dept: Node) {
+    // ucenterNodeApi.user(dept.id).then((data)=>{
+    //   dept.users = data.results
+    // })
+    this.$app.loadingStart()
+    dept.users = (await ucenterNodeApi.user(dept.id)).results
+    // oneidApi.Node.node(dept.id).then((data)=>{
+    //   dept.children = Node.fromData(data).children
+    // })
+    dept.children = Node.fromData(await oneidApi.Node.node(dept.id)).children
+    this.$app.loadingEnd()
     this.users = []
     this.curDept = dept
   }

@@ -200,17 +200,18 @@ export default class Layout extends Vue {
   }
 
   get topMenu() {
-    const adminMenu = this.$app.user && this.$app.user.is_manager ? [
-      {title: '分组管理', name: 'admin.group'},
-      {title: '应用管理', name: 'admin.app'},
-      {title: '配置管理', name: 'admin.config'},
-      {title: '操作日志', name: 'admin.oplog'},
-    ] : [
+    const adminMenu = this.$app.user && this.$app.user.is_admin ? [
       {title: '账号管理', name: 'admin.account'},
       {title: '分组管理', name: 'admin.group'},
       {title: '应用管理', name: 'admin.app'},
       {title: '配置管理', name: 'admin.config'},
       {title: '子管理员', name: 'admin.manager'},
+      {title: '操作日志', name: 'admin.oplog'},
+    ] : [
+      // {title: '账号管理', name: 'admin.account'},
+      {title: '分组管理', name: 'admin.group'},
+      {title: '应用管理', name: 'admin.app'},
+      {title: '配置管理', name: 'admin.config'},
       {title: '操作日志', name: 'admin.oplog'},
     ]
     const wsMenu = this.$app.user && this.$app.user.is_extern_user ? [

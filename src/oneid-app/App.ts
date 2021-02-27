@@ -1,17 +1,17 @@
-import {Vue, Component, Watch, Prop, Mixins} from 'vue-property-decorator';
+import {Component, Mixins, Prop, Vue, Watch} from 'vue-property-decorator'
 
-import {Config} from '@/models/config';
-import {Config as ConfigService} from '@/services/config';
-import {File} from '@/services/oneid';
-import LoginMixin from './loginMixin';
+import {Config} from '@/models/config'
+import {Config as ConfigService} from '@/services/config'
+import {File} from '@/services/oneid'
+import LoginMixin from './loginMixin'
 
-import {buildStyle} from './user/utils';
+import './App.less'
+import {buildStyle} from './user/utils'
 
-
-declare module "vue/types/vue" {
+declare module 'vue/types/vue' {
   interface Vue {
-    $app: App;
-    $fileUrl(key: string): string;
+    $app: App
+    $fileUrl(key: string): string
   }
 }
 
@@ -20,49 +20,63 @@ declare module "vue/types/vue" {
   },
 
   template: html`
-<router-view />
+  <div>
+    <router-view />
+    <Spin size="large" fix v-if="loading" class="loading"></Spin>
+  </div>
   `,
 
 })
 export default class App extends Mixins(LoginMixin) {
-  metaInfo: Config|null = null;
+  metaInfo: Config|null = null
+
+  loading:boolean = false
+  loadingStart(){
+    this.loading = true
+  }
+
+  loadingEnd(){
+    this.loading = false
+  }
 
   created() {
-    // @ts-ignore
-    this.$options._base.prototype.$app = this;
-    // @ts-ignore
-    this.$options._base.prototype.$fileUrl = (key: string) => File.url(key);
 
-    this.metaInfo = ConfigService.cachedMeta();
+    this.$options._base.prototype.$app = this
+
+    this.$options._base.prototype.$fileUrl = (key: string) => File.url(key)
+
+    this.metaInfo = ConfigService.cachedMeta()
 
     if (!this.metaInfo) {
-      throw new Error('init fail');
+      throw new Error('init fail')
     }
 
     if (this.metaInfo.org.color) {
-      this.createStyle(this.metaInfo.org.color);
+      this.createStyle(this.metaInfo.org.color)
     }
   }
 
   createStyle(color: string) {
-    const el = this.styleEl = document.createElement('style');
-    el.textContent = buildStyle(color);
-    document.body.appendChild(el);
+    const el = this.styleEl = document.createElement('style')
+    el.textContent = buildStyle(color)
+    document.body.appendChild(el)
   }
 
   beforeDestroy() {
     try {
       if (this.styleEl && this.styleEl.parentNode) {
-        this.styleEl.parentNode.removeChild(this.styleEl);
-        this.styleEl = null;
+        this.styleEl.parentNode.removeChild(this.styleEl)
+        this.styleEl = null
       }
-    } catch(ex) {}
+    } catch(ex){
+      throw new Error(ex)
+    }
   }
 
   goHome() {
     this.$router.push({
       name: 'home',
-    });
+    })
   }
 
 }

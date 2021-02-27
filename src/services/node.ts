@@ -29,6 +29,11 @@ export class UcenterNode {
     const resp = await http.get(url)
     return resp.data
   }
+  static async user(id: string) {
+    const url = `${this.baseUrl}/${id}/user/`
+    const resp = await http.get(url)
+    return resp.data
+  }
 }
 
 export class Node {
