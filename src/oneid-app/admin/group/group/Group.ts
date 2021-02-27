@@ -104,6 +104,16 @@ import './Group.less'
   `,
 })
 export default class Group extends Vue {
+
+  get loading() {
+    return !this.tree
+  }
+
+  get nodeTypeName() {
+    return ['dept', 'role', 'label'].includes(this.metaNode!.nodeSubject)
+      ? this.metaNode!.name
+      : '分组'
+  }
   metaNodeId: string|null = null
   metaNode: Node|null = null
   tree: TreeNode|null = null
@@ -115,6 +125,8 @@ export default class Group extends Vue {
     parent?: Node,
   }|null = null
 
+  treeOptions = {}
+
   @Watch('$route')
   onRouteChange(route) {
     this.metaNodeId = this.$route.query.id as string
@@ -124,16 +136,6 @@ export default class Group extends Vue {
   onMetaNodeIdChange() {
     this.tree = null
     this.$nextTick(() => this.loadData())
-  }
-
-  get loading() {
-    return !this.tree
-  }
-
-  get nodeTypeName() {
-    return ['dept', 'role', 'label'].includes(this.metaNode!.nodeSubject)
-      ? this.metaNode!.name
-      : '分组'
   }
 
   async loadData() {
@@ -147,7 +149,7 @@ export default class Group extends Vue {
   }
 
   async loadTreeData() {
-    const hierarchy = await api.Node.tree(this.metaNode!.id)
+    const hierarchy = await api.Node.node(this.metaNode!.id)
     const node = Node.fromData(hierarchy)
 
     const isSameTree = this.tree && this.tree.raw.id === node.id
@@ -164,6 +166,7 @@ export default class Group extends Vue {
       expandIds,
       selectedIds: selectedNode ? [selectedNode.id] : [],
     }
+    this.treeOptions = options
     const tree = TreeNode.fromNode(node, options)
 
     if (!selectedNode) {
@@ -174,7 +177,13 @@ export default class Group extends Vue {
     this.$nextTick(() => this.tree = tree)
   }
 
-  onNodeChange(val: Node) {
+  async onNodeChange(val: Node, treeNode: TreeNode) {
+    const children  = (await api.Node.node(val.id)).nodes
+    for(const child of children){
+      const node = Node.fromData(child)
+      val.children.push( node )
+      treeNode.children.push( TreeNode.fromNode(node, this.treeOptions) )
+    }
     this.curNode = val
   }
 
