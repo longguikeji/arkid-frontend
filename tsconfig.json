@@ -9,12 +9,14 @@
     "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": false,
+    "noImplicitAny": false,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env",
-      "mocha",
-      "chai"
+      "node",
+      "jest",
+      "webpack-env"
     ],
     "paths": {
       "@/*": [

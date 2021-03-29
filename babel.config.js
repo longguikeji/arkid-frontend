@@ -1,6 +1,5 @@
 module.exports = {
   presets: [
-    '@vue/app'
-  ],
-  plugins: ['@kindy/transform-vue-template'],
+    '@vue/cli-plugin-babel/preset'
+  ]
 }

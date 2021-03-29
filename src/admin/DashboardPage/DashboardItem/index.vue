@@ -1,0 +1,56 @@
+<template>
+  <component
+    :is="item"
+  />
+</template>
+<script lang="ts">
+import DashboardItemState from '@/admin/DashboardPage/DashboardItem/DashboardItemState'
+import { Component, Mixins } from 'vue-property-decorator'
+import CardPanel from '@/admin/common/panel/CardPanel/index.vue'
+import LineChart from '@/admin/common/echart/LineChart/index.vue'
+import PieChart from '@/admin/common/echart/PieChart/index.vue'
+import BaseVue from '@/admin/base/BaseVue'
+
+@Component({
+  name: 'DashboardItem',
+  components: {
+    CardPanel,
+    LineChart,
+    PieChart
+  }
+})
+export default class extends Mixins(BaseVue) {
+  get state(): DashboardItemState {
+    return this.$state as DashboardItemState
+  }
+
+  get item(): object {
+    return {
+      components: {
+        CardPanel,
+        LineChart,
+        PieChart
+      },
+      render: (h:Function) => {
+        return h(
+          this.state.type,
+          {
+            class: 'full',
+            props: {
+              state: this.state.state
+            }
+          }
+        )
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.full{
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+</style>

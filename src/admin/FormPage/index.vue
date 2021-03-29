@@ -1,0 +1,66 @@
+<template>
+  <div>
+    <Card :path="getChildPath('')">
+      <Select
+        v-if="state.select"
+        slot="header"
+        :path="getChildPath('select')"
+      />
+      <Form :path="formPath" />
+      <template v-if="state.buttons">
+        <ButtonArray
+          :path="getChildPath('buttons')"
+          class="form__page__buttons"
+        />
+      </template>
+      <template v-if="state.dialogs">
+        <Dialog
+          v-for="dialogName in Object.keys(state.dialogs)"
+          :key="dialogName"
+          :path="getChildPath('dialogs.' + dialogName)"
+        />
+      </template>
+    </Card>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Mixins } from 'vue-property-decorator'
+import FormPageState from './FormPageState'
+import Card from '@/admin/common/Card/index.vue'
+import Form from '@/admin/common/Form/index.vue'
+import BaseVue from '@/admin/base/BaseVue'
+import Dialog from '@/admin/common/Others/Dialog/index.vue'
+import ButtonArray from '@/admin/common/Button/ButtonArray/index.vue'
+
+@Component({
+  name: 'FormPage',
+  components: {
+    Form,
+    Card,
+    Dialog,
+    ButtonArray
+  }
+})
+export default class extends Mixins(BaseVue) {
+  get state(): FormPageState {
+    return this.$state as FormPageState
+  }
+
+  get formPath():string {
+    if (this.state.select) {
+      return this.getChildPath('forms.' + this.state.select.value)
+    }
+    return this.getChildPath('form')
+  }
+}
+</script>
+<style lang="scss" scoped>
+::v-deep .tox .tox-menubar {
+  width: 1000px;
+}
+::v-deep .tui-editor-defaultUI { width: 1000px;}
+.form__page__buttons {
+  margin: 20px;
+}
+</style>
