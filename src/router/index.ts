@@ -97,13 +97,15 @@ const router = createRouter()
 
 router.beforeEach((to, from, next) => {
   next()
-  // let isLogin = localStorage.getItem('userToken')
-  // if (isLogin) {
-  //   next()
-  // } else if (!to.meta.requireAuth) {
+  // if (to.fullPath === '/login') {
   //   next()
   // } else {
-  //   next('/login')
+  //   let isLogin = localStorage.getItem('token')
+  //   if (isLogin) {
+  //     next()
+  //   } else {
+  //     next('/login')
+  //   }
   // }
 })
 
