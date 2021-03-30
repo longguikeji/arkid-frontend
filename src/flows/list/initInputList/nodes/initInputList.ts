@@ -41,6 +41,10 @@ export class InitInputList extends TokenAPINode {
             tree: data.state.tree
           }
           tempState.dialogs.selected.state.tablePage = null
+          // tempState.dialogs.selected.state.treePage.tree.nodes.showCheckbox = params.multi	
+          // tempState.dialogs.selected.state.treePage.tree.nodes.checkStrictly = true
+          // tempState.dialogs.selected.state.treePage.tree.nodes.efaultCheckedKeys = [] 
+          // tempState.dialogs.selected.state.treePage.tree.nodes.checkOnClickNode	= true
           tempState.dialogs.selected.state.treePage.tree.nodes.action.push({
             name: 'flows/list/clicked',
             params: {

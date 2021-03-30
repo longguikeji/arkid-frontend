@@ -21,16 +21,18 @@ export class Clicked extends FunctionNode {
     const multi = params.multi
 
     // isSingle 仅仅用于在 table 表格中进行选择时，判断是一次性全选，还是单击选框--单独选择
+    // 如果一次性全部选中的话，传递来的data为数组
+    // 如果单次只选择一个复选框的话，传递来的data为对象
     const isSingle = params.isSingle
 
     // actionType 仅仅用于在 tree 树结构中进行选择时，区别当前节点的操作类型，目前分为三种 expand(展开)、click(点击)、check(复选框)
-    // 当expand展开时，将不再执行下面的内容
+    // 当expand展开时，不执行下面的内容，也就是expand展开节点触发的事件不看做选中该节点的操作
     // 当click点击时，默认只存储当前这一个tree节点的内容
     // 当check复选时，也将会存储当前这一个tree节点的children内容
     const treeNodeActionType = params.actionType
 
     if (treeNodeActionType === "expand") return 
-
+    
     // 定义当前点击的数据
     let currentClickedData
     // 判断当前的是否为table表格中的全选

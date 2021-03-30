@@ -16,7 +16,7 @@
       filterable
       default-first-option
       remote
-      placeholder="Search"
+      placeholder="Search App"
       class="header-search-select"
       @change="change"
     >

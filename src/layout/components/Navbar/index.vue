@@ -6,7 +6,10 @@
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
+    <breadcrumb
+      id="breadcrumb-container"
+      class="breadcrumb-container"
+    />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
         <header-search class="right-menu-item" />
@@ -26,7 +29,10 @@
         trigger="click"
       >
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar" />
+          <img
+            :src="avatar"
+            class="user-avatar"
+          >
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
@@ -34,7 +40,10 @@
               {{ username }}
             </span>
           </el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item
+            divided
+            @click.native="logout"
+          >
             <span style="display: block">
               {{ $t("navbar.logOut") }}
             </span>
@@ -46,19 +55,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { AppModule } from "@/store/modules/app";
-import { UserModule } from "@/store/modules/user";
-import Breadcrumb from "@/components/Breadcrumb/index.vue";
-import ErrorLog from "@/components/ErrorLog/index.vue";
-import Hamburger from "@/components/Hamburger/index.vue";
-import HeaderSearch from "@/components/HeaderSearch/index.vue";
-import LangSelect from "@/components/LangSelect/index.vue";
-import Screenfull from "@/components/Screenfull/index.vue";
-import SizeSelect from "@/components/SizeSelect/index.vue";
+import { Component, Vue } from 'vue-property-decorator'
+import { AppModule } from '@/store/modules/app'
+import { UserModule } from '@/store/modules/user'
+import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import ErrorLog from '@/components/ErrorLog/index.vue'
+import Hamburger from '@/components/Hamburger/index.vue'
+import HeaderSearch from '@/components/HeaderSearch/index.vue'
+import LangSelect from '@/components/LangSelect/index.vue'
+import Screenfull from '@/components/Screenfull/index.vue'
+import SizeSelect from '@/components/SizeSelect/index.vue'
 
 @Component({
-  name: "Navbar",
+  name: 'Navbar',
   components: {
     Breadcrumb,
     ErrorLog,
@@ -66,33 +75,33 @@ import SizeSelect from "@/components/SizeSelect/index.vue";
     HeaderSearch,
     LangSelect,
     Screenfull,
-    SizeSelect,
-  },
+    SizeSelect
+  }
 })
 export default class extends Vue {
   get sidebar() {
-    return AppModule.sidebar;
+    return AppModule.sidebar
   }
 
   get device() {
-    return AppModule.device.toString();
+    return AppModule.device.toString()
   }
 
   get avatar() {
-    return localStorage.getItem('avatar') || require('@/assets/HAAIFF-01.png');
+    return localStorage.getItem('avatar') || require('@/assets/HAAIFF-01.png')
   }
 
   get username() {
-    return localStorage.getItem('username');
+    return localStorage.getItem('username')
   }
 
   private toggleSideBar() {
-    AppModule.ToggleSideBar(false);
+    AppModule.ToggleSideBar(false)
   }
 
   private async logout() {
-    localStorage.removeItem("userToken");
-    this.$router.push(`/login`);
+    localStorage.removeItem('token')
+    this.$router.push('/login')
   }
 }
 </script>

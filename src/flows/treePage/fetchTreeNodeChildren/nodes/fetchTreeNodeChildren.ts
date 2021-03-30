@@ -8,7 +8,9 @@ export class FetchTreeNodeChildren extends TokenAPINode {
   async run() {
     const tempState: TreePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
     const data = this.inputs.params.data as TreeNodeProps
-
+    
+    // if (this.inputs.params.actionType === 'check') return 
+    
     this.url = getUrl(this.inputs.params.fetchUrl, data)
     this.method = this.inputs.params.fetchMethod || 'get'
     this.$state.commit((state: any) => {
