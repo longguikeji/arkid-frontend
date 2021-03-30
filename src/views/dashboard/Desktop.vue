@@ -1,8 +1,8 @@
 <template>
   <el-carousel
+    id="desktop-page-app-carousel"
     direction="vertical"
     :autoplay="false"
-    class="desktop-page-carousel"
   >
     <el-carousel-item
       v-for="item in 3"
@@ -10,7 +10,7 @@
     >
       <ul class="app-list">
         <li
-          v-for="(app, index) in appList"
+          v-for="(app, index) in apps"
           :key="index"
           class="app-item"
           @click="toExternalLink(app.link)"
@@ -31,53 +31,72 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { runFlowByFile } from '@/arkfbp/index'
+import elementResizeDetectorMaker from 'element-resize-detector'
 
 @Component({
   name: 'Desktop',
   components: {}
 })
 export default class extends Vue {
-  private currentRole = 'admin-dashboard';
-  private appList = [
-    {
-      icon: require('../../assets/arkid.png'),
-      name: '一账通',
-      link: 'https://arkid.demo.longguikeji.com/'
-    },
-    {
-      icon: require('../../assets/arkid.png'),
-      name: '一账通'
-    },
-    {
-      icon: require('../../assets/arkid.png'),
-      name: '百度',
-      link: 'https://baidu.com/'
-    },
-    {
-      icon: require('../../assets/arkid.png'),
-      name: 'abc'
-    },
-    {
-      icon: require('../../assets/arkid.png'),
-      name: '一账通'
-    },
-    {
-      icon: require('../../assets/arkid.png'),
-      name: '一账通'
-    }
-  ];
+  private appList = [] // 未分页之前的user-app
+  private apps = [] // 分页之后的user-app
+  private pageWidth = 0 // 主页面的内容宽度，不包含侧边栏宽度
+
+  @Watch('appList')
+  private onAppListChange() {
+    this.getApps()
+  }
+
+  @Watch('pageWidth')
+  private onPageWidthChange() {
+    this.getApps()
+  }
+
+  async created() {
+    // 执行获取 user app 的流内容
+    // await this.getDesktopUserApp()
+  }
+
+  mounted() {
+    // 监听页面宽度的变化
+    this.listenerDesktopPageSize()
+  }
 
   private toExternalLink(link: string) {
     if (link) {
       window.open(link, '_blank')
     }
   }
+
+  private async getDesktopUserApp() {
+    await runFlowByFile('flows/desktop', {
+      url: '/api/v1/user_app/',
+      method: 'get'
+    }).then((data) => {
+      // 获取到的data赋值给appList，之后应该再根据页面的宽度值去filter应用列表，以适应当前的页面尺寸
+      this.appList = data.results
+    })
+  }
+
+  private listenerDesktopPageSize() {
+    const desktopResizeDetector = elementResizeDetectorMaker()
+    desktopResizeDetector.listenTo(document.getElementById('desktop-page-app-carousel'), (el) => {
+      // 根据不同的宽度去判断当前的 desktop 页面需要多少张轮播图
+      this.pageWidth = el.offsetWidth
+    })
+  }
+
+  // 根据 appList 和 pageWidth 来重新生成一份适应此时页面情形的user-app数据集合
+  private getApps() {
+    this.apps = []
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.desktop-page-carousel {
+#desktop-page-app-carousel {
   width: 100% !important;
   height: calc(100vh - 84px);
   box-sizing: border-box;
@@ -97,8 +116,7 @@ export default class extends Vue {
     }
   }
   .app-list {
-    width: 900px;
-    max-width: 75%;
+    width: 100%;
     max-height: 100%;
     display: flex;
     flex-wrap: wrap;
@@ -113,6 +131,8 @@ export default class extends Vue {
       height: 100px;
       margin-top: 20px;
       margin-bottom: 20px;
+      padding-left: 20px;
+      box-sizing: border-box;
       cursor: pointer;
       .app-item-logo {
         width: 40px;
@@ -124,7 +144,7 @@ export default class extends Vue {
         }
       }
       .app-item-name {
-        width: 260px;
+        width: 240px;
         height: 60px;
         display: inline-block;
         position: relative;
