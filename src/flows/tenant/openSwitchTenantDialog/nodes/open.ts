@@ -2,10 +2,10 @@ import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import TablePageState from '@/admin/TablePage/TablePageState'
 import OpenDialog from '@/nodes/openDialog'
 
-export class ShowSwitchTenantDialog extends OpenDialog {
+export class OpenSwitchTenantDialog extends OpenDialog {
 
   get dialog(): DialogState | null {
-    const tempState: TablePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState: TablePageState = this.inputs.com.$store.state.tenant.tenantState
     if (tempState && tempState.dialogs) {
       return tempState.dialogs.switch
     } else {

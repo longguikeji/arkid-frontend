@@ -2,14 +2,12 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 
 export class Confirm extends FunctionNode {
   async run() {
-
     const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
-    
     const data = tempState.dialogs.selected.state.selected.list.items
     const params = this.inputs.params
     const multi = params.multi
     const path = params.path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
-
+    
     // 给 path 路径下面的元素赋值
     let reTempState = tempState
     const paths = path.split('.')

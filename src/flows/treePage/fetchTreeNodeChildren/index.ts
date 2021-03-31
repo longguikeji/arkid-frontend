@@ -10,14 +10,14 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'fetchTreeNodeChildren'
     }, {
       cls: FetchTreeNodeChildren,
-      id: '1',
-      next: '2'
+      id: 'fetchTreeNodeChildren',
+      next: 'fetchTableList'
     }, {
       cls: FetchTableList,
-      id: '2',
+      id: 'fetchTableList',
       next: 'stop'
     }, {
       cls: StopNode,

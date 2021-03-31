@@ -9,14 +9,11 @@ export class AddTreeNode extends TokenAPINode {
   async run() {
     const tempState: TreePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
 
-    const url = getUrl(this.inputs.params.createUrl)
-    const method = this.inputs.params.createMethod
-    if (!url) {
-      throw Error('addTreeNode flow is not url')
-    }
-    this.url = url
-    this.method = method || 'post'
-    
+    this.url = getUrl(this.inputs.params.createUrl)
+    this.method = this.inputs.params.createMethod || 'post'
+    if (!this.url) {
+      throw Error('treePage addTreeNode flow is not url')
+    }    
    
     if (tempState && tempState.dialogs) {
       const formPage = tempState.dialogs['addTreeNode'].state as FormPageState

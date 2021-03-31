@@ -12,18 +12,18 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: '1'
+        next: 'initFormPage'
       }, {
         cls: InitFormPage,
-        id: '1',
-        next: '2'
+        id: 'initFormPage',
+        next: 'initReadOnlyForm'
       }, {
         cls: InitReadOnlyForm,
-        id: '2',
-        next: '3'
+        id: 'initReadOnlyForm',
+        next: 'initRequestForm'
       }, {
         cls: InitRequestForm,
-        id: '3',
+        id: 'initRequestForm',
         next: 'stop'
       }, {
         cls: StopNode,

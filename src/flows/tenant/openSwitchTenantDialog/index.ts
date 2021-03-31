@@ -3,20 +3,20 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { GetDialogValues } from '@/nodes/getDialogValues'
-import { ShowSwitchTenantDialog } from './nodes/open'
+import { OpenSwitchTenantDialog } from './nodes/open'
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'getDialogValues'
     }, {
       cls: GetDialogValues,
-      id: '1',
-      next: '2'
+      id: 'getDialogValues',
+      next: 'openSwitchTenantDialog'
     }, {
-      cls: ShowSwitchTenantDialog,
-      id: '2',
+      cls: OpenSwitchTenantDialog,
+      id: 'openSwitchTenantDialog',
       next: 'stop'
     }, {
       cls: StopNode,

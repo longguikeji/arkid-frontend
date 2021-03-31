@@ -7,7 +7,7 @@ export default class OpenDialog extends FunctionNode {
   get dialog():DialogState | null {
     return null
   }
-
+  
   getValue(prop = '') {
     return ''
   }

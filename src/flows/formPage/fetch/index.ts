@@ -9,14 +9,14 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'fetch'
     }, {
       cls: Fetch,
-      id: '1',
-      next: '2'
+      id: 'fetch',
+      next: 'change'
     }, {
       cls: ChangeState,
-      id: '2',
+      id: 'change',
       next: 'stop'
     }, {
       cls: StopNode,

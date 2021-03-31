@@ -9,13 +9,11 @@ export class Create extends TokenAPINode {
   async run() {
     const tempState:TablePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
 
-    const url = getUrl(this.inputs.params.createUrl)
-    const method = this.inputs.params.createMethod
-    if (!url) {
-      throw Error('create flow is not url')
+    this.url = getUrl(this.inputs.params.createUrl)
+    this.method = this.inputs.params.createMethod || 'post'
+    if (!this.url) {
+      throw Error('tablePage create flow is not url')
     }
-    this.url = url
-    this.method = method || 'post'
     
     if (tempState && tempState.dialogs && tempState.dialogs.create) {
       const currentCreateFormPage = tempState.dialogs.create.state as FormPageState

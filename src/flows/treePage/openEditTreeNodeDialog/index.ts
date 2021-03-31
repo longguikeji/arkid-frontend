@@ -9,14 +9,14 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'getDialogValues'
     }, {
       cls: GetDialogValues,
-      id: '1',
-      next: '2'
+      id: 'getDialogValues',
+      next: 'open'
     }, {
       cls: Open,
-      id: '2',
+      id: 'open',
       next: 'stop'
     }, {
       cls: StopNode,

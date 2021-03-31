@@ -8,23 +8,19 @@ import TablePageState from '@/admin/TablePage/TablePageState'
 export class Update extends TokenAPINode {
   async run() {
     const tempState: TablePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
-
     const data = tempState.dialogs?.update.data
-    if (!data) {
-      throw Error('current dialog is not data')
-    }
 
     this.url = getUrl(this.inputs.params.updateUrl, data)
     this.method = this.inputs.params.updateMethod || 'put'
     if (!this.url) {
-      throw Error('URL not is not vaild')
+      throw Error('tablePage update flow is not url')
     }
     
     if (tempState && tempState.dialogs && tempState.dialogs.update) {
       const currentUpdateFormPage = tempState.dialogs.update.state as FormPageState
       this.params = getDialogParams(currentUpdateFormPage)
     } else {
-      throw Error('update action is not params, please check')
+      throw Error('tablePage update flow is not params')
     }
     
     this.$state.commit((state: any) => {

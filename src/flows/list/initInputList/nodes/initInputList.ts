@@ -1,15 +1,13 @@
 import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
-import getUrl from '@/utils/get-url'
 import getInitContent from '@/utils/get-init-content'
-import getTreeData from '@/utils/get-tree-data'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
 
 export class InitInputList extends TokenAPINode {
   async run() {
+    const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
     const params = this.inputs.params
     const path = this.inputs.com.state.path
-    const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
 
     // 给 第二层弹出框的 点击按钮添加 path 参数
     // 以便其在确认后将对应的值赋值给点击的DOM元素
@@ -38,6 +36,7 @@ export class InitInputList extends TokenAPINode {
         }).then((data) => {
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 弹出框的内容只需要此时data.state中的tree相关的内容
           tempState.dialogs.selected.state.treePage = {
+            created: data.state.created,
             tree: data.state.tree
           }
           tempState.dialogs.selected.state.tablePage = null
@@ -54,12 +53,6 @@ export class InitInputList extends TokenAPINode {
             }
           })
         })
-         // 获取数据，并初始化可进行选择的数据内容
-        this.url = getUrl(initContent.treeList!.path)
-        this.method = initContent.treeList!.method
-        const outputs = await super.run()
-        const res = getTreeData(outputs.results)
-        tempState.dialogs.selected.state.treePage.tree.nodes.data = res
       } else if (initContent.type === 'table_page') {
         await runFlowByFile('flows/tablePage/init', {
           initContent: {
@@ -69,6 +62,7 @@ export class InitInputList extends TokenAPINode {
         }).then((data) => {
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 此时的tablePage只需要data.state中的部分内容
           tempState.dialogs.selected.state.tablePage = {
+            created: data.state.created,
             table: data.state.table,
             pagination: data.state.pagination,
             card: data.state.card
@@ -89,11 +83,6 @@ export class InitInputList extends TokenAPINode {
             }
           ]
         })
-        // 获取数据，并初始化可进行选择的数据内容
-        this.url = getUrl(initContent.list!.path)
-        this.method = initContent.list!.method
-        const outputs = await super.run()
-        tempState.dialogs.selected.state.tablePage.table.data = outputs.results
       }
     }
     // 最后，打开对话框
