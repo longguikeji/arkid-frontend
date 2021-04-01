@@ -60,12 +60,14 @@ export class InitInputList extends TokenAPINode {
             hiddenReadOnly: true
           }
         }).then((data) => {
+          debugger
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 此时的tablePage只需要data.state中的部分内容
           tempState.dialogs.selected.state.tablePage = {
             created: data.state.created,
             table: data.state.table,
             pagination: data.state.pagination,
-            card: data.state.card
+            card: data.state.card,
+            // destroyed: 
           }
           tempState.dialogs.selected.state.treePage = null
           tempState.dialogs.selected.state.tablePage.table.selection = {
