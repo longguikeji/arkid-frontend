@@ -1,16 +1,15 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import getUrl from '@/utils/get-url'
 import TreePageState from '@/admin/TreePage/TreePageState'
 import TreeNodeProps from '@/admin/common/data/Tree/TreeNodeProps'
 import getTreeData from '@/utils/get-tree-data'
+import { runFlowByFile } from '@/arkfbp/index'
 
-export class FetchTreeNodeChildren extends TokenAPINode {
+export class FetchTreeNodeChildren extends AuthApiNode {
   async run() {
-    const tempState: TreePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState: TreePageState = this.getState()
     const data = this.inputs.params.data as TreeNodeProps
-    
-    // if (this.inputs.params.actionType === 'check') return 
-    
+
     this.url = getUrl(this.inputs.params.fetchUrl, data)
     this.method = this.inputs.params.fetchMethod || 'get'
     this.$state.commit((state: any) => {
@@ -21,10 +20,12 @@ export class FetchTreeNodeChildren extends TokenAPINode {
 
     data.children = getTreeData(outputs.results)
 
-    return {
-      data: outputs,
-      params: this.inputs.params,
-      com: this.inputs.com
+    // 在这里进行拦截，如果目前弹出的页面中没有table选项，则跳过此流
+    if (!tempState.table) {
+      return
     }
+
+    // 获取当前组中的用户内容
+    await runFlowByFile('flows/treePage/fetchTableList', this.inputs) 
   }
 }

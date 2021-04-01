@@ -4,7 +4,17 @@ import TreePageState from '@/admin/TreePage/TreePageState'
 export class InitTreePage extends FunctionNode {
   async run() {
     const tempState: TreePageState = {
-      created: [],
+      pages: [],
+      created: [
+        {
+          name: 'flows/hookFlow/created'
+        }
+      ],
+      beforeDestroy: [
+        {
+          'name': 'flows/hookFlow/beforeDestory'
+        }
+      ],
       tree: {
         header: {
           title: '',

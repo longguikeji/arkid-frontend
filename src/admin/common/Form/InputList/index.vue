@@ -29,7 +29,6 @@ export default class extends Mixins(BaseVue) {
   }
 
   private async toSetListData() {
-    this.state.path = this.getChildPath('')
     this.runAction(this.state.action)
   }
 }

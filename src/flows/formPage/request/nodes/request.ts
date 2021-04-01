@@ -1,9 +1,9 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import getUrl from '@/utils/get-url'
 
-export class Request extends TokenAPINode {
+export class Request extends AuthApiNode {
   async run() {
-    const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState = this.getState()
     const type = this.inputs.params.type
 
     this.url = getUrl(this.inputs.params.url)

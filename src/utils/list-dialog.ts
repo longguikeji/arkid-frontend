@@ -14,19 +14,32 @@ export default function whetherImportListDialog(formData: FormPageState) {
       return {
         type: "ListAssembly",
         visible: false,
+        width: '70%',
         title: '',
         data: {},
         state: {
-          treePage: null,
-          tablePage: null,
-          selected: {
-            header: {
-              title: ''
-            },
+          treePage: {
             list: {
-              items: [],
-            },
-          }
+              header: {
+                title: '',
+                buttons: []
+              },
+              data: {
+                items: []
+              }
+            }
+          },
+          tablePage: {
+            list: {
+              header: {
+                title: '',
+                buttons: []
+              },
+              data: {
+                items: []
+              }
+            }
+          },
         },
         actions: [
           {

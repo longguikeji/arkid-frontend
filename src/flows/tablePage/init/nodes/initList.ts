@@ -13,15 +13,13 @@ export class InitList extends FunctionNode {
       const listOperation = OpenAPI.instance.getOperation(listOperationPath, listOperationMethod)
       if (listOperation) {
         // 给 created 赋值
-        tempState.created = [
-          {
-            name: 'flows/tablePage/fetch',
-            params: {
-              fetchUrl: listOperationPath,
-              fetchMethod: listOperationMethod
-            }
+        tempState.created.push({
+          name: 'flows/tablePage/fetch',
+          params: {
+            fetchUrl: listOperationPath,
+            fetchMethod: listOperationMethod
           }
-        ]
+        })
         // 给 title 赋值
         tempState.card.title = listOperation.summary || ''
         // 对 table 进行初始化操作
