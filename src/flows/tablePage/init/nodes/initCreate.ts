@@ -63,9 +63,7 @@ export class InitCreate extends FunctionNode {
         tempState.card?.buttons?.push(createButton)
       }
     }
-    this.$state.commit((state) => {
-      state.tempState = tempState
-    })
+    
     return {
       data: this.inputs.data,
       state: tempState

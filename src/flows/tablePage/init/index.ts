@@ -7,6 +7,7 @@ import { InitList } from './nodes/initList'
 import { InitCreate } from './nodes/initCreate'
 import { InitUpdate } from './nodes/initUpdate'
 import { InitDelete } from './nodes/initDelete'
+import { InitSortable } from './nodes/initSortable'
 
 export class Main extends Flow {
   createNodes() {
@@ -14,26 +15,30 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'InitTablePage'
+        next: 'initTablePage'
       }, {
         cls: InitTablePage,
-        id: 'InitTablePage',
-        next: 'InitList'
+        id: 'initTablePage',
+        next: 'initList'
       }, {
         cls: InitList,
-        id: 'InitList',
-        next: 'InitCreate'
+        id: 'initList',
+        next: 'initCreate'
       }, {
         cls: InitCreate,
-        id: 'InitCreate',
-        next: 'InitUpdate'
+        id: 'initCreate',
+        next: 'initUpdate'
       }, {
         cls: InitUpdate,
-        id: 'InitUpdate',
-        next: 'InitDelete'
+        id: 'initUpdate',
+        next: 'initDelete'
       }, {
         cls: InitDelete,
-        id: 'InitDelete',
+        id: 'initDelete',
+        next: 'initSortable'
+      }, {
+        cls: InitSortable,
+        id: 'initSortable',
         next: 'stop'
       }, {
         cls: StopNode,
