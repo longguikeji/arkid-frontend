@@ -7,6 +7,9 @@ export class Fetch extends AuthApiNode {
     
     this.url = getUrl(this.inputs.params.tableUrl)
     this.method = this.inputs.params.tableMethod || 'get'
+    this.params = {
+      group: this.inputs.params.data.uuid,
+    }
 
     this.$state.commit((state: any) => {
       state.client = tempState
