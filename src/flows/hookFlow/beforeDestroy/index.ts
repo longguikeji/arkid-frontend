@@ -2,17 +2,17 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { BeforeDestory } from './nodes/beforeDestory'
+import { BeforeDestroy } from './nodes/beforeDestroy'
 
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'beforeDestory'
+      next: 'beforeDestroy'
     }, {
-      cls: BeforeDestory,
-      id: 'beforeDestory',
+      cls: BeforeDestroy,
+      id: 'beforeDestroy',
       next: 'stop'
     }, {
       cls: StopNode,

@@ -7,6 +7,7 @@ import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
 
 export default interface TablePageState extends BaseState {
+  type: 'TablePage'
   filter?: FormState
   table?: TableState
   pagination?: PaginationState

@@ -3,7 +3,8 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 export class InitTablePage extends FunctionNode {
   async run() {
     const tempState = this.inputs.state
-    tempState.table = { 
+    tempState.table = {
+      type: 'TablePage',
       created: [],
       card: {
         title: '',

@@ -7,7 +7,7 @@ import FormPageState from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPageState {
-  const formPageState: FormPageState = {}
+  const formPageState: FormPageState = {type: 'FormPage'}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectState:SelectState = {

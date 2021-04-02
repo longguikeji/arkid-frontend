@@ -20,6 +20,14 @@ export class InitList extends FunctionNode {
             fetchMethod: listOperationMethod
           }
         })
+        // 给 destroyed 赋值
+        tempState.destroyed.push({
+          name: 'flows/hookFlow/destroyed',
+          params: {
+            fetchUrl: listOperationPath,
+            fetchMethod: listOperationMethod
+          }
+        })
         // 给 title 赋值
         tempState.card.title = listOperation.summary || ''
         // 对 table 进行初始化操作

@@ -5,6 +5,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 
 export default interface FromPageState extends CardState {
+  type: 'FormPage',
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
 

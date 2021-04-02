@@ -1,6 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 
-export class BeforeDestory extends FunctionNode {
+export class BeforeDestroy extends FunctionNode {
   async run() {
     // beforeDestory one page
     const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState

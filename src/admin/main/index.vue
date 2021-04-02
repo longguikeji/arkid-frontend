@@ -57,7 +57,6 @@ export default class extends Vue {
         await runFlowByFile('flows/tablePage/init', {
           initContent: initContent
         }).then(async(data) => {
-          data.state.type = 'TablePage'
           await AdminModule.setAdmin(data.state)
           this.initCompleted = true
         })
@@ -65,7 +64,6 @@ export default class extends Vue {
         await runFlowByFile('flows/formPage/init', {
           initContent: initContent
         }).then(async(data) => {
-          data.state.type = 'FormPage'
           await AdminModule.setAdmin(data.state)
           this.initCompleted = true
         })
@@ -73,7 +71,6 @@ export default class extends Vue {
         await runFlowByFile('flows/treePage/init', {
           initContent: initContent
         }).then(async(data) => {
-          data.state.type = 'TreePage'
           await AdminModule.setAdmin(data.state)
           this.initCompleted = true
         })

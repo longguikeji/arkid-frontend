@@ -19,6 +19,14 @@ export class InitTree extends FunctionNode {
             fetchMethod: treeListOperationMethod,
           }
         })
+        // 给 destroyed 赋值
+        tempState.destroyed.push({
+          name: "flows/hookFlow/destroyed",
+          params: {
+            fetchUrl: treeListOperationPath,
+            fetchMethod: treeListOperationMethod,
+          }
+        })
         // 给tree结构的最上方header模块的title赋值
         tempState.tree.header.title = treeListOperation.summary || ''
         // 给tree添加控制节点展开的内容属性 defaultExpandedKeys

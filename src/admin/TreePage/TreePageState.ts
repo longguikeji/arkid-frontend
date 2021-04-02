@@ -11,6 +11,7 @@ export interface Tree {
 }
 
 export default interface TreePageState extends BaseState {
+  type: 'TreePage'
   tree?: Tree
   table?: TablePageState
   dialogs?: { [dialogName: string]: DialogState }

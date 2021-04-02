@@ -4,6 +4,7 @@ import FormPageState from '@/admin/FormPage/FormPageState'
 export class InitFormPage extends FunctionNode {
   async run() {
     const tempState: FormPageState = {
+      type: 'FormPage',
       created: [{
         name: 'flows/hookFlow/created',
       }],
