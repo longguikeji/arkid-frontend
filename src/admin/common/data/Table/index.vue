@@ -1,6 +1,7 @@
 <template>
   <el-table
     ref="elementTable"
+    :key="state.key"
     :data="tableData"
     :height="'70vh'"
     :stripe="state.stripe || true"
@@ -38,7 +39,6 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TableState from './TableState'
 import TableColumn from './TableColumn/index.vue'
 import BaseVue, { FlowState } from '@/admin/base/BaseVue'
-import Sortable from 'sortablejs'
 
 @Component({
   name: 'Table',
@@ -53,30 +53,6 @@ export default class extends Mixins(BaseVue) {
 
   get tableData() {
     return this.state.data
-  }
-
-  @Watch('tableData')
-  private async change(val: any, oldVal: any) {
-    if (this.state.sortable) {
-      // await this.runAction(this.state.sortAction)
-    }
-  }
-
-  mounted() {
-    if (this.state.sortable) {
-      this.initRowSort()
-    }
-  }
-
-  initRowSort() {
-    const tbody: any = document.querySelector('.el-table__body-wrapper tbody')
-    const _this: any = this
-    Sortable.create(tbody, {
-      onEnd({ newIndex, oldIndex }) {
-        const currRow = _this.tableData.splice(oldIndex, 1)[0]
-        _this.tableData.splice(newIndex, 0, currRow)
-      }
-    })
   }
 
   handleSelectionChange(val: any, row: any) {

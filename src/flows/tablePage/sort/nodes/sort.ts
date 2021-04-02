@@ -1,33 +1,41 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/get-url'
 import TablePageState from '@/admin/TablePage/TablePageState'
 
-export class Sort extends TokenAPINode {
+export class Sort extends AuthApiNode {
   async run() {
-    const tempState: TablePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
-    const data = tempState.table?.data
+    const tempState: TablePageState = this.getState()
+    const data = tempState.table?.data 
+    const sortType = this.inputs.params.sortType
+    const rowState = this.inputs.com.state
     
-    this.url = getUrl(this.inputs.params.sortUrl, data)
+    let targetData
+    if (sortType !== 'batch') {
+      rowState.forEach(item => {
+        if (item.type === sortType) targetData = item.data
+      })
+    }
+
+    this.url = getUrl(this.inputs.params.sortUrl, targetData)
     this.method = this.inputs.params.sortMethod || 'post'
     if (!this.url) {
       throw Error('tablePage sort flow is not url')
     }
     
-    this.params = {
-      idps: []
+    if (sortType === 'batch') {
+      this.params = {
+        idps: []
+      }
+      if (data) {
+        data.forEach(row => {
+          this.params.idps.push(row.uuid)
+        })
+      }
     }
-    if (data) {
-      data.forEach(row => {
-        this.params.idps.push(row.uuid)
-      })
-    }
-    
-    this.$state.commit((state: any) => {
-      state.client = tempState
-    })
     
     const outputs = await super.run()
+    await runFlowByFile('flows/tablePage/fetch', this.inputs)
     return outputs
   }
 }

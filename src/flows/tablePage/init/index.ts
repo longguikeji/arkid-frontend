@@ -5,9 +5,9 @@ import { StopNode } from 'arkfbp/lib/stopNode'
 import { InitTablePage } from './nodes/initTablePage'
 import { InitList } from './nodes/initList'
 import { InitCreate } from './nodes/initCreate'
+import { InitSortable } from './nodes/initSortable'
 import { InitUpdate } from './nodes/initUpdate'
 import { InitDelete } from './nodes/initDelete'
-import { InitSortable } from './nodes/initSortable'
 
 export class Main extends Flow {
   createNodes() {
@@ -27,6 +27,10 @@ export class Main extends Flow {
       }, {
         cls: InitCreate,
         id: 'initCreate',
+        next: 'initSortable'
+      }, {
+        cls: InitSortable,
+        id: 'initSortable',
         next: 'initUpdate'
       }, {
         cls: InitUpdate,
@@ -35,12 +39,8 @@ export class Main extends Flow {
       }, {
         cls: InitDelete,
         id: 'initDelete',
-        next: 'initSortable'
-      }, {
-        cls: InitSortable,
-        id: 'initSortable',
         next: 'stop'
-      }, {
+      },{
         cls: StopNode,
         id: 'stop'
       }
