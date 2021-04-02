@@ -3,8 +3,8 @@ USER root
 WORKDIR /workspace
 
 COPY . .
-RUN npm install &&\
-    npm run build:prod
+RUN npm install 
+RUN npm run build:prod
 
 FROM nginx:alpine
 ENV TZ Asia/Shanghai
