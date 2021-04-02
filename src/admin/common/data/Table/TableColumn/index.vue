@@ -20,6 +20,7 @@
         </template>
         <AdminComponent
           v-else
+          :key="tableColumnScopeKey"
           :path="getScopePath(scope)"
         />
       </template>
@@ -31,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import TableColumnState from './TableColumnState'
 import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
@@ -43,6 +44,13 @@ import BaseVue from '@/admin/base/BaseVue'
 })
 export default class extends Mixins(BaseVue) {
   @Prop({ required: true }) data!: Array<any>;
+
+  private tableColumnScopeKey = 'arkid-table-column-scope' + +new Date()
+
+  @Watch('data')
+  onDataChange() {
+    this.tableColumnScopeKey = 'arkid-table-column-scope' + +new Date()
+  }
 
   get state(): TableColumnState {
     return this.$state as TableColumnState

@@ -42,5 +42,4 @@ export default interface TableState extends BaseState {
   treeProps?: object //  渲染嵌套数据的配置选项  Object  —  { hasChildren?: 'hasChildren', children?: 'children' }
   sortable?: boolean // 是否可以进行表格每一行的拖拽动作
   sortAction?: Array<FlowState | Function> // 拖拽进行排序时，触发的相关流操作
-  key?: number | string // 为了进行数据的更新
 }

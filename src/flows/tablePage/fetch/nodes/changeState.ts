@@ -10,7 +10,6 @@ export class ChangeState extends FunctionNode {
     } else {
       state.client.table.data = data.results
     }
-    state.client.table.key = 'table__' + +new Date()
     state.client.pagination.total = data.count
     return this.inputs
   }
