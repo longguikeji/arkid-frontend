@@ -5,12 +5,15 @@ export class ChangeState extends FunctionNode {
     const state = this.$state.fetch()
     const data = this.inputs
     state.client.table.data = []
-    if (location.pathname.includes('extension') || location.pathname.includes('externalIdp')) {
-      state.client.table.data = data
-    } else {
+    
+    if (data.results !== undefined) {
       state.client.table.data = data.results
+    } else {
+      state.client.table.data = data
     }
-    state.client.pagination.total = data.count
+
+    if (data.count !== undefined) state.client.pagination.total = data.count
+
     return this.inputs
   }
 }
