@@ -10,7 +10,7 @@ export class AddSwitchTenantButton extends FunctionNode {
       type: 'primary',
       action: [
         {
-          name: 'flows/tenant/showSwitchTenantDialog',
+          name: 'flows/tenant/openSwitchTenantDialog',
           params: {
             updateUrl: '/api/v1/tenant/{id}/',
             updateMethod: 'get'

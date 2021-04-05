@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    v-if="state.visible"
     :title="state.title"
     :visible.sync="state.visible"
     :width="state.width || defaultWidth"

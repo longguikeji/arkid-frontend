@@ -4,7 +4,19 @@ import TablePageState from '@/admin/TablePage/TablePageState'
 export class InitTablePage extends FunctionNode {
   async run() {
     const tempState: TablePageState = {
-      created: [],
+      type: 'TablePage',
+      pages: [],
+      created: [
+        {
+          'name': 'flows/hookFlow/created'
+        }
+      ],
+      beforeDestroy: [
+        {
+          'name': 'flows/hookFlow/beforeDestroy'
+        }
+      ],
+      destroyed: [],
       card: {
         title: '',
         buttons: []

@@ -1,8 +1,8 @@
-import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { StateNode } from '@/nodes/stateNode'
 
-export class OpenRequestDialog extends FunctionNode {
+export class OpenRequestDialog extends StateNode {
   async run() {
-    const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState = this.getState()
     if (tempState && tempState.dialogs) {
       tempState.dialogs.request.visible = true
       // 初始化表单每一项的值 todo...

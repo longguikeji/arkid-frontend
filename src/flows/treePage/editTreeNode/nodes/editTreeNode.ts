@@ -1,13 +1,13 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/get-url'
 import getDialogParams from '@/utils/get-dialog-params'
 import TreePageState from '@/admin/TreePage/TreePageState'
 import FormPageState from '@/admin/FormPage/FormPageState'
 
-export class EditTreeNode extends TokenAPINode {
+export class EditTreeNode extends AuthApiNode {
   async run() {
-    const tempState: TreePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState: TreePageState = this.getState()
     
     const data = tempState.dialogs!['editTreeNode'].data
   

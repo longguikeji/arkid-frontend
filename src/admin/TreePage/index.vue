@@ -19,6 +19,14 @@
         :path="getChildPath('table')"
       />
     </template>
+    <template v-if="state.list">
+      <Card
+        :path="getChildPath('list.header')"
+        class="treepage__list"
+      >
+        <List :path="getChildPath('list.data')" />
+      </Card>
+    </template>
   </div>
 </template>
 
@@ -49,6 +57,7 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .tree__page__container {
+  position: relative;
   display: block;
   width: 100%;
   height: calc(100vh - 84px);
@@ -61,6 +70,12 @@ export default class extends Mixins(BaseVue) {
     display: inline-block;
     width: 70%;
     height: 100%;
+  }
+  .treepage__list {
+    display: inline-block;
+    width: 50%;
+    position: absolute;
+    top: 0px;
   }
 }
 </style>

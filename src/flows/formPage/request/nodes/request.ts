@@ -1,12 +1,18 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
+import getUrl from '@/utils/get-url'
 
-export class Request extends TokenAPINode {
+export class Request extends AuthApiNode {
   async run() {
-    this.url = this.inputs.params.url
+    const tempState = this.getState()
+    const type = this.inputs.params.type
+
+    this.url = getUrl(this.inputs.params.url)
     this.method = this.inputs.params.method
     this.params = {}
-    const type = this.inputs.params.type
-    const tempState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    if (!this.url) {
+      throw Error('formPage request flow is not url')
+    }
+
     if (type === 'form') {
       const formItems = tempState.form.items
       for (let i = 0; i < formItems.length; i++) {
@@ -20,10 +26,13 @@ export class Request extends TokenAPINode {
         this.params[dialogItems[i].prop] = dialogItems[i].state.value
       }
     }
+    
     const outputs = await super.run()
+
     if (tempState && tempState.dialogs) {
       tempState.dialogs.request.visible = false
     }
+
     return outputs
   }
 }

@@ -12,15 +12,13 @@ export class InitReadOnlyForm extends FunctionNode {
       const formOperation = OpenAPI.instance.getOperation(formFetchOperationPath, formFetchOperationMethod)
       if (formOperation) {
         // 给 created 赋值
-        tempState.created = [
-          { 
-            name: "flows/formPage/fetch",
-            params: {
-              fetchUrl: formFetchOperationPath,
-              fetchMethod: formFetchOperationMethod
-            }
+        tempState.created.push({ 
+          name: "flows/formPage/fetch",
+          params: {
+            fetchUrl: formFetchOperationPath,
+            fetchMethod: formFetchOperationMethod
           }
-        ]
+        })
         // 给 title 进行赋值
         tempState.title = formOperation.summary || ''
         // 对 table 进行初始化操作

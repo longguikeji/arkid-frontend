@@ -4,7 +4,7 @@ import TreePageState from '@/admin/TreePage/TreePageState'
 
 export class Open extends OpenDialog {
   get dialog():DialogState | null {
-    const tempState: TreePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState: TreePageState = this.getState()
     if (tempState && tempState.dialogs) {
       return tempState.dialogs.addTreeNode
     } else {

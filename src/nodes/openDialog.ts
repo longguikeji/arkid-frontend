@@ -1,13 +1,13 @@
-import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { StateNode } from '@/nodes/stateNode'
 import FormPageState from '@/admin/FormPage/FormPageState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { debug } from 'console'
 
-export default class OpenDialog extends FunctionNode {
+export default class OpenDialog extends StateNode {
   get dialog():DialogState | null {
     return null
   }
-
+  
   getValue(prop = '') {
     return ''
   }

@@ -12,15 +12,21 @@ export class InitTree extends FunctionNode {
       const treeListOperation = OpenAPI.instance.getOperation(treeListOperationPath, treeListOperationMethod)
       if (treeListOperation) {
         // 给treePage页面的created赋值 -- 获取tree节点数据和默认的table表格内容
-        tempState.created = [
-          { 
-            name: "flows/treePage/fetchTreeNode",
-            params: {
-              fetchUrl: treeListOperationPath,
-              fetchMethod: treeListOperationMethod,
-            }
+        tempState.created.push({ 
+          name: "flows/treePage/fetchTreeNode",
+          params: {
+            fetchUrl: treeListOperationPath,
+            fetchMethod: treeListOperationMethod,
           }
-        ]
+        })
+        // 给 destroyed 赋值
+        tempState.destroyed.push({
+          name: "flows/hookFlow/destroyed",
+          params: {
+            fetchUrl: treeListOperationPath,
+            fetchMethod: treeListOperationMethod,
+          }
+        })
         // 给tree结构的最上方header模块的title赋值
         tempState.tree.header.title = treeListOperation.summary || ''
         // 给tree添加控制节点展开的内容属性 defaultExpandedKeys

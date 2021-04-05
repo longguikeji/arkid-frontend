@@ -1,30 +1,26 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/get-url'
 import getDialogParams from '@/utils/get-dialog-params'
 import FormPageState from '@/admin/FormPage/FormPageState'
 import TablePageState from '@/admin/TablePage/TablePageState'
 
-export class Update extends TokenAPINode {
+export class Update extends AuthApiNode {
   async run() {
-    const tempState: TablePageState = location.pathname === '/tenant' ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
-
+    const tempState: TablePageState = this.getState()
     const data = tempState.dialogs?.update.data
-    if (!data) {
-      throw Error('current dialog is not data')
-    }
 
     this.url = getUrl(this.inputs.params.updateUrl, data)
     this.method = this.inputs.params.updateMethod || 'put'
     if (!this.url) {
-      throw Error('URL not is not vaild')
+      throw Error('tablePage update flow is not url')
     }
     
     if (tempState && tempState.dialogs && tempState.dialogs.update) {
       const currentUpdateFormPage = tempState.dialogs.update.state as FormPageState
       this.params = getDialogParams(currentUpdateFormPage)
     } else {
-      throw Error('update action is not params, please check')
+      throw Error('tablePage update flow is not params')
     }
     
     this.$state.commit((state: any) => {

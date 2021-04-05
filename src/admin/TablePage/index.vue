@@ -3,6 +3,14 @@
     <div>
       <Form :path="filterPath" />
     </div>
+    <template v-if="state.list">
+      <Card
+        :path="getChildPath('list.header')"
+        class="tablepage__list"
+      >
+        <List :path="getChildPath('list.data')" />
+      </Card>
+    </template>
     <Table :path="getChildPath('table')" />
     <Pagination
       v-if="state.pagination"

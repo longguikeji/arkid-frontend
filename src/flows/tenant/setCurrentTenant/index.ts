@@ -8,10 +8,10 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'setCurrentTenant'
     }, {
       cls: SetCurrentTenant,
-      id: '1',
+      id: 'setCurrentTenant',
       next: 'stop'
     }, {
       cls: StopNode,

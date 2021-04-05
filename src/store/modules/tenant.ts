@@ -9,7 +9,9 @@ export interface ITenantState {
 
 @Module({ dynamic: true, store, name: 'tenant' })
 class Tenant extends VuexModule implements ITenantState {
-  tenantState:TablePageState = {}
+  tenantState:TablePageState = {
+    type: 'TablePage'
+  }
   currentTenant: any = {}
 
   @Mutation

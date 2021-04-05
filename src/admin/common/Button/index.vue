@@ -10,7 +10,7 @@
     :icon="state.icon"
     :autofocus="state.autofocus"
     :native-type="state.nativeType"
-    @click="clickHandler"
+    @click.stop="clickHandler"
   >
     {{ state.label }}
   </el-button>
