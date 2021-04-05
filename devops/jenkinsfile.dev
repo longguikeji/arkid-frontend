@@ -6,12 +6,13 @@ pipeline {
     // - PYPI_REGISTRY
 
     environment {
-        
-        // 在北京龙归科技有限公司这个钉钉群的机器人
-        DINGTALK_ROBOT = "51e1b446-ccde-44f5-aad0-8303e4967d39"
         GIT_SHORT_COMMIT = """${sh(
             returnStdout: true,
             script: 'git rev-parse --short HEAD',
+        ).trim()}"""
+        REPO_NAME = """${sh(
+            returnStdout: true,
+            script: "git remote show origin -n |  grep h.URL | sed 's/.*://;s/.git//' ",
         ).trim()}"""
         DOCKER_IMAGE_BUILD_VERSION = "build-${env.BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"
         DOCKER_IMAGE_DEV_VERSION = "v2dev-${env.BUILD_NUMBER}-${env.GIT_SHORT_COMMIT}"
