@@ -6,9 +6,11 @@ pipeline {
         string(name: "PROD_VERSION", description: "the tag of the image,src to release, like `1.2.3`")
     }
 
+    // global ENV
+    // - FEISHU_ENTRYPOINT
+    // - ARKIDV2DEV_PUBLIC_URL
+
     environment {
-        // 在北京龙归科技有限公司这个钉钉群的机器人
-        DINGTALK_ROBOT = "51e1b446-ccde-44f5-aad0-8303e4967d39"
         IMAGE_NAME = "arkid-fe"
         GIT_TAG = "master"
         DOCKER_DEV_REGISTRY="https://harbor.longguikeji.com"
@@ -21,13 +23,17 @@ pipeline {
         PROD_DOCKER_IMAGE="longguikeji/arkid-fe:${params.PROD_VERSION}"
     }
     stages {
-       // stage('pre') {
-       //     steps{
-       //         sendDingTalk("pending", "开始构建")
-       //     }
-       // }
+       stage('pre') {
+            steps {
+                sendFEISHU("pending")
+                // replacePyPIRegistry()
+            }
+        }
         stage("release docker image") {
             steps {
+                script {
+                    this_stage = env.STAGE_NAME
+                }
                 withDockerRegistry([credentialsId: "${DOCKER_DEV_REGISTRY_CREDENTIAL}", url: "${DOCKER_DEV_REGISTRY}"]){
                     sh """
                     docker pull ${env.DEV_DOCKER_IMAGE}
@@ -50,44 +56,55 @@ pipeline {
         //     }
         // }
     }
-    // post {
-    //     success {
-    //         sendDingTalk("success", "构建成功")
-    //     }
-    //     failure {
-    //         sendDingTalk("failure", "构建失败")
-    //     }
-    // }
+    post {
+        success {
+            sendFEISHU("success")
+        }
+        failure {
+            sendFEISHU("fail")
+        }
+    }
 }
 
-// def sendDingTalk(status, message) {
-//     if (status == "success") {
-//         img="https://s2.ax1x.com/2019/10/17/KEFSWd.png"
-//     } else if (status == "failure") {
-//         img="https://s2.ax1x.com/2019/10/17/KEFCQI.png"
-//     } else if (status == "pending") {
-//         img="https://s2.ax1x.com/2019/10/17/KEFkef.gif"
-//     } else {
-//         img=""
-//     }
-    
-//     dingtalk (
-//         //all
-//         robot: "${env.DINGTALK_ROBOT}", 
-//         type: 'LINK',
-//         at: ["18031108921"],
-//         atAll: false,
+def sendFEISHU(status){
+    if (status == "success") {
+        message="构建并部署成功，点击查看部署后的效果"
+        href_url="${env.ARKIDV2DEV_PUBLIC_URL}"
+    } else if(status == "pending"){
+        message="开始构建，点击查看构建过程"
+        href_url="${env.BUILD_URL}"
+    } else {
+        message="${last_started}阶段失败，点击查看具体日志"
+        href_url="${env.BUILD_URL}"
+    }
 
-//         //LINK
-//         title: "${env.IMAGE_NAME}-${env.GIT_TAG}",
-//         text: [message],
-//         messageUrl: "${env.BUILD_URL}",
-//         picUrl: img,
-
-//         //整体跳转
-//         //singleTitle: '',
-//         //btns: [],
-//         //btnLayout: '',
-//         //hideAvatar: false
-//     )
-// }
+    sh """
+        curl -X POST \
+        ${env.FEISHU_ENTRYPOINT} \
+        -H "content-type: application/json" \
+        -d \
+        '{
+            "msg_type": "post",
+            "content": {
+                "post": {
+                    "zh_cn": {
+                        "title": "流水线状态通知",
+                        "content": [
+                            [
+                                {
+                                    "tag": "text",
+                                    "text": "${env.REPO_NAME} 项目流水线有更新: "
+                                },
+                                {
+                                    "tag": "a",
+                                    "text": "$message",
+                                    "href": "$href_url"
+                                }
+                            ]
+                        ]
+                    }
+                }
+            }
+        }'
+    """
+}
