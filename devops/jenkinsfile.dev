@@ -1,9 +1,9 @@
 pipeline {
     agent any
 
-    // global properties
-    // - DING_TALK_ENTRYPOINT
-    // - PYPI_REGISTRY
+    // global ENV
+    // - FEISHU_ENTRYPOINT
+    // - ARKIDV2DEV_PUBLIC_URL
 
     environment {
         GIT_SHORT_COMMIT = """${sh(
@@ -24,7 +24,7 @@ pipeline {
         // DOCKER_PROD_REGISTRY_CREDENTIAL="devops-longguikeji-dockerhub"
         K8S_HOST = "https://kubernetes"
         K8S_CREDENTIAL = "lg-k8s-dev"
-        K8S_NS = "arkidv2-dev"
+        K8S_NS = "arkidv2"
         // deployment、statefulset、daemonset
         K8S_DEPLOY_KIND = "deploy"
         K8S_DEPLOY_NAME = "arkidv2-fe"
@@ -98,7 +98,7 @@ def sendFEISHU(status){
         message="开始构建，点击查看构建过程"
         href_url="${env.BUILD_URL}"
     } else {
-        message="${last_started}阶段失败，点击查看具体日志"
+        message="${this_stage}阶段失败，点击查看具体日志"
         href_url="${env.BUILD_URL}"
     }
 
