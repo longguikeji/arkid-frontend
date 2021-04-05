@@ -46,6 +46,7 @@ pipeline {
                     sh """#!/bin/bash
                         docker build -t harbor.longguikeji.com/ark-releases/arkid-fe:${env.DOCKER_IMAGE_DEV_VERSION} .
                         docker push harbor.longguikeji.com/ark-releases/arkid-fe:${env.DOCKER_IMAGE_DEV_VERSION}
+                        docker push harbor.longguikeji.com/ark-releases/arkid-fe:v2dev
                     """
                 }
             }
