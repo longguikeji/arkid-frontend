@@ -21,14 +21,14 @@ function getStateByPath(tempState: any, path: string) {
 }
 
 export default function getPageState(specifiedPath: string = '') {
-  const tempState = location.pathname === '/tenant' ? TenantModule.tenantState : AdminModule.adminState
+  const tempState = location.hash === '#/tenant' ? TenantModule.tenantState : AdminModule.adminState
   if (!tempState) return
   const path = specifiedPath === '' ? tempState.pages[tempState.pages.length - 1] : specifiedPath
   return getStateByPath(tempState, path)
 }
 
 export function getPreviousPageState() {
-  const tempState = location.pathname === '/tenant' ? TenantModule.tenantState : AdminModule.adminState
+  const tempState = location.pathname === '#/tenant' ? TenantModule.tenantState : AdminModule.adminState
   if (!tempState) return
   const path = tempState.pages.length === 1 ? tempState.pages[tempState.pages.length - 1] : tempState.pages[tempState.pages.length - 2]
   return getStateByPath(tempState, path)
