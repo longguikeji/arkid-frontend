@@ -13,7 +13,7 @@ export class AuthApiNode extends APINode {
     return super.run()
   }
 
-  getState(path: string = '') {
+  getState(path = '') {
     return getPageState(path)
   }
 

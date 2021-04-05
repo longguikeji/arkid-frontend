@@ -3,6 +3,7 @@ import getUrl from '@/utils/get-url'
 
 export class Fetch extends AuthApiNode {
   async run() {
+    debugger
     const tempState = this.getState()
     this.url = getUrl(this.inputs.params.fetchUrl)
     this.method = this.inputs.params.fetchMethod || 'get'
@@ -14,8 +15,8 @@ export class Fetch extends AuthApiNode {
     this.$state.commit((state: any) => {
       state.client = tempState
     })
-    
     const outputs = await super.run()
+    console.log(outputs)
     return outputs
   }
 }

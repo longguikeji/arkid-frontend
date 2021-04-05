@@ -5,7 +5,7 @@ export class ChangeState extends FunctionNode {
     const state = this.$state.fetch()
     const data = this.inputs
     state.client.table.data = []
-    if (location.pathname.includes('extension') || location.pathname.includes('externalIdp')) {
+    if (location.hash.includes('extension') || location.hash.includes('externalIdp')) {
       state.client.table.data = data
     } else {
       state.client.table.data = data.results

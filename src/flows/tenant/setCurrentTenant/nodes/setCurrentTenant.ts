@@ -15,8 +15,8 @@ export class SetCurrentTenant extends TokenAPINode {
         }
       })
     } else {
-      const path = location.pathname
-      if (path === '/login') {
+      const path = location.hash
+      if (path === '#/login') {
         this.inputs.router.push('/login')
       } else {
         this.inputs.router.push('/tenant')

@@ -21,23 +21,19 @@ function getStateByPath(tempState: any, path: string) {
 }
 
 export default function getPageState(specifiedPath = '') {
-  const tempState = getTempState()
+  const tempState = isTenantState() ? TenantModule.tenantState : AdminModule.adminState
   if (!tempState) return
   const path = specifiedPath === '' ? tempState.pages[tempState.pages.length - 1] : specifiedPath
   return getStateByPath(tempState, path)
 }
 
 export function getPreviousPageState() {
-  const tempState = getTempState()
+  const tempState = isTenantState() ? TenantModule.tenantState : AdminModule.adminState
   if (!tempState) return
   const path = tempState.pages.length === 1 ? tempState.pages[tempState.pages.length - 1] : tempState.pages[tempState.pages.length - 2]
   return getStateByPath(tempState, path)
 }
 
-function getTempState() {
-  if (location.hash === '#/tenant' || location.pathname === '/tenant') {
-    return TenantModule.tenantState
-  } else {
-    return AdminModule.adminState
-  }
+export function isTenantState() {
+  return (location.hash === '#/tenant' || location.pathname === '/tenant')
 }
