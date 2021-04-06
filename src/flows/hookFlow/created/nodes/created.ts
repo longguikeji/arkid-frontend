@@ -1,10 +1,9 @@
-import { isTenantState } from '@/utils/get-page-state'
-import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { StateNode } from '@/nodes/stateNode'
 
-export class Created extends FunctionNode {
+export class Created extends StateNode {
   async run() {
     // add current page
-    const tempState = isTenantState() ? this.inputs.com.$store.state.tenant.tenantState : this.inputs.com.$store.state.admin.adminState
+    const tempState = this.getFirstState()
     if (tempState) {
       const path = this.inputs.com.path
       tempState.pages.push(path)
