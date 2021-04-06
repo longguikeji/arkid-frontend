@@ -5,12 +5,9 @@ export class Fetch extends AuthApiNode {
   async run() {
     const tempState = this.getState()
     
-    this.url = getUrl(this.inputs.params.tableUrl)
+    this.url = getUrl(this.inputs.params.tableUrl, this.inputs.params.data)
     this.method = this.inputs.params.tableMethod || 'get'
-    this.params = {
-      group: this.inputs.params.data.uuid,
-    }
-
+    
     this.$state.commit((state: any) => {
       state.client = tempState
     })
