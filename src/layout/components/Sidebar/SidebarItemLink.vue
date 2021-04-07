@@ -33,9 +33,6 @@ export default class extends Vue {
   }
 
   private toTarget() {
-    if (this.to === '/desktop') {
-      return '/desktop'
-    }
     if (this.to.includes('system')) {
       return {
         path: this.to

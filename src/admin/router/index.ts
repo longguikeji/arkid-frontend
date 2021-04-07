@@ -50,7 +50,8 @@ function generateRouterItem(tempRouter: any): RouteConfig {
     meta: {
       title: tempRouter.name,
       icon: tempRouter.icon || 'dashboard',
-      page: tempRouter.page
+      page: tempRouter.page,
+      role: tempRouter.role,
     }
   }
 }
