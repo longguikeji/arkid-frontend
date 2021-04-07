@@ -1,8 +1,8 @@
 <template>
   <login-component
     v-if="isRenderLoginPage"
-    :title="tenant.name"
-    :icon="tenant.icon"
+    :title="tenant ? tenant.name : ''"
+    :icon="tenant ? tenant.icon : ''"
     :config="config"
   />
 </template>

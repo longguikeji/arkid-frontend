@@ -95,18 +95,17 @@ const createRouter = () => new Router({
 
 const router = createRouter()
 
-router.beforeEach((to, from, next) => {
-  next()
-  // if (to.fullPath === '/login') {
-  //   next()
-  // } else {
-  //   let isLogin = localStorage.getItem('token')
-  //   if (isLogin) {
-  //     next()
-  //   } else {
-  //     next('/login')
-  //   }
-  // }
+router.beforeEach((to, from, next) => { 
+  if (to.fullPath === '/login') {
+    next()
+  } else {
+    let isLogin = localStorage.getItem('token')
+    if (isLogin) {
+      next()
+    } else {
+      next('/login')
+    }
+  }
 })
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
