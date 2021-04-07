@@ -24,11 +24,6 @@ import OpenAPI from '@/config/openapi'
 export default class extends Vue {
   private openAPIInited = false
 
-  @Watch('$route')
-  onRouteChange(r) {
-    // this.init()
-  }
-
   getUserInfo() {
     // runWorkflow(new GetUserAuthFlow(), { store: this.$store })
   }
@@ -56,16 +51,6 @@ export default class extends Vue {
       route: this.$route,
       router: this.$router
     })
-  }
-
-  init() {
-    const path = this.$route.path
-    if (path !== '/login' && !this.openAPIInited) {
-      OpenAPI.instance.init('/api/schema?format=json').then(async() => {
-        await this.setCurrentTenant()
-        this.openAPIInited = true
-      })
-    }
   }
 }
 </script>
