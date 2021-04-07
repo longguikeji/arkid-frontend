@@ -22,25 +22,27 @@ function getStateByPath(tempState: any, path: string) {
 
 export default function getPageState(specifiedPath = '') {
   const tempState = getCurrentRequiredState()
+  if (!tempState) return
   const path = specifiedPath === '' ? tempState.pages[tempState.pages.length - 1] : specifiedPath
   return getStateByPath(tempState, path)
 }
 
 export function getPreviousPageState() {
   const tempState = getCurrentRequiredState()
+  if (!tempState) return
   const path = tempState.pages.length === 1 ? tempState.pages[tempState.pages.length - 1] : tempState.pages[tempState.pages.length - 2]
   return getStateByPath(tempState, path)
 }
 
 export function getFirstPageState() {
   const tempState = getCurrentRequiredState()
+  if (!tempState) return
   const path = tempState.pages[0]
   return getStateByPath(tempState, path)
 }
 
 export function getCurrentRequiredState() {
   const tempState = isTenantState() ? TenantModule.tenantState : AdminModule.adminState
-  if (!tempState) return
   return tempState
 }
 

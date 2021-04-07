@@ -7,7 +7,7 @@ export class Http extends FunctionNode {
   async run() {
     const com = this.$state.fetch().com
     const btn = this.$state.fetch().btn as ButtonConfig
-
+ 
     if (btn.http) {
       const url = btn.http.url
       const method = btn.http.method

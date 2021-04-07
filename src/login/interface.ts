@@ -3,6 +3,7 @@ export interface LoginPagesConfig {
 }
 
 export interface LoginPageConfig {
+  name?: string
   forms?:Array<FormConfig>
   bottoms?:Array<ButtonConfig>
   extend?:{
@@ -41,4 +42,12 @@ export interface ButtonConfig {
     params?: any // key: fromItem.name
   }
   delay?:Number
+}
+
+export interface LoginTenant {
+  uuid?: string
+  name?: string
+  slug?: string
+  icon?: string
+  created?: string
 }

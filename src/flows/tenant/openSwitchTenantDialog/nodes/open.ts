@@ -5,7 +5,7 @@ import OpenDialog from '@/nodes/openDialog'
 export class OpenSwitchTenantDialog extends OpenDialog {
 
   get dialog(): DialogState | null {
-    const tempState: TablePageState = this.inputs.com.$store.state.tenant.tenantState
+    const tempState: TablePageState = this.getState()
     if (tempState && tempState.dialogs) {
       return tempState.dialogs.switch
     } else {

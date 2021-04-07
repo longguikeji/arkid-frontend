@@ -9,10 +9,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
 // import { GetUserAuthFlow } from './flows/getUserAuth'
 import { runFlowByFile } from '@/arkfbp/index'
+import OpenAPI from '@/config/openapi'
 
 @Component({
   name: 'App',
@@ -21,6 +22,8 @@ import { runFlowByFile } from '@/arkfbp/index'
   }
 })
 export default class extends Vue {
+  private openAPIInited = false
+
   getUserInfo() {
     // runWorkflow(new GetUserAuthFlow(), { store: this.$store })
   }
@@ -32,8 +35,6 @@ export default class extends Vue {
       return true
     }
   }
-
-  openAPIInited = false
 
   async created() {
     await this.setCurrentTenant()

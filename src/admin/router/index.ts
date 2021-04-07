@@ -11,6 +11,7 @@ import Layout from '@/layout/index.vue'
 // 之后该方法需要进一步根据OpenAPI的字段信息进行补充和完善
 // 通过补充和完善体现该方法的扩展性和适应性
 export function initRouterFromOpenAPI(openAPI: any) {
+  if (!openAPI) return []
   const originRouters = openAPI.info.routers
   const routers: RouteConfig[] = generateAsyncRoutersByOpenApiInfo(originRouters)
   return routers
@@ -50,7 +51,8 @@ function generateRouterItem(tempRouter: any): RouteConfig {
     meta: {
       title: tempRouter.name,
       icon: tempRouter.icon || 'dashboard',
-      page: tempRouter.page
+      page: tempRouter.page,
+      role: tempRouter.role,
     }
   }
 }
