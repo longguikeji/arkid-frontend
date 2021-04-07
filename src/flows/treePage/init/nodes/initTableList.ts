@@ -10,7 +10,7 @@ export class InitTableList extends FunctionNode {
 
     // 对table表格机进行初始化操作
     if (initContent.tableList) {
-      const tableListNodeOperationPath = initContent.tableList.path
+      const tableListNodeOperationPath = initContent.tableList.path.split('?')[0]
       const tableListNodeOperationMethod = initContent.tableList.method
       const tableListNodeOperation = OpenAPI.instance.getOperation(tableListNodeOperationPath, tableListNodeOperationMethod)
       if (tableListNodeOperation) {
