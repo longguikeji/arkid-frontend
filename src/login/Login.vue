@@ -8,7 +8,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginPageConfig, LoginTenant } from './interface'
 import LoginStore from './store/login'
@@ -25,12 +25,22 @@ export default class Login extends Vue {
   private config: LoginPagesConfig = {}
   private tenant: LoginTenant = {}
 
-  async created() {
+  async mounted() {
     await this.getLoginPage()
   }
 
+  @Watch('$route.query.tenant')
+  tenantChange() {
+    this.getLoginPage()
+  }
+
+  get tenantUUID() {
+    return this.$route.query.tenant
+  }
+
   private async getLoginPage() {
-    LoginStore.TenantUUID = this.$route.query.tenant
+    LoginStore.TenantUUID = this.tenantUUID
+    console.log('login:', LoginStore.TenantUUID)
     let url = '/api/v1/loginpage/'
     if (LoginStore.TenantUUID) {
       url = '/api/v1/loginpage/?tenant=' + LoginStore.TenantUUID

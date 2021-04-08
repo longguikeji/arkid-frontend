@@ -96,19 +96,22 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 router.beforeEach((to, from, next) => {
-  let isLogin = localStorage.getItem('token')
+  const isLogin = localStorage.getItem('token')
+  let nextUrl = ''
   if (isLogin) {
     if (to.path === '/login') {
-      next(from.fullPath)
-    } else {
-      next()
+      nextUrl = '/'
     }
   } else {
-    if (to.path === '/login') {
-      next()
-    } else {
-      next('/login')
+    if (to.path !== '/login') {
+      nextUrl = '/login'
     }
+  }
+
+  if (nextUrl === '') {
+    next()
+  } else {
+    next(nextUrl)
   }
 })
 
