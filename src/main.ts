@@ -17,14 +17,9 @@ import TablePage from '@/admin/TablePage/index.vue'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import { runFlowByFile } from '@/arkfbp'
-import OpenAPI from './config/openapi'
 import './admin'
 
-// runFlowByFile('flows/init', {}).then(() => {
-//   init()
-// })
-
-OpenAPI.instance.init('/api/schema?format=json').then(async() => {
+runFlowByFile('flows/init', {}).then(() => {
   init()
 })
 

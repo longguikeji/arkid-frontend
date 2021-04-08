@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="openAPIInited"
     id="app"
   >
     <router-view />
@@ -11,7 +10,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
-// import { GetUserAuthFlow } from './flows/getUserAuth'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI from '@/config/openapi'
 
@@ -22,35 +20,6 @@ import OpenAPI from '@/config/openapi'
   }
 })
 export default class extends Vue {
-  private openAPIInited = false
 
-  getUserInfo() {
-    // runWorkflow(new GetUserAuthFlow(), { store: this.$store })
-  }
-
-  isnotEmpty(obj: any) {
-    if (typeof obj === 'undefined' || obj === null || obj === '') {
-      return false
-    } else {
-      return true
-    }
-  }
-
-  async created() {
-    await this.setCurrentTenant()
-    this.openAPIInited = true
-    // if (this.isnotEmpty(localStorage.getItem('userToken'))) {
-    //   this.getUserInfo()
-    // } else {
-    //   this.$router.push('/login')
-    // }
-  }
-
-  async setCurrentTenant() {
-    await runFlowByFile('flows/tenant/setCurrentTenant', {
-      route: this.$route,
-      router: this.$router
-    })
-  }
 }
 </script>

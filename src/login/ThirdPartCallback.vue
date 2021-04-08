@@ -30,7 +30,6 @@ export default class ThirdPartCallback extends Vue {
     // }
     // jsonp<string>('api/v1/jsonp/', params, 600000).then((response:any) => {
     // console.log('jsonp.response', response)
-    console.log('第三方回调页面')
 
     const response = this.$route.query
 
@@ -45,7 +44,13 @@ export default class ThirdPartCallback extends Vue {
       if (response.next && typeof response.next === 'string') {
         LoginStore.NextUrl = response.next
       }
-      // this.$router.push('/login')
+      LoginStore.TenantUUID = response.tenant_uuid
+      this.$router.push({
+        path: '/login',
+        query: {
+          tenant: LoginStore.TenantUUID
+        }
+      })
     }
     // })
   }
