@@ -24,8 +24,6 @@ import './admin'
 //   init()
 // })
 
-
-
 OpenAPI.instance.init('/api/schema?format=json').then(async() => {
   init()
 })

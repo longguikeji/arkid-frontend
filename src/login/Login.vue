@@ -46,7 +46,6 @@ export default class Login extends Vue {
         config[key] = {
           ...data[key],
           extend: this.extendLogin(data[key].extend)
-          // extend: this.getExtendLogin()
         }
       } else {
         config[key] = data[key]
@@ -61,7 +60,7 @@ export default class Login extends Vue {
     if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
       extend.buttons.forEach(btn => {
         btn.redirect!.params = {
-          next: 'http://' + window.location.host + '/third_part_callback'
+          next: encodeURIComponent('http://' + window.location.host + '/#/third_part_callback')
         }
       })
     }

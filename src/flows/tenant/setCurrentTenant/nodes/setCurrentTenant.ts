@@ -14,13 +14,6 @@ export class SetCurrentTenant extends AuthApiNode {
           TenantModule.changeCurrentTenant({...output})
         }
       })
-    } else {
-      const path = location.hash
-      if (path === '#/login') {
-        this.inputs.router.push('/login')
-      } else {
-        this.inputs.router.push('/tenant')
-      }
     } 
   }
 }

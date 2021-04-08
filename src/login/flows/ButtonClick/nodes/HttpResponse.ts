@@ -34,7 +34,6 @@ export class HttpResponse extends FunctionNode {
         } else {
           com.$router.push('/tenant')
         }
-        window.location.reload()
       }
     }
   }

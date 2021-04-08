@@ -97,7 +97,10 @@ const router = createRouter()
 
 router.beforeEach((to, from, next) => {
   let isLogin = localStorage.getItem('token')
-  if (isLogin) {
+  console.log('to', to)
+  if (to.path === '/third_part_callback') {
+    next()
+  } else if (isLogin) {
     if (to.path === '/login') {
       next(from.fullPath)
     } else {
