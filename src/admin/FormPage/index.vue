@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="form-page">
     <Card :path="getChildPath('')">
       <Select
         v-if="state.select"
@@ -56,6 +56,9 @@ export default class extends Mixins(BaseVue) {
 }
 </script>
 <style lang="scss" scoped>
+.form-page {
+  height: 100%;
+}
 ::v-deep .tox .tox-menubar {
   width: 1000px;
 }

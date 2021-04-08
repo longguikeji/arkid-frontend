@@ -1,5 +1,5 @@
 <template>
-  <div class="tree__page__container">
+  <div class="tree-page">
     <Card
       class="tree__card"
       :path="getChildPath('tree.header')"
@@ -56,7 +56,7 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.tree__page__container {
+.tree-page {
   position: relative;
   display: block;
   width: 100%;
