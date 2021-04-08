@@ -65,3 +65,9 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep .el-dialog__body {
+  height: 96% !important;
+}
+</style>

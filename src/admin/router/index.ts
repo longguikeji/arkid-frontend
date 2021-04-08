@@ -1,10 +1,6 @@
 import { RouteConfig } from 'vue-router'
-
-/* AdminPage */
-import Admin from '@/admin/main/index.vue'
-
-/* Layout */
 import Layout from '@/layout/index.vue'
+import Admin from '@/admin/main/index.vue'
 
 // initRouterFromOpenAPI
 // 该方法用于根据OpenAPI生成动态的路由结构

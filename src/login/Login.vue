@@ -10,7 +10,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
-import { LoginPagesConfig, LoginPageConfig, LoginTenant } from './interface'
+import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import { jsonp } from 'vue-jsonp'
 
@@ -40,9 +40,32 @@ export default class Login extends Vue {
       method: 'get'
     }
     const { data, tenant } = await jsonp('/api/v1/jsonp', params)
-    this.config = data
+    const config = {}
+    Object.keys(data).forEach(key => {
+      if (key === 'login') {
+        config[key] = {
+          ...data[key],
+          extend: this.extendLogin(data[key].extend)
+          // extend: this.getExtendLogin()
+        }
+      } else {
+        config[key] = data[key]
+      }
+    })
+    this.config = config
     this.tenant = tenant
     this.isRenderLoginPage = true
+  }
+
+  private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
+    if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
+      extend.buttons.forEach(btn => {
+        btn.redirect!.params = {
+          next: 'http://' + window.location.host + '/third_part_callback'
+        }
+      })
+    }
+    return extend
   }
 }
 </script>

@@ -77,6 +77,9 @@ export default class extends Mixins(BaseVue) {
     .el-pagination {
       margin-top: 10px;
     }
+    .el-dialog.is-fullscreen {
+      height: 100% !important;
+    }
   }
 }
 </style>

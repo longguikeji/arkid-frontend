@@ -27,10 +27,14 @@ export class HttpResponse extends FunctionNode {
         LoginStore.NextUrl = ''
       } else {
         if (LoginStore.TenantUUID && LoginStore.TenantUUID.length > 0) {
-          com.$router.push('/')
+          com.$router.push({
+            path: '/',
+            query: {tenant: LoginStore.TenantUUID}
+          })
         } else {
           com.$router.push('/tenant')
         }
+        window.location.reload()
       }
     }
   }
