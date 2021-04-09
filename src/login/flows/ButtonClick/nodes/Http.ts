@@ -14,6 +14,9 @@ export class Http extends FunctionNode {
       let data = ''
       for (const key in btn.http.params) {
         const formKey = btn.http.params[key]
+        if (formKey === 'repassword' && com.currentFormData['repassword'] !== com.currentFormData['password']) {
+          return {}
+        }
         data += formKey
         data += '=' + com.currentFormData[formKey]
         data += '&'

@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
 /* Layout */
 import Layout from '@/layout/index.vue'
-
+import { TenantModule } from '@/store/modules/tenant'
 import { initRouterFromOpenAPI } from '@/admin/router/index'
 import OpenAPI from '@/config/openapi'
 /* Solve the problem of router repeatedly jumping to the same route */
@@ -96,19 +96,29 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 router.beforeEach((to, from, next) => {
-  let isLogin = localStorage.getItem('token')
-  if (isLogin) {
+  const isLogin = localStorage.getItem('token')
+  const currentTenant = TenantModule.currentTenant
+  let nextUrl = ''
+  if (to.path === '/third_part_callback') {
+    next()
+  } else if (isLogin) {
     if (to.path === '/login') {
-      next(from.fullPath)
-    } else {
+      nextUrl = '/'
+    } else if (to.path === '/tenant') {
       next()
+    } else if (!currentTenant || !currentTenant.uuid) {
+      nextUrl = '/tenant'
     }
   } else {
-    if (to.path === '/login') {
-      next()
-    } else {
-      next('/login')
+    if (to.path !== '/login') {
+      nextUrl = '/login'
     }
+  }
+
+  if (nextUrl === '') {
+    next()
+  } else {
+    next(nextUrl)
   }
 })
 

@@ -1,5 +1,8 @@
 <template>
-  <Card :path="getChildPath('card')">
+  <Card
+    :path="getChildPath('card')"
+    class="table-page"
+  >
     <div>
       <Form :path="filterPath" />
     </div>
@@ -63,7 +66,20 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.__tablepage__pagination__ {
-  margin-top: 10px;
+.table-page {
+  height: 100%;
+  ::v-deep  .el-card__body {
+    padding: 10px;
+    height: 100% !important;
+    .el-table {
+      height: 90% !important;
+    }
+    .el-pagination {
+      margin-top: 10px;
+    }
+    .el-dialog.is-fullscreen {
+      height: 100% !important;
+    }
+  }
 }
 </style>

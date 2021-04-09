@@ -1,5 +1,8 @@
 <template>
-  <div v-if="state && initCompleted">
+  <div
+    v-if="state && initCompleted"
+    style="height: 100%"
+  >
     <DashboardPage
       v-if="state.type === 'DashboardPage'"
       :path="'admin.adminState'"
