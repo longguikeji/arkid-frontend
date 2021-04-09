@@ -1,7 +1,7 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import getUrl from '@/utils/get-url'
 
-export class GetUserApp extends TokenAPINode {
+export class GetUserApp extends AuthApiNode {
   async run() {
     // get user app list 
     this.url = this.inputs.url

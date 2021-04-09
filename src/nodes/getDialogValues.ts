@@ -1,7 +1,7 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import getUrl from '@/utils/get-url'
 
-export class GetDialogValues extends TokenAPINode {
+export class GetDialogValues extends AuthApiNode {
   async run() {
     const data = this.inputs.com.state.data
     if (!data) {

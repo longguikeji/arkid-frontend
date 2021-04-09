@@ -1,8 +1,8 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/get-url'
 
-export class DeleteTreeNode extends TokenAPINode {
+export class DeleteTreeNode extends AuthApiNode {
   async run() {
     const data = this.inputs.com.state.data
 

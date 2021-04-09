@@ -1,15 +1,13 @@
-// import Cookies from 'js-cookie'
-
-// const TokenKey = 'token'
+import LoginStore from '@/login/store/login'
 
 export function getToken() {
-  return localStorage.getItem('userToken')
+  return LoginStore.token
 }
 
 export function setToken(token: string) {
-  return localStorage.setItem('userToken', token)
+  LoginStore.token = token
 }
 
 export function removeToken() {
-  return localStorage.removeItem('userToken')
+  LoginStore.removeToken()
 }
