@@ -1,4 +1,5 @@
-export default function processUUId(uuid: string): string {
+export default function processUUId(uuid: string) {
+  if (!uuid) return
   uuid = uuid.replace(/-/g, '')
   return uuid
 }
