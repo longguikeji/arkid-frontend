@@ -13,10 +13,14 @@ export class HttpResponse extends FunctionNode {
 
       if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
         // 绑定用户与第三方账号
+        let data = 'user_id=' + LoginStore.ThirdUserID
+        if (LoginStore.hasToken()) {
+          data += '&token=' + LoginStore.token
+        }
         const params = {
           url: LoginStore.BindUrl,
           method: 'post',
-          data: 'user_id=' + LoginStore.ThirdUserID
+          data: data
         }
         await jsonp<string>('api/v1/jsonp/', params)
         LoginStore.BindUrl = ''
