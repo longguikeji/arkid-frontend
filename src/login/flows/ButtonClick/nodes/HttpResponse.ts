@@ -26,16 +26,7 @@ export class HttpResponse extends FunctionNode {
         window.location.href = LoginStore.NextUrl
         LoginStore.NextUrl = ''
       } else {
-        const p = new Promise(() => {
-          window.location.reload()
-        })
-        p.then(() => {
-          if (LoginStore.TenantUUID && LoginStore.TenantUUID.length > 0) {
-            com.$router.push('/')
-          } else {
-            com.$router.push('/tenant')
-          }
-        })
+        window.location.reload()
       }
     }
   }
