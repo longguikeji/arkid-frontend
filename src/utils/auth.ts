@@ -1,15 +1,13 @@
 import LoginStore from '@/login/store/login'
 
-const TokenKey = LoginStore.TOKEN
-
 export function getToken() {
-  return localStorage.getItem(TokenKey)
+  return LoginStore.token
 }
 
 export function setToken(token: string) {
-  return localStorage.setItem(TokenKey, token)
+  LoginStore.token = token
 }
 
 export function removeToken() {
-  return localStorage.removeItem(TokenKey)
+  LoginStore.removeToken()
 }
