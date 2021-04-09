@@ -9,10 +9,10 @@ export class Init extends AuthApiNode {
     // 查找当前租户信息并保存在 TenantModule.currentTenant中进行统一管理
     let tenantUUId = TenantModule.currentTenant.uuid || location.hash.split('=')[1]
     tenantUUId = processUUId(tenantUUId)
-    this.url = '/api/v1/tenant/'
-    this.method = 'get'
-    const outputs = await super.run()
     if (tenantUUId) {
+      this.url = '/api/v1/tenant/'
+      this.method = 'get'
+      const outputs = await super.run()
       outputs.results.forEach(output => {
         if (output.uuid === tenantUUId) {
           TenantModule.changeCurrentTenant({...output})
