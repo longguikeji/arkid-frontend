@@ -3,13 +3,13 @@
 // const TokenKey = 'token'
 
 export function getToken() {
-  return localStorage.getItem('userToken')
+  return localStorage.getItem('token')
 }
 
 export function setToken(token: string) {
-  return localStorage.setItem('userToken', token)
+  return localStorage.setItem('token', token)
 }
 
 export function removeToken() {
-  return localStorage.removeItem('userToken')
+  return localStorage.removeItem('token')
 }

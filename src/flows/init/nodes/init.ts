@@ -3,6 +3,7 @@ import OpenAPI from '@/config/openapi'
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
 import processUUId from '@/utils/process-uuid'
+import { getToken } from '@/utils/auth'
 
 export class Init extends AuthApiNode {
   async run() {
@@ -21,7 +22,7 @@ export class Init extends AuthApiNode {
     }
 
     // 当用户已经登录后进行openAPI的访问，并生成动态路由内容，否则不进行生成
-    const token = localStorage.getItem('token')
+    const token = getToken()
     if (token) {
       // 获取OpenAPI内容
       await OpenAPI.instance.init('/api/schema?format=json')
