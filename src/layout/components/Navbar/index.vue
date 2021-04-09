@@ -65,6 +65,7 @@ import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
+import { removeToken } from '@/utils/auth'
 
 @Component({
   name: 'Navbar',
@@ -100,7 +101,7 @@ export default class extends Vue {
   }
 
   private async logout() {
-    localStorage.removeItem('token')
+    removeToken()
     this.$router.push('/login')
   }
 }
