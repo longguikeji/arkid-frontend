@@ -1,6 +1,6 @@
-import { TokenAPINode } from '@/arkfbp/nodes/tokenAPINode'
+import { AuthApiNode } from '@/nodes/authApiNode'
 
-export class Options extends TokenAPINode {
+export class Options extends AuthApiNode {
   async run() {
     this.url = this.inputs.url
     this.method = this.inputs.method

@@ -1,9 +1,9 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { StateNode } from '@/nodes/stateNode'
 import getInitContent from '@/utils/get-init-content'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
 
-export class InitInputList extends AuthApiNode {
+export class InitInputList extends StateNode {
   async run() {
     const tempState = this.getState()
     const params = this.inputs.params
