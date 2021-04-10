@@ -83,7 +83,7 @@ export const menuRoutes: RouteConfig[] = [
 // export const hideRoutes: RouteConfig[] = initRouterFromConfig('router.modules.hideRouter')
 
 const createRouter = () => new Router({
-  mode: 'hash', // Disabled due to Github Pages doesn't support this, enable this if you need.
+  mode: 'history', // Disabled due to Github Pages doesn't support this, enable this if you need.
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) {
       return savedPosition
@@ -91,7 +91,7 @@ const createRouter = () => new Router({
       return { x: 0, y: 0 }
     }
   },
-  base: process.env.BASE_URL,
+  base: process.env.VUE_APP_BASE_API,
   routes: [...menuRoutes]
 })
 

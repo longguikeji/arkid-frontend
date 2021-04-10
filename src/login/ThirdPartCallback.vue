@@ -1,12 +1,6 @@
-<template>
-  <div>
-    {{ $route.query }}
-  </div>
-</template>
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { jsonp } from 'vue-jsonp'
 import LoginStore from './store/login'
 
 interface Response {
@@ -37,6 +31,8 @@ export default class ThirdPartCallback extends Vue {
       LoginStore.token = response.token
       if (response.next && typeof response.next === 'string') {
         window.location.href = response.next
+      } else {
+        window.location.replace('/')
       }
     } else { // 没有登录，需要绑定到某用户
       LoginStore.ThirdUserID = String(response.user_id)

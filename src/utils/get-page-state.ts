@@ -1,5 +1,6 @@
 import { TenantModule } from '@/store/modules/tenant'
 import { AdminModule } from '@/store/modules/admin'
+import { getBaseUrl } from './baseurl'
 
 function getStateByPath(tempState: any, path: string) {
   if (path === '' || path === 'admin.adminState' || path === 'tenant.tenantState' || path === undefined) {
@@ -47,5 +48,6 @@ export function getCurrentRequiredState() {
 }
 
 export function isTenantState() {
-  return (location.hash === '#/tenant' || location.pathname === '/tenant')
+  const baseUrl = getBaseUrl()
+  return (location.hash === '#' + baseUrl + '/tenant' || location.pathname === baseUrl + '/tenant')
 }

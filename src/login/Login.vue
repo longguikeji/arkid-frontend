@@ -13,6 +13,7 @@ import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import { jsonp } from 'vue-jsonp'
+import { getBaseUrl } from '@/utils/baseurl'
 
 @Component({
   name: 'Login',
@@ -69,7 +70,7 @@ export default class Login extends Vue {
     if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
       extend.buttons.forEach(btn => {
         btn.redirect!.params = {
-          next: encodeURIComponent('http://' + window.location.host + '/#/third_part_callback')
+          next: encodeURIComponent('http://' + window.location.host + getBaseUrl() + '/third_part_callback')
         }
       })
       return extend

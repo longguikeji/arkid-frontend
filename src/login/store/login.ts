@@ -4,7 +4,7 @@ export default class LoginStore {
   private static _token:string | null
 
   public static get token():string | null {
-    if (LoginStore._token != null) {
+    if (LoginStore._token) {
       return LoginStore._token
     }
     LoginStore._token = window.localStorage.getItem(LoginStore.TOKEN)
@@ -12,7 +12,7 @@ export default class LoginStore {
   }
 
   public static set token(value:string | null) {
-    if (value != null) {
+    if (value) {
       window.localStorage.setItem(LoginStore.TOKEN, value)
     } else {
       window.localStorage.removeItem(LoginStore.TOKEN)
@@ -21,11 +21,11 @@ export default class LoginStore {
   }
 
   public static removeToken() {
-    LoginStore.token = null 
+    LoginStore.token = null
   }
 
   public static hasToken() {
-    return LoginStore.token === null
+    return LoginStore.token
   }
  
   public static ThirdUserID = ''
