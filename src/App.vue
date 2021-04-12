@@ -10,8 +10,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
-import { runFlowByFile } from '@/arkfbp/index'
-import OpenAPI from '@/config/openapi'
 
 @Component({
   name: 'App',

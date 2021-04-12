@@ -11,6 +11,10 @@ interface Response {
   name: 'ThirdPartCallback'
 })
 export default class ThirdPartCallback extends Vue {
+  render() {
+    // render
+  }
+
   mounted() {
     // 根据返回的值判断是否需要绑定用户，需要打开绑定界面，两种情况，注册或登录
     // const tokenAPI = this.$route.query.token_api

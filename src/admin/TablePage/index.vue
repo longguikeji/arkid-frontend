@@ -82,4 +82,13 @@ export default class extends Mixins(BaseVue) {
     }
   }
 }
+.el-dialog {
+  .table-page {
+    ::v-deep .el-card__body {
+      .el-table__body-wrapper {
+        height: auto !important;
+      }
+    }
+  }
+}
 </style>
