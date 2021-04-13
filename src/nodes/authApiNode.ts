@@ -7,7 +7,7 @@ export class AuthApiNode extends APINode {
     const token = getToken()
     if (token) {
       this.headers = {
-        Authorization: 'Token ' + getToken()
+        Authorization: 'Token ' + token
       }
     }
     return super.run()
