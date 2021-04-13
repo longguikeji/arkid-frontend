@@ -2,6 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
+import { VerifyToken } from './nodes/verifyToken'
 import { Init } from './nodes/init'
 
 export class Main extends Flow {
@@ -9,6 +10,10 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
+      next: 'verifyToken'
+    }, {
+      cls: VerifyToken,
+      id: 'verifyToken',
       next: 'init'
     }, {
       cls: Init,

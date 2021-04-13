@@ -7,6 +7,7 @@ import { getToken } from '@/utils/auth'
 
 export class Init extends AuthApiNode {
   async run() {
+
     // 查找当前租户信息并保存在 TenantModule.currentTenant中进行统一管理
     let tenantUUId = TenantModule.currentTenant.uuid || (location.hash !== '' ? location.hash.split('=')[1] : location.search.split('=')[1])
     tenantUUId = processUUId(tenantUUId)
@@ -20,6 +21,7 @@ export class Init extends AuthApiNode {
         }
       })
     }
+
     // 当用户已经登录后进行openAPI的访问，并生成动态路由内容，否则不进行生成
     const token = getToken()
     if (token) {
