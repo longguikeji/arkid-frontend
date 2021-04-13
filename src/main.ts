@@ -1,4 +1,4 @@
-import Vue, { DirectiveOptions } from 'vue'
+import Vue from 'vue'
 
 import 'normalize.css'
 import ElementUI from 'element-ui'
@@ -13,7 +13,6 @@ import i18n from '@/lang'
 import '@/icons/components'
 import '@/utils/error-log'
 import '@/pwa/register-service-worker'
-import TablePage from '@/admin/TablePage/index.vue'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import { runFlowByFile } from '@/arkfbp'
@@ -38,8 +37,6 @@ function init() {
   })
 
   Vue.config.productionTip = false
-
-  Vue.component('TablePage', TablePage)
 
   new Vue({
     router,
