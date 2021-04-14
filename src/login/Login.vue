@@ -13,7 +13,7 @@ import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import { jsonp } from 'vue-jsonp'
-import { getBaseUrl } from '@/utils/baseurl'
+import { getBaseUrl } from '@/utils/url'
 
 @Component({
   name: 'Login',

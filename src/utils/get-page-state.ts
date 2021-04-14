@@ -1,6 +1,6 @@
 import { TenantModule } from '@/store/modules/tenant'
 import { AdminModule } from '@/store/modules/admin'
-import { getBaseUrl } from './baseurl'
+import { getBaseUrl } from './url'
 
 function getStateByPath(tempState: any, path: string) {
   if (path === '' || path === 'admin.adminState' || path === 'tenant.tenantState' || path === undefined) {

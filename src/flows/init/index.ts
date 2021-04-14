@@ -3,7 +3,8 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { VerifyToken } from './nodes/verifyToken'
-import { Init } from './nodes/init'
+import { Tenant } from './nodes/tenant'
+import { AfterLogin } from './nodes/afterLogin'
 
 export class Main extends Flow {
   createNodes() {
@@ -14,10 +15,14 @@ export class Main extends Flow {
     }, {
       cls: VerifyToken,
       id: 'verifyToken',
-      next: 'init'
+      next: 'tenant'
     }, {
-      cls: Init,
-      id: 'init',
+      cls: Tenant,
+      id: 'tenant',
+      next: 'afterLogin'
+    }, {
+      cls: AfterLogin,
+      id: 'afterLogin',
       next: 'stop'
     }, {
       cls: StopNode,

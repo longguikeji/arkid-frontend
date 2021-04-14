@@ -1,4 +1,4 @@
-import { APINode } from "arkfbp/lib/apiNode";
+import { APINode } from "arkfbp/lib/apiNode"
 import { getToken } from '@/utils/auth'
 import getPageState, { getPreviousPageState, getBaseState } from '@/utils/get-page-state'
 

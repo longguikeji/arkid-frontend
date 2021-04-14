@@ -1,6 +1,6 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import getUrl from '@/utils/get-url'
+import getUrl from '@/utils/url'
 import getDialogParams from '@/utils/get-dialog-params'
 import TreePageState from '@/admin/TreePage/TreePageState'
 import FormPageState from '@/admin/FormPage/FormPageState'
