@@ -33,15 +33,16 @@ export default class extends Vue {
   }
 
   private toTarget() {
-    if (this.to.includes('system')) {
+    if (this.to.includes('system') || TenantModule.currentSlugIsValid) {
       return {
         path: this.to
       }
-    }
-    return {
-      path: this.to,
-      query: {
-        tenant: this.currentTenant.uuid
+    } else {
+      return {
+        path: this.to,
+        query: {
+          tenant: this.currentTenant.uuid
+        }
       }
     }
   }

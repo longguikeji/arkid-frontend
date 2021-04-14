@@ -36,6 +36,9 @@ export function getUrlParamByName(name: string) {
   return false
 }
 
-export function getSlugByUrl() {
-  return window.location.hostname.split('.')[0]
+export function getSlug() {
+  const slug = window.location.hostname.split('.')[0]
+  if (slug && slug !== 'localhost' && slug !== 'arkid') {
+    return slug
+  }
 }

@@ -5,6 +5,7 @@ import TablePageState from '@/admin/TablePage/TablePageState'
 export interface ITenantState {
   tenantState: TablePageState
   currentTenant: any
+  currentSlugIsValid: boolean
 }
 
 @Module({ dynamic: true, store, name: 'tenant' })
@@ -13,6 +14,7 @@ class Tenant extends VuexModule implements ITenantState {
     type: 'TablePage'
   }
   currentTenant: any = {}
+  currentSlugIsValid: boolean = false
 
   @Mutation
   public changeState(payload: any) {
@@ -24,10 +26,10 @@ class Tenant extends VuexModule implements ITenantState {
     this.currentTenant = payload
   }
   
-  // @Action
-  // public async setState(payload: any) {
-  //   this.changeState(payload)
-  // }
+  @Mutation
+  public setCurrentSlugIsValid(valid: boolean) {
+    this.currentSlugIsValid = valid
+  }
 }
 
 export const TenantModule = getModule(Tenant)
