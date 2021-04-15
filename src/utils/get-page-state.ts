@@ -1,6 +1,6 @@
 import { TenantModule } from '@/store/modules/tenant'
 import { AdminModule } from '@/store/modules/admin'
-import { getBaseUrl } from './baseurl'
+import { getBaseUrl } from './url'
 
 function getStateByPath(tempState: any, path: string) {
   if (path === '' || path === 'admin.adminState' || path === 'tenant.tenantState' || path === undefined) {
@@ -24,7 +24,12 @@ function getStateByPath(tempState: any, path: string) {
 export default function getPageState(specifiedPath = '') {
   const tempState = getBaseState()
   if (!tempState) return
-  const path = specifiedPath === '' ? tempState.pages[tempState.pages.length - 1] : specifiedPath
+  let path = ''
+  if (specifiedPath) {
+    path = specifiedPath
+  } else if (tempState?.pages) {
+    path = tempState?.pages[tempState.pages.length - 1]
+  }
   return getStateByPath(tempState, path)
 }
 

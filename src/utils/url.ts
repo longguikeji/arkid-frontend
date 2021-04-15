@@ -20,3 +20,25 @@ export default function getUrl(currentUrl: string, data: any = {}) {
   if (url.indexOf('{') !== -1) return getUrl(url, data)
   return url
 }
+
+export function getBaseUrl() {
+  let baseUrl = process.env.VUE_APP_BASE_API || ''
+  if (baseUrl.charAt(0) !== '/' && baseUrl.length > 0) baseUrl = '/' + baseUrl
+  return baseUrl
+}
+
+export function getUrlParamByName(name: string) {
+  const urlParams = window.location.search.substring(1).split('&')
+  for (let i = 0; i < urlParams.length; i++) {
+    const thisParams = urlParams[i].split('=')
+    if (thisParams[0] === name) return thisParams[1]
+  }
+  return false
+}
+
+export function getSlug() {
+  const slug = window.location.hostname.split('.')[0]
+  if (slug && slug !== 'localhost' && slug !== 'arkid') {
+    return slug
+  }
+}

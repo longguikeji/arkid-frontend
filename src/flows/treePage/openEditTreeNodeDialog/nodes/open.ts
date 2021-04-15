@@ -20,4 +20,17 @@ export class Open extends OpenDialog {
   getDialogData() {
     return this.inputs.outputs
   }
+
+  getOptions(prop) {
+    if (this.inputs.outputs.parent && prop === 'parent_uuid') {
+      return [
+        {
+          label: this.inputs.outputs.parent.name || '',
+          value: this.inputs.outputs.parent.uuid || '',
+        }
+      ]
+    } else {
+      return []
+    }
+  }
 }

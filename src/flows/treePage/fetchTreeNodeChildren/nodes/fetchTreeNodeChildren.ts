@@ -1,5 +1,5 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
-import getUrl from '@/utils/get-url'
+import getUrl from '@/utils/url'
 import TreePageState from '@/admin/TreePage/TreePageState'
 import TreeNodeProps from '@/admin/common/data/Tree/TreeNodeProps'
 import getTreeData from '@/utils/get-tree-data'
