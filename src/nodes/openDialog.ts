@@ -1,6 +1,7 @@
 import { StateNode } from '@/nodes/stateNode'
 import FormPageState from '@/admin/FormPage/FormPageState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
+import OptionType from '@/admin/common/Form/Select/OptionType'
 import { debug } from 'console'
 
 export default class OpenDialog extends StateNode {
@@ -13,7 +14,7 @@ export default class OpenDialog extends StateNode {
   }
 
   // 之后需要提供 url 和 method 来具体获取某一个 options
-  getOptions() {
+  getOptions(prop = ''): Array<OptionType> {
     return []
   }
 
@@ -29,7 +30,7 @@ export default class OpenDialog extends StateNode {
         const currentFormPageItems = currentFormPageState.form.items
         for (const prop in currentFormPageItems) {
           if ('options' in currentFormPageItems[prop].state) {
-            currentFormPageItems[prop].state.options = this.getOptions()
+            currentFormPageItems[prop].state.options = this.getOptions(prop)
           }
           currentFormPageItems[prop].state.value = this.getValue(prop)
         }
@@ -41,7 +42,7 @@ export default class OpenDialog extends StateNode {
           if (form.items) {
             for (const prop in form.items) {
               if ('options' in form.items[prop].state) {
-                form.items[prop].state.options = this.getOptions()
+                form.items[prop].state.options = this.getOptions(prop)
               }
               let value = this.getValue(prop)
               if (!value) {

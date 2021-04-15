@@ -1,6 +1,6 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import getUrl from '@/utils/get-url'
+import getUrl from '@/utils/url'
 import TablePageState from '@/admin/TablePage/TablePageState'
 
 export class Sort extends AuthApiNode {

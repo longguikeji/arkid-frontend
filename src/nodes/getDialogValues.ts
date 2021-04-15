@@ -1,5 +1,5 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
-import getUrl from '@/utils/get-url'
+import getUrl from '@/utils/url'
 
 export class GetDialogValues extends AuthApiNode {
   async run() {
