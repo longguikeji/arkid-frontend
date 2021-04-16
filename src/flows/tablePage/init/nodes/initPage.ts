@@ -1,7 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TablePageState from '@/admin/TablePage/TablePageState'
 
-export class InitTablePage extends FunctionNode {
+export class InitPage extends FunctionNode {
   async run() {
     const tempState: TablePageState = {
       type: 'TablePage',
@@ -21,10 +21,7 @@ export class InitTablePage extends FunctionNode {
         title: '',
         buttons: []
       },
-      dialogs: {
-        create: {},
-        update: {}
-      },
+      dialogs: {},
       table: {
         columns: [],
         data: []

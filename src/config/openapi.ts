@@ -94,6 +94,30 @@ export interface ITagPage {
   childrenList?: ITagPageAction
 }
 
+export interface ITagAction {
+  path: string
+  method: string
+}
+
+export interface ITagInitAction {
+
+}
+
+// export interface ITagPageAction {
+
+// }
+
+// export interface ITagItemAction {
+
+// }
+
+export interface IPageInitContent {
+  type: string
+  init?: ITagPageAction | { [key: string]: ITagPageAction }
+  page?: { [key: string]: ITagPageAction }
+  item?: { [key: string]: ITagPageAction | { [key: string]: ITagPageAction } }
+}
+
 export interface ITag {
   name: string
   description?: string

@@ -5,22 +5,20 @@ export class InitSortable extends FunctionNode {
   async run() {
     const tempState = this.inputs.state as TablePageState
     const initContent = this.inputs.data.initContent
+    const initBaseAction = this.inputs.initBaseAction
     if (initContent.sort) {
       const sortOperationPath = initContent.sort.batch.path
       const sortOperationMethod = initContent.sort.batch.method
-      const listOperationPath = initContent.list.path
-      const listOperationMethod = initContent.list.method
       if (tempState.table) {
         tempState.table.sortable = true
         tempState.table.sortAction = [
           {
             name: 'flows/tablePage/sort',
             params: {
-              sortUrl: sortOperationPath,
-              sortMethod: sortOperationMethod,
-              fetchUrl: listOperationPath,
-              fetchMethod: listOperationMethod,
-              sortType: 'batch'
+              url: sortOperationPath,
+              method: sortOperationMethod,
+              sortType: 'batch',
+              ...initBaseAction
             }
           }
         ]
@@ -43,11 +41,10 @@ export class InitSortable extends FunctionNode {
               {
                 name: 'flows/tablePage/sort',
                 params: {
-                  sortUrl: initContent.sort[sortName].path,
-                  sortMethod: initContent.sort[sortName].method,
-                  fetchUrl: listOperationPath,
-                  fetchMethod: listOperationMethod,
+                  url: initContent.sort[sortName].path,
+                  method: initContent.sort[sortName].method,
                   sortType: sortName,
+                  ...initBaseAction
                 }
               }
             ]
