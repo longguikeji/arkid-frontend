@@ -13,7 +13,7 @@ export class HttpResponse extends FunctionNode {
       // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
       const next = com.$route.query.next
       if (next) {
-        const redirectUrl = window.location.origin + next
+        const redirectUrl = LoginStore.host + next + '&token=' + this.inputs.data.token
         window.location.replace(redirectUrl)
         return
       }
