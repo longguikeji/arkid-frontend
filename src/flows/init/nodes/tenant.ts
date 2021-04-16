@@ -30,7 +30,7 @@ export class Tenant extends APINode {
       this.method = 'get'
       const outputs = await super.run()
       outputs.results.forEach(output => {
-        if (output.uuid === tenantUUId) { 
+        if (output.uuid === tenantUUId || outputs.results.length === 1) { 
           currentTenant = output
         }
       })

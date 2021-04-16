@@ -69,6 +69,7 @@ export default class Login extends Vue {
   private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
     if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
       extend.buttons.forEach(btn => {
+        btn.img = btn.img || 'extend-icon'
         btn.redirect!.params = {
           next: encodeURIComponent('http://' + window.location.host + getBaseUrl() + '/third_part_callback')
         }
