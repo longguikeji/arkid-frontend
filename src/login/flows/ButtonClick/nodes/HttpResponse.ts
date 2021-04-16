@@ -9,6 +9,15 @@ export class HttpResponse extends FunctionNode {
 
     if (this.inputs.data && this.inputs.error === '0' && this.inputs.data.token) {
       // login success
+      
+      // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
+      const next = com.$route.query.next
+      if (next) {
+        const redirectUrl = window.location.origin + next
+        window.location.replace(redirectUrl)
+        return
+      }
+
       LoginStore.token = this.inputs.data.token
 
       if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
@@ -26,6 +35,7 @@ export class HttpResponse extends FunctionNode {
         LoginStore.BindUrl = ''
         LoginStore.ThirdUserID = ''
       }
+
       if (LoginStore.NextUrl) {
         window.location.href = LoginStore.NextUrl
         LoginStore.NextUrl = ''
