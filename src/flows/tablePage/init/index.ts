@@ -4,8 +4,8 @@ import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { InitPage } from './nodes/initPage'
 import { InitTable } from './nodes/initTable'
-import { InitAction } from './nodes/initAction'
 import { InitSortable } from './nodes/initSortable'
+import { InitAction } from './nodes/initAction'
 
 export class Main extends Flow {
   createNodes() {
@@ -21,14 +21,14 @@ export class Main extends Flow {
       }, {
         cls: InitTable,
         id: 'initTable',
-        next: 'initAction'
-      }, {
-        cls: InitAction,
-        id: 'initAction',
         next: 'initSortable'
       }, {
         cls: InitSortable,
         id: 'initSortable',
+        next: 'initAction'
+      }, {
+        cls: InitAction,
+        id: 'initAction',
         next: 'stop'
       }, {
         cls: StopNode,

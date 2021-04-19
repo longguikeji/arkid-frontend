@@ -57,7 +57,8 @@ export class InitSortable extends FunctionNode {
     
     return {
       data: this.inputs.data,
-      state: tempState
+      state: tempState,
+      initBaseAction: this.inputs.initBaseAction
     }
   }
 }

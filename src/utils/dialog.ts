@@ -1,4 +1,4 @@
-import OpenAPI from '@/config/openapi'
+import { IOperation } from '@/config/openapi'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import generateDialogForm from '@/utils/generate-dialog-form'
@@ -12,7 +12,7 @@ import getSchemaByContent from '@/utils/get-schema-by-content'
 // actions: 操作，填入Dialog的按钮中 -- 非必须
 // showReadOnly 是否需要展示 readOnly 的字段内容 - 非必须
 export interface GenerateDialogStateParams {
-  path: string
+  initActionOperation: IOperation
   method: string
   type?: string
   title?: string
@@ -21,15 +21,14 @@ export interface GenerateDialogStateParams {
 }
 
 export function generateDialogState(params: GenerateDialogStateParams): DialogState | undefined {
-  const { path, method, type, title, actions, showReadOnly } = params
+  const { initActionOperation, method, type, title, actions, showReadOnly } = params
   if (method === 'delete') return undefined
-  const initActionOperation = OpenAPI.instance.getOperation(path, method)
   if (!initActionOperation) return undefined
   const isResponses = method.toLowerCase() === "get" ? true : false
   const content = isResponses ? initActionOperation.responses[200].content : initActionOperation.requestBody.content
   const schema = getSchemaByContent(content)
   const actionDialogState: DialogState = {}
-  actionDialogState.title = initActionOperation.summary || title
+  actionDialogState.title = title
   actionDialogState.visible = false
   actionDialogState.data = {}
   actionDialogState.type = type || 'FormPage'

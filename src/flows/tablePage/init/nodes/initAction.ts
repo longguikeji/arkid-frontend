@@ -1,9 +1,9 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { ITagPageAction, ITagInitUpdateAction, ITagInitAction } from '@/config/openapi'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import TablePageState from '@/admin/TablePage/TablePageState'
 import { GenerateDialogStateParams, generateDialogState } from '@/utils/dialog'
+import OpenAPI from '@/config/openapi'
 
 export class InitAction extends FunctionNode {
 
@@ -44,9 +44,11 @@ export class InitAction extends FunctionNode {
 
   initTablePageDialogState(tempState: TablePageState, url: string, method: string, key: string, title: string, buttonType: string, dialogType: string) {
     // 初始化对应的 dialog
+    const initActionOperation = OpenAPI.instance.getOperation(url, method)
+
     const dialogActions = [
       {
-        label: title,
+        label: initActionOperation.summary || title,
         type: buttonType,
         action: [
           {
@@ -60,13 +62,15 @@ export class InitAction extends FunctionNode {
         ]
       }
     ]
+
     const dialogParams: GenerateDialogStateParams = {
-      path: url,
+      initActionOperation: initActionOperation,
       method: method,
       type: dialogType,
-      title: title,
+      title: initActionOperation.summary || title,
       actions: dialogActions
     }
+    
     const dialogState = generateDialogState(dialogParams)
     if (dialogState) {
       tempState.dialogs![key] = dialogState as DialogState
@@ -75,6 +79,7 @@ export class InitAction extends FunctionNode {
         tempState.dialogs!.selected = importListDialog
       }
     }
+    
   }
 
   async run() {
