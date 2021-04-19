@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { ITagPageAction } from '@/config/openapi'
+import { ITagPageAction, ITagInitUpdateAction, ITagInitAction } from '@/config/openapi'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import TablePageState from '@/admin/TablePage/TablePageState'
@@ -42,10 +42,7 @@ export class InitAction extends FunctionNode {
     return key.slice(0,1).toUpperCase() + key.slice(1).toLowerCase()
   }
 
-  initTablePageDialogState(tempState: TablePageState, action: ITagPageAction | { [key: string]: ITagPageAction }, key: string, title: string, buttonType: string, dialogType: string) {
-    // 获取 action 所依赖的 url 和 method
-    const url = key !== 'update' ? action.path : action['write'].path
-    const method = key !== 'update' ? action.method : action['write'].method
+  initTablePageDialogState(tempState: TablePageState, url: string, method: string, key: string, title: string, buttonType: string, dialogType: string) {
     // 初始化对应的 dialog
     const dialogActions = [
       {
@@ -88,9 +85,9 @@ export class InitAction extends FunctionNode {
     if (initContent?.page) {
       Object.keys(initContent.page).forEach(key => {
         const { title, dialogType, buttonType } = this.initBaseAttributes(key)
-        const action = initContent.page[key]
+        const { path: url, method } = initContent.page[key]
         // 对话框
-        this.initTablePageDialogState(tempState, action, key, title, buttonType, dialogType)
+        this.initTablePageDialogState(tempState, url, method, key, title, buttonType, dialogType)
         // 按钮
         const newKey = this.getNewKey(key)
         const cardButton = {
@@ -110,9 +107,11 @@ export class InitAction extends FunctionNode {
     if (initContent?.item) {
       Object.keys(initContent.item).forEach(key => {
         const { title, dialogType, buttonType } = this.initBaseAttributes(key)
-        const action = initContent.item[key]
+        let action = initContent.item[key]
+        if (action.read) action = action.read
+        const { path: url, method } = action
         // 对话框
-        this.initTablePageDialogState(tempState, action, key, title, buttonType, dialogType)
+        this.initTablePageDialogState(tempState, url, method, key, title, buttonType, dialogType)
         // 按钮
         const newKey = this.getNewKey(key)
         const buttonState = {
@@ -122,8 +121,8 @@ export class InitAction extends FunctionNode {
             {
               name: action.method === 'delete' ? 'flows/tablePage/delete' : 'flows/tablePage/open' + newKey + 'Dialog',
               params: {
-                url: key !== 'update' ? action.path : action['read'].path,
-                method: key !== 'update' ?  action.method : action['read'].method,
+                url,
+                method,
                 ...this.inputs.initBaseAction
               }
             }
