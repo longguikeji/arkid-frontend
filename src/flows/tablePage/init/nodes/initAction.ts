@@ -30,7 +30,7 @@ export class InitAction extends FunctionNode {
         tempState.card?.buttons?.push(cardButton)
       })
     }
-
+    
     // ② 初始化item类型
     if (initContent.item) {
       Object.keys(initContent.item).forEach(key => {

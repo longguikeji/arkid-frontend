@@ -81,6 +81,7 @@ export function getBaseAttributes(key: string) {
 
 export function dialog(tempState: any, url: string, method: string, key: string, prefix: string, baseAction: InitBaseAction, showReadOnly: boolean = true) {
   const initActionOperation = OpenAPI.instance.getOperation(url, method)
+  if (!initActionOperation) return tempState
   const { title, dialogType, buttonType } = getBaseAttributes(key)
   const dialogAction = [
     {
