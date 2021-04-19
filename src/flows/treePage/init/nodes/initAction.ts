@@ -8,12 +8,13 @@ export class InitAction extends FunctionNode {
     const { initContent } = this.inputs.data
     const baseAction = this.inputs.baseAction
     const prefix = 'flows/treePage/'
+    const showReadOnly = false
 
     // 对树进行操作
     if (initContent.page) {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
-        tempState = dialog(tempState, url, method, key, prefix, baseAction)
+        tempState = dialog(tempState, url, method, key, prefix, baseAction, showReadOnly)
         const { title, buttonType, newKey } = getBaseAttributes(key)
         const cardButton = {
           label: title,
@@ -43,7 +44,7 @@ export class InitAction extends FunctionNode {
           let url = action.path || action.write.path
           let method = action.method || action.write.method
           // 对话框
-          tempState = dialog(tempState, url, method, key, prefix, baseAction)
+          tempState = dialog(tempState, url, method, key, prefix, baseAction, showReadOnly)
           // 按钮
           if (action.read) {
             url = action.read.path

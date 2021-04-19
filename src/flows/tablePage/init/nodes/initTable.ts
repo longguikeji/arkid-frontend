@@ -19,14 +19,16 @@ export class InitTable extends FunctionNode {
       baseAction.fetchMethod = initTableMethod
       if (initTableOperation) {
         // 给页面hook添加内容
-        tempState.created.push({
-          name: 'flows/tablePage/fetch',
-          params: baseAction
-        })
-        tempState.destroyed.push({
-          name: 'flows/hookFlow/destroyed',
-          params: baseAction
-        })
+        if (otherInitContent.isHooks !== false) {
+          tempState.created.push({
+            name: 'flows/tablePage/fetch',
+            params: baseAction
+          })
+          tempState.destroyed.push({
+            name: 'flows/hookFlow/destroyed',
+            params: baseAction
+          })
+        }
 
         // 给页面元素添加state
         tempState.card.title = initTableOperation.summary || ''

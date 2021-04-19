@@ -5,7 +5,6 @@ import generateDialogForm from '@/utils/generate-dialog-form'
 import getSchemaByContent from '@/utils/get-schema-by-content'
 import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
-import { cloneDeep } from 'lodash'
 
 // 参数说明:
 // path: 获取Dialog元素的必备参数 -- 必须
@@ -80,7 +79,7 @@ export function getBaseAttributes(key: string) {
 }
 
 
-export function dialog(tempState: any, url: string, method: string, key: string, prefix: string, baseAction: InitBaseAction) {
+export function dialog(tempState: any, url: string, method: string, key: string, prefix: string, baseAction: InitBaseAction, showReadOnly: boolean = true) {
   const initActionOperation = OpenAPI.instance.getOperation(url, method)
   const { title, dialogType, buttonType } = getBaseAttributes(key)
   const dialogAction = [
@@ -104,16 +103,16 @@ export function dialog(tempState: any, url: string, method: string, key: string,
     method,
     type: dialogType,
     title: initActionOperation.summary || title,
-    actions: dialogAction
+    actions: dialogAction,
+    showReadOnly
   }
   const dialogState = generateDialogState(dialogParams)
-  const state = cloneDeep(tempState)
   if (dialogState) {
-    state.dialogs![key] = dialogState as DialogState
+    tempState.dialogs![key] = dialogState as DialogState
     const importListDialog = whetherImportListDialog(dialogState.state)
-    if (importListDialog && !state.dialogs!.selected) {
-      state.dialogs!.selected = importListDialog
+    if (importListDialog && !tempState.dialogs!.selected) {
+      tempState.dialogs!.selected = importListDialog
     }
   }
-  return state
+  return tempState
 }

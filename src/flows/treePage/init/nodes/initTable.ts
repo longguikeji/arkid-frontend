@@ -9,7 +9,8 @@ export class InitTable extends FunctionNode {
     if (initContent.table) {
       initContent.table.init.path = initContent.table.init.path.split('?')[0]
       await runFlowByFile('flows/tablePage/init', {
-        initContent: initContent.table
+        initContent: initContent.table,
+        isHooks: false
       }).then(async (data) => {
         const tableState = data.state
         tempState.table = tableState        
