@@ -79,7 +79,7 @@ export class InitAction extends FunctionNode {
         tempState.dialogs!.selected = importListDialog
       }
     }
-    
+
   }
 
   async run() {
@@ -112,12 +112,16 @@ export class InitAction extends FunctionNode {
     if (initContent?.item) {
       Object.keys(initContent.item).forEach(key => {
         const { title, dialogType, buttonType } = this.initBaseAttributes(key)
-        let action = initContent.item[key]
-        if (action.read) action = action.read
-        const { path: url, method } = action
+        const action = initContent.item[key]
+        let url = action.path || action.write.path
+        let method = action.method || action.write.method
         // 对话框
         this.initTablePageDialogState(tempState, url, method, key, title, buttonType, dialogType)
         // 按钮
+        if (action.read) {
+          url = action.read.path
+          method = action.read.method
+        }
         const newKey = this.getNewKey(key)
         const buttonState = {
           label: title,

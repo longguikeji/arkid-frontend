@@ -94,23 +94,10 @@ export interface ITagPage {
   childrenList?: ITagPageAction
 }
 
-export interface ITagInitAction {
-  path: string
-  method: string
-}
-
 export interface ITagInitUpdateAction {
-  read: ITagInitAction
-  write: ITagInitAction
+  read: ITagPageAction
+  write: ITagPageAction
 }
-
-// export interface ITagPageAction {
-
-// }
-
-// export interface ITagItemAction {
-
-// }
 
 export interface IPageInitContent {
   type: string
