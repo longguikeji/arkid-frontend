@@ -7,7 +7,7 @@ export class InitTable extends FunctionNode {
   async run() {
     const tempState = this.inputs.state
     const { initContent, ...otherInitContent } = this.inputs.data
-    let params = {
+    let baseAction = {
       fetchUrl: '',
       fetchMethod: ''
     }
@@ -15,17 +15,17 @@ export class InitTable extends FunctionNode {
       const initTablePath = initContent.init.path as string
       const initTableMethod = initContent.init.method as string || 'GET'
       const initTableOperation = OpenAPI.instance.getOperation(initTablePath, initTableMethod)
-      params.fetchUrl = initTablePath
-      params.fetchMethod = initTableMethod
+      baseAction.fetchUrl = initTablePath
+      baseAction.fetchMethod = initTableMethod
       if (initTableOperation) {
         // 给页面hook添加内容
         tempState.created.push({
           name: 'flows/tablePage/fetch',
-          params: params
+          params: baseAction
         })
         tempState.destroyed.push({
           name: 'flows/hookFlow/destroyed',
-          params: params
+          params: baseAction
         })
 
         // 给页面元素添加state
@@ -47,7 +47,7 @@ export class InitTable extends FunctionNode {
           total: 0,
           action: [{
             name: 'flows/tablePage/fetch',
-            params: params
+            params: baseAction
           }]
         }
       }
@@ -56,7 +56,7 @@ export class InitTable extends FunctionNode {
     return {
       data: this.inputs.data,
       state: tempState,
-      initBaseAction: params
+      baseAction: baseAction
     }
   }
 }

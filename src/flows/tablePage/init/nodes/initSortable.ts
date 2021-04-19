@@ -5,7 +5,7 @@ export class InitSortable extends FunctionNode {
   async run() {
     const tempState = this.inputs.state as TablePageState
     const initContent = this.inputs.data.initContent
-    const initBaseAction = this.inputs.initBaseAction
+    const baseAction = this.inputs.baseAction
     if (initContent.sort) {
       const sortOperationPath = initContent.sort.batch.path
       const sortOperationMethod = initContent.sort.batch.method
@@ -18,7 +18,7 @@ export class InitSortable extends FunctionNode {
               url: sortOperationPath,
               method: sortOperationMethod,
               sortType: 'batch',
-              ...initBaseAction
+              ...baseAction
             }
           }
         ]
@@ -44,7 +44,7 @@ export class InitSortable extends FunctionNode {
                   url: initContent.sort[sortName].path,
                   method: initContent.sort[sortName].method,
                   sortType: sortName,
-                  ...initBaseAction
+                  ...baseAction
                 }
               }
             ]
@@ -58,7 +58,7 @@ export class InitSortable extends FunctionNode {
     return {
       data: this.inputs.data,
       state: tempState,
-      initBaseAction: this.inputs.initBaseAction
+      baseAction: this.inputs.baseAction
     }
   }
 }

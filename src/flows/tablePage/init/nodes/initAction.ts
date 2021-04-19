@@ -1,100 +1,23 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import DialogState from '@/admin/common/Others/Dialog/DialogState'
-import whetherImportListDialog from '@/utils/list-dialog'
 import TablePageState from '@/admin/TablePage/TablePageState'
-import { GenerateDialogStateParams, generateDialogState } from '@/utils/dialog'
-import OpenAPI from '@/config/openapi'
+import { getBaseAttributes, dialog } from '@/utils/initpage'
 
 export class InitAction extends FunctionNode {
 
-  initBaseAttributes(key: string) {
-    let title = '', dialogType = 'FormPage', buttonType = 'primary'
-    switch (key) {
-      case 'create':
-        title = '创建'
-        break
-      case 'import':
-        title = '导入'
-        break
-      case 'export':
-        title = '导出'
-        break
-      case 'update':
-        title = '编辑'
-        break
-      case 'delete':
-        title = '删除'
-        buttonType = 'danger'
-        break
-      case 'retrieve':
-        title = '查看'
-        buttonType = 'info'
-        break
-    }
-    return {
-      title: title,
-      dialogType: dialogType,
-      buttonType: buttonType
-    }
-  }
-
-  getNewKey(key: string) {
-    return key.slice(0,1).toUpperCase() + key.slice(1).toLowerCase()
-  }
-
-  initTablePageDialogState(tempState: TablePageState, url: string, method: string, key: string, title: string, buttonType: string, dialogType: string) {
-    // 初始化对应的 dialog
-    const initActionOperation = OpenAPI.instance.getOperation(url, method)
-
-    const dialogActions = [
-      {
-        label: initActionOperation.summary || title,
-        type: buttonType,
-        action: [
-          {
-            name: "flows/tablePage/" + key,
-            params: {
-              url,
-              method,
-              ...this.inputs.initBaseAction
-            }
-          }
-        ]
-      }
-    ]
-
-    const dialogParams: GenerateDialogStateParams = {
-      initActionOperation: initActionOperation,
-      method: method,
-      type: dialogType,
-      title: initActionOperation.summary || title,
-      actions: dialogActions
-    }
-    
-    const dialogState = generateDialogState(dialogParams)
-    if (dialogState) {
-      tempState.dialogs![key] = dialogState as DialogState
-      const importListDialog = whetherImportListDialog(dialogState.state)
-      if (importListDialog && !tempState.dialogs!.selected) {
-        tempState.dialogs!.selected = importListDialog
-      }
-    }
-
-  }
-
   async run() {
-    const tempState: TablePageState = this.inputs.state
+    let tempState: TablePageState = this.inputs.state
     const { initContent } = this.inputs.data
+    const baseAction = this.inputs.baseAction
+    const prefix = 'flows/tablePage/'
     // action 有两种UI类型 => page(页面) 和 item(table行元素)
     // ① 初始化page类型
-    if (initContent?.page) {
+    if (initContent.page) {
       Object.keys(initContent.page).forEach(key => {
-        const { title, dialogType, buttonType } = this.initBaseAttributes(key)
         const { path: url, method } = initContent.page[key]
         // 对话框
-        this.initTablePageDialogState(tempState, url, method, key, title, buttonType, dialogType)
+        tempState = dialog(tempState, url, method, key, prefix, baseAction)
         // 按钮
-        const newKey = this.getNewKey(key)
+        const { title, buttonType, newKey } = getBaseAttributes(key)
         const cardButton = {
           label: title,
           action: [
@@ -109,20 +32,19 @@ export class InitAction extends FunctionNode {
     }
 
     // ② 初始化item类型
-    if (initContent?.item) {
+    if (initContent.item) {
       Object.keys(initContent.item).forEach(key => {
-        const { title, dialogType, buttonType } = this.initBaseAttributes(key)
         const action = initContent.item[key]
         let url = action.path || action.write.path
         let method = action.method || action.write.method
         // 对话框
-        this.initTablePageDialogState(tempState, url, method, key, title, buttonType, dialogType)
+        tempState = dialog(tempState, url, method, key, prefix, baseAction)
         // 按钮
         if (action.read) {
           url = action.read.path
           method = action.read.method
         }
-        const newKey = this.getNewKey(key)
+        const { title, buttonType, newKey } = getBaseAttributes(key)
         const buttonState = {
           label: title,
           type: buttonType,
@@ -132,7 +54,7 @@ export class InitAction extends FunctionNode {
               params: {
                 url,
                 method,
-                ...this.inputs.initBaseAction
+                ...this.inputs.baseAction
               }
             }
           ]
@@ -157,7 +79,7 @@ export class InitAction extends FunctionNode {
     return {
       data: this.inputs.data,
       state: tempState,
-      initBaseAction: this.inputs.initBaseAction
+      baseAction: this.inputs.baseAction
     }
   }
 }

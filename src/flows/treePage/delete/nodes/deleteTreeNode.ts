@@ -6,8 +6,8 @@ export class DeleteTreeNode extends AuthApiNode {
   async run() {
     const data = this.inputs.com.state.data
 
-    this.url = getUrl(this.inputs.params.deleteUrl, data)
-    this.method = this.inputs.params.deleteMethod || 'delete'
+    this.url = getUrl(this.inputs.params.url, data)
+    this.method = this.inputs.params.method || 'delete'
     if (!this.url) {
       throw Error('treePage delete flow is not url')
     }

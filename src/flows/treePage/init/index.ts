@@ -2,12 +2,10 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { InitTreePage } from './nodes/initTreePage'
+import { InitPage } from './nodes/initPage'
+import { InitTable } from './nodes/initTable'
 import { InitTree } from './nodes/initTree'
-import { InitAddTreeNode } from './nodes/initAddTreeNode'
-import { InitTreeNodeSlot } from './nodes/initTreeNodeSlot'
-import { InitTablePage } from './nodes/initTablePage'
-import { InitTableList } from './nodes/initTableList'
+import { InitAction } from './nodes/initAction'
 
 export class Main extends Flow {
   createNodes() {
@@ -15,30 +13,22 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: '1'
+        next: 'initPage'
       }, {
-        cls: InitTreePage,
-        id: '1',
-        next: '2'
+        cls: InitPage,
+        id: 'initPage',
+        next: 'initTable'
+      }, {
+        cls: InitTable,
+        id: 'initTable',
+        next: 'initTree'
       }, {
         cls: InitTree,
-        id: '2',
-        next: '3'
+        id: 'initTree',
+        next: 'initAction'
       }, {
-        cls: InitAddTreeNode,
-        id: '3',
-        next: '4'
-      }, {
-        cls: InitTreeNodeSlot,
-        id: '4',
-        next: '5'
-      }, {
-        cls: InitTablePage,
-        id: '5',
-        next: '6',
-      }, {
-        cls: InitTableList,
-        id: '6',
+        cls: InitAction,
+        id: 'initAction',
         next: 'stop'
       }, {
         cls: StopNode,

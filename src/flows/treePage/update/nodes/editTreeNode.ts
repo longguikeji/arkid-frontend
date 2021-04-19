@@ -11,8 +11,8 @@ export class EditTreeNode extends AuthApiNode {
     
     const data = tempState.dialogs!['editTreeNode'].data
   
-    this.url = getUrl(this.inputs.params.updateUrl, data)
-    this.method = this.inputs.params.updateMethod || 'post'
+    this.url = getUrl(this.inputs.params.url, data)
+    this.method = this.inputs.params.method || 'post'
     
     if (tempState && tempState.dialogs) {
       const formPage = tempState.dialogs['editTreeNode'].state as FormPageState
