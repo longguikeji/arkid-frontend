@@ -1,19 +1,25 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { APINode } from "arkfbp/lib/apiNode"
+import { getToken } from '@/utils/auth'
 import axios, { Method } from 'axios'
 
-export class ExportXlsxFileNode extends AuthApiNode {
+export class ExportXlsxFileNode extends APINode {
 
   getHeaders() {
-    return {
+    const token = getToken()
+    const headers = {
       'Content-Type': 'application/octet-stream'
     }
+    if (token) {
+      headers['Authorization'] = 'Token ' + token
+    }
+    return headers
   }
 
   async run() {
     await axios({
       url: this.url,
       method: this.method as Method,
-      headers: this.headers,
+      headers: this.getHeaders(),
       responseType: 'arraybuffer',
     }).then((response) => {
       const data = response.data

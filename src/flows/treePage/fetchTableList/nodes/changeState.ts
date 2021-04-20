@@ -9,10 +9,11 @@ export class ChangeState extends FunctionNode {
     if (table) {
       table.data = []
       table.data = data.results
+      const buttons = state.client?.table?.card?.buttons
       if (data.results) {
-        setButtonStatus(table?.buttons, false)
+        setButtonStatus(buttons, false)
       } else {
-        setButtonStatus(table?.buttons, true)
+        setButtonStatus(buttons, true)
       }
     }
   }
