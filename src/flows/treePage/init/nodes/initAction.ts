@@ -1,6 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TreePageState from '@/admin/TreePage/TreePageState'
-import { getBaseAttributes, dialog } from '@/utils/initpage'
+import { dialog, cardButton, itemButton } from '@/utils/initpage'
 
 export class InitAction extends FunctionNode {
   async run() {
@@ -15,17 +15,8 @@ export class InitAction extends FunctionNode {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
         tempState = dialog(tempState, url, method, key, prefix, baseAction, showReadOnly)
-        const { title, buttonType, newKey } = getBaseAttributes(key)
-        const cardButton = {
-          label: title,
-          action: [
-            {
-              name: 'flows/treePage/open' + newKey + 'Dialog'
-            }
-          ],
-          type: buttonType,
-        }
-        tempState.tree?.header?.buttons?.push(cardButton)
+        const btn = cardButton(url, method, key, 'flows/treePage/')
+        tempState.tree?.header?.buttons?.push(btn)
       })
     }
 
@@ -50,22 +41,9 @@ export class InitAction extends FunctionNode {
             url = action.read.path
             method = action.read.method
           }
-          const { title, newKey } = getBaseAttributes(key)
-          const buttonState = {
-            label: title,
-            type: 'text',
-            action: [
-              {
-                name: action.method === 'delete' ? 'flows/treePage/delete' : 'flows/treePage/open' + newKey + 'Dialog',
-                params: {
-                  url,
-                  method,
-                  ...this.inputs.baseAction
-                }
-              }
-            ]
-          }
-          tempState.tree?.nodes!['slot'].buttons.state.push(buttonState)
+          const isTextType = true
+          const btn = itemButton(url, method, key, prefix, baseAction, isTextType)
+          tempState.tree?.nodes!['slot'].buttons.state.push(btn)
         }
       })
     }

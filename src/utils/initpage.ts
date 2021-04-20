@@ -126,3 +126,43 @@ export function dialog(tempState: any, url: string, method: string, key: string,
   }
   return tempState
 }
+
+
+export function cardButton(url: string, method: string, key: string, prefix: string) {
+  const { title, buttonType, newKey } = getBaseAttributes(key)
+  const cardButton = {
+    label: title,
+    action: [
+      {
+        name: key !== 'export' ? prefix + 'open' + newKey + 'Dialog' : prefix + 'export',
+        params: key !== 'export' ? {} : {
+          url: url,
+          method: method,
+        }
+      }
+    ],
+    type: buttonType,
+    disabled: key === 'export' ? true : undefined,
+  }
+  return cardButton
+}
+
+export function itemButton(url: string, method: string, key: string, prefix: string, baseAction: InitBaseAction, isText: boolean = false) {
+  const { title, newKey, buttonType } = getBaseAttributes(key)
+  const itemButton = {
+    label: title,
+    type: isText ? 'text' : buttonType,
+    action: [
+      {
+        name: method === 'delete' ? prefix + 'delete' : prefix + 'open' + newKey + 'Dialog',
+        params: {
+          url,
+          method,
+          ...baseAction
+        }
+      }
+    ]
+  }
+  return itemButton
+}
+
