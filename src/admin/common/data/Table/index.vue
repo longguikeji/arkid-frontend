@@ -81,11 +81,22 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleSelectionChange(val: any, row: any) {
+    this.assignValuesToSelections(val)
     this.executeSelectionAction(row, true)
   }
 
   handleAllSelectionChange(val) {
+    this.assignValuesToSelections(val)
     this.executeSelectionAction(val, false)
+  }
+
+  assignValuesToSelections(val) {
+    if (this.state.selection) {
+      if (!this.state.selection.values) {
+        this.state.selection.values = []
+      }
+      this.state.selection.values = val
+    }
   }
 
   handleRowClick(val) {

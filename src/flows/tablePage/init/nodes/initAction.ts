@@ -22,12 +22,22 @@ export class InitAction extends FunctionNode {
           label: title,
           action: [
             {
-              name: 'flows/tablePage/open' + newKey + 'Dialog'
+              name: key !== 'export' ? 'flows/tablePage/open' + newKey + 'Dialog' : 'flows/tablePage/export',
+              params: key !== 'export' ? {} : {
+                url: url,
+                method: method,
+              }
             }
           ],
           type: buttonType,
         }
         tempState.card?.buttons?.push(cardButton)
+        if (key === 'import' || key === 'export') {
+          tempState.table!.selection = {
+            exist: true,
+            values: []
+          }
+        }
       })
     }
     

@@ -20,6 +20,7 @@ export interface GenerateDialogStateParams {
   title?: string
   actions?: Array<ButtonState>
   showReadOnly?: boolean
+  key?: string
 }
 
 interface InitBaseAction {
@@ -28,8 +29,8 @@ interface InitBaseAction {
 }
 
 export function generateDialogState(params: GenerateDialogStateParams): DialogState | undefined {
-  const { initActionOperation, method, type, title, actions, showReadOnly } = params
-  if (!initActionOperation || method === 'delete') return undefined
+  const { initActionOperation, method, type, title, actions, showReadOnly, key } = params
+  if (!initActionOperation || method === 'delete' || key === 'export') return undefined
   const isResponses = method.toLowerCase() === "get" ? true : false
   const content = isResponses ? initActionOperation.responses[200].content : initActionOperation.requestBody.content
   const schema = getSchemaByContent(content)
@@ -38,7 +39,14 @@ export function generateDialogState(params: GenerateDialogStateParams): DialogSt
   dialogState.visible = false
   dialogState.data = {}
   dialogState.type = type || 'FormPage'
-  dialogState.state = generateDialogForm(schema, showReadOnly)
+  if (type === 'Upload') {
+    dialogState.state = {
+      type: 'xlsx',
+      value: ''
+    }
+  } else {
+    dialogState.state = generateDialogForm(schema, showReadOnly)
+  }
   dialogState.actions = actions
   return dialogState
 }
@@ -54,6 +62,7 @@ export function getBaseAttributes(key: string) {
       break
     case 'import':
       title = '导入'
+      dialogType = 'Upload'
       break
     case 'export':
       title = '导出'
@@ -105,7 +114,8 @@ export function dialog(tempState: any, url: string, method: string, key: string,
     type: dialogType,
     title: initActionOperation.summary || title,
     actions: dialogAction,
-    showReadOnly
+    showReadOnly,
+    key
   }
   const dialogState = generateDialogState(dialogParams)
   if (dialogState) {

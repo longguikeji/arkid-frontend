@@ -25,7 +25,8 @@ export class InitPage extends FunctionNode {
       dialogs: {},
       table: {
         columns: [],
-        data: []
+        data: [],
+        selection: {}
       }
     }
     return {
