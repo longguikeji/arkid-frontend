@@ -41,8 +41,7 @@ export function generateDialogState(params: GenerateDialogStateParams): DialogSt
   dialogState.type = type || 'FormPage'
   if (type === 'Upload') {
     dialogState.state = {
-      type: 'xlsx',
-      value: ''
+      type: 'xlsx'
     }
   } else {
     dialogState.state = generateDialogForm(schema, showReadOnly)

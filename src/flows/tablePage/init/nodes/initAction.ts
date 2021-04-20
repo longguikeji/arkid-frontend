@@ -32,12 +32,6 @@ export class InitAction extends FunctionNode {
           type: buttonType,
         }
         tempState.card?.buttons?.push(cardButton)
-        if (key === 'import' || key === 'export') {
-          tempState.table!.selection = {
-            exist: true,
-            values: []
-          }
-        }
       })
     }
     
