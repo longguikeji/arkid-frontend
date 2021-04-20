@@ -12,8 +12,8 @@ export class AddSwitchTenantButton extends StateNode {
         {
           name: 'flows/tenant/openSwitchTenantDialog',
           params: {
-            updateUrl: '/api/v1/tenant/{id}/',
-            updateMethod: 'get'
+            url: '/api/v1/tenant/{id}/',
+            method: 'get'
           }
         }
       ]

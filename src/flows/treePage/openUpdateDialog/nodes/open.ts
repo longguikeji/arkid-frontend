@@ -7,7 +7,7 @@ export class Open extends OpenDialog {
   get dialog():DialogState | null {
     const tempState: TreePageState = this.getState()
     if (tempState && tempState.dialogs) {
-      return tempState.dialogs.editTreeNode
+      return tempState.dialogs.update
     } else {
       return null
     }

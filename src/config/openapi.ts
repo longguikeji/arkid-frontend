@@ -94,6 +94,18 @@ export interface ITagPage {
   childrenList?: ITagPageAction
 }
 
+export interface ITagInitUpdateAction {
+  read: ITagPageAction
+  write: ITagPageAction
+}
+
+export interface IPageInitContent {
+  type: string
+  init?: ITagPageAction | { [key: string]: ITagPageAction }
+  page?: { [key: string]: ITagPageAction }
+  item?: { [key: string]: ITagPageAction | { [key: string]: ITagPageAction } }
+}
+
 export interface ITag {
   name: string
   description?: string

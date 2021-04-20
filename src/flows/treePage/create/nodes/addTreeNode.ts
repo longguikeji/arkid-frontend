@@ -9,8 +9,8 @@ export class AddTreeNode extends AuthApiNode {
   async run() {
     const tempState: TreePageState = this.getState()
     
-    this.url = getUrl(this.inputs.params.createUrl)
-    this.method = this.inputs.params.createMethod || 'post'
+    this.url = getUrl(this.inputs.params.url)
+    this.method = this.inputs.params.method || 'post'
     if (!this.url) {
       throw Error('treePage addTreeNode flow is not url')
     }    

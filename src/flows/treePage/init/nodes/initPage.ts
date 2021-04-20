@@ -1,7 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TreePageState from '@/admin/TreePage/TreePageState'
 
-export class InitTreePage extends FunctionNode {
+export class InitPage extends FunctionNode {
   async run() {
     const tempState: TreePageState = {
       type: 'TreePage',

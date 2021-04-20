@@ -2,12 +2,10 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { InitTablePage } from './nodes/initTablePage'
-import { InitList } from './nodes/initList'
-import { InitCreate } from './nodes/initCreate'
+import { InitPage } from './nodes/initPage'
+import { InitTable } from './nodes/initTable'
 import { InitSortable } from './nodes/initSortable'
-import { InitUpdate } from './nodes/initUpdate'
-import { InitDelete } from './nodes/initDelete'
+import { InitAction } from './nodes/initAction'
 
 export class Main extends Flow {
   createNodes() {
@@ -15,32 +13,24 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'initTablePage'
+        next: 'initPage'
       }, {
-        cls: InitTablePage,
-        id: 'initTablePage',
-        next: 'initList'
+        cls: InitPage,
+        id: 'initPage',
+        next: 'initTable'
       }, {
-        cls: InitList,
-        id: 'initList',
-        next: 'initCreate'
-      }, {
-        cls: InitCreate,
-        id: 'initCreate',
+        cls: InitTable,
+        id: 'initTable',
         next: 'initSortable'
       }, {
         cls: InitSortable,
         id: 'initSortable',
-        next: 'initUpdate'
+        next: 'initAction'
       }, {
-        cls: InitUpdate,
-        id: 'initUpdate',
-        next: 'initDelete'
-      }, {
-        cls: InitDelete,
-        id: 'initDelete',
+        cls: InitAction,
+        id: 'initAction',
         next: 'stop'
-      },{
+      }, {
         cls: StopNode,
         id: 'stop'
       }

@@ -1,17 +1,18 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TablePageState from '@/admin/TablePage/TablePageState'
 
-export class InitTablePage extends FunctionNode {
+export class InitPage extends FunctionNode {
   async run() {
+    const isHooks = this.inputs.isHooks
     const tempState: TablePageState = {
       type: 'TablePage',
       pages: [],
-      created: [
+      created: isHooks === false ? [] : [
         {
           'name': 'flows/hookFlow/created'
         }
       ],
-      beforeDestroy: [
+      beforeDestroy: isHooks === false ? [] : [
         {
           'name': 'flows/hookFlow/beforeDestroy'
         }
@@ -21,13 +22,11 @@ export class InitTablePage extends FunctionNode {
         title: '',
         buttons: []
       },
-      dialogs: {
-        create: {},
-        update: {}
-      },
+      dialogs: {},
       table: {
         columns: [],
-        data: []
+        data: [],
+        selection: {}
       }
     }
     return {
