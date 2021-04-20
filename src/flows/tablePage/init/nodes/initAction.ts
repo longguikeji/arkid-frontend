@@ -1,6 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TablePageState from '@/admin/TablePage/TablePageState'
-import { getBaseAttributes, dialog } from '@/utils/initpage'
+import { dialog, cardButton, itemButton } from '@/utils/initpage'
 
 export class InitAction extends FunctionNode {
 
@@ -17,21 +17,8 @@ export class InitAction extends FunctionNode {
         // 对话框
         tempState = dialog(tempState, url, method, key, prefix, baseAction)
         // 按钮
-        const { title, buttonType, newKey } = getBaseAttributes(key)
-        const cardButton = {
-          label: title,
-          action: [
-            {
-              name: key !== 'export' ? 'flows/tablePage/open' + newKey + 'Dialog' : 'flows/tablePage/export',
-              params: key !== 'export' ? {} : {
-                url: url,
-                method: method,
-              }
-            }
-          ],
-          type: buttonType,
-        }
-        tempState.card?.buttons?.push(cardButton)
+        const btn = cardButton(url, method, key, prefix)
+        tempState.card?.buttons?.push(btn)
       })
     }
     
@@ -48,21 +35,7 @@ export class InitAction extends FunctionNode {
           url = action.read.path
           method = action.read.method
         }
-        const { title, buttonType, newKey } = getBaseAttributes(key)
-        const buttonState = {
-          label: title,
-          type: buttonType,
-          action: [
-            {
-              name: action.method === 'delete' ? 'flows/tablePage/delete' : 'flows/tablePage/open' + newKey + 'Dialog',
-              params: {
-                url,
-                method,
-                ...this.inputs.baseAction
-              }
-            }
-          ]
-        }
+        const btn = itemButton(url, method, key, prefix, baseAction)
         const len = tempState.table?.columns?.length as number
         if (tempState.table!.columns![len-1].prop !== 'actions') {
           const columnUpdate = {
@@ -74,9 +47,9 @@ export class InitAction extends FunctionNode {
             }
           }
           tempState.table?.columns?.push(columnUpdate)
-          tempState.table?.columns![len]?.scope?.state?.push(buttonState)
+          tempState.table?.columns![len]?.scope?.state?.push(btn)
         }
-        tempState.table?.columns![len - 1]?.scope?.state?.push(buttonState)
+        tempState.table?.columns![len - 1]?.scope?.state?.push(btn)
       })
     }
 
