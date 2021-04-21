@@ -56,7 +56,7 @@ import arrTrans from '@/utils/arr-trans'
 })
 export default class extends Vue {
   private appList: Array<IUserApp> = [] // 未分页之前的user-app
-  private apps: Array<any> = [] // 分页之后的user-app
+  private apps: Array<Array<IUserApp>> = [] // 分页之后的user-app
   private pageWidth = 0 // 宽度值
   private pageHeight = 0 // 高度值
 

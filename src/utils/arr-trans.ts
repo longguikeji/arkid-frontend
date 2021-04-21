@@ -1,7 +1,7 @@
 import { IUserApp } from '@/store/modules/user'
 
-export default function arrTrans(arr: Array<IUserApp>, num: number): Array<any> {
-  if (arr.length === 0) return arr
+export default function arrTrans(arr: Array<IUserApp>, num: number): Array<Array<IUserApp>> {
+  if (arr.length === 0) return []
   const arrTrans = new Array()
   if (num === 0 || num === 1) {
     arrTrans[0] = arr
