@@ -1,4 +1,5 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
+import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/url'
 
 export class Import extends AuthApiNode {
@@ -16,6 +17,7 @@ export class Import extends AuthApiNode {
     this.params = formData
     const outputs = await super.run()
     importDialog.visible = false
+    await runFlowByFile('flows/tablePage/fetch', this.inputs)
     return outputs
   }
 }

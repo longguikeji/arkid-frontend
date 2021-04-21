@@ -7,7 +7,7 @@ import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
 
 // 参数说明:
-// path: 获取Dialog元素的必备参数 -- 必须
+// initActionOperation: 获取Dialog元素的必备参数 -- 必须
 // method: 方式 -- 必须
 // type: 类型，由于Dialog可以展示任意组件，需要指明其类型，默认为“FormPage” - 非必须
 // title: Dialog标题信息 -- 非必须
@@ -137,7 +137,7 @@ export function cardButton(url: string, method: string, key: string, prefix: str
         name: key !== 'export' ? prefix + 'open' + newKey + 'Dialog' : prefix + 'export',
         params: key !== 'export' ? {} : {
           url: url,
-          method: method,
+          method: method
         }
       }
     ],

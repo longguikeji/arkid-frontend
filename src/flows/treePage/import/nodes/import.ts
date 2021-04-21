@@ -1,5 +1,6 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
 import TreePageState from '@/admin/TreePage/TreePageState'
+import { runFlowByFile } from '@/arkfbp/index'
 import getUrl from '@/utils/url'
 
 export class Import extends AuthApiNode {
@@ -16,6 +17,7 @@ export class Import extends AuthApiNode {
     this.params = formData
     const outputs = await super.run()
     tempState.dialogs!.import.visible = false
+    await runFlowByFile('flows/tablePage/fetchTreeNode', this.inputs)
     return outputs
   }
 }

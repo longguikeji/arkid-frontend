@@ -15,7 +15,7 @@ export class InitAction extends FunctionNode {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
         tempState = dialog(tempState, url, method, key, prefix, baseAction, showReadOnly)
-        const btn = cardButton(url, method, key, 'flows/treePage/')
+        const btn = cardButton(url, method, key, prefix)
         tempState.tree?.header?.buttons?.push(btn)
       })
     }
