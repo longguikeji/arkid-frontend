@@ -14,6 +14,7 @@ export interface IUserState {
   userGithubId: string
   userPermissions: Array<string>
   userNickname: string
+  userApps: Array<any>
 }
 
 @Module({ dynamic: true, store, name: 'user' })

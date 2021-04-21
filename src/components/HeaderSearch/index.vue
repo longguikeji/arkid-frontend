@@ -21,23 +21,19 @@
       @change="change"
     >
       <el-option
-        v-for="item in options"
-        :key="item.path"
-        :value="item"
-        :label="item.meta.title.join(' > ')"
+        v-for="(item, index) in options"
+        :key="index"
+        :value="item.url"
+        :label="item.name"
       />
     </el-select>
   </div>
 </template>
 
 <script lang="ts">
-import path from 'path'
 import Fuse from 'fuse.js' // A lightweight fuzzy-search module
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { RouteConfig } from 'vue-router'
-import { AppModule } from '@/store/modules/app'
-import { menuRoutes } from '@/router/index'
-import i18n from '@/lang' // Internationalization
+import { UserModule } from '@/store/modules/user'
 
 @Component({
   name: 'HeaderSearch'
@@ -45,30 +41,15 @@ import i18n from '@/lang' // Internationalization
 export default class extends Vue {
   private search = ''
   private show = false
-  private options: RouteConfig[] = []
-  private searchPool: RouteConfig[] = []
-  private fuse?: Fuse<RouteConfig>
+  private options = [] as any[]
+  private fuse?: Fuse<any>
 
-  get routes() {
-    return menuRoutes
+  get apps() {
+    return UserModule.userApps
   }
 
-  get lang() {
-    return AppModule.language
-  }
-
-  @Watch('lang')
-  private onLangChange() {
-    this.searchPool = this.generateRoutes(this.routes)
-  }
-
-  @Watch('routes')
-  private onRoutesChange() {
-    this.searchPool = this.generateRoutes(this.routes)
-  }
-
-  @Watch('searchPool')
-  private onSearchPoolChange(value: RouteConfig[]) {
+  @Watch('apps')
+  private onAppListChange(value) {
     this.initFuse(value)
   }
 
@@ -79,10 +60,6 @@ export default class extends Vue {
     } else {
       document.body.removeEventListener('click', this.close)
     }
-  }
-
-  mounted() {
-    this.searchPool = this.generateRoutes(this.routes)
   }
 
   private click() {
@@ -98,16 +75,13 @@ export default class extends Vue {
     this.show = false
   }
 
-  private change(route: RouteConfig) {
-    this.$router.push(route.path)
-    this.search = ''
-    this.options = []
-    this.$nextTick(() => {
-      this.show = false
-    })
+  private change(val) {
+    if (val) {
+      window.open(val, '_blank')
+    }
   }
 
-  private initFuse(list: RouteConfig[]) {
+  private initFuse(list) {
     this.fuse = new Fuse(list, {
       shouldSort: true,
       threshold: 0.4,
@@ -115,53 +89,13 @@ export default class extends Vue {
       distance: 100,
       minMatchCharLength: 1,
       keys: [{
-        name: 'title',
+        name: 'name',
         weight: 0.7
       }, {
-        name: 'path',
+        name: 'description',
         weight: 0.3
       }]
     })
-  }
-
-  // Filter out the routes that can be displayed in the sidebar
-  // And generate the internationalized title
-  private generateRoutes(routes: RouteConfig[], basePath = '/', prefixTitle: string[] = []) {
-    let res: RouteConfig[] = []
-
-    for (const router of routes) {
-      // skip hidden router
-      if (router.meta && router.meta.hidden) {
-        continue
-      }
-
-      const data: RouteConfig = {
-        path: path.resolve(basePath, router.path),
-        meta: {
-          title: [...prefixTitle]
-        }
-      }
-
-      if (router.meta && router.meta.title) {
-        // generate internationalized title
-        const i18ntitle = i18n.t(`route.${router.meta.title}`).toString()
-        data.meta.title = [...data.meta.title, i18ntitle]
-        if (router.redirect !== 'noRedirect') {
-          // only push the routes with title
-          // special case: need to exclude parent router without redirect
-          res.push(data)
-        }
-      }
-
-      // recursive child routes
-      if (router.children) {
-        const tempRoutes = this.generateRoutes(router.children, data.path, data.meta.title)
-        if (tempRoutes.length >= 1) {
-          res = [...res, ...tempRoutes]
-        }
-      }
-    }
-    return res
   }
 
   private querySearch(query: string) {
@@ -205,6 +139,7 @@ export default class extends Vue {
       border-bottom: 1px solid #d9d9d9;
       vertical-align: middle;
     }
+
   }
 
   &.show {

@@ -8,7 +8,10 @@
       v-for="pageIndex in apps.length"
       :key="pageIndex"
     >
-      <ul class="app-list">
+      <ul
+        v-if="apps.length"
+        class="app-list"
+      >
         <li
           v-for="(app, index) in apps[pageIndex-1]"
           :key="index"
