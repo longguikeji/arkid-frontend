@@ -51,4 +51,6 @@ export default interface UploadState extends BaseState {
   maxImgSize: number; // 限制图片最大宽度和高度 2000 0-max
   enlarge: number; // 图片根据截图框输出比例倍数 1 0-max(建议不要太大不然会卡死的呢)
   mode: string; // 图片默认渲染方式 contain contain , cover, 100px, 100% auto
+
+  file: any // 接受文件内容
 }

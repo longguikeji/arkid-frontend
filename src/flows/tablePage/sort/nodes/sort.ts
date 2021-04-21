@@ -17,8 +17,8 @@ export class Sort extends AuthApiNode {
       })
     }
 
-    this.url = getUrl(this.inputs.params.sortUrl, targetData)
-    this.method = this.inputs.params.sortMethod || 'post'
+    this.url = getUrl(this.inputs.params.url, targetData)
+    this.method = this.inputs.params.method || 'post'
     if (!this.url) {
       throw Error('tablePage sort flow is not url')
     }

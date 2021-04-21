@@ -10,8 +10,8 @@ export class Update extends AuthApiNode {
     const tempState: TablePageState = this.getState()
     const data = tempState.dialogs?.update.data
 
-    this.url = getUrl(this.inputs.params.updateUrl, data)
-    this.method = this.inputs.params.updateMethod || 'put'
+    this.url = getUrl(this.inputs.params.url, data)
+    this.method = this.inputs.params.method || 'put'
     if (!this.url) {
       throw Error('tablePage update flow is not url')
     }
