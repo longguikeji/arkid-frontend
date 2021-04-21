@@ -33,7 +33,7 @@
 <script lang="ts">
 import Fuse from 'fuse.js' // A lightweight fuzzy-search module
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import { UserModule } from '@/store/modules/user'
+import { UserModule, IUserApp } from '@/store/modules/user'
 
 @Component({
   name: 'HeaderSearch'
@@ -41,15 +41,15 @@ import { UserModule } from '@/store/modules/user'
 export default class extends Vue {
   private search = ''
   private show = false
-  private options = [] as any[]
-  private fuse?: Fuse<any>
+  private options: Array<IUserApp> = []
+  private fuse?: Fuse<IUserApp>
 
   get apps() {
     return UserModule.userApps
   }
 
   @Watch('apps')
-  private onAppListChange(value) {
+  private onAppListChange(value: Array<IUserApp>) {
     this.initFuse(value)
   }
 
@@ -75,13 +75,13 @@ export default class extends Vue {
     this.show = false
   }
 
-  private change(val) {
+  private change(val: string) {
     if (val) {
       window.open(val, '_blank')
     }
   }
 
-  private initFuse(list) {
+  private initFuse(list: Array<IUserApp>) {
     this.fuse = new Fuse(list, {
       shouldSort: true,
       threshold: 0.4,

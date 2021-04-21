@@ -1,4 +1,6 @@
-export default function arrTrans(arr: Array<any>, num: number): Array<any> {
+import { IUserApp } from '@/store/modules/user'
+
+export default function arrTrans(arr: Array<IUserApp>, num: number): Array<any> {
   if (arr.length === 0) return arr
   const arrTrans = new Array()
   if (num === 0 || num === 1) {

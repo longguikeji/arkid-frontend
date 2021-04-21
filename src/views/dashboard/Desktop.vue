@@ -47,7 +47,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { runFlowByFile } from '@/arkfbp/index'
 import elementResizeDetectorMaker from 'element-resize-detector'
-import { UserModule } from '@/store/modules/user'
+import { UserModule, IUserApp } from '@/store/modules/user'
 import arrTrans from '@/utils/arr-trans'
 
 @Component({
@@ -55,8 +55,8 @@ import arrTrans from '@/utils/arr-trans'
   components: {}
 })
 export default class extends Vue {
-  private appList = [] // 未分页之前的user-app
-  private apps = [] as any[] // 分页之后的user-app
+  private appList: Array<IUserApp> = [] // 未分页之前的user-app
+  private apps: Array<any> = [] // 分页之后的user-app
   private pageWidth = 0 // 宽度值
   private pageHeight = 0 // 高度值
 
