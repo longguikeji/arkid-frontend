@@ -10,7 +10,7 @@ export class Tenant extends APINode {
 
     // 优先通过 slug 查找
     const slug = getSlug()
-    if (slug && !TenantModule.currentSlugIsValid) {
+    if (slug) {
       this.url = '/api/v1/tenant/' + slug + '/slug/'
       this.method = 'GET'
       const outputs = await super.run()
