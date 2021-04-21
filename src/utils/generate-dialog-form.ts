@@ -126,8 +126,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       prop: prop,
       state: itemState
     }
-  } else if (schema.allOf![0]) {
-    const ref = schema.allOf![0].$ref
+  } else if (schema.allOf && schema.allOf[0]) {
+    const ref = schema.allOf[0].$ref
     const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
     objectSchema.title = schema.title
     objectSchema.default = schema.default
