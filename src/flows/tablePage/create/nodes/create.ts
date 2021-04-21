@@ -8,9 +8,8 @@ import FormPageState from '@/admin/FormPage/FormPageState'
 export class Create extends AuthApiNode {
   async run() {
     const tempState: TablePageState = this.getState()
-
-    this.url = getUrl(this.inputs.params.createUrl)
-    this.method = this.inputs.params.createMethod || 'post'
+    this.url = getUrl(this.inputs.params.url)
+    this.method = this.inputs.params.method || 'post'
     if (!this.url) {
       throw Error('tablePage create flow is not url')
     }

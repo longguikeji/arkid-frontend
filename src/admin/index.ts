@@ -1,6 +1,5 @@
 import Vue from 'vue'
 
-
 import Button from '@/admin/common/Button/index.vue'
 import ButtonArray from '@/admin/common/Button/ButtonArray/index.vue'
 import Link from '@/admin/common/Link/index.vue'
@@ -55,7 +54,6 @@ import TablePage from '@/admin/TablePage/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
-
 Vue.component('Button', Button)
 Vue.component('ButtonArray', ButtonArray)
 Vue.component('Link', Link)

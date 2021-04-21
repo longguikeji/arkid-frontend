@@ -10,8 +10,8 @@ export class FetchTreeNodeChildren extends AuthApiNode {
     const tempState: TreePageState = this.getState()
     const data = this.inputs.params.data as TreeNodeProps
 
-    this.url = getUrl(this.inputs.params.fetchUrl, data)
-    this.method = this.inputs.params.fetchMethod || 'get'
+    this.url = getUrl(this.inputs.params.url, data)
+    this.method = this.inputs.params.method || 'get'
     this.$state.commit((state: any) => {
       state.client = tempState
     })
