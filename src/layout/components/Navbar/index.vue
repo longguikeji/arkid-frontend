@@ -30,9 +30,16 @@
       >
         <div class="avatar-wrapper">
           <img
+            v-if="avatar"
             :src="avatar"
             class="user-avatar"
           >
+          <div
+            v-else
+            class="user-avatar-placeholder"
+          >
+            {{ username[0].toUpperCase() }}
+          </div>
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>
@@ -89,11 +96,11 @@ export default class extends Vue {
   }
 
   get avatar() {
-    return localStorage.getItem('avatar') || require('@/assets/HAAIFF-01.png')
+    return UserModule.userAvatar
   }
 
   get username() {
-    return localStorage.getItem('username')
+    return UserModule.userNickname || UserModule.username
   }
 
   private toggleSideBar() {
@@ -171,12 +178,22 @@ export default class extends Vue {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
+        cursor: pointer;
 
         .user-avatar {
-          cursor: pointer;
           width: 40px;
           height: 40px;
           border-radius: 10px;
+        }
+
+        .user-avatar-placeholder {
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          background-color: #006064;
+          color: #fff;
+          text-align: center;
+          line-height: 40px;
         }
 
         .el-icon-caret-bottom {

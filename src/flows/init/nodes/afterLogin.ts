@@ -10,8 +10,12 @@ export class AfterLogin extends AuthApiNode {
     if (token) {
       // 获取OpenAPI内容
       await OpenAPI.instance.init('/api/schema?format=json')
-      // 此外，这里之后也可以进行当前用户信息的获取
-      // 包括用户的头像、名称、用户的uuid以及用户的权限
+
+      // 进行用户信息的获取，包括用户的头像、名称、用户的uuid以及用户的权限
+      this.url = '/api/v1/user/info/'
+      this.method = 'get'
+      const userInfo = await super.run()
+      UserModule.setUser(userInfo)
     }
   }
 }
