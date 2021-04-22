@@ -8,21 +8,22 @@ import FormPageState from '@/admin/FormPage/FormPageState'
 export class EditTreeNode extends AuthApiNode {
   async run() {
     const tempState: TreePageState = this.getState()
+
+    if (!tempState.dialogs?.update) {
+      throw Error('treePage is not update dialog')
+    }
     
-    const data = tempState.dialogs!['editTreeNode'].data
+    const data = tempState.dialogs.update.data
   
     this.url = getUrl(this.inputs.params.url, data)
     this.method = this.inputs.params.method || 'post'
     
-    if (tempState && tempState.dialogs) {
-      const formPage = tempState.dialogs['editTreeNode'].state as FormPageState
-      this.params = getDialogParams(formPage)
-    } else {
-      throw Error('addTreeNode is not params, please check')
-    }
+    const formPage = tempState.dialogs.update.state as FormPageState
+    this.params = getDialogParams(formPage)
 
     const outputs = await super.run()
-    tempState.dialogs['editTreeNode'].visible = false
+    tempState.dialogs.update.visible = false
+    
     await runFlowByFile('flows/treePage/fetchTreeNode', this.inputs)
     return outputs
   }
