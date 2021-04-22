@@ -4,7 +4,7 @@ import getUrl from '@/utils/url'
 export class Fetch extends AuthApiNode {
   async run() {
     const tempState = this.getState()
-
+    
     this.url = getUrl(this.inputs.params.fetchUrl)
     this.method = this.inputs.params.fetchMethod || 'get'
     if (!this.url) {

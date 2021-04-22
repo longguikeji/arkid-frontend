@@ -6,7 +6,9 @@ export class Created extends StateNode {
     const tempState = this.getBaseState()
     if (tempState) {
       const path = this.inputs.com.path
-      tempState.pages.push(path)
+      if (tempState.pages.indexOf(path) < 0) {
+        tempState.pages.push(path)
+      }
     }
   }
 }

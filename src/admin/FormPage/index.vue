@@ -57,7 +57,10 @@ export default class extends Mixins(BaseVue) {
 </script>
 <style lang="scss" scoped>
 .form-page {
-  height: 100%;
+  height: calc(100vh - 84px);
+  .el-card {
+    height: 100% !important;
+  }
 }
 ::v-deep .tox .tox-menubar {
   width: 1000px;
