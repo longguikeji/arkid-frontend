@@ -45,9 +45,6 @@ export default class extends Mixins(BaseVue) {
   top: 50%;
   transform: translateY(-50%);
 }
-// .el-card {
-//   max-height: calc(100vh - 84px);
-// }
 .title {
   margin-right: 12px;
   font-weight: 700;

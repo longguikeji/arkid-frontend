@@ -7,20 +7,23 @@ export class ChangeState extends FunctionNode {
     const data = this.inputs
     state.client.table.data = []
     
+    let len = 0
     if (data.results !== undefined) {
       state.client.table.data = data.results
+      len = data.results.length
     } else {
       state.client.table.data = data
+      len = data.length
     }
+
+    state.client.pagination.total = data.count || len
     
     const buttons = state.client.card?.buttons
-    if (state.client.table.data.length > 0) {
+    if (len > 0) {
       setButtonStatus(buttons, false)
     } else {
       setButtonStatus(buttons, true)
     }
-
-    if (data.count !== undefined) state.client.pagination.total = data.count
 
     return this.inputs
   }

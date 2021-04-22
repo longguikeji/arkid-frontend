@@ -22,6 +22,7 @@ export class InitPage extends FunctionNode {
         title: '',
         buttons: []
       },
+      filter: {},
       dialogs: {},
       table: {
         columns: [],

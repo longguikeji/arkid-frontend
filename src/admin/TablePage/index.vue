@@ -68,17 +68,24 @@ export default class extends Mixins(BaseVue) {
 <style lang="scss" scoped>
 .table-page {
   height: 100%;
+  min-height: calc(100vh - 84px);
   ::v-deep  .el-card__body {
     padding: 10px;
-    height: 100% !important;
+    height: 99% !important;
     .el-table {
       height: 90% !important;
+      // margin-bottom: 50px;
     }
     .el-pagination {
       margin-top: 10px;
     }
     .el-dialog.is-fullscreen {
-      height: 100% !important;
+      min-height: 100% !important;
+    }
+    .el-table__body-wrapper {
+      height: auto !important;
+      overflow: auto;
+      min-height: 77vh !important;
     }
   }
 }

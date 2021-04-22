@@ -36,7 +36,13 @@ export default class extends Mixins(BaseVue) {
   }
 
   get itemClass() {
-    if (document.body.clientWidth < 600) { return 'form-item full-width' } else { return 'form-item half-width' }
+    if (this.state.isSetWidth === false) {
+      return ''
+    } else if (document.body.clientWidth < 600) {
+      return 'form-item full-width'
+    } else {
+      return 'form-item half-width'
+    }
   }
 }
 </script>

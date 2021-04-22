@@ -60,7 +60,16 @@ export default class extends Vue {
         await runFlowByFile('flows/tablePage/init', {
           initContent: initContent
         }).then(async(data) => {
-          await AdminModule.setAdmin(data.state)
+          let state = data.state
+          if (window.location.pathname.includes('/maketplace')) {
+            await runFlowByFile('flows/maketplace/initFilter', {
+              state: state,
+              initContent: initContent
+            }).then(async(data) => {
+              state = data.state
+            })
+          }
+          await AdminModule.setAdmin(state)
           this.initCompleted = true
         })
       } else if (initContent.type === 'form_page') {
