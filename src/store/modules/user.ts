@@ -38,9 +38,9 @@ class User extends VuexModule implements IUserState {
   public userOcc = ''
   public userWeChatId = '' // 微信Id
   public userGithubId = '' // Git Id
-  public userPermissions = []
+  public userPermissions: Array<string> = []
   public userNickname = ''
-  public userApps = []
+  public userApps: Array<IUserApp> = []
 
   @Mutation
   setUserMobile(mobile: string) {
@@ -80,7 +80,7 @@ class User extends VuexModule implements IUserState {
   }
 
   @Mutation
-  setUserApps(apps: any) {
+  setUserApps(apps: Array<IUserApp>) {
     this.userApps = apps
   }
 
