@@ -2,7 +2,7 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 import store from '@/store'
 
 export interface IUserState {
-  userid: string // 用户id
+  userUUId: string
   username: string
   userType: string
   userAvatar: string
@@ -10,13 +10,25 @@ export interface IUserState {
   userAddress: string
   userDes: string
   userOcc: string
-  userWeChatId: string // 微信Id
-  userGithubId: string // Git Id
+  userWeChatId: string
+  userGithubId: string
+  userPermissions: Array<string>
+  userNickname: string
+  userApps: Array<IUserApp>
+}
+
+export interface IUserApp {
+  name?: string
+  logo?: string
+  description?: string
+  url?: string
+  uuid?: string
+  [key: string]: any
 }
 
 @Module({ dynamic: true, store, name: 'user' })
 class User extends VuexModule implements IUserState {
-  public userid = '' // 用户id
+  public userUUId = '' // 用户id
   public username = ''
   public userType = ''
   public userAvatar = ''
@@ -26,6 +38,9 @@ class User extends VuexModule implements IUserState {
   public userOcc = ''
   public userWeChatId = '' // 微信Id
   public userGithubId = '' // Git Id
+  public userPermissions: Array<string> = []
+  public userNickname = ''
+  public userApps: Array<IUserApp> = []
 
   @Mutation
   setUserMobile(mobile: string) {
@@ -44,12 +59,12 @@ class User extends VuexModule implements IUserState {
 
   @Mutation
   setUser(data: any) {
+    this.userUUId = data.uuid
     this.username = data.username
-    localStorage.setItem('username', data.username)
-    localStorage.setItem('avatar', data.avatar)
-    this.userType = data.is_extern_user
-    this.userAvatar = data.avatar || require('@/assets/HAAIFF-01.png')
+    this.userAvatar = data.avatar
     this.userMobile = data.mobile
+    this.userType = data.is_extern_user
+    this.userNickname = data.nickname
   }
 
   @Mutation
@@ -60,13 +75,13 @@ class User extends VuexModule implements IUserState {
   }
 
   @Mutation
-  setUserId(data: any) {
-    this.userid = data
+  setUserAvatar(data: any) {
+    this.userAvatar = data
   }
 
   @Mutation
-  setUserAvatar(data: any) {
-    this.userAvatar = data
+  setUserApps(apps: Array<IUserApp>) {
+    this.userApps = apps
   }
 
   @Action
