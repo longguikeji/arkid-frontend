@@ -24,6 +24,7 @@ export class Fetch extends AuthApiNode {
 
   async run() {
     const tempState: TablePageState = this.getState()
+    
     this.url = getUrl(this.inputs.params.fetchUrl)
     this.method = (this.inputs.params.fetchMethod as string).toUpperCase() || 'GET'
 
@@ -37,6 +38,9 @@ export class Fetch extends AuthApiNode {
       state.client = tempState
     })
     const outputs = await super.run()
-    return outputs
+    return {
+      data: outputs,
+      com: this.inputs.com
+    }
   }
 }

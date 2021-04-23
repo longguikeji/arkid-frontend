@@ -1,10 +1,11 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { setButtonStatus } from '@/utils/btn'
+import OpenAPI from '@/config/openapi'
 
 export class ChangeState extends FunctionNode {
   async run() {
     const state = this.$state.fetch()
-    const data = this.inputs
+    const { data, com } = this.inputs
     state.client.table.data = []
     
     let len = 0
@@ -23,6 +24,10 @@ export class ChangeState extends FunctionNode {
       setButtonStatus(buttons, false)
     } else {
       setButtonStatus(buttons, true)
+    }
+    
+    if (com.$route.meta.page === 'extension') {
+      await OpenAPI.instance.init('/api/schema?format=json')
     }
 
     return this.inputs
