@@ -44,7 +44,8 @@ export default class extends Mixins(BaseVue) {
   }
 
   get defaultLabelPosition() {
-    if (document.body.clientWidth < 1200) { return 'top' } else { return 'left' }
+    // if (document.body.clientWidth < 1400) { return 'top' } else { return 'left' }
+    return 'top'
   }
 }
 </script>
