@@ -26,7 +26,7 @@ export class InitForm extends FunctionNode {
         })
         // 给 title 进行赋值
         tempState.title = initFormOperation.summary || ''
-        // 对 table 进行初始化操作
+        // 对 form 进行初始化操作
         const isResponses = initFormMethod.toLowerCase() === 'get' ? true : false
         const content = isResponses ? initFormOperation.responses[200].content : initFormOperation.requestBody.content 
         const schema = getSchemaByContent(content)

@@ -25,7 +25,7 @@ export class Fetch extends AuthApiNode {
   async run() {
     const tempState: TablePageState = this.getState()
     this.url = getUrl(this.inputs.params.fetchUrl)
-    this.method = this.inputs.params.fetchMethod || 'get'
+    this.method = (this.inputs.params.fetchMethod as string).toUpperCase() || 'GET'
 
     this.params = {
       page: tempState.pagination?.currentPage || 1,
