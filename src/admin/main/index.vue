@@ -61,7 +61,7 @@ export default class extends Vue {
           initContent: initContent
         }).then(async(data) => {
           let state = data.state
-          if (window.location.pathname.includes('/maketplace')) {
+          if (currentPage === 'maketplace') {
             await runFlowByFile('flows/maketplace/initFilter', {
               state: state,
               initContent: initContent
