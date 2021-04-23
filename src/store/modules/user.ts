@@ -12,7 +12,7 @@ export interface IUserState {
   userOcc: string
   userWeChatId: string
   userGithubId: string
-  userPermissions: Array<string>
+  userRole: string
   userNickname: string
   userApps: Array<IUserApp>
 }
@@ -38,7 +38,7 @@ class User extends VuexModule implements IUserState {
   public userOcc = ''
   public userWeChatId = '' // 微信Id
   public userGithubId = '' // Git Id
-  public userPermissions: Array<string> = []
+  public userRole = ''
   public userNickname = ''
   public userApps: Array<IUserApp> = []
 
@@ -65,6 +65,7 @@ class User extends VuexModule implements IUserState {
     this.userMobile = data.mobile
     this.userType = data.is_extern_user
     this.userNickname = data.nickname
+    this.userRole = data.role || 'global'
   }
 
   @Mutation
