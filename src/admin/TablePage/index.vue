@@ -71,10 +71,9 @@ export default class extends Mixins(BaseVue) {
   min-height: calc(100vh - 84px);
   ::v-deep  .el-card__body {
     padding: 10px;
-    height: 99% !important;
+    height: 100% !important;
     .el-table {
       height: 90% !important;
-      // margin-bottom: 50px;
     }
     .el-pagination {
       margin-top: 10px;
@@ -91,9 +90,12 @@ export default class extends Mixins(BaseVue) {
 }
 .el-dialog {
   .table-page {
+    height: auto !important;
+    min-height: auto !important;
     ::v-deep .el-card__body {
       .el-table__body-wrapper {
         height: auto !important;
+        min-height: auto !important;
       }
     }
   }

@@ -62,6 +62,11 @@ export default class extends Mixins(BaseVue) {
     height: 100% !important;
   }
 }
+.el-dialog__body {
+  .form-page {
+    height: auto;
+  }
+}
 ::v-deep .tox .tox-menubar {
   width: 1000px;
 }
