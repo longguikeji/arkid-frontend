@@ -7,9 +7,9 @@ export class AddUnbindButton extends StateNode {
     const state: FormPageState = this.getState()
     const unbindUrl = state.form?.items?.data.state.value
     const baseAction: FlowState = state.created![1]
-    if (!state.buttons) state.buttons = []
+    state.bottomButtons = []
     if (unbindUrl) {
-      state.buttons?.push({
+      state.bottomButtons?.push({
         type: 'danger',
         label: '解绑',
         action: [{
@@ -22,7 +22,7 @@ export class AddUnbindButton extends StateNode {
         }]
       })
     } else {
-      state.buttons = []
+      state.bottomButtons = []
     }
   }
 }

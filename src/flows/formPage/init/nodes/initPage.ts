@@ -22,7 +22,7 @@ export class InitPage extends FunctionNode {
         inline: false
       },
       dialogs: {},
-      buttons: []
+      bottomButtons: []
     }
     return {
       data: this.inputs,

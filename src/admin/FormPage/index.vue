@@ -7,9 +7,9 @@
         :path="getChildPath('select')"
       />
       <Form :path="formPath" />
-      <template v-if="state.buttons">
+      <template v-if="state.bottomButtons">
         <ButtonArray
-          :path="getChildPath('buttons')"
+          :path="getChildPath('bottomButtons')"
           class="form__page__buttons"
         />
       </template>

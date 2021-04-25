@@ -20,7 +20,7 @@ export class InitAction extends FunctionNode {
           method = action.read.method
         }
         const btn = cardButton(url, method, key, prefix)
-        tempState.buttons?.push(btn)
+        tempState.bottomButtons?.push(btn)
       })
     }
 
