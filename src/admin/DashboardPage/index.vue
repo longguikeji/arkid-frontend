@@ -31,6 +31,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import DashboardItem from './DashboardItem/index.vue'
 import DashboardPageState from './DashboardPageState'
+import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
 
@@ -48,15 +49,18 @@ export default class extends Mixins(BaseVue) {
     return this.$state as DashboardPageState
   }
 
+  get items(): DashboardItemState[] | undefined {
+    return this.state.items
+  }
+
   private layout?:any[] = [];// 必须有初始值
 
-  @Watch('state', { immediate: true })
+  @Watch('items', { immediate: true })
   freshLayout() {
-    if (this.state.items == null) { return }
-
+    if (this.items === undefined) { return }
     this.layout?.splice(0, this.layout.length)
-    for (let i = 0; i < this.state.items.length; i++) {
-      const item = this.state.items[i]
+    for (let i = 0; i < this.items.length; i++) {
+      const item = this.items[i]
       if (item.position) { item.position.i = i }
       this.layout?.push(item.position)
     }
@@ -73,10 +77,3 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.background{
-  background-color: rgb(240, 242, 245);
-  min-height: 100%;
-}
-</style>
