@@ -7,9 +7,9 @@
         :path="getChildPath('select')"
       />
       <Form :path="formPath" />
-      <template v-if="state.buttons">
+      <template v-if="state.bottomButtons">
         <ButtonArray
-          :path="getChildPath('buttons')"
+          :path="getChildPath('bottomButtons')"
           class="form__page__buttons"
         />
       </template>
@@ -57,7 +57,15 @@ export default class extends Mixins(BaseVue) {
 </script>
 <style lang="scss" scoped>
 .form-page {
-  height: 100%;
+  height: calc(100vh - 84px);
+  .el-card {
+    height: 100% !important;
+  }
+}
+.el-dialog__body {
+  .form-page {
+    height: auto;
+  }
 }
 ::v-deep .tox .tox-menubar {
   width: 1000px;

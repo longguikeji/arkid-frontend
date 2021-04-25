@@ -2,9 +2,9 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { InitFormPage } from './nodes/initFormPage'
-import { InitReadOnlyForm } from './nodes/initReadOnlyForm'
-import { InitRequestForm } from './nodes/initRequestForm'
+import { InitPage } from './nodes/initPage'
+import { InitForm } from './nodes/initForm'
+import { InitAction } from './nodes/initAction'
 
 export class Main extends Flow {
   createNodes() {
@@ -12,18 +12,18 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'initFormPage'
+        next: 'initPage'
       }, {
-        cls: InitFormPage,
-        id: 'initFormPage',
-        next: 'initReadOnlyForm'
+        cls: InitPage,
+        id: 'initPage',
+        next: 'initForm'
       }, {
-        cls: InitReadOnlyForm,
-        id: 'initReadOnlyForm',
-        next: 'initRequestForm'
+        cls: InitForm,
+        id: 'initForm',
+        next: 'initAction'
       }, {
-        cls: InitRequestForm,
-        id: 'initRequestForm',
+        cls: InitAction,
+        id: 'initAction',
         next: 'stop'
       }, {
         cls: StopNode,

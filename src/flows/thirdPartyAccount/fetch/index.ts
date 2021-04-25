@@ -2,16 +2,21 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { GetUserApp } from './nodes/getUserApp'
+import { Fetch } from '@/flows/formPage/fetch/nodes/fetch'
+import { ChangeState } from './nodes/changeState'
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'getUserApp'
+      next: 'fetch'
     }, {
-      cls: GetUserApp,
-      id: 'getUserApp',
+      cls: Fetch,
+      id: 'fetch',
+      next: 'changeState'
+    }, {
+      cls: ChangeState,
+      id: 'changeState',
       next: 'stop'
     }, {
       cls: StopNode,

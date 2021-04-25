@@ -55,7 +55,7 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '') {
 function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean):FormItemState | null {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
-  if (schema.page || schema.type === 'array') {
+  if (schema.page) {
     item = {
       type: 'InputList',
       label: schema.title,
@@ -76,7 +76,19 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
             }
           }
         ]
-      },
+      }
+    }
+  } else if (schema.type === 'array') {
+    item = {
+      type: 'Select',
+      label: schema.title,
+      prop: prop,
+      state: {
+        multiple: true,
+        value: schema.default,
+        default: schema.default,
+        options: [],
+      }
     }
   } else if (schema.enum) {
     const options:Array<OptionType> = []

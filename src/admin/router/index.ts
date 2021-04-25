@@ -1,6 +1,7 @@
 import { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
+import { UserModule } from '@/store/modules/user'
 
 // initRouterFromOpenAPI
 // 该方法用于根据OpenAPI生成动态的路由结构
@@ -16,9 +17,12 @@ export function initRouterFromOpenAPI(openAPI: any) {
 // 根据 OpenAPI 的 info 内容生成 routers
 function generateAsyncRoutersByOpenApiInfo(originRouters: any) {
   const routers: RouteConfig[] = [];
+  const currentUserRole = UserModule.userRole
   originRouters.forEach(originRouterItem => {
-    const routerIntem = generateRouterItem(originRouterItem)
-    routers.push(routerIntem)
+    if (originRouterItem.role.indexOf(currentUserRole) >= 0) {
+      const routerIntem = generateRouterItem(originRouterItem)
+      routers.push(routerIntem)
+    }
   })
   return routers
 }
@@ -26,8 +30,6 @@ function generateAsyncRoutersByOpenApiInfo(originRouters: any) {
 // 生成某条路由信息
 function generateRouterItem(tempRouter: any): RouteConfig {
   return {
-    // path: '/' + (tempRouter.base ? tempRouter.base : tempRouter.path),
-    // name: tempRouter.base ? tempRouter.base : tempRouter.path,
     path: '/' + tempRouter.path,
     name: tempRouter.path,
     component: Layout,

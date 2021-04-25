@@ -1,10 +1,15 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import FormPageState from '@/admin/FormPage/FormPageState'
 
-export class InitFormPage extends FunctionNode {
+export class InitPage extends FunctionNode {
   async run() {
     const tempState: FormPageState = {
       type: 'FormPage',
+      card: {
+        title: '',
+        buttons: []
+      },
+      pages: [],
       created: [{
         name: 'flows/hookFlow/created',
       }],
@@ -17,7 +22,7 @@ export class InitFormPage extends FunctionNode {
         inline: false
       },
       dialogs: {},
-      buttons: []
+      bottomButtons: []
     }
     return {
       data: this.inputs,

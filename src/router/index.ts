@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
-/* Layout */
 import Layout from '@/layout/index.vue'
+import Admin from '@/admin/main/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
 import { initRouterFromOpenAPI } from '@/admin/router/index'
 import OpenAPI from '@/config/openapi'
@@ -64,12 +64,13 @@ export const menuRoutes: RouteConfig[] = [
     children: [
       {
         path: 'desktop',
-        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/Desktop.vue'),
+        component: Admin,
         name: 'desktop',
         meta: {
           title: '桌面',
           icon: 'desktop',
-          affix: true
+          affix: true,
+          page: 'desktop'
         }
       }
     ]

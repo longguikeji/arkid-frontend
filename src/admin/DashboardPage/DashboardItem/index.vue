@@ -37,7 +37,7 @@ export default class extends Mixins(BaseVue) {
           {
             class: 'full',
             props: {
-              state: this.state.state
+              path: this.getChildPath('state')
             }
           }
         )
