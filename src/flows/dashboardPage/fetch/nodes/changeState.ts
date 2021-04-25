@@ -1,10 +1,12 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { UserModule } from '@/store/modules/user'
 import DashboardItemState from '@/admin/DashboardPage/DashboardItem/DashboardItemState'
 
 export class ChangeState extends FunctionNode {
   async run() {
     const state = this.$state.fetch()
     const apps = this.inputs.data.results // apps
+    UserModule.setUserApps(apps)
     let x = 0, y = 0
     state.client.items = []
     apps.forEach((app, index) => {
