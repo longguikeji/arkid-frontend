@@ -26,7 +26,7 @@ export class ChangeState extends FunctionNode {
       setButtonStatus(buttons, true)
     }
     
-    if (com.$route.meta.page === 'extension') {
+    if (com?.$route?.meta?.page === 'extension') {
       await OpenAPI.instance.init('/api/schema?format=json')
     }
 

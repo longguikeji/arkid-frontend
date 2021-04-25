@@ -27,7 +27,7 @@ export class Fetch extends AuthApiNode {
     
     this.url = getUrl(this.inputs.params.fetchUrl)
     this.method = (this.inputs.params.fetchMethod as string).toUpperCase() || 'GET'
-
+    
     this.params = {
       page: tempState.pagination?.currentPage || 1,
       page_size: tempState.pagination?.pageSize || 10,

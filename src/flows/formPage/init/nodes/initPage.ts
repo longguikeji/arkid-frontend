@@ -5,6 +5,10 @@ export class InitPage extends FunctionNode {
   async run() {
     const tempState: FormPageState = {
       type: 'FormPage',
+      card: {
+        title: '',
+        buttons: []
+      },
       pages: [],
       created: [{
         name: 'flows/hookFlow/created',
@@ -18,7 +22,7 @@ export class InitPage extends FunctionNode {
         inline: false
       },
       dialogs: {},
-      buttons: []
+      bottomButtons: []
     }
     return {
       data: this.inputs,

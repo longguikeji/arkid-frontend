@@ -9,8 +9,8 @@ export default interface FromPageState extends CardState {
   pages?: Array<string>
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
-
+  card?: CardState
   select?: SelectState
   forms?: {[value:string]: FormState}
-  buttons?: Array<ButtonState> // form 结构中的底部按钮内容
+  bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
 }

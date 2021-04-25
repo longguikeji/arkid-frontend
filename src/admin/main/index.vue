@@ -55,38 +55,52 @@ export default class extends Vue {
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     }
+    let state
     if (initContent.type) {
-      if (initContent.type === 'table_page') {
-        await runFlowByFile('flows/tablePage/init', {
+      // confirm page type
+      let type = ''
+      switch (initContent.type) {
+        case 'table_page':
+          type = 'tablePage'
+          break
+        case 'form_page':
+          type = 'formPage'
+          break
+        case 'tree_page':
+          type = 'treePage'
+          break
+        case 'dashboard_page':
+          type = 'dashboardPage'
+          break
+      }
+      // execute init page flow file
+      const initFileName = 'flows/' + type + '/init'
+      await runFlowByFile(initFileName, {
+        initContent: initContent
+      }).then(data => {
+        state = data.state
+      })
+      // execute special page content
+      if (currentPage === 'maketplace') {
+        await runFlowByFile('flows/maketplace/initFilter', {
+          state: state,
           initContent: initContent
         }).then(async(data) => {
-          let state = data.state
-          if (currentPage === 'maketplace') {
-            await runFlowByFile('flows/maketplace/initFilter', {
-              state: state,
-              initContent: initContent
-            }).then(async(data) => {
-              state = data.state
-            })
-          }
-          await AdminModule.setAdmin(state)
-          this.initCompleted = true
-        })
-      } else if (initContent.type === 'form_page') {
-        await runFlowByFile('flows/formPage/init', {
-          initContent: initContent
-        }).then(async(data) => {
-          await AdminModule.setAdmin(data.state)
-          this.initCompleted = true
-        })
-      } else if (initContent.type === 'tree_page') {
-        await runFlowByFile('flows/treePage/init', {
-          initContent: initContent
-        }).then(async(data) => {
-          await AdminModule.setAdmin(data.state)
-          this.initCompleted = true
+          state = data.state
         })
       }
+      if (currentPage === 'third_party_account') {
+        await runFlowByFile('flows/thirdPartyAccount/initAction', {
+          state: state,
+          initContent: initContent
+        }).then(async(data) => {
+          state = data.state
+        })
+      }
+      await AdminModule.setAdmin(state)
+      this.initCompleted = true
+    } else {
+      throw Error('This page is not page-type, check admin-main file')
     }
   }
 

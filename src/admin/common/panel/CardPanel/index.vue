@@ -1,44 +1,36 @@
 <template>
   <div
-    class="card-background"
-    @click="clickHandler"
+    class="card-panel"
+    :style="{'--color': state.color}"
   >
     <div
-      class="card-panel"
-      :style="{'--color': state.color}"
+      class="card-panel-icon"
+      @click="clickHandler"
     >
-      <div class="card-panel-icon-wrapper icon-color">
-        <svg-icon
-          :name="state.icon"
-          class="card-panel-icon"
-        />
-      </div>
-      <div class="card-panel-description">
-        <div class="card-panel-text">
-          {{ state.title }}
-        </div>
-        <count-to
-          :start-val="0"
-          :end-val="state.number"
-          :duration="1000"
-          class="card-panel-num"
-        />
-      </div>
+      <img
+        v-if="state.img"
+        class="icon-img"
+        :src="state.img"
+      >
+      <span v-else>Logo</span>
+    </div>
+    <div
+      class="card-panel-text"
+      @click="clickHandler"
+    >
+      {{ state.name }}
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import CountTo from 'vue-count-to'
 import CardPanelState from './CardPanelState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
   name: 'CardPanel',
-  components: {
-    CountTo
-  }
+  components: {}
 })
 export default class extends Mixins(BaseVue) {
   get state(): CardPanelState {
@@ -46,83 +38,48 @@ export default class extends Mixins(BaseVue) {
   }
 
   private clickHandler() {
-    // if (this.state.action) { (this.$store as ArkfbpStore).runAction(this.state.action) }
+    if (this.state.url) {
+      window.open(this.state.url, '_blank')
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.card-background{
-  cursor: pointer;
-  background-color: #fff;
-  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-  border-color: rgba(0, 0, 0, .05);
-  overflow: hidden;
-
-  &:hover {
-    .card-panel-icon-wrapper {
-      color: #fff;
-    }
-    .icon-color {
-        background: var(--color);
-    }
-  }
-}
 .card-panel {
-  width: 250px;
-  height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 10px 10px 40px rgba(0, 0, 0, .05);
+  border-color: rgba(0, 0, 0, .05);
   font-size: 12px;
-
   color: #666;
-
   position: relative;
-  top: 50%; /*偏移*/
-  transform: translateY(-50%);
-  margin: 0 auto;
-
-  .icon-color {
-    color: var(--color);
+  text-align: center;
+  &:hover {
+    background: var(--color);
   }
-
-  .card-panel-icon-wrapper {
-    float: left;
-    // margin: 14px 0 0 14px;
-    margin: 0 0 0 14px;
-    padding: 16px;
-    transition: all 0.38s ease-out;
-    border-radius: 6px;
-
-    position: relative;
-    top: 50%; /*偏移*/
-    transform: translateY(-50%);
-  }
-
   .card-panel-icon {
-    float: left;
-    font-size: 48px;
-
-  }
-
-  .card-panel-description {
-    float: right;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: #006064;
+    color: #FFF;
     font-weight: bold;
-    margin-right: 26px;
-    margin-left: 0px;
-
-    position: relative;
-    top: 50%; /*偏移*/
-    transform: translateY(-50%);
-
-    .card-panel-text {
-      line-height: 18px;
-      color: rgba(0, 0, 0, 0.45);
-      font-size: 16px;
-      margin-bottom: 12px;
+    line-height: 60px;
+    .icon-img {
+      width: 100%;
+      height: 100%;
     }
-
-    .card-panel-num {
-      font-size: 20px;
-    }
+  }
+  .card-panel-text {
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
   }
 }
 </style>

@@ -3,7 +3,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 export class ChangeState extends FunctionNode {
   async run() {
     const state = this.$state.fetch()
-    const data = this.inputs
+    const data = this.inputs.data
     const items = state.client.form?.items
     if (items) {
       Object.keys(items).forEach(key => {
