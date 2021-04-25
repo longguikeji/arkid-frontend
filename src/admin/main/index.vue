@@ -55,8 +55,8 @@ export default class extends Vue {
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     }
-    let state
     if (initContent.type) {
+      let state
       // confirm page type
       let type = ''
       switch (initContent.type) {

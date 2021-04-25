@@ -30,8 +30,6 @@ function generateAsyncRoutersByOpenApiInfo(originRouters: any) {
 // 生成某条路由信息
 function generateRouterItem(tempRouter: any): RouteConfig {
   return {
-    // path: '/' + (tempRouter.base ? tempRouter.base : tempRouter.path),
-    // name: tempRouter.base ? tempRouter.base : tempRouter.path,
     path: '/' + tempRouter.path,
     name: tempRouter.path,
     component: Layout,
