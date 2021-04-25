@@ -1,6 +1,6 @@
 <template>
   <div class="form-page">
-    <Card :path="getChildPath('')">
+    <Card :path="getChildPath('card')">
       <Select
         v-if="state.select"
         slot="header"
