@@ -14,7 +14,11 @@ export class Fetch extends AuthApiNode {
     this.$state.commit((state: any) => {
       state.client = tempState
     })
+    
     const outputs = await super.run()
-    return outputs
+    return {
+      data: outputs,
+      com: this.inputs.com
+    }
   }
 }

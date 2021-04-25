@@ -89,6 +89,14 @@ export default class extends Vue {
           state = data.state
         })
       }
+      if (currentPage === 'third_party_account') {
+        await runFlowByFile('flows/thirdPartyAccount/initAction', {
+          state: state,
+          initContent: initContent
+        }).then(async(data) => {
+          state = data.state
+        })
+      }
       await AdminModule.setAdmin(state)
       this.initCompleted = true
     } else {
