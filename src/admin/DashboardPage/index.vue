@@ -1,5 +1,5 @@
 <template>
-  <div class="background">
+  <div class="dashboard-page">
     <grid-layout
       :layout.sync="layout"
       :col-num="8"
@@ -77,3 +77,11 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.dashboard-page {
+  ::v-deep .vue-grid-item {
+    touch-action: none;
+  }
+}
+</style>
