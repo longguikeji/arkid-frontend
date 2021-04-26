@@ -36,7 +36,7 @@ export default class ThirdPartCallback extends Vue {
       if (response.next && typeof response.next === 'string') {
         window.location.href = response.next
       } else {
-        window.location.reload()
+        window.location.replace('/')
       }
     } else { // 没有登录，需要绑定到某用户
       LoginStore.ThirdUserID = String(response.user_id)
