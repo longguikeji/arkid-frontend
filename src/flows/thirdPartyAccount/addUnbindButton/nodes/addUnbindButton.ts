@@ -1,28 +1,28 @@
 import { StateNode } from '@/nodes/stateNode'
-import FormPageState from '@/admin/FormPage/FormPageState'
-import { FlowState } from '@/admin/base/BaseVue'
 
 export class AddUnbindButton extends StateNode {
   async run() {
-    const state: FormPageState = this.getState()
-    const unbindUrl = state.form?.items?.data.state.value
-    const baseAction: FlowState = state.created![1]
-    state.bottomButtons = []
-    if (unbindUrl) {
-      state.bottomButtons?.push({
-        type: 'danger',
-        label: '解绑',
-        action: [{
-          name: 'flows/thirdPartyAccount/unbind',
-          params: {
-            url: unbindUrl,
-            method: 'GET',
-            ...baseAction.params,
+    const state = this.inputs.state
+    const actionColumn = {
+      label: '操作',
+      scope: {
+        type: 'ButtonArray',
+        state: [
+          {
+            label: '解绑',
+            type: 'danger',
+            action: [
+              {
+                name: 'flows/thirdPartyAccount/unbind',
+              }
+            ]
           }
-        }]
-      })
-    } else {
-      state.bottomButtons = []
+        ]
+      }
+    }
+    state.table?.columns?.push(actionColumn)
+    return {
+      state: state
     }
   }
 }

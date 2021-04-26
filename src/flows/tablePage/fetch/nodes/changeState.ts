@@ -7,11 +7,12 @@ export class ChangeState extends FunctionNode {
     const state = this.$state.fetch()
     const { data, com } = this.inputs
     state.client.table.data = []
-    
+
     let len = 0
-    if (data.results !== undefined) {
-      state.client.table.data = data.results
-      len = data.results.length
+    if (data.results !== undefined || data.data !== undefined) {
+      const res = data.results || data.data
+      state.client.table.data = res
+      len = res.length
     } else {
       state.client.table.data = data
       len = data.length
