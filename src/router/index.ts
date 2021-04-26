@@ -102,10 +102,8 @@ router.beforeEach((to, from, next) => {
   const isLogin = getToken()
   const currentTenant = TenantModule.currentTenant
   let nextUrl = ''
-  if (to.path === '/third_part_callback') {
-    next()
-  } else if (isLogin) {
-    if (to.path === '/login') {
+  if (isLogin) {
+    if (to.path === '/login' || to.path === '/third_part_callback') {
       nextUrl = '/'
     } else if (to.path === '/tenant') {
       next()
@@ -113,7 +111,7 @@ router.beforeEach((to, from, next) => {
       nextUrl = '/tenant'
     }
   } else {
-    if (to.path !== '/login') {
+    if (to.path !== '/login' && to.path !== '/third_part_callback') {
       nextUrl = '/login'
     }
   }
