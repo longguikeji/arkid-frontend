@@ -19,7 +19,7 @@ function generateAsyncRoutersByOpenApiInfo(originRouters: any) {
   const routers: RouteConfig[] = [];
   const currentUserRole = UserModule.userRole
   originRouters.forEach(originRouterItem => {
-    if (originRouterItem.role.indexOf(currentUserRole) >= 0) {
+    if (originRouterItem.role?.indexOf(currentUserRole) >= 0) {
       const routerIntem = generateRouterItem(originRouterItem)
       routers.push(routerIntem)
     }
