@@ -23,7 +23,6 @@
     "cors": "^2.8.5",
     "driver.js": "^0.9.8",
     "echarts": "^4.8.0",
-    "element-resize-detector": "^1.2.2",
     "element-ui": "^2.13.2",
     "faker": "^5.0.0",
     "file-saver": "^2.0.2",
