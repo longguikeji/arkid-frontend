@@ -5,6 +5,7 @@ import FormState from '../common/Form/FormState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
+import { FlowConfig } from '@/unify/index.ts'
 
 export default interface TablePageState extends BaseState {
   type: 'TablePage'
@@ -18,4 +19,5 @@ export default interface TablePageState extends BaseState {
     header?: CardState,
     data?: ListState
   }
+  actions?: { [name: string]: (FlowConfig | string)[] }
 }

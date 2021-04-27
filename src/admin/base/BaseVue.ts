@@ -1,21 +1,22 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import getDataByPath from '@/utils/datapath'
 import { runFlowByFile } from '@/arkfbp'
-import { stringify } from 'querystring';
+import { runFlowByActionName } from '@/flows'
 
 export interface FlowState {
   name:string
   params?:any
 }
 
+
 export interface BaseState {
-    created?: Array<FlowState | Function>
-    beforeMount?: Array<FlowState | Function>
-    mounted?: Array<FlowState | Function>
-    beforeUpdate?: Array<FlowState | Function>
-    updated?: Array<FlowState | Function>
-    beforeDestroy?: Array<FlowState | Function>
-    destroyed?: Array<FlowState | Function>
+    created?: string | Function
+    beforeMount?: string | Function
+    mounted?: string | Function
+    beforeUpdate?: string | Function
+    updated?: string | Function
+    beforeDestroy?: string | Function
+    destroyed?: string | Function
 }
 
 @Component({
@@ -73,18 +74,13 @@ export default class extends Vue {
     this.runAction(this.state.destroyed)
   }
 
-  async runAction(flows?:Array<FlowState | Function>) {
-    if (flows) {
-      flows.forEach(async(flow) => {
-        if (flow instanceof Function) {
-          flow()
-        } else {
-          await runFlowByFile(flow.name, {
-            com: this,
-            params: flow.params
-          })
-        }
-      })
+  async runAction(action?: string | Function) {
+    if (action) {
+      if (action instanceof Function) {
+        action()
+      } else {
+        await runFlowByActionName(this, action)
+      }
     }
   }
 }

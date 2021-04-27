@@ -58,23 +58,22 @@ export default class extends Vue {
     if (initContent.type) {
       let state
       // confirm page type
-      let type = ''
+      let initFileName = ''
       switch (initContent.type) {
         case 'table_page':
-          type = 'tablePage'
+          initFileName = 'flows/base/tablePage'
           break
         case 'form_page':
-          type = 'formPage'
+          initFileName = 'flows/formPage/init'
           break
         case 'tree_page':
-          type = 'treePage'
+          initFileName = 'flows/treePage/init'
           break
         case 'dashboard_page':
-          type = 'dashboardPage'
+          initFileName = 'flows/dashboardPage/init'
           break
       }
       // execute init page flow file
-      const initFileName = 'flows/' + type + '/init'
       await runFlowByFile(initFileName, {
         initContent: initContent
       }).then(data => {
