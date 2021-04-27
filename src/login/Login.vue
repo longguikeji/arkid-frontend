@@ -40,6 +40,20 @@ export default class Login extends Vue {
   }
 
   private async getLoginPage() {
+    // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
+    const query = this.$route.query
+    if (query.next && LoginStore.token) {
+      let nextUrl = query.next
+      Object.keys(query).forEach(key => {
+        if (key !== 'next') {
+          nextUrl += ('&' + key + '=' + query[key])
+        }
+      })
+      nextUrl = window.location.origin + nextUrl + '&token=' + LoginStore.token
+      window.location.replace(nextUrl)
+      return
+    }
+
     LoginStore.TenantUUID = this.tenantUUID
     let url = '/api/v1/loginpage/'
     if (LoginStore.TenantUUID) {
