@@ -103,7 +103,9 @@ router.beforeEach((to, from, next) => {
   const currentTenant = TenantModule.currentTenant
   let nextUrl = ''
   if (isLogin) {
-    if (to.path === '/login' || to.path === '/third_part_callback') {
+    if (to.query.next) {
+      next()
+    } else if (to.path === '/login' || to.path === '/third_part_callback') {
       nextUrl = '/'
     } else if (to.path === '/tenant') {
       next()

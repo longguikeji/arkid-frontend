@@ -10,7 +10,7 @@ export class ChangeTreeState extends FunctionNode {
     state.tree.nodes.data = []
     state.tree.nodes.data = res
     const buttons = state.tree.header?.buttons
-    if (res) {
+    if (res?.length) {
       setButtonStatus(buttons, false)
     } else {
       setButtonStatus(buttons, true)
