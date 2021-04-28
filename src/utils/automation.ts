@@ -5,7 +5,7 @@ import generateDialogForm from '@/utils/generate-dialog-form'
 import getSchemaByContent from '@/utils/get-schema-by-content'
 import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
-import { FlowConfig } from '@/flows'
+import { FlowConfig } from '@/arkfbp'
 import { getFormPageDialogRequestConfig } from '@/utils/get-dialog-params'
 
 // 参数说明:

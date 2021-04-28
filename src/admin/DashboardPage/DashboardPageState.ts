@@ -1,6 +1,6 @@
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import { BaseState } from '@/admin/base/BaseVue'
-import { FlowConfig } from '@/flows'
+import { FlowConfig } from '@/arkfbp'
 
 export default interface DashboardPageState extends BaseState {
   type: string

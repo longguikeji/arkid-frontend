@@ -5,7 +5,7 @@ import FormState from '../common/Form/FormState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
-import { FlowConfig } from '@/flows/index.ts'
+import { FlowConfig } from '@/arkfbp'
 
 export default interface TablePageState extends BaseState {
   type: 'TablePage'

@@ -71,7 +71,7 @@ export class InitTable extends FunctionNode {
           ]
           tempState.actions['destroyed'] = [
             {
-              name: 'flows/hookFlow/destroyed',
+              name: 'arkfbp/flows/hookFlow/destroyed',
               url: initTablePath,
               method: initTableMethod
             }

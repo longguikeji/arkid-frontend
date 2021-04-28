@@ -26,7 +26,7 @@ export class InitTree extends FunctionNode {
         tempState.destroyed = 'destroyed'
         tempState.actions!['destroyed'] = [
           {
-            name: 'flows/hookFlow/destroyed',
+            name: 'arkfbp/flows/hookFlow/destroyed',
             url: initTreePath,
             method: initTreeMethod,
           }

@@ -24,12 +24,12 @@ export class InitPage extends FunctionNode {
       actions: {
         created: [
           {
-            name: 'flows/hookFlow/created'
+            name: 'arkfbp/flows/hookFlow/created'
           }
         ],
         beforeDestroy: [
           {
-            'name': 'flows/hookFlow/beforeDestroy'
+            'name': 'arkfbp/flows/hookFlow/beforeDestroy'
           }
         ]
       }

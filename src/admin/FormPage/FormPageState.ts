@@ -3,7 +3,7 @@ import FormState from '../common/Form/FormState'
 import SelectState from '../common/Form/Select/SelectState'
 import ButtonState from '@/admin/common/Button/ButtonState' 
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
-import { FlowConfig } from '@/flows/index.ts'
+import { FlowConfig } from '@/arkfbp'
 
 export default interface FromPageState extends CardState {
   type: 'FormPage',

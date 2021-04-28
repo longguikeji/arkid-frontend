@@ -1,6 +1,6 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import getDataByPath from '@/utils/datapath'
-import { runFlowByActionName } from '@/flows'
+import { runFlowByActionName } from '@/arkfbp'
 
 export interface FlowState {
   name:string

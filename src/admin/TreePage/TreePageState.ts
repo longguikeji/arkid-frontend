@@ -4,7 +4,7 @@ import TreeState from '../common/data/Tree/TreeState'
 import CardState from '../common/Card/CardState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
-import { FlowConfig } from '@/flows/index.ts'
+import { FlowConfig } from '@/arkfbp'
 
 export interface Tree {
   header?: CardState,
