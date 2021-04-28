@@ -1,26 +1,25 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import FormPageState from '@/admin/FormPage/FormPageState'
 
 export class InitPage extends FunctionNode {
   async run() {
-    const isHooks = this.inputs.isHooks
-    const tempState: TablePageState = {
-      type: 'TablePage',
-      pages: [],
-      created: isHooks === false ? undefined : 'created',
-      beforeDestroy: isHooks === false ? undefined : 'beforeDestroy',
-      destroyed: isHooks === false ? undefined : 'destroyed',
+    const tempState: FormPageState = {
+      type: 'FormPage',
       card: {
         title: '',
         buttons: []
       },
-      filter: {},
-      dialogs: {},
-      table: {
-        columns: [],
-        data: [],
-        selection: {}
+      pages: [],
+      created: 'created',
+      beforeDestroy: 'beforeDestroy',
+      destroyed: 'destroyed',
+      title: '',
+      form: {
+        items: {},
+        inline: false
       },
+      dialogs: {},
+      bottomButtons: [],
       actions: {
         created: [
           {

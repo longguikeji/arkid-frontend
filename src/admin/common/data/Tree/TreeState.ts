@@ -32,5 +32,5 @@ export default interface TreeState extends BaseState {
   allowDrop?: Function // 拖拽时判定目标节点能否被放置。type 参数有三种情况：'prev'、'inner' 和 'next'，分别表示放置在目标节点前、插入至目标节点和放置在目标节点后
   slot?: any // 可以添加一些自定义的内容，比如在节点后添加操作按钮等
   slotState?: { [key: string]: { type: string, state: any} }// slotState
-  action?: Array<FlowState | Function> // 给tree添加action，当点击节点时触发action内容
+  action?: Function | string // 给tree添加action，当点击节点时触发action内容
 }

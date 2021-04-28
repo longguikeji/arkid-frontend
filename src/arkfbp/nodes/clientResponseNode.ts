@@ -11,7 +11,6 @@ export class ClientResponseNode extends FunctionNode {
     const { client, clientServer } = this.$state.fetch()
     let data = this.inputs
     const type = this.$state.fetch().type
-
     // start to change
     if (clientServer && client) {
       Object.keys(clientServer).forEach((key) => {
@@ -37,7 +36,9 @@ export class ClientResponseNode extends FunctionNode {
           for (let i = 0; i < vs.length - 1; i++) {
             tempS = tempS[vs[i]]
           }
-          temp[ks[len - 1]] = tempS[vs[vs.length - 1]] || tempS
+          let res = tempS[vs[vs.length - 1]]
+          if (res === undefined) { res = tempS }
+          temp[ks[len - 1]] = res
         }
         if (type === 'assign') {
           temp[ks[len - 1]] = clientServer[key]

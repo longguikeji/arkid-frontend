@@ -4,6 +4,7 @@ import TreeState from '../common/data/Tree/TreeState'
 import CardState from '../common/Card/CardState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
+import { FlowConfig } from '@/flows/index.ts'
 
 export interface Tree {
   header?: CardState,
@@ -20,4 +21,5 @@ export default interface TreePageState extends BaseState {
     header?: CardState,
     data?: ListState
   }
+  actions: { [name: string]: Array<FlowConfig | string> }
 }

@@ -193,8 +193,8 @@ export function cardButton(state: any, url: string, method: string, key: string)
       } : undefined
     }
   ]
-  state.card?.buttons?.push(cardButton)
   state.actions[pageBtnActionName] = cardButtonFlows
+  return cardButton
 }
 
 export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false) {

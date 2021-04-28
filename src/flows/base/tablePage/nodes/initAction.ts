@@ -12,7 +12,8 @@ export class InitAction extends FunctionNode {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
         // card-button
-        cardButton(tempState, url, method, key)
+        const btn = cardButton(tempState, url, method, key)
+        tempState.card?.buttons?.push(btn)
         // dialogs
         generateDialog(tempState, url, method, key)
       })

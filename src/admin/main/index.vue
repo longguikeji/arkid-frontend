@@ -64,13 +64,13 @@ export default class extends Vue {
           initFileName = 'flows/base/tablePage'
           break
         case 'form_page':
-          initFileName = 'flows/formPage/init'
+          initFileName = 'flows/base/formPage'
           break
         case 'tree_page':
-          initFileName = 'flows/treePage/init'
+          initFileName = 'flows/base/treePage'
           break
         case 'dashboard_page':
-          initFileName = 'flows/dashboardPage/init'
+          initFileName = 'flows/base/dashboardPage/init'
           break
       }
       // execute init page flow file
