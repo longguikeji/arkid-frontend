@@ -1,13 +1,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import getDataByPath from '@/utils/datapath'
-import { runFlowByFile } from '@/arkfbp'
 import { runFlowByActionName } from '@/flows'
 
 export interface FlowState {
   name:string
   params?:any
 }
-
 
 export interface BaseState {
     created?: string | Function

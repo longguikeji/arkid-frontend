@@ -50,8 +50,7 @@ export class InitAction extends FunctionNode {
 
     return {
       data: this.inputs.data,
-      state: tempState,
-      baseAction: this.inputs.baseAction
+      state: tempState
     }
   }
 }

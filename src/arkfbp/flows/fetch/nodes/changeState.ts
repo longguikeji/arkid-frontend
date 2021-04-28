@@ -5,9 +5,6 @@ export class ChangeState extends FunctionNode {
   async run() {
     const { client, clientServer } = this.$state.fetch()
     let data = this.inputs
-    if (data.results || data.data) {
-      data = data.results || data.data
-    }
     if (clientServer) {
       Object.keys(clientServer).forEach((key) => {
         const ks = key.split('.')

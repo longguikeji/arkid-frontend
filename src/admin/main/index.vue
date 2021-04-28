@@ -89,7 +89,7 @@ export default class extends Vue {
         })
       }
       if (currentPage === 'third_party_account') {
-        await runFlowByFile('flows/thirdPartyAccount/initAction', {
+        await runFlowByFile('flows/thirdPartyAccount/addUnbindButton', {
           state: state,
           initContent: initContent
         }).then(async(data) => {
