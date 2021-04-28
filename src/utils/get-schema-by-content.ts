@@ -8,11 +8,14 @@ export default function getSchemaByContent(content: { [requestBodyType: string]:
   let schema = content[type].schema
   if (schema.$ref) {
     schema = OpenAPI.instance.getSchemaByRef(schema.$ref)
-    if (schema.properties && schema.properties.results && schema.properties.results.items) {
-      const items = schema.properties.results.items
-      if ((items as ISchema).$ref) {
-        const ref = (items as ISchema).$ref
-        if (ref) schema = OpenAPI.instance.getSchemaByRef(ref)
+    if (schema?.properties) {
+      const properties = schema.properties
+      if (properties.results?.items || properties.data?.items) {
+        const items = properties.results?.items || properties.data?.items
+        if ((items as ISchema).$ref) {
+          const ref = (items as ISchema).$ref
+          if (ref) schema = OpenAPI.instance.getSchemaByRef(ref)
+        }
       }
     }
   }
