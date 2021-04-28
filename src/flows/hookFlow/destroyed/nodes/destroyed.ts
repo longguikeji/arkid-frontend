@@ -7,13 +7,13 @@ export class Destroyed extends StateNode {
     const tempState = this.getState()
     const inputs = tempState?.destroyed?.length && tempState.destroyed[0]
     if (inputs) {
-      if (tempState.type === 'TablePage') {
-        await runFlowByFile('flows/tablePage/fetch', inputs)
-      } else if (tempState.type === 'FormPage') {
-        await runFlowByFile('flows/formPage/fetch', inputs)
-      } else if (tempState.type === 'TreePage') {
-        await runFlowByFile('flows/treePage/fetchTreeNode', inputs)
-      }
+      // if (tempState.type === 'TablePage') {
+      //   await runFlowByFile('flows/tablePage/fetch', inputs)
+      // } else if (tempState.type === 'FormPage') {
+      //   await runFlowByFile('flows/formPage/fetch', inputs)
+      // } else if (tempState.type === 'TreePage') {
+      //   await runFlowByFile('flows/treePage/fetchTreeNode', inputs)
+      // }
     }
   }
 }
