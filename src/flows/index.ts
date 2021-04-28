@@ -42,7 +42,7 @@ export async function runFlow (com: Vue, state: any, flow: FlowConfig) {
   const inputs = {
     url: args.url ? getUrl(args.url) : '',
     method: args.method?.toUpperCase(),
-    params: null,
+    params: {},
     client: state,
     clientServer: args.response,
     com: com
@@ -73,7 +73,7 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 // state: current page state
 // rconfig: request or response config
 export function parseFlowConfig(state: any, rconfig: FlowConfigResponseOrRequest) {
-  let params
+  let params = {}
   Object.keys(rconfig).forEach(key => {
     let tempState = cloneDeep(state)
     const item = rconfig[key]

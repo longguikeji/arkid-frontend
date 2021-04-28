@@ -22,6 +22,6 @@ export default interface PaginationState extends BaseState {
   actionCurrentChange?: string
   actionPrevClick?: string
   actionNextClick?: string
-  action?: Array<FlowState | Function>
+  action?: string | Function
   data?: any
 }

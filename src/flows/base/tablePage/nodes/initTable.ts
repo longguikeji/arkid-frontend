@@ -32,6 +32,8 @@ export class InitTable extends FunctionNode {
         let ref = responseSchema.$ref as string
         if (responseSchema.items) { ref = (responseSchema.items as ISchema).$ref as string }
         const responseData = OpenAPI.instance.getSchemaByRef(ref)
+        // table的请求参数 -- parameters
+        let paramsMapping = {}
         // table的数据映射
         let responseMapping = {
           'table.data': ''
@@ -50,6 +52,8 @@ export class InitTable extends FunctionNode {
             total: 0,
             action: 'fetch'
           }
+          paramsMapping['page'] = 'pagination.currentPage'
+          paramsMapping['page_size'] = 'pagination.pageSize'
         }
         // 给页面添加初始化事件流
         if (otherInitContent.isHooks !== false) {
@@ -61,6 +65,7 @@ export class InitTable extends FunctionNode {
               name: 'arkfbp/flows/fetch',
               url: initTablePath,
               method: initTableMethod,
+              request: paramsMapping,
               response: responseMapping
             }
           ]
