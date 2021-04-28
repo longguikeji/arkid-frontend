@@ -188,8 +188,8 @@ export function cardButton(state: any, url: string, method: string, key: string)
       name: pageBtnPath,
       url: url,
       method: method,
-      request: pageBtnIsRequestion ? {
-        ['dialog.' + key + '.state.visible']: true
+      response: pageBtnIsRequestion ? {
+        ['dialogs.' + key + '.visible']: true
       } : undefined
     }
   ]
@@ -209,8 +209,8 @@ export function itemButton(state: any, url: string, method: string, key: string,
       name: pageBtnPath,
       url: url,
       method: method,
-      request: pageBtnIsRequestion ? {
-        ['dialogs.' + key + '.state.visible']: true
+      response: pageBtnIsRequestion ? {
+        ['dialogs.' + key + '.visible']: true
       } : undefined
     }
   ]
