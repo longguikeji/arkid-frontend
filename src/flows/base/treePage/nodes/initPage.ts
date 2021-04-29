@@ -18,7 +18,7 @@ export class InitPage extends FunctionNode {
           isFilter: true,
           expandOnClickNode: false,
           data: [],
-          action: []
+          action: ''
         }
       },
       dialogs: {},

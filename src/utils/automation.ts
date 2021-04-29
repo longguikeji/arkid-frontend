@@ -6,7 +6,7 @@ import getSchemaByContent from '@/utils/get-schema-by-content'
 import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { FlowConfig } from '@/arkfbp'
-import { getFormPageDialogRequestConfig } from '@/utils/get-dialog-params'
+import { getFormPageDialogStateMapping } from '@/utils/state-mapping'
 
 // 参数说明:
 // initActionOperation: 获取Dialog元素的必备参数 -- 必须
@@ -155,16 +155,15 @@ export function generateDialog(tempState: any, url: string, method: string, key:
 
 export function addDialogBtnActions(state: any, url: string, method: string, key: string) {
   const { dialogType, isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
-  const dialog: DialogState = state.dialogs[key]
+  const target = 'dialogs.' + key + '.state'
+  const { requestMapping } = getFormPageDialogStateMapping(url, method, target)
   if (dialogType === 'FormPage') {
-    const prefix = 'dialogs.' + key
-    const request = getFormPageDialogRequestConfig(dialog.state, prefix)
     const dialogBtnFlows: (FlowConfig | string)[] = [
       {
         name: dialogBtnPath,
         url: url,
         method: method,
-        request: dialogBtnIsRequest ? request : undefined
+        request: dialogBtnIsRequest ? requestMapping : undefined
       }
     ]
     if (isUpdatePage) {
