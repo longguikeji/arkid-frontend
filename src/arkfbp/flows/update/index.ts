@@ -2,6 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
+import { GetRequestBody } from './nodes/getRequestBody'
 import { Update } from './nodes/update'
 
 export class Main extends Flow {
@@ -9,6 +10,10 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
+      next: 'getRequestBody'
+    }, {
+      cls: GetRequestBody,
+      id: 'getRequestBody',
       next: 'update'
     }, {
       cls: Update,

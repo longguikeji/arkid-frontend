@@ -49,7 +49,7 @@ export async function runFlow (com: Vue, state: any, flow: FlowConfig) {
   }
   // 对 request 请求参数进行解析处理
   if (args?.request) {
-    inputs.params = parseFlowConfig(state, args.request)
+    inputs.params = parseStateMapping(state, args.request)
   }
   await runFlowByFile(filePath, inputs)
 }
@@ -71,29 +71,43 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 // 对配置项中的 request 或者 response 进行配置解析
 // 参数说明
 // state: current page state
-// rconfig: request or response config
-export function parseFlowConfig(state: any, rconfig: FlowConfigResponseOrRequest) {
+// mapping: request or response config
+export function parseStateMapping(state: any, mapping: FlowConfigResponseOrRequest) {
   let params = {}
-  Object.keys(rconfig).forEach(key => {
-    let tempState = cloneDeep(state)
-    const item = rconfig[key]
+  Object.keys(mapping).forEach(key => {
+    let tempState
+    const item = mapping[key]
     if (typeof item === 'string') {
-      const configSet = item.split('.')
-      if (configSet.length > 1) {
-        configSet.forEach((c: string) => {
-          if (c.includes('items[prop=')) {
-            const res = Filter(c, tempState)
-            tempState = tempState.items[res]
-          } else if (c.includes('columns[prop=')) {
-            const res = Filter(c, tempState)
-            tempState = tempState.cloumns[res]
-          } else {
-            tempState = tempState[c]
-          }
-        })
-      }
+      tempState = getStateByStringConfig(state, item)
+      params[key] = tempState
+    } else if (typeof item === 'object') {
+      const objectData = parseStateMapping(state, item)
+      params[key] = { ...objectData }
+    } else {
+      params[key] = tempState
     }
-    params[key] = tempState
   })
   return params
+}
+
+
+export function getStateByStringConfig(state: any, str: string) {
+  let tempState = cloneDeep(state)
+  if (str.includes('forms[')) {
+    const newStr = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
+    const value = getStateByStringConfig(state, newStr)
+    str = str.slice(0, str.indexOf('[')) + '.' + value + str.slice(str.indexOf(']') + 1)
+  }
+  const strMapping = str.split('.')
+  if (strMapping.length) {
+    strMapping.forEach(sm => {
+      if (sm.includes('columns[prop=')) {
+        const res = Filter(sm, tempState)
+        tempState = tempState.cloumns[res]
+      } else {
+        tempState = tempState[sm]
+      }
+    })
+  }
+  return tempState
 }

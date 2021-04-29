@@ -12,8 +12,9 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
   const schema = OpenAPI.instance.getSchemaByRef(ref)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
-    responseMapping[ target + '.select.value'] = propertyName
-    requestMapping[propertyName] = target + '.select.value'
+    const selectValueMapping = target + '.select.value'
+    responseMapping[selectValueMapping] = propertyName
+    requestMapping[propertyName] = selectValueMapping
     for (const refValue in schema.discriminator.mapping) {
       const refSchema = OpenAPI.instance.getSchemaByRef(schema.discriminator.mapping[refValue])
       const props = refSchema.properties
@@ -25,14 +26,15 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
           const itemsProps = itemsSchema.properties
           requestMapping[prop] = {}
           for (const itemProp in itemsProps) {
-            const itemValueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
+            const itemValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
             responseMapping[itemValueMapping] = 'data.' + itemProp
             requestMapping[prop][itemProp] = itemValueMapping
           }
         } else if (prop !== propertyName) {
-          const valueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.value'
+          const valueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
           responseMapping[valueMapping] = prop
           requestMapping[prop] = valueMapping
+          requestMapping[propertyName] = selectValueMapping
         }
       }
     }
@@ -41,7 +43,6 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
     for (const prop in props) {
       const valueMapping = target + '.form.items.' + prop + '.state.value'
       responseMapping[valueMapping] = prop
-      requestMapping[prop] = valueMapping
     }
   }
   return {

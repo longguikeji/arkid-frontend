@@ -156,7 +156,11 @@ export function generateDialog(tempState: any, url: string, method: string, key:
 export function addDialogBtnActions(state: any, url: string, method: string, key: string) {
   const { dialogType, isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state'
-  const { requestMapping } = getFormPageDialogStateMapping(url, method, target)
+  // const { requestMapping } = getFormPageDialogStateMapping(url, method, target)
+  const requestMapping = {
+    mapping: target,
+    isIncludeReadOnly: true,
+  }
   if (dialogType === 'FormPage') {
     const dialogBtnFlows: (FlowConfig | string)[] = [
       {
