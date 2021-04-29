@@ -13,7 +13,7 @@ export interface FlowConfig {
 }
 
 export interface FlowConfigResponseOrRequest {
-  [key: string]: string | number | boolean
+  [key: string]: string | number | boolean | undefined
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -48,8 +48,9 @@ export async function runFlow (com: Vue, state: any, flow: FlowConfig) {
     com: com
   }
   // 对 request 请求参数进行解析处理
-  if (args?.request) {
-    inputs.params = parseStateMapping(state, args.request)
+  if (args.request) {
+    const mapping = stateMappingProxy(state, args.request)
+    inputs.params = parseStateMapping(state, mapping)
   }
   await runFlowByFile(filePath, inputs)
 }
@@ -66,6 +67,23 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
   const flow = await import(`@/${flowPath}`)
   const outputs = await runWorkflowByClass(flow.Main, inputs)
   return outputs
+}
+
+// 对Mapping进行一次二次处理
+export function stateMappingProxy(state: any, mapping: FlowConfigResponseOrRequest) {
+  Object.keys(mapping).forEach(key => {
+    const m = mapping[key]
+    let selectItemsObject = {}
+    if (typeof m === 'object') {
+      const selectValMapping = m['value']
+      const val = getStateByStringConfig(state, selectValMapping)
+      selectItemsObject = m[val]
+      selectItemsObject[key] = selectValMapping
+      mapping[key] = undefined
+      Object.assign(mapping, selectItemsObject)
+    }
+  })
+  return mapping
 }
 
 // 对配置项中的 request 或者 response 进行配置解析
@@ -89,7 +107,6 @@ export function parseStateMapping(state: any, mapping: FlowConfigResponseOrReque
   })
   return params
 }
-
 
 export function getStateByStringConfig(state: any, str: string) {
   let tempState = cloneDeep(state)

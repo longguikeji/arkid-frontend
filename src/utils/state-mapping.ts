@@ -13,9 +13,17 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectValueMapping = target + '.select.value'
-    responseMapping[selectValueMapping] = propertyName
-    requestMapping[propertyName] = selectValueMapping
+    responseMapping[selectValueMapping] = {
+      value: propertyName
+    }
+    const response = responseMapping[selectValueMapping]
+    requestMapping[propertyName] = {
+      value: selectValueMapping
+    }
+    const request = requestMapping[propertyName]
     for (const refValue in schema.discriminator.mapping) {
+      response[refValue] = {}
+      request[refValue] = {}
       const refSchema = OpenAPI.instance.getSchemaByRef(schema.discriminator.mapping[refValue])
       const props = refSchema.properties
       for (const prop in props) {
@@ -24,17 +32,16 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
           const itemsRef = itemsOf![0].$ref as string
           const itemsSchema = OpenAPI.instance.getSchemaByRef(itemsRef)
           const itemsProps = itemsSchema.properties
-          requestMapping[prop] = {}
+          request[refValue][prop] = {}
           for (const itemProp in itemsProps) {
             const itemValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
-            responseMapping[itemValueMapping] = 'data.' + itemProp
-            requestMapping[prop][itemProp] = itemValueMapping
+            response[refValue][itemValueMapping] = 'data.' + itemProp
+            request[refValue][prop][itemProp] = itemValueMapping
           }
         } else if (prop !== propertyName) {
           const valueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
-          responseMapping[valueMapping] = prop
-          requestMapping[prop] = valueMapping
-          requestMapping[propertyName] = selectValueMapping
+          response[refValue][valueMapping] = prop
+          request[refValue][prop] = valueMapping
         }
       }
     }
