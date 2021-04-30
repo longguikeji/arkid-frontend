@@ -5,6 +5,7 @@ import { FlowState } from '@/admin/base/BaseVue'
 
 export default interface TreeState extends BaseState {
   data?: Array<TreeNodeProps> // 展示数据
+  selectedData?: any // 选中的数据
   emptyText?: string // 内容为空的时候展示的文本
   nodeKey?: string // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
   props?: TreeNodeProps // 配置选项，具体看 TreeNodeProps.ts 文件

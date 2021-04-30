@@ -108,16 +108,7 @@ export default class extends Mixins(BaseVue) {
 
   operateAction(data: TreeNodeProps, actionType: string) {
     if (this.state.action) {
-      this.state.action.forEach((iaction: FlowState) => {
-        if (iaction.params) {
-          iaction.params = {
-            ...iaction.params,
-            data: data,
-            actionType: actionType,
-            $tree: this.$refs.tree
-          }
-        }
-      })
+      this.state.selectedData = data
       this.runAction(this.state.action)
     }
   }

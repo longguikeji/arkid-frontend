@@ -39,7 +39,7 @@ export async function runFlowByActionName(com: any, actionName: string) {
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
 export async function runFlow (com: any, state: any, flow: FlowConfig) {
   const { name: filePath, ...args } = flow
-  const data = com.state?.data
+  const data = com.state?.selectedData || com.state?.data
   const inputs = {
     url: args.url ? getUrl(args.url, data) : '',
     method: args.method?.toUpperCase(),

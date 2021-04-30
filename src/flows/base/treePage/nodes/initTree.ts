@@ -16,7 +16,7 @@ export class InitTree extends FunctionNode {
         // 给treePage页面的进行fetch-action的添加
         tempState.actions!['fetch'] = [
           {
-            name: 'arkfbp/flows/fetch',
+            name: 'flows/custom/fetchTreeNode',
             url: initTreePath,
             method: initTreeMethod,
             response: {
@@ -44,13 +44,13 @@ export class InitTree extends FunctionNode {
     if (initContent.item.children) {
       const treeNodeDataOperationPath = initContent.item.children.path
       const treeNodeDataOperationMethod = initContent.item.children.method
-      const tableListOperationPath = initContent.table.init.path
-      const tableListOperationMethod = initContent.table.init.method
+      // const tableListOperationPath = initContent.table.init.path
+      // const tableListOperationMethod = initContent.table.init.method
       // 给tree添加节点触发事件
       tempState.tree!.nodes!.action = 'fetchTreeNodeChildren'
       tempState.actions!['fetchTreeNodeChildren'] = [
         {
-          name: "flows/treePage/fetchTreeNodeChildren",
+          name: "flows/custom/fetchTreeNodeChildren",
           url: treeNodeDataOperationPath,
           method: treeNodeDataOperationMethod
         }

@@ -5,7 +5,8 @@ import { BaseState, FlowState } from '@/admin/base/BaseVue'
 export default interface TableState extends BaseState {
   columns?: Array<TableColumnState>
   selection?: SpecialCellState
-  selectAction?: Array<FlowState | Function>
+  // selectAction?: Array<FlowState | Function>
+  selectAction?: Function | string
   index?: SpecialCellState
   data?: Array<any> //  显示的数据  array — —
   height?: number|string //  Table 的高度，默认为自动高度。如果 height 为 number 类型，单位 px；如果 height 为 string 类型，则这个高度会设置为 Table 的 style.height 的值，Table 的高度会受控于外部样式。  string/number  —  —
@@ -42,4 +43,5 @@ export default interface TableState extends BaseState {
   treeProps?: object //  渲染嵌套数据的配置选项  Object  —  { hasChildren?: 'hasChildren', children?: 'children' }
   sortable?: boolean // 是否可以进行表格每一行的拖拽动作
   sortAction?: Array<FlowState | Function> // 拖拽进行排序时，触发的相关流操作
+  // sortAction?: Function | string // 拖拽进行排序时，触发的相关流操作
 }
