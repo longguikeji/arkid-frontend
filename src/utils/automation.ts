@@ -157,10 +157,6 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
   const { dialogType, isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state'
   const { requestMapping } = getFormPageDialogStateMapping(url, method, target)
-  // const requestMapping = {
-  //   mapping: target,
-  //   isIncludeReadOnly: true,
-  // }
   if (dialogType === 'FormPage') {
     const dialogBtnFlows: (FlowConfig | string)[] = [
       {
@@ -170,13 +166,20 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
         request: dialogBtnIsRequest ? requestMapping : undefined
       }
     ]
+    if (key === 'create' || key === 'update') {
+      dialogBtnFlows.push({
+        name: 'arkfbp/flows/assign',
+        response: {
+          ['dialogs.' + key + '.visible']: false
+        }
+      })
+    }
     if (isUpdatePage) {
       dialogBtnFlows.push('fetch')
     }
     state.actions[dialogBtnActionName] = dialogBtnFlows
   }
 }
-
 
 export function cardButton(state: any, url: string, method: string, key: string) {
   const { title, buttonType, pageBtnPath, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
@@ -186,13 +189,20 @@ export function cardButton(state: any, url: string, method: string, key: string)
     type: buttonType,
     disabled: key === 'export' ? true : undefined,
   }
+  let response
+  if (pageBtnIsRequestion && key !== 'export') {
+    const target = 'dialogs.' + key + '.state'
+    let isEmpty = false
+    if (key === 'create') { isEmpty = true }
+    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty)
+    response = responseMapping
+  }
   const cardButtonFlows = [
     {
       name: pageBtnPath,
-      url: url,
-      method: method,
       response: pageBtnIsRequestion ? {
-        ['dialogs.' + key + '.visible']: true
+        ['dialogs.' + key + '.visible']: true,
+        ...response
       } : undefined
     }
   ]
@@ -201,22 +211,47 @@ export function cardButton(state: any, url: string, method: string, key: string)
 }
 
 export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false) {
-  const { title, buttonType, pageBtnPath, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
+  const { title, buttonType, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
   const itemButton = {
     label: title,
     type: isText ? 'text' : buttonType,
     action: pageBtnActionName
   }
-  const itemButtonFlows = [
+  let response
+  if (pageBtnIsRequestion && key !== 'export') {
+    const target = 'dialogs.' + key + '.state'
+    let isEmpty = false
+    if (key === 'create') { isEmpty = true }
+    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty)
+    response = responseMapping
+  }
+  let itemButtonFlows: (FlowConfig | string)[]  = [
     {
-      name: pageBtnPath,
+      name: 'arkfbp/flows/fetch',
       url: url,
       method: method,
+      response: pageBtnIsRequestion ? {
+        ...response,
+        ['dialogs.' + key + '.data']: ''
+      } : undefined
+    },
+    {
+      name: 'arkfbp/flows/assign',
       response: pageBtnIsRequestion ? {
         ['dialogs.' + key + '.visible']: true
       } : undefined
     }
   ]
+  if (key === 'delete') { 
+    itemButtonFlows = [
+      {
+        name: 'arkfbp/flows/update',
+        url: url,
+        method: method,
+      },
+      'fetch'
+    ] 
+  }
   state.actions[pageBtnActionName] = itemButtonFlows
   return itemButton
 }

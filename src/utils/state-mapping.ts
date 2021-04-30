@@ -2,7 +2,7 @@
 // 说明：先进行分批次分类型分组件的完成，之后可以进行统一化处理
 import OpenAPI from '@/config/openapi'
 
-export function getFormPageDialogStateMapping(url: string, method: string, target: string) {
+export function getFormPageDialogStateMapping(url: string, method: string, target: string, isEmpty?: boolean) {
   const requestMapping = {}
   const responseMapping = {}
   const isResponses = method.toUpperCase() === 'GET' ? true : false
@@ -13,35 +13,43 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectValueMapping = target + '.select.value'
-    responseMapping[selectValueMapping] = {
-      value: propertyName
+    if (!isEmpty) {
+      responseMapping[selectValueMapping] = {
+        value: propertyName
+      }
+    } else {
+      responseMapping[selectValueMapping] = ''
     }
     const response = responseMapping[selectValueMapping]
     requestMapping[propertyName] = {
       value: selectValueMapping
     }
     const request = requestMapping[propertyName]
-    for (const refValue in schema.discriminator.mapping) {
-      response[refValue] = {}
-      request[refValue] = {}
-      const refSchema = OpenAPI.instance.getSchemaByRef(schema.discriminator.mapping[refValue])
-      const props = refSchema.properties
-      for (const prop in props) {
-        if (props[prop].oneOf?.length || props[prop].allOf?.length) {
-          const itemsOf = props[prop].oneOf || props[prop].allOf
-          const itemsRef = itemsOf![0].$ref as string
-          const itemsSchema = OpenAPI.instance.getSchemaByRef(itemsRef)
-          const itemsProps = itemsSchema.properties
-          request[refValue][prop] = {}
-          for (const itemProp in itemsProps) {
-            const itemValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
-            response[refValue][itemValueMapping] = 'data.' + itemProp
-            request[refValue][prop][itemProp] = itemValueMapping
+    if (!isEmpty) {
+      for (const refValue in schema.discriminator.mapping) {
+        response[refValue] = {}
+        request[refValue] = {}
+        const refSchema = OpenAPI.instance.getSchemaByRef(schema.discriminator.mapping[refValue])
+        const props = refSchema.properties
+        for (const prop in props) {
+          if (props[prop].oneOf?.length || props[prop].allOf?.length) {
+            const itemsOf = props[prop].oneOf || props[prop].allOf
+            const itemsRef = itemsOf![0].$ref as string
+            const itemsSchema = OpenAPI.instance.getSchemaByRef(itemsRef)
+            const itemsProps = itemsSchema.properties
+            request[refValue][prop] = {}
+            for (const itemProp in itemsProps) {
+              const responseItemValueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
+              const requestItemValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
+              response[refValue][responseItemValueMapping] = 'data.' + itemProp
+              request[refValue][prop][itemProp] = requestItemValueMapping
+            }
+          } else if (prop !== propertyName) {
+            const responseValueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.value'
+            const requestValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
+            response[refValue][responseValueMapping] = prop
+            request[refValue][prop] = requestValueMapping
           }
-        } else if (prop !== propertyName) {
-          const valueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
-          response[refValue][valueMapping] = prop
-          request[refValue][prop] = valueMapping
         }
       }
     }
@@ -49,7 +57,8 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
     const props = schema.properties
     for (const prop in props) {
       const valueMapping = target + '.form.items.' + prop + '.state.value'
-      responseMapping[valueMapping] = prop
+      responseMapping[valueMapping] = isEmpty ? '' : prop
+      requestMapping[prop] = valueMapping
     }
   }
   return {

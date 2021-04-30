@@ -19,7 +19,7 @@ export interface FlowConfigResponseOrRequest {
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
-export async function runFlowByActionName(com: Vue, actionName: string) {
+export async function runFlowByActionName(com: any, actionName: string) {
   const currentPageState = getPageState()
   if (!currentPageState?.actions) {  
     return
@@ -37,10 +37,11 @@ export async function runFlowByActionName(com: Vue, actionName: string) {
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-export async function runFlow (com: Vue, state: any, flow: FlowConfig) {
+export async function runFlow (com: any, state: any, flow: FlowConfig) {
   const { name: filePath, ...args } = flow
+  const data = com.state?.data
   const inputs = {
-    url: args.url ? getUrl(args.url) : '',
+    url: args.url ? getUrl(args.url, data) : '',
     method: args.method?.toUpperCase(),
     params: {},
     client: state,

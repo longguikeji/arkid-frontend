@@ -19,9 +19,10 @@ export class ClientResponseNode extends FunctionNode {
         let temp = client
         for (let i = 0; i < len - 1; i++) {
           const k = ks[i]
-          if (k.includes('items[prop=')) {
-            const res = Filter(k, temp)
-            temp = temp['items'][res]
+          if (k.includes('forms[')) {
+            temp = temp.forms
+            const newK = k.substring(6, k.length - 1)
+            temp = temp[data[newK]]
           } else if (k.includes('columns[prop=')) {
             const col = Filter(k, temp)
             temp = temp['columns'][col]
