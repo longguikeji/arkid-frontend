@@ -26,16 +26,14 @@ export class Tenant extends APINode {
     if (!TenantModule.currentSlugIsValid) {
       let tenantUUId = TenantModule?.currentTenant?.uuid || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')
       tenantUUId = processUUId(tenantUUId)
-      if (tenantUUId) {
-        this.url = '/api/v1/tenant/'
-        this.method = 'get'
-        const outputs = await super.run()
-        outputs.results.forEach(output => {
-          if (output.uuid === tenantUUId || outputs.results.length === 1) { 
-            currentTenant = output
-          }
-        })
-      }
+      this.url = '/api/v1/tenant/'
+      this.method = 'get'
+      const outputs = await super.run()
+      outputs.results.forEach(output => {
+        if (output.uuid === tenantUUId || outputs.results.length === 1) { 
+          currentTenant = output
+        }
+      })
     }
 
     // 将查到到的 tenant 内容存储到 TenantModule 对应的位置

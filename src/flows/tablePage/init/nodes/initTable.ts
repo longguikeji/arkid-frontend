@@ -1,33 +1,11 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema } from '@/config/openapi'
+import OpenAPI from '@/config/openapi'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import getSchemaByContent from '@/utils/get-schema-by-content'
-import TablePageState from '@/admin/TablePage/TablePageState'
 
 export class InitTable extends FunctionNode {
-
-  generateTableColumnsState(state: TablePageState, schema: ISchema, otherInitContent: any) {
-    for (const prop in schema.properties) {
-      const iprop = schema.properties[prop]
-      if (otherInitContent.hiddenReadOnly && iprop.readOnly) continue
-      if (iprop.items) {
-        const ref = (iprop.items as ISchema).$ref
-        if (ref) {
-          const itemSchema = OpenAPI.instance.getSchemaByRef(ref)
-          this.generateTableColumnsState(state, itemSchema, otherInitContent)
-        }
-      } else {
-        const columnState: TableColumnState = {
-          label: iprop.title,
-          prop: prop
-        }
-        state.table?.columns?.push(columnState)
-      }
-    }
-  }
-
   async run() {
-    const tempState: TablePageState = this.inputs.state
+    const tempState = this.inputs.state
     const { initContent, ...otherInitContent } = this.inputs.data
     let baseAction = {
       fetchUrl: '',
@@ -42,21 +20,29 @@ export class InitTable extends FunctionNode {
       if (initTableOperation) {
         // 给页面hook添加内容
         if (otherInitContent.isHooks !== false) {
-          tempState.created?.push({
+          tempState.created.push({
             name: 'flows/tablePage/fetch',
             params: baseAction
           })
-          tempState.destroyed?.push({
+          tempState.destroyed.push({
             name: 'flows/hookFlow/destroyed',
             params: baseAction
           })
         }
 
         // 给页面元素添加state
-        tempState.card!.title = initTableOperation.summary || ''
+        tempState.card.title = initTableOperation.summary || ''
         const content = initTableOperation.responses[200].content
         const schema = getSchemaByContent(content)
-        this.generateTableColumnsState(tempState, schema, otherInitContent)
+        for (const prop in schema.properties) {
+          const iprop = schema.properties[prop]
+          if (otherInitContent.hiddenReadOnly && iprop.readOnly) continue
+          const columnState: TableColumnState = {
+            label: iprop.title,
+            prop: prop
+          }
+          tempState.table?.columns?.push(columnState)
+        }
         tempState.pagination = {
           currentPage: 1,
           pageSize: 10,
