@@ -2,10 +2,11 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import OpenAPI from '@/config/openapi'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import getSchemaByContent from '@/utils/get-schema-by-content'
+import TablePageState from '@/admin/TablePage/TablePageState'
 
 export class InitTable extends FunctionNode {
   async run() {
-    const tempState = this.inputs.state
+    const tempState: TablePageState = this.inputs.state
     const { initContent, ...otherInitContent } = this.inputs.data
     let baseAction = {
       fetchUrl: '',
@@ -20,18 +21,18 @@ export class InitTable extends FunctionNode {
       if (initTableOperation) {
         // 给页面hook添加内容
         if (otherInitContent.isHooks !== false) {
-          tempState.created.push({
+          tempState.created!.push({
             name: 'flows/tablePage/fetch',
             params: baseAction
           })
-          tempState.destroyed.push({
+          tempState.destroyed!.push({
             name: 'flows/hookFlow/destroyed',
             params: baseAction
           })
         }
 
         // 给页面元素添加state
-        tempState.card.title = initTableOperation.summary || ''
+        tempState.card!.title = initTableOperation.summary || ''
         const content = initTableOperation.responses[200].content
         const schema = getSchemaByContent(content)
         for (const prop in schema.properties) {
