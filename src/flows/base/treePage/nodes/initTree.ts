@@ -19,6 +19,9 @@ export class InitTree extends FunctionNode {
             name: 'arkfbp/flows/fetch',
             url: initTreePath,
             method: initTreeMethod,
+            response: {
+              'tree.nodes.data': ''
+            }
           }
         ]
         tempState.actions!['created'].push('fetch')

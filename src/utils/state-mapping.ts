@@ -2,7 +2,7 @@
 // 说明：先进行分批次分类型分组件的完成，之后可以进行统一化处理
 import OpenAPI from '@/config/openapi'
 
-export function getFormPageDialogStateMapping(url: string, method: string, target: string, isEmpty?: boolean) {
+export function getFormPageDialogStateMapping(url: string, method: string, target: string, isEmpty?: boolean, isReadOnly?: boolean) {
   const requestMapping = {}
   const responseMapping = {}
   const isResponses = method.toUpperCase() === 'GET' ? true : false
@@ -54,11 +54,13 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
       }
     }
   } else {
-    const props = schema.properties
-    for (const prop in props) {
-      const valueMapping = target + '.form.items.' + prop + '.state.value'
-      responseMapping[valueMapping] = isEmpty ? '' : prop
-      requestMapping[prop] = valueMapping
+    const formItemsProps = schema.properties
+    for (const formItemProp in formItemsProps) {
+      if (!formItemsProps[formItemProp]?.readOnly) {
+        const valueMapping = target + '.form.items.' + formItemProp + '.state.value'
+        responseMapping[valueMapping] = isEmpty ? '' : formItemProp
+        requestMapping[formItemProp] = valueMapping
+      }
     }
   }
   return {

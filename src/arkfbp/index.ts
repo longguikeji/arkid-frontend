@@ -98,12 +98,16 @@ export function parseStateMapping(state: any, mapping: FlowConfigResponseOrReque
     const item = mapping[key]
     if (typeof item === 'string') {
       tempState = getStateByStringConfig(state, item)
-      params[key] = tempState
+      if (tempState) {
+        params[key] = tempState
+      }
     } else if (typeof item === 'object') {
       const objectData = parseStateMapping(state, item)
       params[key] = { ...objectData }
     } else {
-      params[key] = tempState
+      if (tempState) {
+        params[key] = tempState
+      }
     }
   })
   return params
