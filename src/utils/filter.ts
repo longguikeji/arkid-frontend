@@ -1,12 +1,16 @@
-export default function Filter(v: any, vd: any): number {
-  const m = /=(\S*)]/
-  const fv = v.match(m)[1]
-  const attr = v.replace(fv, '').replace('[prop=]', '')
-  let outcome = 0
-  vd[attr].forEach((vditem: any, vdindex: number) => {
-    if (vditem.prop === fv) {
-      outcome = vdindex
+export default function Filter(strEquality: string, state: any): number {
+  let index: number = 0
+  const leftBracketIndex = strEquality.indexOf('[')
+  const rightBracketIndex = strEquality.indexOf(']')
+  const arrayStateMapping = strEquality.slice(leftBracketIndex + 1, rightBracketIndex)
+  const arrayStateMappingSpilt = arrayStateMapping.split('=')
+  const representKey = arrayStateMappingSpilt[0]
+  const representValue = arrayStateMappingSpilt[1]
+  const requiredStateKey = strEquality.substring(0, leftBracketIndex)
+  state[requiredStateKey].forEach((item: any, idx: number) => {
+    if (item[representKey] === representValue) {
+      index = idx
     }
   })
-  return outcome
+  return index
 }

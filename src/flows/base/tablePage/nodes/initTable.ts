@@ -35,13 +35,22 @@ export class InitTable extends FunctionNode {
         // table的请求参数 -- parameters
         let paramsMapping = {}
         // table的数据映射
+        let isExistExport = false
+        if (initContent.page?.export) {
+          isExistExport = true
+        }
         let responseMapping = {
-          'table.data': ''
+          'table.data': '',
+        }
+        if (isExistExport) {
+          responseMapping['card.buttons[action=export].disabled'] = 'length'
         }
         if (responseData.properties?.results) {
           responseMapping['table.data'] = 'results'
+          isExistExport ? responseMapping['card.buttons[action=export].disabled'] = 'results.length' : ''
         } else if (responseData.properties?.data) {
-          responseMapping['table.data'] = 'data'
+          responseMapping['table.data'] = 'data',
+          isExistExport ? responseMapping['card.buttons[action=export].disabled'] = 'data.length' : ''
         }
         // 有分页内容
         if (responseData.properties?.count) {

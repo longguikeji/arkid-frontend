@@ -221,7 +221,9 @@ export function itemButton(state: any, url: string, method: string, key: string,
   if (pageBtnIsRequestion && key !== 'export') {
     const target = 'dialogs.' + key + '.state'
     let isEmpty = false
-    if (key === 'create') { isEmpty = true }
+    if (key === 'create') {
+      isEmpty = true
+    }
     const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty)
     response = responseMapping
   }

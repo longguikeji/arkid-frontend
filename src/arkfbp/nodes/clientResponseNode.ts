@@ -26,11 +26,15 @@ export class ClientResponseNode extends FunctionNode {
           } else if (k.includes('columns[prop=')) {
             const col = Filter(k, temp)
             temp = temp['columns'][col]
+          } else if (k.includes('buttons[action=')) {
+            const cardBtnIndex = Filter(k, temp)
+            temp = temp['buttons'][cardBtnIndex]
           } else {
             temp = temp[k]
           }
         }
         // 判断此时的类型内容 -- 之后需要进一步增大兼容性
+        const lastKey = ks[len - 1]
         if (type === 'fetch') {
           const vs = clientServer[key].split('.')
           let tempS = data
@@ -39,10 +43,14 @@ export class ClientResponseNode extends FunctionNode {
           }
           let res = tempS[vs[vs.length - 1]]
           if (res === undefined) { res = tempS }
-          temp[ks[len - 1]] = res
+          if (lastKey === 'disabled') {
+            temp[lastKey] = res ? false : true
+          } else {
+            temp[lastKey] = res
+          }
         }
         if (type === 'assign') {
-          temp[ks[len - 1]] = clientServer[key]
+          temp[lastKey] = clientServer[key]
         }
       })
     }
