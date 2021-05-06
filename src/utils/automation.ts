@@ -200,6 +200,8 @@ export function cardButton(state: any, url: string, method: string, key: string)
   const cardButtonFlows = [
     {
       name: pageBtnPath,
+      url: url,
+      method: method,
       response: pageBtnIsRequestion ? {
         ['dialogs.' + key + '.visible']: true,
         ...response
@@ -218,13 +220,9 @@ export function itemButton(state: any, url: string, method: string, key: string,
     action: pageBtnActionName
   }
   let response
+  const target = 'dialogs.' + key + '.state'
   if (pageBtnIsRequestion && key !== 'export') {
-    const target = 'dialogs.' + key + '.state'
-    let isEmpty = false
-    if (key === 'create') {
-      isEmpty = true
-    }
-    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty)
+    const { responseMapping } = getFormPageDialogStateMapping(url, method, target)
     response = responseMapping
   }
   let itemButtonFlows: (FlowConfig | string)[]  = [

@@ -57,7 +57,7 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
     const formItemsProps = schema.properties
     for (const formItemProp in formItemsProps) {
       const valueMappingSuffix = 'form.items.' + formItemProp + '.state.value'
-      const valueMapping = target === '' ? valueMappingSuffix : '.' + valueMappingSuffix
+      const valueMapping = (target === '' ? valueMappingSuffix : target + '.' + valueMappingSuffix)
       responseMapping[valueMapping] = isEmpty ? '' : formItemProp
       requestMapping[formItemProp] = valueMapping
     }
