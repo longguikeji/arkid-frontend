@@ -1,24 +1,19 @@
 import { StateNode } from '@/nodes/stateNode'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
+import TablePageState from '@/admin/TablePage/TablePageState'
 
 export class AddSwitchTenantButton extends StateNode {
   async run() {
-    const tempState = this.inputs.tempState
-    // button
-    const switchTenantAction = {
+    const tempState: TablePageState = this.inputs.tempState
+    
+    // add tenant switch button
+    const switchCurrentTenantButton = {
       label: '切换租户',
       type: 'primary',
-      action: [
-        {
-          name: 'flows/tenant/openSwitchTenantDialog',
-          params: {
-            url: '/api/v1/tenant/{id}/',
-            method: 'get'
-          }
-        }
-      ]
+      action: 'openSwitchTenantDialog'
     }
-    tempState.table?.columns[tempState.table.columns.length - 1]?.scope?.state?.push(switchTenantAction)
+    tempState.table?.columns![tempState.table.columns!.length - 1]?.scope?.state?.push(switchCurrentTenantButton)
+
     // dialog
     const switchDialog: DialogState = {
       title: '切换租户',
@@ -28,10 +23,10 @@ export class AddSwitchTenantButton extends StateNode {
       state: {
         form: {
           items: {
-            id: {
+            uuid: {
               type: 'InputNumber',
-              label: 'ID',
-              prop: 'id',
+              label: 'UUID',
+              prop: 'uuid',
               state: {
                 value: '',
                 readonly: true
@@ -64,7 +59,39 @@ export class AddSwitchTenantButton extends StateNode {
         }
       ]
     }
-    tempState.dialogs.switch = switchDialog
+    tempState.dialogs!.switch = switchDialog
+
+    // add switch button flows to actions config
+    tempState.actions!.openSwitchTenantDialog = [
+      {
+        name: 'arkfbp/flows/fetch',
+        url: '/api/v1/tenant/{id}/',
+        method: 'get',
+        response: {
+          'dialogs.switch.state.form.items.uuid.state.value': 'uuid',
+          'dialogs.switch.state.form.items.name.state.value': 'name'
+        }
+      },
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.switch.visible': true
+        }
+      }
+    ]
+    tempState.actions!.switchCurrentTenant = [
+      {
+        name: 'arkfbp/flows/jump',
+        target: '/'
+      },
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.switch.visible': false
+        }
+      }
+    ]
+    
     return {
       state: tempState
     }

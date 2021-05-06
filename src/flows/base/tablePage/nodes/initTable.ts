@@ -9,7 +9,7 @@ export class InitTable extends FunctionNode {
     const { initContent, ...otherInitContent } = this.inputs.data
     if (initContent?.init?.path) {
       const initTablePath = initContent.init.path as string
-      const initTableMethod = initContent.init.method as string || 'GET'
+      const initTableMethod = initContent.init.method as string || 'get'
       const initTableOperation = OpenAPI.instance.getOperation(initTablePath, initTableMethod)
       if (initTableOperation) {
         // 给页面元素添加state
@@ -79,7 +79,7 @@ export class InitTable extends FunctionNode {
         }
       }
     }
-
+    
     return {
       data: this.inputs.data,
       state: tempState

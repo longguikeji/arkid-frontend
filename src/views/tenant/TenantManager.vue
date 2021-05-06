@@ -51,7 +51,7 @@ export default class extends Vue {
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     }
-    await runFlowByFile('flows/tablePage/init', {
+    await runFlowByFile('flows/base/tablePage', {
       initContent: initContent
     }).then(async(data) => {
       await runFlowByFile('flows/tenant/addSwitchTenant', {

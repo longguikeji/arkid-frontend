@@ -10,6 +10,7 @@ export interface FlowConfig {
   method?: string
   request?: FlowConfigResponseOrRequest
   response?: FlowConfigResponseOrRequest
+  target?: string // 配置jump时跳转的目标页面
 }
 
 export interface FlowConfigResponseOrRequest {
@@ -46,6 +47,7 @@ export async function runFlow (com: any, state: any, flow: FlowConfig) {
     params: {},
     client: state,
     clientServer: args.response,
+    target: args.target,
     com: com
   }
   // 对 request 请求参数进行解析处理
