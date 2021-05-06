@@ -91,11 +91,16 @@ export default class extends Mixins(BaseVue) {
 .el-dialog {
   .table-page {
     height: auto !important;
-    min-height: auto !important;
+    min-height: 100% !important;
+    position: relative;
     ::v-deep .el-card__body {
       .el-table__body-wrapper {
         height: auto !important;
         min-height: auto !important;
+      }
+      .el-pagination {
+        position: absolute;
+        bottom: 10px;
       }
     }
   }
