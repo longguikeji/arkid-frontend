@@ -12,7 +12,10 @@ export class AddSwitchTenantButton extends StateNode {
       type: 'primary',
       action: 'openSwitchTenantDialog'
     }
-    tempState.table?.columns![tempState.table.columns!.length - 1]?.scope?.state?.push(switchCurrentTenantButton)
+    const columns = tempState.table?.columns
+    if (columns) {
+      columns[columns.length - 1].scope?.state?.push(switchCurrentTenantButton)
+    }
 
     // dialog
     const switchDialog: DialogState = {
@@ -48,14 +51,7 @@ export class AddSwitchTenantButton extends StateNode {
         {
           label: '确定切换',
           type: 'primary',
-          action: [
-            {
-              name: 'flows/tenant/switchTenant',
-              params: {
-                router: this.inputs.router
-              }
-            }
-          ]
+          action: 'switchTenant'
         }
       ]
     }
@@ -69,7 +65,8 @@ export class AddSwitchTenantButton extends StateNode {
         method: 'get',
         response: {
           'dialogs.switch.state.form.items.uuid.state.value': 'uuid',
-          'dialogs.switch.state.form.items.name.state.value': 'name'
+          'dialogs.switch.state.form.items.name.state.value': 'name',
+          'dialogs.switch.data': ''
         }
       },
       {
@@ -79,9 +76,9 @@ export class AddSwitchTenantButton extends StateNode {
         }
       }
     ]
-    tempState.actions!.switchCurrentTenant = [
+    tempState.actions!.switchTenant = [
       {
-        name: 'arkfbp/flows/jump',
+        name: 'flows/tenant/switchTenant',
         target: '/'
       },
       {

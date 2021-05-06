@@ -55,8 +55,7 @@ export default class extends Vue {
       initContent: initContent
     }).then(async(data) => {
       await runFlowByFile('flows/tenant/addSwitchTenant', {
-        tempState: data.state,
-        router: this.$router
+        tempState: data.state
       }).then((data) => {
         TenantModule.changeState(data.state)
         this.initCompleted = true

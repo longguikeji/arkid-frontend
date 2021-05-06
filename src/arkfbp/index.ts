@@ -1,6 +1,5 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import getPageState from '@/utils/get-page-state'
-import { cloneDeep } from "lodash"
 import Filter from '@/utils/filter'
 import getUrl from '@/utils/url'
 
@@ -107,16 +106,14 @@ export function parseStateMapping(state: any, mapping: FlowConfigResponseOrReque
       const objectData = parseStateMapping(state, item)
       params[key] = { ...objectData }
     } else {
-      if (tempState) {
-        params[key] = tempState
-      }
+      params[key] = item
     }
   })
   return params
 }
 
 export function getStateByStringConfig(state: any, str: string) {
-  let tempState = cloneDeep(state)
+  let tempState = state
   if (str.includes('forms[')) {
     const newStr = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
     const value = getStateByStringConfig(state, newStr)
