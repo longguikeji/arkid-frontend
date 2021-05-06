@@ -72,7 +72,6 @@ export function getBaseAttributes(key: string) {
       title = '导入'
       dialogType = 'Upload'
       dialogBtnPath = 'arkfbp/flows/import'
-      dialogBtnIsRequest = false
       dialogBtnActionName = 'import'
       pageBtnActionName = 'openImportDialog'
       break
@@ -154,31 +153,32 @@ export function generateDialog(tempState: any, url: string, method: string, key:
 }
 
 export function addDialogBtnActions(state: any, url: string, method: string, key: string) {
-  const { dialogType, isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
+  const { isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state'
-  const { requestMapping } = getFormPageDialogStateMapping(url, method, target)
-  if (dialogType === 'FormPage') {
-    const dialogBtnFlows: (FlowConfig | string)[] = [
-      {
-        name: dialogBtnPath,
-        url: url,
-        method: method,
-        request: dialogBtnIsRequest ? requestMapping : undefined
-      }
-    ]
-    if (key === 'create' || key === 'update') {
-      dialogBtnFlows.push({
-        name: 'arkfbp/flows/assign',
-        response: {
-          ['dialogs.' + key + '.visible']: false
-        }
-      })
+  let { requestMapping } = getFormPageDialogStateMapping(url, method, target)
+  if (key === 'import') {
+    requestMapping = {
+      data: 'dialogs.import.state.file'
     }
-    if (isUpdatePage) {
-      dialogBtnFlows.push('fetch')
-    }
-    state.actions[dialogBtnActionName] = dialogBtnFlows
   }
+  const dialogBtnFlows: (FlowConfig | string)[] = [
+    {
+      name: dialogBtnPath,
+      url: url,
+      method: method,
+      request: dialogBtnIsRequest ? requestMapping : undefined
+    },
+    {
+      name: 'arkfbp/flows/assign',
+      response: {
+        ['dialogs.' + key + '.visible']: false
+      }
+    }
+  ]
+  if (isUpdatePage) {
+    dialogBtnFlows.push('fetch')
+  }
+  state.actions[dialogBtnActionName] = dialogBtnFlows
 }
 
 export function cardButton(state: any, url: string, method: string, key: string) {
@@ -190,7 +190,7 @@ export function cardButton(state: any, url: string, method: string, key: string)
     disabled: key === 'export' ? true : undefined,
   }
   let response
-  if (pageBtnIsRequestion && key !== 'export') {
+  if (pageBtnIsRequestion && key !== 'import') {
     const target = 'dialogs.' + key + '.state'
     let isEmpty = false
     if (key === 'create') { isEmpty = true }
@@ -221,7 +221,7 @@ export function itemButton(state: any, url: string, method: string, key: string,
   }
   let response
   const target = 'dialogs.' + key + '.state'
-  if (pageBtnIsRequestion && key !== 'export') {
+  if (pageBtnIsRequestion) {
     const { responseMapping } = getFormPageDialogStateMapping(url, method, target)
     response = responseMapping
   }
