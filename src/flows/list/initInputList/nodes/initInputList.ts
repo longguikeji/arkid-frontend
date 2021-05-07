@@ -11,8 +11,13 @@ export class InitInputList extends StateNode {
     
     // 给 第二层弹出框的 点击按钮相关事件添加 path 参数
     // 以便其在确认后将对应的值赋值给点击的DOM元素
-    tempState.actions.confirm[0].request = { ...params }
-    tempState.actions.confirm[0].path = path
+    const confirmFlows = [
+      {
+        name: 'flows/list/confirm',
+        path: path,
+        request: { ...params }
+      }
+    ]
     
     // 获取当前的数据内容  --  初始化List的右侧内容
     const nowInputListData = [...this.inputs.com.state.options]
@@ -32,6 +37,7 @@ export class InitInputList extends StateNode {
           }
           tempState.dialogs.selected.state.tablePage.table = null
           tempState.dialogs.selected.state.treePage.tree.nodes.action = 'clicked'
+          tempState.dialogs.selected.state.treePage.actions.confirm = confirmFlows
           tempState.dialogs.selected.state.treePage.actions.clicked = [
             {
               name: 'flows/list/clicked',
@@ -66,6 +72,7 @@ export class InitInputList extends StateNode {
             values: []
           }
           tempState.dialogs.selected.state.tablePage.table.selectAction = 'clicked'
+          tempState.dialogs.selected.state.tablePage.actions.confirm = confirmFlows
           tempState.dialogs.selected.state.tablePage.actions.clicked = [
             {
               name: 'flows/list/clicked',

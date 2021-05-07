@@ -152,11 +152,6 @@ export function generateDialog(tempState: any, url: string, method: string, key:
           name: 'flows/list/initInputList'
         }
       ]
-      tempState.actions!.confirm = [
-        {
-          name: 'flows/list/confirm'
-        }
-      ]
     }  
   }
   return tempState

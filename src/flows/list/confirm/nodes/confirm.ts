@@ -2,12 +2,11 @@ import { StateNode } from '@/nodes/stateNode'
 
 export class Confirm extends StateNode {
   async run() {
-    
     const tempState = this.inputs.client
     const data = tempState.list.data.items
     const params = this.inputs.params
     const multi = params.multi
-    const path = params.path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
+    const path = this.inputs.path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
     const parentTempState = this.getState(path)
     const previousTempState = this.getPreviousState()
     
