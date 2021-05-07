@@ -65,17 +65,13 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         options: [],
-        action: [
-          {
-            name: 'flows/list/initInputList',
-            params: {
-              page: schema.page,
-              field: schema.field,
-              title: schema.title,
-              multi: schema.type === 'array',
-            }
-          }
-        ]
+        action: 'initInputList',
+        data: {
+          page: schema.page,
+          field: schema.field,
+          title: schema.title,
+          multi: schema.type === 'array',
+        }
       }
     }
   } else if (schema.type === 'array') {

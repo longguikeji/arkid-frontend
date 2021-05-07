@@ -34,4 +34,5 @@ export default interface TreeState extends BaseState {
   slot?: any // 可以添加一些自定义的内容，比如在节点后添加操作按钮等
   slotState?: { [key: string]: { type: string, state: any} }// slotState
   action?: Function | string // 给tree添加action，当点击节点时触发action内容
+  actionType?: string // 区分 expand click check 等动作
 }

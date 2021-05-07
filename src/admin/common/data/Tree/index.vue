@@ -109,6 +109,7 @@ export default class extends Mixins(BaseVue) {
   operateAction(data: TreeNodeProps, actionType: string) {
     if (this.state.action) {
       this.state.selectedData = data
+      this.state.actionType = actionType
       this.runAction(this.state.action)
     }
   }

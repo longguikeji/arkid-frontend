@@ -14,21 +14,21 @@ export class Clicked extends StateNode {
   }
 
   async run() {
-    const tempState = this.getState()
+    const tempState = this.inputs.client
     const params = this.inputs.params
-    const data = params.data
     const multi = params.multi
+    const domState = this.inputs.com.state
+    const data = domState.selectedData
     
     // isSingle 仅仅用于在 table 表格中进行选择时，判断是一次性全选，还是单击选框--单独选择
     // 如果一次性全部选中的话，传递来的data为数组
     // 如果单次只选择一个复选框的话，传递来的data为对象
-    const isSingle = params.isSingle
-
+    const isSingle = domState.isSingle
     // actionType 仅仅用于在 tree 树结构中进行选择时，区别当前节点的操作类型，目前分为两种 expand(展开)、click(点击)
     // 当expand展开时，不执行下面的内容，也就是expand展开节点触发的事件不看做选中该节点的操作
     // 当click点击时，默认只存储当前这一个tree节点的内容
-    const treeNodeActionType = params.actionType
-
+    const treeNodeActionType = domState.actionType
+    
     if (treeNodeActionType === "expand") return 
     
     // 定义当前点击的数据
@@ -36,7 +36,7 @@ export class Clicked extends StateNode {
     // 判断当前的是否为table表格中的全选
     // tree结构的内容选择时，data为Object
     // table结构的内容选择时，如果为单选-data为Object，如果为多选-data为Array，取消时data为空数组
-    if (isSingle || params.type === 'tree') {
+    if (isSingle || params.type === 'treeType') {
       currentClickedData = {}
       currentClickedData['value'] = data.uuid
       currentClickedData['label'] = data.label || data.name || ''
@@ -84,8 +84,5 @@ export class Clicked extends StateNode {
         listItems.splice(0, listItems.length)
       }
     }
-
-    // 
-    
   }
 }

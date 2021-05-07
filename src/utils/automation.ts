@@ -147,6 +147,16 @@ export function generateDialog(tempState: any, url: string, method: string, key:
     const importListDialog = whetherImportListDialog(dialogState.state)
     if (importListDialog && !tempState.dialogs!.selected) {
       tempState.dialogs!.selected = importListDialog
+      tempState.actions!.initInputList = [
+        {
+          name: 'flows/list/initInputList'
+        }
+      ]
+      tempState.actions!.confirm = [
+        {
+          name: 'flows/list/confirm'
+        }
+      ]
     }  
   }
   return tempState

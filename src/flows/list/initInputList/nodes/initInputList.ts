@@ -5,27 +5,24 @@ import { runFlowByFile } from '@/arkfbp/index'
 
 export class InitInputList extends StateNode {
   async run() {
-    const tempState = this.getState()
-    const params = this.inputs.params
+    const tempState = this.inputs.client
+    const params = this.inputs.com.state.data
     const path = this.inputs.com.path
     
-    // 给 第二层弹出框的 点击按钮添加 path 参数
+    // 给 第二层弹出框的 点击按钮相关事件添加 path 参数
     // 以便其在确认后将对应的值赋值给点击的DOM元素
-    tempState.dialogs.selected.actions[0].action[0].params = {
-      ...params,
-      path: path
-    }
-
+    tempState.actions.confirm[0].request = { ...params }
+    tempState.actions.confirm[0].path = path
+    
     // 获取当前的数据内容  --  初始化List的右侧内容
     const nowInputListData = [...this.inputs.com.state.options]
-    
     // 通过page字段信息获取list的初始化资源  --  初始化List的左侧内容
     const initContent: ITagPage | undefined  = getInitContent(params.page)
     // 通过initContent.type来判断初始化的类型
     if (initContent && initContent.type) {
       if (initContent.type === 'tree_page') {
-        await runFlowByFile('flows/treePage/init', {
-          initContent: initContent,
+        await runFlowByFile('flows/base/treePage', {
+          initContent: initContent
         }).then((data) => {
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 弹出框的内容只需要此时data.state中的tree相关的内容
           tempState.dialogs.selected.state.treePage = {
@@ -34,14 +31,17 @@ export class InitInputList extends StateNode {
             list: tempState.dialogs.selected.state.treePage.list
           }
           tempState.dialogs.selected.state.tablePage.table = null
-          tempState.dialogs.selected.state.treePage.tree.nodes.action.push({
-            name: 'flows/list/clicked',
-            params: {
-              multi: params.multi,
-              field: params.field,
-              type: 'tree'
+          tempState.dialogs.selected.state.treePage.tree.nodes.action = 'clicked'
+          tempState.dialogs.selected.state.treePage.actions.clicked = [
+            {
+              name: 'flows/list/clicked',
+              request: {
+                multi: params.multi,
+                field: params.field,
+                type: 'treeType'
+              }
             }
-          })
+          ]
           tempState.dialogs.selected.state.treePage.list.header = {
             title: '已选数据列表' || ''
           }
@@ -49,7 +49,7 @@ export class InitInputList extends StateNode {
           tempState.dialogs.selected.state.treePage.list.data.items = nowInputListData
         })
       } else if (initContent.type === 'table_page') {
-        await runFlowByFile('flows/tablePage/init', {
+        await runFlowByFile('flows/base/tablePage', {
           initContent: {
             ...initContent,
             hiddenReadOnly: true
@@ -65,13 +65,14 @@ export class InitInputList extends StateNode {
             exist: params.multi,
             values: []
           }
-          tempState.dialogs.selected.state.tablePage.table.selectAction = [
+          tempState.dialogs.selected.state.tablePage.table.selectAction = 'clicked'
+          tempState.dialogs.selected.state.tablePage.actions.clicked = [
             {
               name: 'flows/list/clicked',
-              params: {
+              request: {
                 multi: params.multi,
-                type: 'table',
-                field: params.field
+                field: params.field,
+                type: 'tableType'
               }
             }
           ]

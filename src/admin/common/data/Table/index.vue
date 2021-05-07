@@ -123,15 +123,7 @@ export default class extends Mixins(BaseVue) {
 
   executeSelectionAction(val, isSingle) {
     if (this.state.selectAction) {
-      // this.state.selectAction.forEach((iaction: FlowState) => {
-      //   if (iaction.params) {
-      //     iaction.params = {
-      //       ...iaction.params,
-      //       data: val,
-      //       isSingle: isSingle
-      //     }
-      //   }
-      // })
+      this.state.isSingle = isSingle
       this.runAction(this.state.selectAction)
     }
   }

@@ -2,7 +2,8 @@ import { StateNode } from '@/nodes/stateNode'
 
 export class Confirm extends StateNode {
   async run() {
-    const tempState = this.getState()
+    
+    const tempState = this.inputs.client
     const data = tempState.list.data.items
     const params = this.inputs.params
     const multi = params.multi

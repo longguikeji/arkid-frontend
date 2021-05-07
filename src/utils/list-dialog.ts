@@ -44,15 +44,8 @@ export default function whetherImportListDialog(formData: FormPageState) {
         actions: [
           {
             label: '确认所选',
-            action: [
-              {
-                name: 'flows/list/confirm',
-                params: {
-                  path: ''
-                }
-              }
-            ],
-            type: 'primary'
+            type: 'primary',
+            action: 'confirm'
           }
         ]
       }
