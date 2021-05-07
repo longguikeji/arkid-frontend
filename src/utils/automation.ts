@@ -143,7 +143,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   const dialogState = generateDialogState(dialogParams)
   if (dialogState) {
     tempState.dialogs![key] = dialogState as DialogState
-    addDialogBtnActions(tempState, url, method, key)
+    addDialogBtnActions(tempState, url, method, key, showReadOnly)
     const importListDialog = whetherImportListDialog(dialogState.state)
     if (importListDialog && !tempState.dialogs!.selected) {
       tempState.dialogs!.selected = importListDialog
@@ -157,10 +157,10 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   return tempState
 }
 
-export function addDialogBtnActions(state: any, url: string, method: string, key: string) {
+export function addDialogBtnActions(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
   const { isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state'
-  let { requestMapping } = getFormPageDialogStateMapping(url, method, target)
+  let { requestMapping } = getFormPageDialogStateMapping(url, method, target, false, showReadOnly)
   if (key === 'import') {
     requestMapping = {
       data: 'dialogs.import.state.file'
@@ -186,7 +186,7 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
   state.actions[dialogBtnActionName] = dialogBtnFlows
 }
 
-export function cardButton(state: any, url: string, method: string, key: string) {
+export function cardButton(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
   const { title, buttonType, pageBtnPath, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
   const cardButton = {
     label: title,
@@ -199,7 +199,7 @@ export function cardButton(state: any, url: string, method: string, key: string)
     const target = 'dialogs.' + key + '.state'
     let isEmpty = false
     if (key === 'create') { isEmpty = true }
-    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty)
+    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty, showReadOnly)
     response = responseMapping
   }
   const cardButtonFlows = [
@@ -217,7 +217,7 @@ export function cardButton(state: any, url: string, method: string, key: string)
   return cardButton
 }
 
-export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false) {
+export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false, showReadOnly?: boolean) {
   const { title, buttonType, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
   const itemButton = {
     label: title,
@@ -227,7 +227,7 @@ export function itemButton(state: any, url: string, method: string, key: string,
   let response
   const target = 'dialogs.' + key + '.state'
   if (pageBtnIsRequestion) {
-    const { responseMapping } = getFormPageDialogStateMapping(url, method, target)
+    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, false, showReadOnly)
     response = responseMapping
   }
   let itemButtonFlows: (FlowConfig | string)[]  = [

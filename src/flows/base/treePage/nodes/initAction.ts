@@ -13,7 +13,7 @@ export class InitAction extends FunctionNode {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
         tempState = generateDialog(tempState, url, method, key, showReadOnly)
-        const btn = cardButton(tempState, url, method, key)
+        const btn = cardButton(tempState, url, method, key, showReadOnly)
         tempState.tree?.header?.buttons?.push(btn)
       })
     }
@@ -40,7 +40,7 @@ export class InitAction extends FunctionNode {
             method = action.read.method
           }
           const isTextType = true
-          const btn = itemButton(tempState, url, method, key, isTextType)
+          const btn = itemButton(tempState, url, method, key, isTextType, showReadOnly)
           tempState.tree?.nodes!['slot'].buttons.state.push(btn)
         }
       })

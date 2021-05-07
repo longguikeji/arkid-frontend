@@ -3,6 +3,9 @@
 import OpenAPI from '@/config/openapi'
 
 export function getFormPageDialogStateMapping(url: string, method: string, target: string, isEmpty?: boolean, isIncludeReadOnly?: boolean) {
+  if (isIncludeReadOnly === undefined) {
+    isIncludeReadOnly = true
+  }
   const requestMapping = {}
   const responseMapping = {}
   const isResponses = method.toUpperCase() === 'GET' ? true : false
@@ -56,10 +59,14 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
   } else {
     const formItemsProps = schema.properties
     for (const formItemProp in formItemsProps) {
-      const valueMappingSuffix = 'form.items.' + formItemProp + '.state.value'
-      const valueMapping = (target === '' ? valueMappingSuffix : target + '.' + valueMappingSuffix)
-      responseMapping[valueMapping] = isEmpty ? '' : formItemProp
-      requestMapping[formItemProp] = valueMapping
+      if (!isIncludeReadOnly && formItemsProps[formItemProp].readOnly) {
+        continue
+      } else {
+        const valueMappingSuffix = 'form.items.' + formItemProp + '.state.value'
+        const valueMapping = (target === '' ? valueMappingSuffix : target + '.' + valueMappingSuffix)
+        responseMapping[valueMapping] = isEmpty ? '' : formItemProp
+        requestMapping[formItemProp] = valueMapping
+      }
     }
   }
   return {
