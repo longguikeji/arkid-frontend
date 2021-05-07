@@ -7,13 +7,9 @@ export interface FlowConfig {
   name: string
   url?: string
   method?: string
-  request?: FlowConfigResponseOrRequest
-  response?: FlowConfigResponseOrRequest
+  request?: any
+  response?: any
   target?: string // 配置jump时跳转的目标页面
-}
-
-export interface FlowConfigResponseOrRequest {
-  [key: string]: string | number | boolean | undefined
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -72,17 +68,27 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 }
 
 // 对Mapping进行一次二次处理
-export function stateMappingProxy(state: any, mapping: FlowConfigResponseOrRequest) {
+export function stateMappingProxy(state: any, mapping: any) {
   Object.keys(mapping).forEach(key => {
     const m = mapping[key]
-    let selectItemsObject = {}
     if (typeof m === 'object') {
-      const selectValMapping = m['value']
-      const val = getStateByStringConfig(state, selectValMapping)
-      selectItemsObject = m[val]
-      selectItemsObject[key] = selectValMapping
-      mapping[key] = undefined
-      Object.assign(mapping, selectItemsObject)
+      if (m.value) {
+        let selectItemsObject = {}
+        const selectValMapping = m.value
+        const val = getStateByStringConfig(state, selectValMapping)
+        selectItemsObject = m[val]
+        selectItemsObject[key] = selectValMapping
+        mapping[key] = undefined
+        Object.assign(mapping, selectItemsObject)
+      } else if (m.key && m.data) {
+        const data = getStateByStringConfig(state, m.data)
+        mapping[key] = []
+        data.forEach(d => {
+          if (d[m.key]) {
+            mapping[key].push(d[m.key])
+          }
+        })
+      }
     }
   })
   return mapping
@@ -92,7 +98,7 @@ export function stateMappingProxy(state: any, mapping: FlowConfigResponseOrReque
 // 参数说明
 // state: current page state
 // mapping: request or response config
-export function parseStateMapping(state: any, mapping: FlowConfigResponseOrRequest) {
+export function parseStateMapping(state: any, mapping: any) {
   let params = {}
   Object.keys(mapping).forEach(key => {
     let tempState
@@ -126,7 +132,7 @@ export function getStateByStringConfig(state: any, str: string) {
         const res = Filter(sm, tempState)
         tempState = tempState.cloumns[res]
       } else {
-        tempState = tempState[sm]
+        tempState = tempState[sm] ? tempState[sm] : sm
       }
     })
   }

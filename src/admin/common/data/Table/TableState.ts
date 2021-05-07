@@ -42,6 +42,5 @@ export default interface TableState extends BaseState {
   load?: Function //  加载子节点数据的函数，lazy 为 true 时生效，函数第二个参数包含了节点的层级信息  Function(row, treeNode, resolve)  —  —
   treeProps?: object //  渲染嵌套数据的配置选项  Object  —  { hasChildren?: 'hasChildren', children?: 'children' }
   sortable?: boolean // 是否可以进行表格每一行的拖拽动作
-  sortAction?: Array<FlowState | Function> // 拖拽进行排序时，触发的相关流操作
-  // sortAction?: Function | string // 拖拽进行排序时，触发的相关流操作
+  sortAction?: Function | string // 拖拽进行排序时，触发的相关流操作
 }

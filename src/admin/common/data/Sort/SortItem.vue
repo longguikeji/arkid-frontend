@@ -1,29 +1,23 @@
 <template>
-  <div>
-    <template v-for="(item, index) in state">
-      <SortItem
-        :key="index"
-        :path="getChildPath(index)"
-      />
-    </template>
-  </div>
+  <i
+    :title="state.type"
+    :class="iconClass(state.type)"
+    @click.stop="sort()"
+  />
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import SortItem from './SortItem.vue'
 import SortState from './SortState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
-  name: 'Sort',
-  components: {
-    SortItem
-  }
+  name: 'SortItem',
+  components: {}
 })
 export default class extends Mixins(BaseVue) {
-  get state(): Array<SortState> {
-    return this.$state as Array<SortState>
+  get state(): SortState {
+    return this.$state as SortState
   }
 
   iconClass(type: string) {
@@ -39,13 +33,9 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  sort(sortType: string) {
-    if (this.state) {
-      this.state.forEach(sortItem => {
-        if (sortItem.type === sortType) {
-          this.runAction(sortItem.action)
-        }
-      })
+  sort() {
+    if (this.state?.action) {
+      this.runAction(this.state.action)
     }
   }
 }
