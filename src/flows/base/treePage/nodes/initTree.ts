@@ -14,7 +14,7 @@ export class InitTree extends FunctionNode {
       const initTreeOperation = OpenAPI.instance.getOperation(initTreePath, initTreeMethod)
       if (initTreeOperation) {
         // 给treePage页面的进行fetch-action的添加
-        tempState.actions!['fetch'] = [
+        tempState.actions!.fetch = [
           {
             name: 'flows/custom/fetchTreeNode',
             url: initTreePath,
@@ -24,10 +24,10 @@ export class InitTree extends FunctionNode {
             }
           }
         ]
-        tempState.actions!['created'].push('fetch')
+        tempState.actions!.created.push('fetch')
         // 给 destroyed 赋值
         tempState.destroyed = 'destroyed'
-        tempState.actions!['destroyed'] = [
+        tempState.actions!.destroyed = [
           {
             name: 'arkfbp/flows/hookFlow/destroyed',
             url: initTreePath,
@@ -48,14 +48,14 @@ export class InitTree extends FunctionNode {
       // const tableListOperationMethod = initContent.table.init.method
       // 给tree添加节点触发事件
       tempState.tree!.nodes!.action = 'fetchTreeNodeChildren'
-      tempState.actions!['fetchTreeNodeChildren'] = [
+      tempState.actions!.fetchTreeNodeChildren = [
         {
           name: "flows/custom/fetchTreeNodeChildren",
           url: treeNodeDataOperationPath,
           method: treeNodeDataOperationMethod
-        }
+        },
+        'fetchTable'
       ]
-
     }
     
     return {
