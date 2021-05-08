@@ -17,7 +17,6 @@ export class InitInputList extends StateNode {
         request: { ...params }
       }
     ]
-    
     // 获取当前的数据内容  --  初始化List的右侧内容
     const nowInputListData = [...this.inputs.com.state.options]
     // 通过page字段信息获取list的初始化资源  --  初始化List的左侧内容

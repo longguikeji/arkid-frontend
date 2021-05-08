@@ -147,13 +147,16 @@ export function generateDialog(tempState: any, url: string, method: string, key:
     addDialogBtnActions(tempState, url, method, key, showReadOnly)
     const importListDialog = whetherImportListDialog(dialogState.state.state)
     if (importListDialog) {
-      // tempState.dialogs![key].state.state
-      tempState.dialogs!.selected = importListDialog
-      tempState.actions!.initInputList = [
-        {
-          name: 'flows/list/initInputList'
-        }
-      ]
+      tempState.dialogs![key].state.state.dialogs = {
+        selected: importListDialog
+      }
+      tempState.dialogs![key].state.state.actions = {
+        initInputList: [
+          {
+            name: 'flows/list/initInputList'
+          }
+        ]
+      }
     }  
   }
   return tempState

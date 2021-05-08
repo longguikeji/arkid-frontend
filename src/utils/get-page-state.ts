@@ -9,16 +9,14 @@ export function getStateByPath(path: string) {
   if (path === '' || path === 'admin.adminState.state' || path === 'tenant.tenantState.state' || path === undefined) {
     return tempState
   } else {
-    const tempPath = path.replace('admin.adminState.state', '').replace('tenant.tenantState.state', '')
     let reTempState = tempState
-    const paths = tempPath.split('.')
-    for (const p of paths) {
-      if (reTempState) {
-        reTempState = getDateByPath(reTempState, p)
-      }
+    const tempPath = path.replace('admin.adminState.state.', '').replace('tenant.tenantState.state.', '')
+    if (reTempState) {
+      reTempState = getDateByPath(reTempState, tempPath)
     }
     const isPageState = reTempState?.type === 'TablePage' || reTempState?.type === 'FormPage' || reTempState?.type === 'TreePage' || reTempState?.type === 'DashboardPage'
     if (isPageState) {
+      reTempState = reTempState.state
       return reTempState
     } else {
       return null
@@ -27,32 +25,25 @@ export function getStateByPath(path: string) {
 }
 
 export function getCurrentPageStateByPath(path: string) {
-  const tempState = getBaseState()
-  if (!path) {
-    return tempState
-  }
-  const newPath = path.replace('admin.adminState.state.', '').replace('tenant.tenantState.state.', '')
-  if (newPath === '') {
-    return tempState
-  } else {
-    let reTempState = tempState
-    const indexs = getOneCharacterIndexsInString(newPath, '.')
+  let tempState = getBaseState()
+  if (path) {
+    const indexs = getOneCharacterIndexsInString(path, '.')
     const pathMapping: Array<string> = []
-    pathMapping.push(newPath)
+    pathMapping.push(path)
     for (let i = indexs.length - 1; i >= 0; i--) {
-      const iPath = newPath.substring(0, indexs[i])
+      const iPath = path.substring(0, indexs[i])
       pathMapping.push(iPath)
     }
     pathMapping.push('')
     for (let i = 0; i <= pathMapping.length - 1; i++) {
       const state = getStateByPath(pathMapping[i])
       if (state) {
-        reTempState = state
+        tempState = state
         break
       }
     }
-    return reTempState
   }
+  return tempState
 }
 
 export default function getPageState(specifiedPath = '') {
