@@ -47,13 +47,27 @@ export class AddSwitchTenantButton extends StateNode {
           }
         }
       },
-      actions: [
+      buttons: [
         {
           label: '确定切换',
           type: 'primary',
           action: 'switchTenant'
         }
-      ]
+      ],
+      actions: {
+        switchTenant: [
+          {
+            name: 'flows/tenant/switchTenant',
+            target: '/'
+          },
+          {
+            name: 'arkfbp/flows/assign',
+            response: {
+              'visible': false
+            }
+          }
+        ]
+      }
     }
     tempState.dialogs!.switch = switchDialog
 
@@ -73,18 +87,6 @@ export class AddSwitchTenantButton extends StateNode {
         name: 'arkfbp/flows/assign',
         response: {
           'dialogs.switch.visible': true
-        }
-      }
-    ]
-    tempState.actions!.switchTenant = [
-      {
-        name: 'flows/tenant/switchTenant',
-        target: '/'
-      },
-      {
-        name: 'arkfbp/flows/assign',
-        response: {
-          'dialogs.switch.visible': false
         }
       }
     ]
