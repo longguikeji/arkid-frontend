@@ -6,10 +6,7 @@ export class InitPage extends FunctionNode {
     const isHooks = this.inputs.isHooks
     const tempState: TablePageState = {
       type: 'TablePage',
-      pages: [],
       created: isHooks === false ? undefined : 'created',
-      beforeDestroy: isHooks === false ? undefined : 'beforeDestroy',
-      destroyed: isHooks === false ? undefined : 'destroyed',
       card: {
         title: '',
         buttons: []
@@ -22,16 +19,7 @@ export class InitPage extends FunctionNode {
         selection: {}
       },
       actions: {
-        created: [
-          {
-            name: 'arkfbp/flows/hookFlow/created'
-          }
-        ],
-        beforeDestroy: [
-          {
-            'name': 'arkfbp/flows/hookFlow/beforeDestroy'
-          }
-        ]
+        created: []
       }
     }
     return {

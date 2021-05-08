@@ -25,15 +25,6 @@ export class InitTree extends FunctionNode {
           }
         ]
         tempState.actions!.created.push('fetch')
-        // 给 destroyed 赋值
-        tempState.destroyed = 'destroyed'
-        tempState.actions!.destroyed = [
-          {
-            name: 'arkfbp/flows/hookFlow/destroyed',
-            url: initTreePath,
-            method: initTreeMethod,
-          }
-        ]
         // 给tree结构的最上方header模块的title赋值 -- 此外这里可以对tree进行扩展性的赋值，以实现更加丰富的功能
         // 比如，可以增加默认选中节点等属性内容
         tempState.tree!.header!.title = initTreeOperation.summary || ''

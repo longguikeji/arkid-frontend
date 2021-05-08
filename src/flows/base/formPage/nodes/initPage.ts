@@ -9,10 +9,7 @@ export class InitPage extends FunctionNode {
         title: '',
         buttons: []
       },
-      pages: [],
       created: 'created',
-      beforeDestroy: 'beforeDestroy',
-      destroyed: 'destroyed',
       title: '',
       form: {
         items: {},
@@ -21,16 +18,7 @@ export class InitPage extends FunctionNode {
       dialogs: {},
       bottomButtons: [],
       actions: {
-        created: [
-          {
-            name: 'arkfbp/flows/hookFlow/created'
-          }
-        ],
-        beforeDestroy: [
-          {
-            'name': 'arkfbp/flows/hookFlow/beforeDestroy'
-          }
-        ]
+        created: []
       }
     }
     return {

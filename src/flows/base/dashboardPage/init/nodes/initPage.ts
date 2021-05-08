@@ -5,22 +5,10 @@ export class InitPage extends FunctionNode {
   async run() {
     const tempState: DashboardPageState = {
       type: 'DashboardPage',
-      pages: [],
       created: 'created',
-      beforeDestroy: 'beforeDestroy',
-      destroyed: '',
       items: [],
       actions: {
-        created: [
-          {
-            name: 'arkfbp/flows/hookFlow/created'
-          }
-        ],
-        beforeDestroy: [
-          {
-            'name': 'arkfbp/flows/hookFlow/beforeDestroy'
-          }
-        ]
+        created: []
       }
     }
     return {

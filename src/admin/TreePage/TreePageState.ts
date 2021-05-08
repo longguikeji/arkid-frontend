@@ -16,7 +16,6 @@ export default interface TreePageState extends BaseState {
   tree?: Tree
   table?: TablePageState
   dialogs?: { [dialogName: string]: DialogState }
-  pages?: Array<string>
   list?: {
     header?: CardState,
     data?: ListState

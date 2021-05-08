@@ -66,7 +66,6 @@ export class InitTable extends FunctionNode {
         }
         // 给页面添加初始化事件流
         if (otherInitContent.isHooks !== false) {
-          tempState.destroyed = 'destroyed'
           // 相对应给 actions 添加相同名称的 flow-config
           tempState.actions!.created.push('fetch')
           tempState.actions!.fetch = [
@@ -76,13 +75,6 @@ export class InitTable extends FunctionNode {
               method: initTableMethod,
               request: paramsMapping,
               response: responseMapping
-            }
-          ]
-          tempState.actions!.destroyed = [
-            {
-              name: 'arkfbp/flows/hookFlow/destroyed',
-              url: initTablePath,
-              method: initTableMethod
             }
           ]
         }

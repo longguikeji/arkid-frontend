@@ -6,14 +6,14 @@ export class InitAction extends FunctionNode {
     const tempState: DashboardPageState = this.inputs.state
     const initContent = this.inputs.data.initContent
     if (initContent?.init) {
-      tempState.actions!['fetch'] = [
+      tempState.actions!.fetch = [
         {
           name: 'flows/base/dashboardPage/fetch',
           url: initContent.init.path,
           method: initContent.init.method
         }
       ]
-      tempState.actions!['created'].push('fetch')
+      tempState.actions!.created.push('fetch')
     }
     return {
       data: this.inputs,
