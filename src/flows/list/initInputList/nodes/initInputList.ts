@@ -8,7 +8,6 @@ export class InitInputList extends StateNode {
     const tempState = this.inputs.client
     const params = this.inputs.com.state.data
     const path = this.inputs.com.path
-    
     // 给 第二层弹出框的 点击按钮相关事件添加 path 参数
     // 以便其在确认后将对应的值赋值给点击的DOM元素
     const confirmFlows = [

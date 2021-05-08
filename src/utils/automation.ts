@@ -145,8 +145,9 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   if (dialogState) {
     tempState.dialogs![key] = dialogState as DialogState
     addDialogBtnActions(tempState, url, method, key, showReadOnly)
-    const importListDialog = whetherImportListDialog(dialogState.state)
-    if (importListDialog && !tempState.dialogs!.selected) {
+    const importListDialog = whetherImportListDialog(dialogState.state.state)
+    if (importListDialog) {
+      // tempState.dialogs![key].state.state
       tempState.dialogs!.selected = importListDialog
       tempState.actions!.initInputList = [
         {

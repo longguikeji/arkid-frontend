@@ -12,36 +12,38 @@ export default function whetherImportListDialog(formData: FormPageState) {
     }
     if (flag) {
       return {
-        type: "ListAssembly",
         visible: false,
         width: '70%',
         title: '',
         data: {},
         state: {
-          treePage: {
-            list: {
-              header: {
-                title: '',
-                buttons: []
-              },
-              data: {
-                items: []
+          type: "ListAssembly",
+          state: {
+            treePage: {
+              list: {
+                header: {
+                  title: '',
+                  buttons: []
+                },
+                data: {
+                  items: []
+                }
+              }
+            },
+            tablePage: {
+              list: {
+                header: {
+                  title: '',
+                  buttons: []
+                },
+                data: {
+                  items: []
+                }
               }
             }
-          },
-          tablePage: {
-            list: {
-              header: {
-                title: '',
-                buttons: []
-              },
-              data: {
-                items: []
-              }
-            }
-          },
+          }
         },
-        actions: [
+        buttons: [
           {
             label: '确认所选',
             type: 'primary',
