@@ -6,7 +6,7 @@ import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { FlowConfig } from '@/arkfbp'
 
 export default interface FromPageState extends CardState {
-  type: 'FormPage',
+  type?: string, // 指明当前页面的类型 当前页面为 FormPage
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
   card?: CardState

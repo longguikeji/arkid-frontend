@@ -25,11 +25,6 @@ export interface GenerateDialogStateParams {
   key?: string
 }
 
-interface InitBaseAction {
-  fetchUrl: string
-  fetchMethod: string
-}
-
 export function generateDialogState(params: GenerateDialogStateParams): DialogState | undefined {
   const { initActionOperation, method, type, title, actions, showReadOnly, key } = params
   if (!initActionOperation || method === 'delete' || key === 'export') return undefined

@@ -3,7 +3,7 @@ import { BaseState } from '@/admin/base/BaseVue'
 import { FlowConfig } from '@/arkfbp'
 
 export default interface DashboardPageState extends BaseState {
-  type: string
+  type: string // DashboardPage
   items?: Array<DashboardItemState>
   actions?: { [name: string]: Array<FlowConfig | string> }
 }

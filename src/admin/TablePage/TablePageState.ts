@@ -8,7 +8,7 @@ import ListState from '@/admin/common/data/List/ListState'
 import { FlowConfig } from '@/arkfbp'
 
 export default interface TablePageState extends BaseState {
-  type: 'TablePage'
+  type?: string // TablePage
   filter?: FormState
   table?: TableState
   pagination?: PaginationState
