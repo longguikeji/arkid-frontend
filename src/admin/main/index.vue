@@ -13,7 +13,7 @@
     />
     <TablePage
       v-if="state.type === 'TablePage'"
-      :path="'admin.adminState'"
+      :path="'admin.adminState.state'"
     />
     <TreePage
       v-if="state.type === 'TreePage'"

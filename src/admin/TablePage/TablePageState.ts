@@ -7,8 +7,7 @@ import DialogState from '../common/Others/Dialog/DialogState'
 import ListState from '@/admin/common/data/List/ListState' 
 import { FlowConfig } from '@/arkfbp'
 
-export default interface TablePageState extends BaseState {
-  type?: string // TablePage
+export interface TablePage extends BaseState {
   filter?: FormState
   table?: TableState
   pagination?: PaginationState
@@ -19,4 +18,9 @@ export default interface TablePageState extends BaseState {
     data?: ListState
   }
   actions?: { [name: string]: (FlowConfig | string)[] }
+}
+
+export default interface TablePageState {
+  type?: string // TablePage
+  state?: TablePage
 }

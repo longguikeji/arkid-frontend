@@ -1,9 +1,10 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class InitFilter extends AuthApiNode {
   async run() {
-    const tempState = this.inputs.state as TablePageState
+    const state = this.inputs.state as TablePageState
+    const tempState = state.state as TablePage
     const initContent = this.inputs.initContent
 
     // filter element info
@@ -73,7 +74,7 @@ export class InitFilter extends AuthApiNode {
     
     return {
       data: this.inputs.data,
-      state: tempState
+      state: state
     }
   }
 }

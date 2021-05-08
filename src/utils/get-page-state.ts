@@ -6,10 +6,10 @@ import getDateByPath from '@/utils/datapath'
 
 export function getStateByPath(path: string) {
   const tempState = getBaseState()
-  if (path === '' || path === 'admin.adminState' || path === 'tenant.tenantState' || path === undefined) {
+  if (path === '' || path === 'admin.adminState.state' || path === 'tenant.tenantState.state' || path === undefined) {
     return tempState
   } else {
-    const tempPath = path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
+    const tempPath = path.replace('admin.adminState.state', '').replace('tenant.tenantState.state', '')
     let reTempState = tempState
     const paths = tempPath.split('.')
     for (const p of paths) {
@@ -31,7 +31,7 @@ export function getCurrentPageStateByPath(path: string) {
   if (!path) {
     return tempState
   }
-  const newPath = path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
+  const newPath = path.replace('admin.adminState.state.', '').replace('tenant.tenantState.state.', '')
   if (newPath === '') {
     return tempState
   } else {
@@ -75,7 +75,7 @@ export function getPreviousPageState() {
 }
 
 export function getBaseState() {
-  return isTenantState() ? TenantModule.tenantState : AdminModule.adminState
+  return isTenantState() ? TenantModule.tenantState.state : AdminModule.adminState.state
 }
 
 export function isTenantState() {

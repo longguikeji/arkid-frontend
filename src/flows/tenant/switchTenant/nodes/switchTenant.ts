@@ -1,10 +1,10 @@
 import { Jump } from '@/arkfbp/flows/jump/nodes/jump'
 import { TenantModule } from '@/store/modules/tenant'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class SwitchTenant extends Jump {
   async run() {
-    const tenantState: TablePageState = this.getState()
+    const tenantState: TablePage = this.getState()
     const data: any = tenantState.dialogs?.switch.data
     TenantModule.changeCurrentTenant(data)
     let target

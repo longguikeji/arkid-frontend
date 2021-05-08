@@ -6,25 +6,32 @@ export class InitPage extends FunctionNode {
     const isHooks = this.inputs.isHooks
     const tempState: TablePageState = {
       type: 'TablePage',
-      created: isHooks === false ? undefined : 'created',
-      card: {
-        title: '',
-        buttons: []
-      },
-      filter: {},
-      dialogs: {},
-      table: {
-        columns: [],
-        data: [],
-        selection: {}
-      },
-      actions: {
-        created: []
+      state: {
+        created: isHooks === false ? undefined : 'created',
+        card: {
+          title: '',
+          buttons: []
+        },
+        filter: {},
+        dialogs: {},
+        table: {
+          columns: [],
+          data: [],
+          selection: {}
+        },
+        actions: {
+          created: []
+        }
       }
     }
+
+    this.$state.commit(state => {
+      state.state = tempState
+    })
+
     return {
       data: this.inputs,
-      state: tempState
+      state: tempState.state
     }
   }
 }

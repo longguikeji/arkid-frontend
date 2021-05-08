@@ -1,10 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 import { generateDialog, cardButton, itemButton } from '@/utils/automation'
 
 export class InitAction extends FunctionNode {
   async run() {
-    let tempState: TablePageState = this.inputs.state
+    let tempState: TablePage = this.inputs.state
     const { initContent } = this.inputs.data
     // action 有两种UI类型 => page(页面) 和 item(table行元素)
     // ① 初始化page类型
@@ -49,9 +49,11 @@ export class InitAction extends FunctionNode {
       })
     }
 
+    const { state } = this.$state.fetch()
+
     return {
       data: this.inputs.data,
-      state: tempState
+      state: state
     }
   }
 }

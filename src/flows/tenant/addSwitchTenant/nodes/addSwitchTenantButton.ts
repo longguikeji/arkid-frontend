@@ -1,10 +1,11 @@
 import { StateNode } from '@/nodes/stateNode'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class AddSwitchTenantButton extends StateNode {
   async run() {
-    const tempState: TablePageState = this.inputs.tempState
+    const state = this.inputs.tempState as TablePageState
+    const tempState = state.state as TablePage
     
     // add tenant switch button
     const switchCurrentTenantButton = {
@@ -92,7 +93,7 @@ export class AddSwitchTenantButton extends StateNode {
     ]
     
     return {
-      state: tempState
+      state: state
     }
   }
 }

@@ -1,9 +1,9 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class InitSortable extends FunctionNode {
   async run() {
-    const tempState = this.inputs.state as TablePageState
+    const tempState: TablePage = this.inputs.state
     const initContent = this.inputs.data.initContent
     if (initContent.sort) {
       // 给 table 表格项添加一项 <排序>
