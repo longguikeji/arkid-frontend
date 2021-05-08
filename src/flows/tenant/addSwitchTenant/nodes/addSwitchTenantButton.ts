@@ -22,26 +22,28 @@ export class AddSwitchTenantButton extends StateNode {
       title: '切换租户',
       visible: false,
       data: {},
-      type: 'FormPage',
       state: {
-        form: {
-          items: {
-            uuid: {
-              type: 'InputNumber',
-              label: 'UUID',
-              prop: 'uuid',
-              state: {
-                value: '',
-                readonly: true
-              }
-            },
-            name: {
-              type: 'Input',
-              label: '名字',
-              prop: 'name',
-              state: {
-                value: '',
-                readonly: true
+        type: 'FormPage',
+        state: {
+          form: {
+            items: {
+              uuid: {
+                type: 'InputNumber',
+                label: 'UUID',
+                prop: 'uuid',
+                state: {
+                  value: '',
+                  readonly: true
+                }
+              },
+              name: {
+                type: 'Input',
+                label: '名字',
+                prop: 'name',
+                state: {
+                  value: '',
+                  readonly: true
+                }
               }
             }
           }
@@ -53,21 +55,7 @@ export class AddSwitchTenantButton extends StateNode {
           type: 'primary',
           action: 'switchTenant'
         }
-      ],
-      actions: {
-        switchTenant: [
-          {
-            name: 'flows/tenant/switchTenant',
-            target: '/'
-          },
-          {
-            name: 'arkfbp/flows/assign',
-            response: {
-              'visible': false
-            }
-          }
-        ]
-      }
+      ]
     }
     tempState.dialogs!.switch = switchDialog
 
@@ -78,8 +66,8 @@ export class AddSwitchTenantButton extends StateNode {
         url: '/api/v1/tenant/{id}/',
         method: 'get',
         response: {
-          'dialogs.switch.state.form.items.uuid.state.value': 'uuid',
-          'dialogs.switch.state.form.items.name.state.value': 'name',
+          'dialogs.switch.state.state.form.items.uuid.state.value': 'uuid',
+          'dialogs.switch.state.state.form.items.name.state.value': 'name',
           'dialogs.switch.data': ''
         }
       },
@@ -87,6 +75,18 @@ export class AddSwitchTenantButton extends StateNode {
         name: 'arkfbp/flows/assign',
         response: {
           'dialogs.switch.visible': true
+        }
+      }
+    ]
+    tempState.actions!.switchTenant = [
+      {
+        name: 'flows/tenant/switchTenant',
+        target: '/'
+      },
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.switch.visible': false
         }
       }
     ]

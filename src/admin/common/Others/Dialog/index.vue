@@ -17,7 +17,7 @@
     :center="state.center"
     :destory-on-close="state.destoryOnClose"
   >
-    <AdminComponent :path="getChildPath('')" />
+    <AdminComponent :path="getChildPath('state')" />
 
     <span
       slot="footer"

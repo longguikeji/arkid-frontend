@@ -15,7 +15,7 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
   const schema = OpenAPI.instance.getSchemaByRef(ref)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
-    const selectValueMapping = target + '.select.value'
+    const selectValueMapping = target + '.state.select.value'
     if (!isEmpty) {
       responseMapping[selectValueMapping] = {
         value: propertyName
@@ -42,14 +42,14 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
             const itemsProps = itemsSchema.properties
             request[refValue][prop] = {}
             for (const itemProp in itemsProps) {
-              const responseItemValueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
-              const requestItemValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
+              const responseItemValueMapping = target + '.state.forms[' + propertyName + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
+              const requestItemValueMapping = target + '.state.forms[' + selectValueMapping + '].items.' + prop + '.state.items.' + itemProp + '.state.value' 
               response[refValue][responseItemValueMapping] = 'data.' + itemProp
               request[refValue][prop][itemProp] = requestItemValueMapping
             }
           } else if (prop !== propertyName) {
-            const responseValueMapping = target + '.forms[' + propertyName + '].items.' + prop + '.state.value'
-            const requestValueMapping = target + '.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
+            const responseValueMapping = target + '.state.forms[' + propertyName + '].items.' + prop + '.state.value'
+            const requestValueMapping = target + '.state.forms[' + selectValueMapping + '].items.' + prop + '.state.value'
             response[refValue][responseValueMapping] = prop
             request[refValue][prop] = requestValueMapping
           }
@@ -62,7 +62,7 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
       if (!isIncludeReadOnly && formItemsProps[formItemProp].readOnly) {
         continue
       } else {
-        const valueMappingSuffix = 'form.items.' + formItemProp + '.state.value'
+        const valueMappingSuffix = 'state.form.items.' + formItemProp + '.state.value'
         const valueMapping = (target === '' ? valueMappingSuffix : target + '.' + valueMappingSuffix)
         responseMapping[valueMapping] = isEmpty ? '' : formItemProp
         requestMapping[formItemProp] = valueMapping
