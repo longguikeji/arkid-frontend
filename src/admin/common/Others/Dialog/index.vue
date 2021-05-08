@@ -29,7 +29,7 @@
         @click="state.visible = false"
       >取 消</el-button>
       <ButtonArray
-        v-if="state.actions && state.actions.length > 0"
+        v-if="state.buttons && state.buttons.length > 0"
         class="dialog__actions__button"
         :path="getActionPath()"
       />
@@ -55,13 +55,13 @@ export default class extends Mixins(BaseVue) {
 
   getActionPath() {
     const data = this.state.data as any
-    if (this.state.actions) {
-      this.state.actions.forEach((e: any) => {
+    if (this.state.buttons) {
+      this.state.buttons.forEach((e: any) => {
         e.data = data
       })
     }
 
-    return this.getChildPath('actions')
+    return this.getChildPath('buttons')
   }
 
   get defaultWidth() {

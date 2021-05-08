@@ -20,13 +20,14 @@ export interface GenerateDialogStateParams {
   method: string
   type?: string
   title?: string
-  actions?: Array<ButtonState>
+  actions?: Array<FlowConfig | string>
+  buttons?: Array<ButtonState>
   showReadOnly?: boolean
   key?: string
 }
 
 export function generateDialogState(params: GenerateDialogStateParams): DialogState | undefined {
-  const { initActionOperation, method, type, title, actions, showReadOnly, key } = params
+  const { initActionOperation, method, type, title, actions, buttons, showReadOnly, key } = params
   if (!initActionOperation || method === 'delete' || key === 'export') return undefined
   const isResponses = method.toLowerCase() === "get" ? true : false
   const content = isResponses ? initActionOperation.responses[200].content : initActionOperation.requestBody.content
@@ -43,7 +44,7 @@ export function generateDialogState(params: GenerateDialogStateParams): DialogSt
   } else {
     dialogState.state = generateDialogForm(schema, showReadOnly)
   }
-  dialogState.actions = actions
+  dialogState.buttons = buttons
   return dialogState
 }
 
@@ -118,7 +119,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   if (!initActionOperation) { return }
   const { title, dialogType, buttonType, dialogBtnActionName } = getBaseAttributes(key)
   // dialog-bottom-button-action
-  const dialogAction = [
+  const dialogButtons = [
     {
       label: initActionOperation.summary || title,
       type: buttonType,
@@ -131,7 +132,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
     method,
     type: dialogType,
     title: initActionOperation.summary || title,
-    actions: dialogAction,
+    buttons: dialogButtons,
     showReadOnly,
     key
   }

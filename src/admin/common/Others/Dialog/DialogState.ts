@@ -1,9 +1,11 @@
 import AdminComponentState from '../../AdminComponent/AdminComponentState'
+import { FlowConfig } from '@/arkfbp'
 
 export default interface DialogState extends AdminComponentState {
   title?: string // 标题
   data?: Object // 对话框每一项的值
-  actions?: Array<any> // 底部按钮对应的事件
+  actions?: Array<FlowConfig | string> // 底部按钮对应的事件
+  buttons?: Array<any> // 底部按钮
   visible?: boolean // 弹出框的显示与隐藏
   type?: string // 判断Dialog的类型 是 TablePage 还是 FormPage 还是 Tree 结构
   width?: string // Dialog 的宽度
