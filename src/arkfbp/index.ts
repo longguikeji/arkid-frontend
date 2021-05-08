@@ -1,5 +1,5 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
-import getPageState from '@/utils/get-page-state'
+import { getCurrentPageStateByPath } from '@/utils/get-page-state'
 import Filter from '@/utils/filter'
 import getUrl from '@/utils/url'
 
@@ -17,7 +17,8 @@ export interface FlowConfig {
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
 export async function runFlowByActionName(com: any, actionName: string) {
-  const currentPageState = getPageState()
+  const path = com.path
+  const currentPageState = getCurrentPageStateByPath(path)
   if (!currentPageState?.actions) {  
     return
   }

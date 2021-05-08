@@ -13,7 +13,7 @@ export default interface TablePageState extends BaseState {
   table?: TableState
   pagination?: PaginationState
   card?: CardState
-  dialogs?: {[name:string]:DialogState}
+  dialogs?: { [name:string]: DialogState }
   pages?: Array<string>
   list?: {
     header?: CardState,
