@@ -16,7 +16,7 @@
     <template v-if="state.table">
       <TablePage
         class="tree__table"
-        :path="getChildPath('table')"
+        :path="getChildPath('table.state')"
       />
     </template>
     <template v-if="state.list">
@@ -36,7 +36,7 @@ import Card from '@/admin/common/Card/index.vue'
 import Tree from '@/admin/common/data/Tree/index.vue'
 import Dialog from '@/admin/common/Others/Dialog/index.vue'
 import TablePage from '@/admin/TablePage/index.vue'
-import TreePageState from './TreePageState'
+import { TreePage } from './TreePageState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -49,8 +49,8 @@ import BaseVue from '@/admin/base/BaseVue'
   }
 })
 export default class extends Mixins(BaseVue) {
-  get state(): TreePageState {
-    return this.$state as TreePageState
+  get state(): TreePage {
+    return this.$state as TreePage
   }
 }
 </script>

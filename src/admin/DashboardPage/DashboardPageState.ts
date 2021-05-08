@@ -2,8 +2,12 @@ import DashboardItemState from './DashboardItem/DashboardItemState'
 import { BaseState } from '@/admin/base/BaseVue'
 import { FlowConfig } from '@/arkfbp'
 
-export default interface DashboardPageState extends BaseState {
-  type: string // DashboardPage
+export interface DashboardPage extends BaseState {
   items?: Array<DashboardItemState>
   actions?: { [name: string]: Array<FlowConfig | string> }
+}
+
+export default interface DashboardPageState {
+  type?: string // DashboardPage
+  state?: DashboardPage
 }

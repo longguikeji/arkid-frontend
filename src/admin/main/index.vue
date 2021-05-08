@@ -5,11 +5,11 @@
   >
     <DashboardPage
       v-if="state.type === 'DashboardPage'"
-      :path="'admin.adminState'"
+      :path="'admin.adminState.state'"
     />
     <FormPage
       v-if="state.type === 'FormPage'"
-      :path="'admin.adminState'"
+      :path="'admin.adminState.state'"
     />
     <TablePage
       v-if="state.type === 'TablePage'"
@@ -17,7 +17,7 @@
     />
     <TreePage
       v-if="state.type === 'TreePage'"
-      :path="'admin.adminState'"
+      :path="'admin.adminState.state'"
     />
   </div>
 </template>

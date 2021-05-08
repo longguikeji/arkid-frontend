@@ -11,8 +11,7 @@ export interface Tree {
   nodes?: TreeState,
 }
 
-export default interface TreePageState extends BaseState {
-  type?: string // TreePage 
+export interface TreePage extends BaseState {
   tree?: Tree
   table?: TablePageState
   dialogs?: { [dialogName: string]: DialogState }
@@ -21,4 +20,9 @@ export default interface TreePageState extends BaseState {
     data?: ListState
   }
   actions: { [name: string]: Array<FlowConfig | string> }
+}
+
+export default interface TreePageState {
+  type?: string // TreePage
+  state?: TreePage
 }

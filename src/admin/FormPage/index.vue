@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import FormPageState from './FormPageState'
+import { FormPage } from './FormPageState'
 import Card from '@/admin/common/Card/index.vue'
 import Form from '@/admin/common/Form/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
@@ -43,8 +43,8 @@ import ButtonArray from '@/admin/common/Button/ButtonArray/index.vue'
   }
 })
 export default class extends Mixins(BaseVue) {
-  get state(): FormPageState {
-    return this.$state as FormPageState
+  get state(): FormPage {
+    return this.$state as FormPage
   }
 
   get formPath():string {

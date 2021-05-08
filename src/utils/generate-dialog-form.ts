@@ -3,11 +3,11 @@ import FormObjectItemState from '@/admin/common/Form/FormObjectItem/FormObjectIt
 import FormState from '@/admin/common/Form/FormState'
 import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPageState {
-  const formPageState: FormPageState = {}
+export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPage {
+  const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectState:SelectState = {

@@ -1,9 +1,9 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import DashboardPageState from '@/admin/DashboardPage/DashboardPageState'
+import { DashboardPage } from '@/admin/DashboardPage/DashboardPageState'
 
 export class InitAction extends FunctionNode {
   async run() {
-    const tempState: DashboardPageState = this.inputs.state
+    const tempState: DashboardPage = this.inputs.state
     const initContent = this.inputs.data.initContent
     if (initContent?.init) {
       tempState.actions!.fetch = [
@@ -15,9 +15,12 @@ export class InitAction extends FunctionNode {
       ]
       tempState.actions!.created.push('fetch')
     }
+
+    const { state } = this.$state.fetch()
+
     return {
       data: this.inputs,
-      state: tempState
+      state: state
     }
   }
 }

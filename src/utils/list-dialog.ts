@@ -1,6 +1,6 @@
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 
-export default function whetherImportListDialog(formData: FormPageState) {
+export default function whetherImportListDialog(formData: FormPage) {
   if (formData.form && formData.form.items) {
     let flag = false
     const items = formData.form.items

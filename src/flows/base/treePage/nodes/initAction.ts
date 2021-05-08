@@ -1,10 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import TreePageState from '@/admin/TreePage/TreePageState'
+import { TreePage } from '@/admin/TreePage/TreePageState'
 import { generateDialog, cardButton, itemButton } from '@/utils/automation'
 
 export class InitAction extends FunctionNode {
   async run() {
-    let tempState: TreePageState = this.inputs.state
+    let tempState: TreePage = this.inputs.state
     const { initContent } = this.inputs.data
     const showReadOnly = false
     
@@ -46,9 +46,11 @@ export class InitAction extends FunctionNode {
       })
     }
 
+    const { state } = this.$state.fetch()
+
     return {
       data: this.inputs.data,
-      state: tempState
+      state: state
     }
   }
 }

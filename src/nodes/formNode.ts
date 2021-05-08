@@ -4,7 +4,7 @@ import FormObjectItemState from '@/admin/common/Form/FormObjectItem/FormObjectIt
 import FormState from '@/admin/common/Form/FormState'
 import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 interface IGenerateConfigParams {
@@ -28,9 +28,9 @@ export class FormNode extends StateNode {
     }
   }
 
-  public generateFormPage(args: IGenerateConfigParams): FormPageState {
+  public generateFormPage(args: IGenerateConfigParams): FormPage {
     let { schema, statePrefix, showReadOnly } = args
-    const formPageState: FormPageState = {}
+    const formPageState: FormPage = {}
     if (showReadOnly === undefined) { showReadOnly = true }
     if (schema.discriminator && schema.oneOf) {
       const propertyName = schema.discriminator.propertyName

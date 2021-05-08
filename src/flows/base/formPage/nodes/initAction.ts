@@ -1,10 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import { generateDialog, cardButton } from '@/utils/automation'
 
 export class InitAction extends FunctionNode {
   async run() {
-    let tempState: FormPageState = this.inputs.state
+    let tempState: FormPage = this.inputs.state
     const initContent = this.inputs.data.initContent
     // action 在FormPage页面只有一种UI类型 => page-type(页面类型)
     if (initContent.page) {
@@ -22,9 +22,11 @@ export class InitAction extends FunctionNode {
       })
     }
 
+    const { state } = this.$state.fetch()
+
     return {
       data: this.inputs.data,
-      state: tempState,
+      state: state
     }
   }
 }

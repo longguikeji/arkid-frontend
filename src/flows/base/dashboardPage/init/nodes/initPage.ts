@@ -5,15 +5,22 @@ export class InitPage extends FunctionNode {
   async run() {
     const tempState: DashboardPageState = {
       type: 'DashboardPage',
-      created: 'created',
-      items: [],
-      actions: {
-        created: []
+      state: {
+        created: 'created',
+        items: [],
+        actions: {
+          created: []
+        }
       }
     }
+
+    this.$state.commit(state => {
+      state.state = tempState
+    })
+
     return {
       data: this.inputs,
-      state: tempState
+      state: tempState.state
     }
   }
 }

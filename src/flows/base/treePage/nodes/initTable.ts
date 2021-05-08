@@ -1,10 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import TreePageState from '@/admin/TreePage/TreePageState'
+import { TreePage } from '@/admin/TreePage/TreePageState'
 import { runFlowByFile } from '@/arkfbp/index'
 
 export class InitTable extends FunctionNode {
   async run() {
-    const tempState: TreePageState = this.inputs.state
+    const tempState: TreePage = this.inputs.state
     const { initContent } = this.inputs.data
     if (initContent.table) {
       const initTablePath = initContent.table.init.path
@@ -23,7 +23,7 @@ export class InitTable extends FunctionNode {
           url: initTablePath,
           method: initTableMethod,
           response: {
-            'table.table.data': 'results'
+            'table.state.table.data': 'results'
           }
         }
       ]

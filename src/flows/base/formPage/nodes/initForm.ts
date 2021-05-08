@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI from '@/config/openapi'
 import getSchemaByContent from '@/utils/get-schema-by-content'
 import generateDialogForm from '@/utils/generate-dialog-form'
@@ -7,7 +7,7 @@ import { getFormPageDialogStateMapping } from '@/utils/state-mapping'
 
 export class InitForm extends FunctionNode {
   async run() {
-    const tempState: FormPageState = this.inputs.state
+    const tempState: FormPage = this.inputs.state
     const initContent = this.inputs.data.initContent
     if (initContent?.init) {
       const initFormPath = initContent.init.path as string

@@ -5,30 +5,37 @@ export class InitPage extends FunctionNode {
   async run() {
     const tempState: TreePageState = {
       type: 'TreePage',
-      created: 'created',
-      tree: {
-        header: {
-          title: '',
-          buttons: []
+      state: {
+        created: 'created',
+        tree: {
+          header: {
+            title: '',
+            buttons: []
+          },
+          nodes: {
+            isFilter: true,
+            expandOnClickNode: false,
+            data: [],
+            action: ''
+          }
         },
-        nodes: {
-          isFilter: true,
-          expandOnClickNode: false,
-          data: [],
-          action: ''
+        dialogs: {},
+        table: {
+          type: 'TablePage'
+        },
+        actions: {
+          created: []
         }
-      },
-      dialogs: {},
-      table: {
-        type: 'TablePage'
-      },
-      actions: {
-        created: []
       }
     }
+
+    this.$state.commit(state => {
+      state.state = tempState
+    })
+
     return {
       data: this.inputs,
-      state: tempState
+      state: tempState.state
     }
   }
 }

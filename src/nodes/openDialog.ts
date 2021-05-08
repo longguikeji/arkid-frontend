@@ -1,8 +1,7 @@
 import { StateNode } from '@/nodes/stateNode'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import OptionType from '@/admin/common/Form/Select/OptionType'
-import { debug } from 'console'
 
 export default class OpenDialog extends StateNode {
   get dialog():DialogState | null {
@@ -25,7 +24,7 @@ export default class OpenDialog extends StateNode {
   async run() {
     if (this.dialog) {
       this.dialog.data = this.getDialogData()
-      const currentFormPageState: FormPageState = this.dialog.state
+      const currentFormPageState: FormPage = this.dialog.state
       if (currentFormPageState.form && currentFormPageState.form.items) {
         const currentFormPageItems = currentFormPageState.form.items
         for (const prop in currentFormPageItems) {

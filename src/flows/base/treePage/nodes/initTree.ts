@@ -1,10 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import OpenAPI from '@/config/openapi'
-import TreePageState from '@/admin/TreePage/TreePageState'
+import { TreePage } from '@/admin/TreePage/TreePageState'
 
 export class InitTree extends FunctionNode {
   async run() {
-    const tempState: TreePageState = this.inputs.state
+    const tempState: TreePage = this.inputs.state
     const { initContent } = this.inputs.data
     
     // 获取节点列表

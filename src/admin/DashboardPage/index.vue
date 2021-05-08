@@ -30,7 +30,7 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import DashboardItem from './DashboardItem/index.vue'
-import DashboardPageState from './DashboardPageState'
+import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
@@ -45,8 +45,8 @@ import BaseVue from '@/admin/base/BaseVue'
   }
 })
 export default class extends Mixins(BaseVue) {
-  get state(): DashboardPageState {
-    return this.$state as DashboardPageState
+  get state(): DashboardPage {
+    return this.$state as DashboardPage
   }
 
   get items(): DashboardItemState[] | undefined {
