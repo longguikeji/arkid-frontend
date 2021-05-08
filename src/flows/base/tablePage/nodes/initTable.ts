@@ -68,16 +68,16 @@ export class InitTable extends FunctionNode {
         if (otherInitContent.isHooks !== false) {
           // 相对应给 actions 添加相同名称的 flow-config
           tempState.actions!.created.push('fetch')
-          tempState.actions!.fetch = [
-            {
-              name: 'arkfbp/flows/fetch',
-              url: initTablePath,
-              method: initTableMethod,
-              request: paramsMapping,
-              response: responseMapping
-            }
-          ]
         }
+        tempState.actions!.fetch = [
+          {
+            name: 'arkfbp/flows/fetch',
+            url: initTablePath,
+            method: initTableMethod,
+            request: paramsMapping,
+            response: responseMapping
+          }
+        ]
       }
     }
     
