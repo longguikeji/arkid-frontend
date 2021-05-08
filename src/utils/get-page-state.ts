@@ -2,6 +2,7 @@ import { TenantModule } from '@/store/modules/tenant'
 import { AdminModule } from '@/store/modules/admin'
 import { getBaseUrl } from './url'
 import { getOneCharacterIndexsInString } from '@/utils/common'
+import getDateByPath from '@/utils/datapath'
 
 export function getStateByPath(path: string) {
   const tempState = getBaseState()
@@ -13,12 +14,7 @@ export function getStateByPath(path: string) {
     const paths = tempPath.split('.')
     for (const p of paths) {
       if (reTempState) {
-        if (p.indexOf('[') > 0) {
-          const index = Number(p.slice(p.indexOf('[') + 1, p.indexOf(']')))
-          reTempState = reTempState[index] ? reTempState[index] : null
-        } else {
-          reTempState = reTempState[p] ? reTempState[p] : null
-        }
+        reTempState = getDateByPath(reTempState, p)
       }
     }
     const isPageState = reTempState?.type === 'TablePage' || reTempState?.type === 'FormPage' || reTempState?.type === 'TreePage' || reTempState?.type === 'DashboardPage'
