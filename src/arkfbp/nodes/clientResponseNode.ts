@@ -42,7 +42,14 @@ export class ClientResponseNode extends FunctionNode {
             tempS = tempS[vs[i]]
           }
           let res = tempS[vs[vs.length - 1]]
-          if (res === undefined && lastKey !== 'value') { res = clientServer[key] }
+          if (res === undefined) { 
+            if (lastKey !== 'value') {
+              res = clientServer[key]
+            }
+            if (lastKey === 'data') {
+              res = tempS
+            }
+          }
           if (lastKey === 'disabled') {
             temp[lastKey] = res ? false : true
           } else {

@@ -7,7 +7,7 @@
   >
     <table-page
       v-if="initCompleted"
-      path="tenant.tenantState"
+      path="tenant.tenantState.state"
     />
   </el-dialog>
 </template>

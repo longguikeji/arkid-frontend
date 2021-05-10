@@ -4,26 +4,6 @@ import { getBaseUrl } from './url'
 import { getOneCharacterIndexsInString } from '@/utils/common'
 import getDateByPath from '@/utils/datapath'
 
-export function getStateByPath(path: string) {
-  const tempState = getBaseState()
-  if (path === '' || path === 'admin.adminState.state' || path === 'tenant.tenantState.state' || path === undefined) {
-    return tempState
-  } else {
-    let reTempState = tempState
-    const tempPath = path.replace('admin.adminState.state.', '').replace('tenant.tenantState.state.', '')
-    if (reTempState) {
-      reTempState = getDateByPath(reTempState, tempPath)
-    }
-    const isPageState = reTempState?.type === 'TablePage' || reTempState?.type === 'FormPage' || reTempState?.type === 'TreePage' || reTempState?.type === 'DashboardPage'
-    if (isPageState) {
-      reTempState = reTempState.state
-      return reTempState
-    } else {
-      return null
-    }
-  }
-}
-
 export function getStateByComponentPath(path: string) {
   const tempState = getBaseState()
   if (path === '' || path === 'admin.adminState.state' || path === 'tenant.tenantState.state' || path === undefined) {
@@ -34,6 +14,17 @@ export function getStateByComponentPath(path: string) {
     reTempState = getDateByPath(reTempState, tempPath)
     return reTempState
   }
+}
+
+export function getPageState(path: string) {
+  let state = getStateByComponentPath(path)
+  const isMultiPageState = state?.type === 'TablePage' || state?.type === 'FormPage' || state?.type === 'TreePage' || state?.type === 'DashboardPage'
+  if (isMultiPageState) {
+    state = state.state
+  } else {
+    state = null
+  }
+  return state
 }
 
 export function getCurrentPageStateByPath(path: string) {
@@ -48,7 +39,7 @@ export function getCurrentPageStateByPath(path: string) {
     }
     pathMapping.push('')
     for (let i = 0; i <= pathMapping.length - 1; i++) {
-      const state = getStateByPath(pathMapping[i])
+      const state = getPageState(pathMapping[i])
       if (state) {
         tempState = state
         break
@@ -56,25 +47,6 @@ export function getCurrentPageStateByPath(path: string) {
     }
   }
   return tempState
-}
-
-export default function getPageState(specifiedPath = '') {
-  const tempState = getBaseState()
-  if (!tempState) return
-  let path = ''
-  if (specifiedPath) {
-    path = specifiedPath
-  } else if (tempState?.pages) {
-    path = tempState?.pages[tempState.pages.length - 1]
-  }
-  return getStateByPath(path)
-}
-
-export function getPreviousPageState() {
-  const tempState = getBaseState()
-  if (!tempState) return
-  const path = tempState.pages.length === 1 ? tempState.pages[tempState.pages.length - 1] : tempState.pages[tempState.pages.length - 2]
-  return getStateByPath(path)
 }
 
 export function getBaseState() {

@@ -3,10 +3,9 @@ import { runFlowByFile } from '@/arkfbp/index'
 
 export class Unbind extends AuthApiNode {
   async run() {
-    this.url = this.inputs.params.url
-    this.method = this.inputs.params.method
-    await super.run().then(async () => {
-      await runFlowByFile('flows/thirdPartyAccount/fetch', this.inputs)
-    })
+    const data = this.inputs.com.state.data
+    this.url = data.unbind
+    this.method = 'GET'
+    await super.run()
   }
 }

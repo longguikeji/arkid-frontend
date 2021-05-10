@@ -18,10 +18,11 @@ export class AddUnbindButton extends StateNode {
       }
     }
     tempState.table?.columns?.push(actionColumn)
-    tempState.actions!['unbind'] = [
+    tempState.actions!.unbind = [
       {
         name: 'flows/thirdPartyAccount/unbind'
-      }
+      },
+      'fetch'
     ]
     return {
       state: state
