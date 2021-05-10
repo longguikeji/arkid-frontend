@@ -62,8 +62,8 @@ export function getFormPageDialogStateMapping(url: string, method: string, targe
       if (!isIncludeReadOnly && formItemsProps[formItemProp].readOnly) {
         continue
       } else {
-        const valueMappingSuffix = 'state.form.items.' + formItemProp + '.state.value'
-        const valueMapping = (target === '' ? valueMappingSuffix : target + '.' + valueMappingSuffix)
+        const valueMappingSuffix = 'form.items.' + formItemProp + '.state.value'
+        const valueMapping = (target === '' ? valueMappingSuffix : target + '.state.' + valueMappingSuffix)
         responseMapping[valueMapping] = isEmpty ? '' : formItemProp
         requestMapping[formItemProp] = valueMapping
       }
