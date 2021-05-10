@@ -1,4 +1,5 @@
 import { StateNode } from '@/nodes/stateNode'
+import ListItemState from '@/admin/common/data/List/ListState'
 
 export class Clicked extends StateNode {
 
@@ -53,35 +54,35 @@ export class Clicked extends StateNode {
     }
     
     // 获取当前的list已选择的列表数据 -- 对数据进行取舍
-    let listItems = tempState.list.data.items
+    let listData: Array<ListItemState> = tempState.list.data
     
     // 判断是否为多选
     if (multi) {
       // 说明是一次性多选
       if (currentClickedData instanceof Array) {
         if (currentClickedData.length > 0) {
-          listItems.length = 0
+          listData.length = 0
           currentClickedData.forEach((item) => {
-            listItems.push(item)
+            listData.push(item)
           })
         } else {
-          listItems = listItems.splice(0, listItems.length)
+          listData = listData.splice(0, listData.length)
         }
       } else {
-        if (listItems.length === 0) {
-          listItems.push(currentClickedData)
+        if (listData.length === 0) {
+          listData.push(currentClickedData)
         } else {
-          const isExistIndex = this.addOrCancelListItem(listItems, currentClickedData)
-          isExistIndex === -1 ? listItems.push(currentClickedData) : listItems.splice(isExistIndex, 1)
+          const isExistIndex = this.addOrCancelListItem(listData, currentClickedData)
+          isExistIndex === -1 ? listData.push(currentClickedData) : listData.splice(isExistIndex, 1)
         }
       }
     } else {
-      const isExistIndex = this.addOrCancelListItem(listItems, currentClickedData)
+      const isExistIndex = this.addOrCancelListItem(listData, currentClickedData)
       if (isExistIndex === -1 || isExistIndex === undefined) {
-        listItems.splice(0, listItems.length)
-        listItems.push(currentClickedData) 
+        listData.splice(0, listData.length)
+        listData.push(currentClickedData) 
       } else {
-        listItems.splice(0, listItems.length)
+        listData.splice(0, listData.length)
       }
     }
   }

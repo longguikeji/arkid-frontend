@@ -37,7 +37,7 @@ export class InitInputList extends StateNode {
             }
           }
           tempState.dialogs.selected.state.state.tree.nodes.action = 'clicked'
-          tempState.dialogs.selected.state.state.actions.confirm = confirmFlows
+          tempState.actions.confirm = confirmFlows
           tempState.dialogs.selected.state.state.actions.clicked = [
             {
               name: 'flows/list/clicked',
@@ -75,7 +75,7 @@ export class InitInputList extends StateNode {
             values: []
           }
           tempState.dialogs.selected.state.state.table.selectAction = 'clicked'
-          tempState.dialogs.selected.state.state.actions.confirm = confirmFlows
+          tempState.actions.confirm = confirmFlows
           tempState.dialogs.selected.state.state.actions.clicked = [
             {
               name: 'flows/list/clicked',

@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import getPageState, { getPreviousPageState, getBaseState, getStateByPath } from '@/utils/get-page-state'
+import getPageState, { getPreviousPageState, getBaseState, getStateByPath, getStateByComponentPath } from '@/utils/get-page-state'
  
 export class StateNode extends FunctionNode {
 
@@ -17,6 +17,10 @@ export class StateNode extends FunctionNode {
 
   getStateByPath(path: string) {
     return getStateByPath(path)
+  }
+
+  getStateByComponentPath(path: string) {
+    return getStateByComponentPath(path)
   }
 
 }

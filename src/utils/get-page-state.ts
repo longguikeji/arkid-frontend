@@ -24,6 +24,18 @@ export function getStateByPath(path: string) {
   }
 }
 
+export function getStateByComponentPath(path: string) {
+  const tempState = getBaseState()
+  if (path === '' || path === 'admin.adminState.state' || path === 'tenant.tenantState.state' || path === undefined) {
+    return tempState
+  } else {
+    let reTempState = tempState
+    const tempPath = path.replace('admin.adminState.state.', '').replace('tenant.tenantState.state.', '')
+    reTempState = getDateByPath(reTempState, tempPath)
+    return reTempState
+  }
+}
+
 export function getCurrentPageStateByPath(path: string) {
   let tempState = getBaseState()
   if (path) {
