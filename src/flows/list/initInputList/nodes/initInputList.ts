@@ -28,15 +28,17 @@ export class InitInputList extends StateNode {
           initContent: initContent
         }).then((data) => {
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 弹出框的内容只需要此时data.state中的tree相关的内容
-          tempState.dialogs.selected.state.treePage = {
-            ...data.state,
-            table: null,
-            list: tempState.dialogs.selected.state.treePage.list
+          tempState.dialogs.selected.state = {
+            type: 'TreePage',
+            state: {
+              ...data.state.state,
+              table: null,
+              list: tempState.dialogs.selected.state.state.list
+            }
           }
-          tempState.dialogs.selected.state.tablePage.table = null
-          tempState.dialogs.selected.state.treePage.tree.nodes.action = 'clicked'
-          tempState.dialogs.selected.state.treePage.actions.confirm = confirmFlows
-          tempState.dialogs.selected.state.treePage.actions.clicked = [
+          tempState.dialogs.selected.state.state.tree.nodes.action = 'clicked'
+          tempState.dialogs.selected.state.state.actions.confirm = confirmFlows
+          tempState.dialogs.selected.state.state.actions.clicked = [
             {
               name: 'flows/list/clicked',
               request: {
@@ -46,11 +48,11 @@ export class InitInputList extends StateNode {
               }
             }
           ]
-          tempState.dialogs.selected.state.treePage.list.header = {
+          tempState.dialogs.selected.state.state.list.header = {
             title: '已选数据列表' || ''
           }
-          tempState.dialogs.selected.state.treePage.list.data.items.length = 0
-          tempState.dialogs.selected.state.treePage.list.data.items = nowInputListData
+          tempState.dialogs.selected.state.state.list.data.length = 0
+          tempState.dialogs.selected.state.state.list.data = nowInputListData
         })
       } else if (initContent.type === 'table_page') {
         await runFlowByFile('flows/base/tablePage', {
@@ -60,18 +62,21 @@ export class InitInputList extends StateNode {
           }
         }).then((data) => {
           // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 此时的tablePage只需要data.state中的部分内容
-          tempState.dialogs.selected.state.tablePage = {
-            ...data.state,
-            list: tempState.dialogs.selected.state.tablePage.list
+          tempState.dialogs.selected.state = {
+            type: 'TablePage',
+            state: {
+              ...data.state.state,
+              list: tempState.dialogs.selected.state.state.list
+            }
           }
-          tempState.dialogs.selected.state.treePage.tree = null
-          tempState.dialogs.selected.state.tablePage.table.selection = {
+          tempState.dialogs.selected.state.state.tree = null
+          tempState.dialogs.selected.state.state.table.selection = {
             exist: params.multi,
             values: []
           }
-          tempState.dialogs.selected.state.tablePage.table.selectAction = 'clicked'
-          tempState.dialogs.selected.state.tablePage.actions.confirm = confirmFlows
-          tempState.dialogs.selected.state.tablePage.actions.clicked = [
+          tempState.dialogs.selected.state.state.table.selectAction = 'clicked'
+          tempState.dialogs.selected.state.state.actions.confirm = confirmFlows
+          tempState.dialogs.selected.state.state.actions.clicked = [
             {
               name: 'flows/list/clicked',
               request: {
@@ -81,11 +86,11 @@ export class InitInputList extends StateNode {
               }
             }
           ]
-          tempState.dialogs.selected.state.tablePage.list.header = {
+          tempState.dialogs.selected.state.state.list.header = {
             title: '已选数据列表' || ''
           }
-          tempState.dialogs.selected.state.tablePage.list.data.items.length = 0
-          tempState.dialogs.selected.state.tablePage.list.data.items = nowInputListData
+          tempState.dialogs.selected.state.state.list.data.length = 0
+          tempState.dialogs.selected.state.state.list.data = nowInputListData
         })
       }
     }

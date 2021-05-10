@@ -1,7 +1,7 @@
 <template>
-  <ul v-if="state.items">
+  <ul v-if="state.length">
     <li
-      v-for="(item, index) in state.items"
+      v-for="(item, index) in state"
       :key="index"
     >
       {{ item.label }}
@@ -11,7 +11,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import ListState from './ListState'
+import ListItemState from './ListState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -19,8 +19,8 @@ import BaseVue from '@/admin/base/BaseVue'
   components: {}
 })
 export default class extends Mixins(BaseVue) {
-  get state(): ListState {
-    return this.$state as ListState
+  get state(): Array<ListItemState> {
+    return this.$state as Array<ListItemState>
   }
 }
 </script>

@@ -17,29 +17,14 @@ export default function whetherImportListDialog(formData: FormPage) {
         title: '',
         data: {},
         state: {
-          type: "ListAssembly",
+          type: '',
           state: {
-            treePage: {
-              list: {
-                header: {
-                  title: '',
-                  buttons: []
-                },
-                data: {
-                  items: []
-                }
-              }
-            },
-            tablePage: {
-              list: {
-                header: {
-                  title: '',
-                  buttons: []
-                },
-                data: {
-                  items: []
-                }
-              }
+            list: {
+              header: {
+                title: '',
+                buttons: []
+              },
+              data: []
             }
           }
         },
