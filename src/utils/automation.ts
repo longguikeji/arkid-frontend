@@ -165,7 +165,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
 
 export function addDialogBtnActions(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
   const { isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
-  const target = 'dialogs.' + key + '.state'
+  const target = 'dialogs.' + key + '.state.state.'
   const formState = state.dialogs[key].state.state
   let { requestMapping } = generateFormPageStateMapping(formState, target)
   if (key === 'import') {
@@ -203,11 +203,11 @@ export function cardButton(state: any, url: string, method: string, key: string,
   }
   let response
   if (pageBtnIsRequestion && key !== 'import') {
-    const target = 'dialogs.' + key + '.state'
+    const target = 'dialogs.' + key + '.state.state.'
     let isEmpty = false
     if (key === 'create') { isEmpty = true }
     const formState = state.dialogs[key].state.state
-    const { responseMapping } = generateFormPageStateMapping(formState, target)
+    const { responseMapping } = generateFormPageStateMapping(formState, target, isEmpty)
     response = responseMapping
   }
   const cardButtonFlows = [
@@ -233,7 +233,7 @@ export function itemButton(state: any, url: string, method: string, key: string,
     action: pageBtnActionName
   }
   let response
-  const target = 'dialogs.' + key + '.state.'
+  const target = 'dialogs.' + key + '.state.state.'
   if (pageBtnIsRequestion) {
     const formState = state.dialogs[key].state.state
     const { responseMapping } = generateFormPageStateMapping(formState, target)
@@ -271,23 +271,23 @@ export function itemButton(state: any, url: string, method: string, key: string,
 }
 
 // 根据state生成state-mapping，prefix为空或'dialogs.create.state.state.'的形式的内容
-export function generateFormPageStateMapping(state: FormPage, prefix: string = '') {
+export function generateFormPageStateMapping(state: FormPage, prefix: string = '', isEmpty?: boolean) {
   let responseMapping = {}
   let requestMapping = {}
   if (state.select && state.forms) {
     const selectPrefix = prefix + 'select.value'
     const valueKey = state.select.valueKey as string
     responseMapping[selectPrefix] = {
-      value: valueKey
+      value: isEmpty ? '' : valueKey
     }
     requestMapping[valueKey] = {
-      value: selectPrefix
+      value: isEmpty ? '' : selectPrefix
     }
     Object.keys(state.forms).forEach(key => {
-      prefix = prefix + 'forms[' + key + '].items.'
+      const formsItemPrefix = prefix + 'forms[' + key + '].items.'
       const items = state.forms![key].items
       if (items) {
-        const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix)
+        const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, formsItemPrefix, isEmpty)
         responseMapping[selectPrefix][key] = itemsResponseMapping
         requestMapping[valueKey][key] = itemsRequestMapping
       }
@@ -296,7 +296,7 @@ export function generateFormPageStateMapping(state: FormPage, prefix: string = '
     prefix = prefix + '.form.items.'
     const items = state.form.items
     if (items) {
-      const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix)
+      const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix, isEmpty)
       responseMapping = itemsResponseMapping
       requestMapping = itemsRequestMapping
     }
@@ -307,7 +307,7 @@ export function generateFormPageStateMapping(state: FormPage, prefix: string = '
   }
 }
 
-export function generateFormItemStateMapping(items: { [prop:string]: FormItemState }, statePrefix: string = '', resultPrefix?: string) {
+export function generateFormItemStateMapping(items: { [prop:string]: FormItemState }, statePrefix: string = '', isEmpty?: boolean, resultPrefix?: string) {
   let itemsResponseMapping = {}
   let itemsRequestMapping = {}
   Object.keys(items).forEach(key => {
@@ -315,13 +315,14 @@ export function generateFormItemStateMapping(items: { [prop:string]: FormItemSta
       const deepClassPrefix = statePrefix + key + '.state.items.'
       const deepItems = items[key].state.items
       const deepResultPrefix = key + '.'
-      const { itemsResponseMapping: childrenItemsResponseMapping, itemsRequestMapping: childrenItemsRequestMapping } = generateFormItemStateMapping(deepItems, deepClassPrefix, deepResultPrefix)
+      const { itemsResponseMapping: childrenItemsResponseMapping, itemsRequestMapping: childrenItemsRequestMapping } = generateFormItemStateMapping(deepItems, deepClassPrefix, isEmpty, deepResultPrefix)
       itemsRequestMapping[key] = childrenItemsRequestMapping
       itemsResponseMapping = childrenItemsResponseMapping
     } else {
       const firstClassPrefix = statePrefix + key + '.state.value'
-      itemsResponseMapping[firstClassPrefix] = resultPrefix ? resultPrefix + key : key
-      itemsRequestMapping[key] = firstClassPrefix
+      const resultsKey = resultPrefix ? resultPrefix + key : key
+      itemsResponseMapping[firstClassPrefix] = isEmpty ? '' : resultsKey
+      itemsRequestMapping[key] = isEmpty ? '' : firstClassPrefix
     }
   })
   return {
