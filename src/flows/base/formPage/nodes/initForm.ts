@@ -3,7 +3,7 @@ import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI from '@/config/openapi'
 import getSchemaByContent from '@/utils/get-schema-by-content'
 import generateDialogForm from '@/utils/generate-dialog-form'
-import { getFormPageDialogStateMapping } from '@/utils/state-mapping'
+import { generateFormPageStateMapping } from '@/utils/automation'
 
 export class InitForm extends FunctionNode {
   async run() {
@@ -14,18 +14,6 @@ export class InitForm extends FunctionNode {
       const initFormMethod = initContent.init.method as string
       const initFormOperation = OpenAPI.instance.getOperation(initFormPath, initFormMethod)
       if (initFormOperation) {
-        // 将fetch填入actions配置中
-        const target = ''
-        const { responseMapping } = getFormPageDialogStateMapping(initFormPath, initFormMethod, target, false, true)
-        tempState.actions!.fetch = [
-          {
-            name: 'arkfbp/flows/fetch',
-            url: initFormPath,
-            method: initFormMethod,
-            response: responseMapping
-          }
-        ]
-        tempState.actions!.created.push('fetch')
         // 给 title 进行赋值
         tempState.title = initFormOperation.summary || ''
         // 对 form 进行初始化操作
@@ -42,6 +30,17 @@ export class InitForm extends FunctionNode {
           tempState.forms = forms
           tempState.select = select
         }
+        // 将fetch填入actions配置中
+        const { responseMapping } = generateFormPageStateMapping(tempState)
+        tempState.actions!.fetch = [
+          {
+            name: 'arkfbp/flows/fetch',
+            url: initFormPath,
+            method: initFormMethod,
+            response: responseMapping
+          }
+        ]
+        tempState.actions!.created.push('fetch')
       }
     }
 

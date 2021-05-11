@@ -11,20 +11,26 @@ export class InitAction extends FunctionNode {
     if (initContent?.page) {
       Object.keys(initContent.page).forEach(key => {
         const { path: url, method } = initContent.page[key]
+        // dialogs
+        generateDialog(tempState, url, method, key)
         // card-button
         const btn = cardButton(tempState, url, method, key)
         tempState.card?.buttons?.push(btn)
-        // dialogs
-        generateDialog(tempState, url, method, key)
       })
     }
     // ② 初始化item类型
     if (initContent?.item) {
       Object.keys(initContent.item).forEach(key => {
         const action = initContent.item[key]
-        let url = action.path || action.read.path
-        let method = action.method || action.read.method
+        let url = action.path || action.write.path
+        let method = action.method || action.write.method
+        // dialogs
+        generateDialog(tempState, url, method, key)
         // cloumn-buttons
+        if (action.read) {
+          url = action.read.path
+          method = action.read.method
+        }
         const btn = itemButton(tempState, url, method, key)
         const len = tempState.table?.columns?.length as number
         if (tempState.table!.columns![len-1].prop !== 'actions') {
@@ -40,12 +46,6 @@ export class InitAction extends FunctionNode {
           tempState.table?.columns![len]?.scope?.state?.push(btn)
         }
         tempState.table?.columns![len - 1]?.scope?.state?.push(btn)
-        // dialogs
-        if (action.write) {
-          url = action.write.path
-          method = action.write.method
-        }
-        generateDialog(tempState, url, method, key)
       })
     }
 

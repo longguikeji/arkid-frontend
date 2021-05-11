@@ -6,7 +6,8 @@ import getSchemaByContent from '@/utils/get-schema-by-content'
 import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { FlowConfig } from '@/arkfbp'
-import { getFormPageDialogStateMapping } from '@/utils/state-mapping'
+import { FormPage } from '@/admin/FormPage/FormPageState'
+import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
 // 参数说明:
 // initActionOperation: 获取Dialog元素的必备参数 -- 必须
@@ -165,7 +166,8 @@ export function generateDialog(tempState: any, url: string, method: string, key:
 export function addDialogBtnActions(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
   const { isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state'
-  let { requestMapping } = getFormPageDialogStateMapping(url, method, target, false, showReadOnly)
+  const formState = state.dialogs[key].state.state
+  let { requestMapping } = generateFormPageStateMapping(formState, target)
   if (key === 'import') {
     requestMapping = {
       data: 'dialogs.import.state.file'
@@ -204,7 +206,8 @@ export function cardButton(state: any, url: string, method: string, key: string,
     const target = 'dialogs.' + key + '.state'
     let isEmpty = false
     if (key === 'create') { isEmpty = true }
-    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, isEmpty, showReadOnly)
+    const formState = state.dialogs[key].state.state
+    const { responseMapping } = generateFormPageStateMapping(formState, target)
     response = responseMapping
   }
   const cardButtonFlows = [
@@ -230,9 +233,10 @@ export function itemButton(state: any, url: string, method: string, key: string,
     action: pageBtnActionName
   }
   let response
-  const target = 'dialogs.' + key + '.state'
+  const target = 'dialogs.' + key + '.state.'
   if (pageBtnIsRequestion) {
-    const { responseMapping } = getFormPageDialogStateMapping(url, method, target, false, showReadOnly)
+    const formState = state.dialogs[key].state.state
+    const { responseMapping } = generateFormPageStateMapping(formState, target)
     response = responseMapping
   }
   let itemButtonFlows: (FlowConfig | string)[]  = [
@@ -264,4 +268,65 @@ export function itemButton(state: any, url: string, method: string, key: string,
   }
   state.actions[pageBtnActionName] = itemButtonFlows
   return itemButton
+}
+
+// 根据state生成state-mapping，prefix为空或'dialogs.create.state.state.'的形式的内容
+export function generateFormPageStateMapping(state: FormPage, prefix: string = '') {
+  let responseMapping = {}
+  let requestMapping = {}
+  if (state.select && state.forms) {
+    const selectPrefix = prefix + 'select.value'
+    const valueKey = state.select.valueKey as string
+    responseMapping[selectPrefix] = {
+      value: valueKey
+    }
+    requestMapping[valueKey] = {
+      value: selectPrefix
+    }
+    Object.keys(state.forms).forEach(key => {
+      prefix = prefix + 'forms[' + key + '].items.'
+      const items = state.forms![key].items
+      if (items) {
+        const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix)
+        responseMapping[selectPrefix][key] = itemsResponseMapping
+        requestMapping[valueKey][key] = itemsRequestMapping
+      }
+    })
+  } else if (state.form) {
+    prefix = prefix + '.form.items.'
+    const items = state.form.items
+    if (items) {
+      const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix)
+      responseMapping = itemsResponseMapping
+      requestMapping = itemsRequestMapping
+    }
+  }
+  return {
+    responseMapping,
+    requestMapping
+  }
+}
+
+export function generateFormItemStateMapping(items: { [prop:string]: FormItemState }, statePrefix: string = '', resultPrefix?: string) {
+  let itemsResponseMapping = {}
+  let itemsRequestMapping = {}
+  Object.keys(items).forEach(key => {
+    if (items[key].state.items) {
+      const deepClassPrefix = statePrefix + key + '.state.items.'
+      const deepItems = items[key].state.items
+      const deepResultPrefix = key + '.'
+      const { itemsResponseMapping: childrenItemsResponseMapping, itemsRequestMapping: childrenItemsRequestMapping } = generateFormItemStateMapping(deepItems, deepClassPrefix, deepResultPrefix)
+      itemsRequestMapping[key] = childrenItemsRequestMapping
+      itemsResponseMapping = childrenItemsResponseMapping
+    } else {
+      const firstClassPrefix = statePrefix + key + '.state.value'
+      itemsResponseMapping[firstClassPrefix] = resultPrefix ? resultPrefix + key : key
+      itemsRequestMapping[key] = firstClassPrefix
+    }
+  })
+  return {
+    itemsResponseMapping,
+    itemsRequestMapping
+  }
+
 }
