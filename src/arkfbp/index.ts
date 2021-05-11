@@ -124,8 +124,7 @@ export function parseStateMapping(state: any, mapping: any) {
 export function getStateByStringConfig(state: any, str: string) {
   let tempState = state
   if (str.includes('forms[')) {
-    const newStr = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
-    const value = getStateByStringConfig(state, newStr)
+    const value = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
     str = str.slice(0, str.indexOf('[')) + '.' + value + str.slice(str.indexOf(']') + 1)
   }
   const strMapping = str.split('.')

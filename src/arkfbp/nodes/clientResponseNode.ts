@@ -22,7 +22,7 @@ export class ClientResponseNode extends FunctionNode {
           if (k.includes('forms[')) {
             temp = temp.forms
             const newK = k.substring(6, k.length - 1)
-            temp = temp[data[newK]]
+            temp = temp[newK]
           } else if (k.includes('columns[prop=')) {
             const col = Filter(k, temp)
             temp = temp['columns'][col]
