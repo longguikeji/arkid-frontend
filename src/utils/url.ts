@@ -44,8 +44,11 @@ export function getUrlParamByName(name: string) {
 }
 
 export function getSlug() {
-  const slug = window.location.hostname.split('.')[0]
-  if (slug && slug !== 'localhost' && slug !== 'arkid') {
-    return slug
+  const host = process.env.VUE_APP_HOST
+  const hostname = host?.replace(window.location.protocol + '//', '') || ''
+  let slug = window.location.host.replace(hostname, '')
+  if (slug.length > 0) {
+    slug = slug.substring(0, slug.length - 1)
   }
+  return slug
 }
