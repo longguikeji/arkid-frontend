@@ -1,7 +1,6 @@
 import { StateNode } from '@/nodes/stateNode'
 import { TenantModule } from '@/store/modules/tenant'
 import TablePageState from '@/admin/TablePage/TablePageState'
-import { getSlug } from '@/utils/url'
 
 export class SwitchTenant extends StateNode {
   async run() {
@@ -13,7 +12,7 @@ export class SwitchTenant extends StateNode {
     }
     const router = this.inputs.params.router
     const slug = data.slug
-    if (slug && getSlug()) {
+    if (slug && TenantModule.currentSlugIsValid) {
       let host = window.location.host.split('.')
       host.splice(0, 1, slug)
       let newHost = host.join('.')
