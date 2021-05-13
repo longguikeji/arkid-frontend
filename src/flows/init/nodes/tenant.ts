@@ -17,8 +17,6 @@ export class Tenant extends APINode {
       if (outputs.uuid) {
         currentTenant = outputs
         TenantModule.setCurrentSlugIsValid(true)
-      } else { // 如果用户输入的 slug 不存在，应当回到之前的页面
-        window.history.back()
       }
     }
 
