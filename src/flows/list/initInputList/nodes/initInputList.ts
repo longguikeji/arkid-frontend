@@ -20,7 +20,10 @@ export class InitInputList extends StateNode {
     // 获取当前的数据内容  --  初始化List的右侧内容
     const nowInputListData = [...this.inputs.com.state.options]
     // 通过page字段信息获取list的初始化资源  --  初始化List的左侧内容
-    const initContent: ITagPage | undefined  = getInitContent(params.page)
+    let initContent = getInitContent(params.page) as ITagPage
+    if (params.page === 'group') {
+      initContent = initContent[0]
+    }
     // 通过initContent.type来判断初始化的类型
     if (initContent && initContent.type) {
       if (initContent.type === 'tree_page') {
@@ -32,11 +35,10 @@ export class InitInputList extends StateNode {
             type: 'TreePage',
             state: {
               ...data.state.state,
-              table: null,
               list: tempState.dialogs.selected.state.state.list
             }
           }
-          tempState.dialogs.selected.state.state.tree.nodes.action = 'clicked'
+          tempState.dialogs.selected.state.state.tree.action = 'clicked'
           tempState.actions.confirm = confirmFlows
           tempState.dialogs.selected.state.state.actions.clicked = [
             {
@@ -69,7 +71,6 @@ export class InitInputList extends StateNode {
               list: tempState.dialogs.selected.state.state.list
             }
           }
-          tempState.dialogs.selected.state.state.tree = null
           tempState.dialogs.selected.state.state.table.selection = {
             exist: params.multi,
             values: []

@@ -99,7 +99,6 @@ export default class extends Mixins(BaseVue) {
         min-height: auto !important;
       }
       .el-pagination {
-        position: absolute;
         bottom: 10px;
       }
     }

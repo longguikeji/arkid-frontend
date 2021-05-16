@@ -45,7 +45,7 @@ export default class extends Vue {
 
   async created() {
     const currentPage = this.$route.meta.page
-    const initContent: ITagPage | undefined = getInitContent(currentPage)
+    const initContent: ITagPage | Array<ITagPage> | undefined = getInitContent(currentPage)
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     } else {

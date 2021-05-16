@@ -53,16 +53,19 @@ export default class extends Mixins(BaseVue) {
 .tree-page {
   position: relative;
   display: block;
-  width: 50%;
+  width: 100%;
   height: 100%;
   .tree__card {
     height: 100%;
+    min-height: 300px;
+    width: 50%;
+    display: inline-block;
   }
   .treepage__list {
     display: inline-block;
     width: 50%;
-    position: absolute;
-    top: 0px;
+    vertical-align: top;
+    min-height: 300px;
   }
 }
 </style>
