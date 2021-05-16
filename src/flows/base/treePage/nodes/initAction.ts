@@ -14,14 +14,14 @@ export class InitAction extends FunctionNode {
         const { path: url, method } = initContent.page[key]
         tempState = generateDialog(tempState, url, method, key, showReadOnly)
         const btn = cardButton(tempState, url, method, key, showReadOnly)
-        tempState.tree?.header?.buttons?.push(btn)
+        tempState.card?.buttons?.push(btn)
       })
     }
 
     // 对节点进行操作
     if (initContent.item) {
       // 先给item添加插槽内容
-      tempState.tree!.nodes!['slot'] = {
+      tempState.tree!['slot'] = {
         buttons: {
           type: 'ButtonArray',
           state: []
@@ -41,7 +41,7 @@ export class InitAction extends FunctionNode {
           }
           const isTextType = true
           const btn = itemButton(tempState, url, method, key, isTextType, showReadOnly)
-          tempState.tree?.nodes!['slot'].buttons.state.push(btn)
+          tempState.tree!['slot'].buttons.state.push(btn)
         }
       })
     }

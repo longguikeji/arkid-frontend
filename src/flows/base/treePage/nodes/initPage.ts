@@ -7,22 +7,17 @@ export class InitPage extends FunctionNode {
       type: 'TreePage',
       state: {
         created: 'created',
+        card: {
+          title: '',
+          buttons: []
+        },
         tree: {
-          header: {
-            title: '',
-            buttons: []
-          },
-          nodes: {
-            isFilter: true,
-            expandOnClickNode: false,
-            data: [],
-            action: ''
-          }
+          isFilter: true,
+          expandOnClickNode: false,
+          data: [],
+          action: ''
         },
         dialogs: {},
-        table: {
-          type: 'TablePage'
-        },
         actions: {
           created: []
         }

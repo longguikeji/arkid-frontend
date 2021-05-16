@@ -79,31 +79,14 @@ export interface ITagPageAction {
 
 export interface ITagPage {
   type: string
-  list?: ITagPageAction
-  create?: ITagPageAction
-  update?: ITagPageAction
-  delete?: ITagPageAction
-  treeList?: ITagPageAction
-  treeCreate?: ITagPageAction
-  treeUpdate?: ITagPageAction
-  treeDelete?: ITagPageAction
-  tableList?: ITagPageAction
-  tableCreate?: ITagPageAction
-  tableUpdate?: ITagPageAction
-  tableDelete?: ITagPageAction
-  childrenList?: ITagPageAction
+  init?: ITagPageAction | { [key: string]: ITagPageAction }
+  page?: { [key: string]: ITagPageAction }
+  item?: { [key: string]: ITagPageAction | { [key: string]: ITagInitUpdateAction } }
 }
 
 export interface ITagInitUpdateAction {
   read: ITagPageAction
   write: ITagPageAction
-}
-
-export interface IPageInitContent {
-  type: string
-  init?: ITagPageAction | { [key: string]: ITagPageAction }
-  page?: { [key: string]: ITagPageAction }
-  item?: { [key: string]: ITagPageAction | { [key: string]: ITagPageAction } }
 }
 
 export interface ITag {

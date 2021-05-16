@@ -2,9 +2,9 @@
   <div class="tree-page">
     <Card
       class="tree__card"
-      :path="getChildPath('tree.header')"
+      :path="getChildPath('header')"
     >
-      <Tree :path="getChildPath('tree.nodes')" />
+      <Tree :path="getChildPath('tree')" />
       <template v-if="state.dialogs">
         <Dialog
           v-for="dialogName in Object.keys(state.dialogs)"
@@ -13,12 +13,6 @@
         />
       </template>
     </Card>
-    <template v-if="state.table">
-      <TablePage
-        class="tree__table"
-        :path="getChildPath('table.state')"
-      />
-    </template>
     <template v-if="state.list">
       <Card
         :path="getChildPath('list.header')"

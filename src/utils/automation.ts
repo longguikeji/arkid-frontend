@@ -293,7 +293,7 @@ export function generateFormPageStateMapping(state: FormPage, prefix: string = '
       }
     })
   } else if (state.form) {
-    prefix = prefix + '.form.items.'
+    prefix = prefix + 'form.items.'
     const items = state.form.items
     if (items) {
       const { itemsResponseMapping, itemsRequestMapping } = generateFormItemStateMapping(items, prefix, isEmpty)

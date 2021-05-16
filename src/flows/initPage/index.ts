@@ -3,8 +3,6 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { InitPage } from './nodes/initPage'
-import { InitTree } from './nodes/initTree'
-import { InitAction } from './nodes/initAction'
 
 export class Main extends Flow {
   createNodes() {
@@ -16,14 +14,6 @@ export class Main extends Flow {
       }, {
         cls: InitPage,
         id: 'initPage',
-        next: 'initTree'
-      }, {
-        cls: InitTree,
-        id: 'initTree',
-        next: 'initAction'
-      }, {
-        cls: InitAction,
-        id: 'initAction',
         next: 'stop'
       }, {
         cls: StopNode,

@@ -3,44 +3,31 @@
     v-if="state && initCompleted"
     style="height: 100%"
   >
-    <DashboardPage
-      v-if="state.type === 'DashboardPage'"
-      :path="'admin.adminState.state'"
-    />
-    <FormPage
-      v-if="state.type === 'FormPage'"
-      :path="'admin.adminState.state'"
-    />
-    <TablePage
-      v-if="state.type === 'TablePage'"
-      :path="'admin.adminState.state'"
-    />
-    <TreePage
-      v-if="state.type === 'TreePage'"
-      :path="'admin.adminState.state'"
-    />
+    <div v-if="isMultiPage">
+      <template v-for="(page, index) in state">
+        <AdminComponent
+          :key="index"
+          :path="'admin.adminState[' + index + ']'"
+        />
+      </template>
+    </div>
+    <div v-else>
+      <AdminComponent :path="'admin.adminState'" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { AdminModule } from '@/store/modules/admin'
-import DashboardPage from '@/admin/DashboardPage/index.vue'
-import FormPage from '@/admin/FormPage/index.vue'
-import TablePage from '@/admin/TablePage/index.vue'
-import TreePage from '@/admin/TreePage/index.vue'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
+import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
   name: 'Admin',
-  components: {
-    DashboardPage,
-    FormPage,
-    TablePage,
-    TreePage
-  }
+  components: {}
 })
 export default class extends Vue {
   private initCompleted = false
@@ -49,32 +36,19 @@ export default class extends Vue {
     return AdminModule.adminState
   }
 
+  private get isMultiPage() {
+    return Array.isArray(this.state)
+  }
+
   async created() {
     const currentPage = this.$route.meta.page
     const initContent: ITagPage | undefined = getInitContent(currentPage)
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
-    }
-    if (initContent.type) {
+    } else {
       let state
-      // confirm page type
-      let initFileName = ''
-      switch (initContent.type) {
-        case 'table_page':
-          initFileName = 'flows/base/tablePage'
-          break
-        case 'form_page':
-          initFileName = 'flows/base/formPage'
-          break
-        case 'tree_page':
-          initFileName = 'flows/base/treePage'
-          break
-        case 'dashboard_page':
-          initFileName = 'flows/base/dashboardPage/init'
-          break
-      }
       // execute init page flow file
-      await runFlowByFile(initFileName, {
+      await runFlowByFile('flows/initPage', {
         initContent: initContent
       }).then(data => {
         state = data.state
@@ -98,8 +72,6 @@ export default class extends Vue {
       }
       await AdminModule.setAdmin(state)
       this.initCompleted = true
-    } else {
-      throw Error('This page is not page-type, check admin-main file')
     }
   }
 
