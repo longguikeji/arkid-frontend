@@ -1,4 +1,4 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
 import { FlowConfig } from '@/arkfbp'
 

@@ -1,4 +1,4 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import { proxyClientServer } from '@/utils/flow'
 
 export class Fetch extends AuthApiNode {

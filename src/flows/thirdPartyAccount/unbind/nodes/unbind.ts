@@ -1,5 +1,4 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
-import { runFlowByFile } from '@/arkfbp/index'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 
 export class Unbind extends AuthApiNode {
   async run() {

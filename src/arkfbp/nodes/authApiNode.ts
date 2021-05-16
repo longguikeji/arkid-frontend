@@ -1,6 +1,5 @@
 import { APINode } from "arkfbp/lib/apiNode"
 import { getToken } from '@/utils/auth'
-import { getBaseState } from '@/utils/get-page-state'
 
 export class AuthApiNode extends APINode {
   async run() {
@@ -12,9 +11,4 @@ export class AuthApiNode extends APINode {
     }
     return super.run()
   }
-  
-  getBaseState() {
-    return getBaseState()
-  }
-  
 }

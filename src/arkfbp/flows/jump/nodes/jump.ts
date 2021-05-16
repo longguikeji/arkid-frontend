@@ -1,6 +1,6 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 
-export class Jump extends StateNode {
+export class Jump extends FunctionNode {
   async run() {
     const com = this.inputs.com
     const target = this.inputs.target

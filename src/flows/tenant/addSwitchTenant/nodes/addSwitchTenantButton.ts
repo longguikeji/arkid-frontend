@@ -1,8 +1,8 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
 
-export class AddSwitchTenantButton extends StateNode {
+export class AddSwitchTenantButton extends FunctionNode {
   async run() {
     const state = this.inputs.tempState as TablePageState
     const tempState = state.state as TablePage

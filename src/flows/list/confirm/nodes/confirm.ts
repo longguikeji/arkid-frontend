@@ -1,13 +1,15 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
+import getDataByPath from '@/utils/datapath'
 
-export class Confirm extends StateNode {
+export class Confirm extends FunctionNode {
   async run() {
     const tempState = this.inputs.client
     const data = tempState.dialogs?.selected?.state?.state?.list?.data
     const params = this.inputs.params
     const multi = params.multi
     const path = this.inputs.path
-    const parentTempState = this.getStateByComponentPath(path)
+    const com = this.inputs.com
+    const parentTempState = getDataByPath(com.$store.state, path)
 
     // 确认时需要将之前的options去掉
     parentTempState.options.length = 0

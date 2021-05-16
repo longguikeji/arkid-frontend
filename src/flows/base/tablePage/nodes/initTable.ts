@@ -65,10 +65,7 @@ export class InitTable extends FunctionNode {
           paramsMapping['page_size'] = 'pagination.pageSize'
         }
         // 给页面添加初始化事件流
-        if (otherInitContent.isHooks !== false) {
-          // 相对应给 actions 添加相同名称的 flow-config
-          tempState.actions!.created.push('fetch')
-        }
+        tempState.actions!.created.push('fetch')
         tempState.actions!.fetch = [
           {
             name: 'arkfbp/flows/fetch',

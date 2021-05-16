@@ -1,5 +1,5 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
-import { getCurrentPageStateByPath } from '@/utils/get-page-state'
+import { getCurrentPageState } from '@/utils/get-page-state'
 import Filter from '@/utils/filter'
 import getUrl from '@/utils/url'
 
@@ -18,7 +18,8 @@ export interface FlowConfig {
 // 并逐一执行其中的各个流内容
 export async function runFlowByActionName(com: any, actionName: string) {
   const path = com.path
-  const currentPageState = getCurrentPageStateByPath(path)
+  const baseState = com.$store.state
+  const currentPageState = getCurrentPageState(baseState, path)
   if (!currentPageState?.actions) {  
     return
   }

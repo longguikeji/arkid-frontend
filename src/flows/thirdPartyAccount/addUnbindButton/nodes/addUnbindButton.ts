@@ -1,6 +1,6 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
-export class AddUnbindButton extends StateNode {
+export class AddUnbindButton extends FunctionNode {
   async run() {
     const state: TablePageState = this.inputs.state
     const tempState = state.state as TablePage

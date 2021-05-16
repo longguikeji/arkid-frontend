@@ -1,9 +1,9 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 import getInitContent from '@/utils/get-init-content'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
 
-export class InitInputList extends StateNode {
+export class InitInputList extends FunctionNode {
   async run() {
     const tempState = this.inputs.client
     const params = this.inputs.com.state.data

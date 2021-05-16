@@ -1,7 +1,7 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 import ListItemState from '@/admin/common/data/List/ListState'
 
-export class Clicked extends StateNode {
+export class Clicked extends FunctionNode {
 
   addOrCancelListItem(listItems, currentClickedData) {
     if (listItems.length === 0) return -1

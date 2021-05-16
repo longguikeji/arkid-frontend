@@ -2,7 +2,7 @@
   <div class="tree-page">
     <Card
       :class="['tree__card', {'tree__card__half': isExistList}]"
-      :path="getChildPath('header')"
+      :path="getChildPath('card')"
     >
       <Tree :path="getChildPath('tree')" />
       <template v-if="state.dialogs">
