@@ -1,7 +1,7 @@
 <template>
   <div class="tree-page">
     <Card
-      class="tree__card"
+      :class="['tree__card', {'tree__card__half': isExistList}]"
       :path="getChildPath('header')"
     >
       <Tree :path="getChildPath('tree')" />
@@ -46,6 +46,10 @@ export default class extends Mixins(BaseVue) {
   get state(): TreePage {
     return this.$state as TreePage
   }
+
+  get isExistList(): boolean {
+    return !!this.state.list
+  }
 }
 </script>
 
@@ -58,8 +62,11 @@ export default class extends Mixins(BaseVue) {
   .tree__card {
     height: 100%;
     min-height: 300px;
-    width: 50%;
+    width: 100%;
     display: inline-block;
+    &.tree__card__half {
+      width: 50%;
+    }
   }
   .treepage__list {
     display: inline-block;

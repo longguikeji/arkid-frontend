@@ -9,10 +9,10 @@ export class InitPage extends FunctionNode {
     let state
     if (isMultiPage) {
       state = []
-      initContent.forEach(async (page) => {
-        const pageState = await this.initPage(page)
+      for (let i = 0; i < initContent.length; i++) {
+        const pageState = await this.initPage(initContent[i])
         state.push(pageState)
-      })
+      }
     } else {
       state = await this.initPage(initContent)
     }
