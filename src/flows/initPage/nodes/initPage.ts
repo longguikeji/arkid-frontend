@@ -22,7 +22,7 @@ export class InitPage extends FunctionNode {
   }
 
   async initPage(initContent: ITagPage) {
-    let state
+    let pageState
     let initFileName = ''
     switch (initContent.type) {
       case 'table_page':
@@ -41,9 +41,9 @@ export class InitPage extends FunctionNode {
     await runFlowByFile(initFileName, {
       initContent: initContent
     }).then(data => {
-      state = data.state
+      pageState = data.state
     })
-    return state
+    return pageState
   }
 
 }

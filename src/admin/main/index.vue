@@ -3,7 +3,10 @@
     v-if="state && initCompleted"
     style="height: 100%"
   >
-    <div v-if="isMultiPage">
+    <div
+      v-if="isMultiPage"
+      class="multi-page"
+    >
       <template v-for="(page, index) in state">
         <AdminComponent
           :key="index"
@@ -80,3 +83,18 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.multi-page {
+  .tree-page {
+    display: inline-block;
+    width: 30%;
+    height: calc(100vh - 84px);
+  }
+  .table-page {
+    display: inline-block;
+    width: 70%;
+    height: 100%;
+  }
+}
+</style>
