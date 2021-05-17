@@ -12,8 +12,9 @@ export class SwitchTenant extends StateNode {
     }
     const router = this.inputs.params.router
     const slug = data.slug
-    if (slug && TenantModule.currentSlugIsValid) {
-      const host = process.env.VUE_APP_HOST
+    if (slug) {
+      TenantModule.setHasSlug(true)
+      const host = TenantModule.originHost
       const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
       window.location.replace(newHost + '/' + process.env.VUE_APP_BASE_API)
     } else {

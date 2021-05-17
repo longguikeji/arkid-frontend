@@ -16,12 +16,9 @@ export class Tenant extends APINode {
       const outputs = await super.run()
       if (outputs.uuid) {
         currentTenant = outputs
-        TenantModule.setCurrentSlugIsValid(true)
       }
-    }
-
-    // 如果通过 slug 没有获取到，继续通过 tenant_uuid 获取
-    if (!TenantModule.currentSlugIsValid) {
+    } else {
+      // 如果通过 slug 没有获取到，继续通过 tenant_uuid 获取
       let tenantUUId = TenantModule?.currentTenant?.uuid || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')
       tenantUUId = processUUId(tenantUUId)
       this.url = '/api/v1/tenant/'
