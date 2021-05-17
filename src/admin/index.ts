@@ -51,6 +51,7 @@ import List from '@/admin/common/data/List/index.vue'
 import Sort from '@/admin/common/data/Sort/index.vue'
 import TablePage from '@/admin/TablePage/index.vue'
 import TreePage from '@/admin/TreePage/index.vue'
+import DashboardPage from '@/admin/DashboardPage/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -103,3 +104,4 @@ Vue.component('List', List)
 Vue.component('Sort', Sort)
 Vue.component('TablePage', TablePage)
 Vue.component('TreePage', TreePage)
+Vue.component('DashboardPage', DashboardPage)
