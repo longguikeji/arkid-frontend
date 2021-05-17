@@ -142,7 +142,7 @@ export function getStateByStringConfig(state: any, str: string) {
         const res = Filter(sm, tempState)
         tempState = tempState.cloumns[res]
       } else {
-        if (tempState[sm] || (tempState[sm] === undefined && sm === 'value')) {
+        if (tempState[sm] || (!tempState[sm] && sm === 'value')) {
           tempState = tempState[sm]
         } else {
           tempState = str

@@ -170,7 +170,7 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
   let { requestMapping } = generateFormPageStateMapping(formState, target)
   if (key === 'import') {
     requestMapping = {
-      data: 'dialogs.import.state.file'
+      data: 'dialogs.import.state.state.file'
     }
   }
   const dialogBtnFlows: (FlowConfig | string)[] = [
@@ -329,5 +329,4 @@ export function generateFormItemStateMapping(items: { [prop:string]: FormItemSta
     itemsResponseMapping,
     itemsRequestMapping
   }
-
 }
