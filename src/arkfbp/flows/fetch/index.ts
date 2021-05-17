@@ -3,7 +3,7 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { Fetch } from './nodes/fetch'
-import { ChangeState } from './nodes/changeState'
+import { ClientResponseNode } from '@/arkfbp/nodes/clientResponseNode'
 
 export class Main extends Flow {
   createNodes() {
@@ -14,10 +14,10 @@ export class Main extends Flow {
     }, {
       cls: Fetch,
       id: 'fetch',
-      next: 'changeState'
+      next: 'clientResponseNode'
     }, {
-      cls: ChangeState,
-      id: 'changeState',
+      cls: ClientResponseNode,
+      id: 'clientResponseNode',
       next: 'stop'
     }, {
       cls: StopNode,

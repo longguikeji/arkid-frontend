@@ -19,7 +19,8 @@ export class InitTree extends FunctionNode {
             url: initTreePath,
             method: initTreeMethod,
             response: {
-              'tree.data': ''
+              'tree.data': '',
+              'card.buttons[action=export].disabled': 'length'
             }
           }
         ]

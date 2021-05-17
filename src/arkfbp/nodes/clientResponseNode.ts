@@ -10,6 +10,9 @@ export class ClientResponseNode extends FunctionNode {
     // type 代表为那种响应类型
     const { client, clientServer } = this.$state.fetch()
     let data = this.inputs
+    if (!data) {
+      return null
+    }
     const type = this.$state.fetch().type
     // start to change
     if (clientServer && client) {
