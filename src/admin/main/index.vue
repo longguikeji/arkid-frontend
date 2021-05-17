@@ -62,11 +62,19 @@ export default class extends Vue {
         state = data.state
       })
       // execute special page content
+      if (currentPage === 'group') {
+        await runFlowByFile('flows/group/changeFetch', {
+          state: state,
+          initContent: initContent
+        }).then(data => {
+          state = data.state
+        })
+      }
       if (currentPage === 'maketplace') {
         await runFlowByFile('flows/maketplace/initFilter', {
           state: state,
           initContent: initContent
-        }).then(async(data) => {
+        }).then(data => {
           state = data.state
         })
       }
@@ -74,7 +82,7 @@ export default class extends Vue {
         await runFlowByFile('flows/thirdPartyAccount/addUnbindButton', {
           state: state,
           initContent: initContent
-        }).then(async(data) => {
+        }).then(data => {
           state = data.state
         })
       }
