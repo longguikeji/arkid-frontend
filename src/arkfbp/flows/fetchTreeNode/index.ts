@@ -2,22 +2,17 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
-import { ChangeTreeNode } from './nodes/changeTreeNode'
+import { ChangeTreeNodeState } from './nodes/changeTreeNodeState'
 
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'fetch'
+      next: 'changeTreeNodeState'
     }, {
-      cls: Fetch,
-      id: 'fetch',
-      next: 'changeTreeNode'
-    }, {
-      cls: ChangeTreeNode,
-      id: 'changeTreeNode',
+      cls: ChangeTreeNodeState,
+      id: 'changeTreeNodeState',
       next: 'stop'
     }, {
       cls: StopNode,
