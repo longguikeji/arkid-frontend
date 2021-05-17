@@ -28,12 +28,6 @@ export default function getUrl(currentUrl: string, data: any = {}) {
   return url
 }
 
-export function getBaseUrl() {
-  let baseUrl = process.env.VUE_APP_BASE_API || ''
-  if (baseUrl.charAt(0) !== '/' && baseUrl.length > 0) baseUrl = '/' + baseUrl
-  return baseUrl
-}
-
 export function getUrlParamByName(name: string) {
   const urlParams = window.location.search.substring(1).split('&')
   for (let i = 0; i < urlParams.length; i++) {
@@ -44,7 +38,7 @@ export function getUrlParamByName(name: string) {
 }
 
 export function getSlug() {
-  const host = process.env.VUE_APP_HOST
+  const host = TenantModule.originHost
   const hostname = host?.replace(window.location.protocol + '//', '') || ''
   let slug = window.location.host.replace(hostname, '')
   if (slug.length > 0) {
