@@ -16,6 +16,7 @@ export class Tenant extends APINode {
       const outputs = await super.run()
       if (outputs.uuid) {
         currentTenant = outputs
+        TenantModule.setHasSlug(true)
       }
     } else {
       // 如果通过 slug 没有获取到，继续通过 tenant_uuid 获取

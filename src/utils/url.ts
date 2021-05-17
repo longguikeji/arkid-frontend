@@ -49,7 +49,6 @@ export function getSlug() {
   let slug = window.location.host.replace(hostname, '')
   if (slug.length > 0) {
     slug = slug.substring(0, slug.length - 1)
-    TenantModule.setHasSlug(true)
   }
   return slug
 }
