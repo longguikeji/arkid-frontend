@@ -16,8 +16,8 @@ export interface FlowConfig {
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
-export async function runFlowByActionName(com: any, actionName: string) {
-  const path = com.path
+export async function runFlowByActionName(com: any, actionName: string, appointedPath?: string) {
+  const path = appointedPath || com.path
   const baseState = com.$store.state
   const currentPageState = getCurrentPageState(baseState, path)
   if (!currentPageState?.actions) {  
@@ -27,7 +27,14 @@ export async function runFlowByActionName(com: any, actionName: string) {
   if (currentFlows?.length) {
     for (let i = 0; i < currentFlows.length; i++) {
       if (typeof currentFlows[i] === 'string') {
-        await runFlowByActionName(com, currentFlows[i] as string)
+        const appointedFlow = currentFlows[i] as string
+        if (appointedFlow.includes('.')) {
+          const appointedActionMapping = appointedFlow.split('.')
+          const appointedActionName = appointedActionMapping[appointedActionMapping.length - 1]
+          await runFlowByActionName(com, appointedActionName, appointedFlow)
+        } else {
+          await runFlowByActionName(com, appointedFlow)
+        }
       } else {
         await runFlow(com, currentPageState, currentFlows[i] as FlowConfig)
       }
