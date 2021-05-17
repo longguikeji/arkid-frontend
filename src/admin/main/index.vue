@@ -2,6 +2,7 @@
   <div
     v-if="state && initCompleted"
     style="height: 100%"
+    :class="currentPage"
   >
     <div
       v-if="isMultiPage"
@@ -43,8 +44,12 @@ export default class extends Vue {
     return Array.isArray(this.state)
   }
 
+  private get currentPage() {
+    return this.$route.meta.page
+  }
+
   async created() {
-    const currentPage = this.$route.meta.page
+    const currentPage = this.currentPage
     const initContent: ITagPage | Array<ITagPage> | undefined = getInitContent(currentPage)
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
@@ -85,16 +90,5 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.multi-page {
-  .tree-page {
-    display: inline-block;
-    width: 30%;
-    height: calc(100vh - 84px);
-  }
-  .table-page {
-    display: inline-block;
-    width: 70%;
-    height: 100%;
-  }
-}
+@import '../../styles/group.scss';
 </style>
