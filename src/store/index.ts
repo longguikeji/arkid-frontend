@@ -8,6 +8,7 @@ import { ISettingsState } from './modules/settings'
 import { IAdminState } from './modules/admin'
 import { IAccountState } from './modules/account'
 import { ITenantState } from './modules/tenant'
+import { IDesktopState } from './modules/desktop'
 
 Vue.use(Vuex)
 
@@ -20,6 +21,7 @@ export interface IRootState {
   admin: IAdminState
   account: IAccountState
   tenant: ITenantState
+  desktop: IDesktopState
 }
 
 // Declare empty store first, dynamically register all modules later.

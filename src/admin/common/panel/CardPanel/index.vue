@@ -5,7 +5,6 @@
   >
     <div
       class="card-panel-icon"
-      @click="clickHandler"
     >
       <img
         v-if="state.img"
@@ -16,7 +15,6 @@
     </div>
     <div
       class="card-panel-text"
-      @click="clickHandler"
     >
       {{ state.name }}
     </div>
@@ -35,12 +33,6 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   get state(): CardPanelState {
     return this.$state as CardPanelState
-  }
-
-  private clickHandler() {
-    if (this.state.url) {
-      window.open(this.state.url, '_blank')
-    }
   }
 }
 </script>

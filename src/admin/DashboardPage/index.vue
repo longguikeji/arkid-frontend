@@ -1,6 +1,12 @@
 <template>
-  <div class="background">
+  <div class="dashboard-page">
+    <iframe
+      v-if="app.url"
+      class="single-app-page"
+      :src="app.url"
+    />
     <grid-layout
+      v-else
       :layout.sync="layout"
       :col-num="8"
       :is-draggable="true"
@@ -21,7 +27,10 @@
         :i="item.i"
         @resized="resizedHandler"
       >
-        <DashboardItem :path="getChildPath('items[' + item.i + ']')" />
+        <DashboardItem
+          :path="getChildPath('items[' + item.i + ']')"
+          @appClick="appClick"
+        />
       </grid-item>
     </grid-layout>
   </div>
@@ -34,6 +43,7 @@ import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
+import { DesktopModule, IDesktopCurrentApp } from '@/store/modules/desktop'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -51,6 +61,10 @@ export default class extends Mixins(BaseVue) {
 
   get items(): DashboardItemState[] | undefined {
     return this.state.items
+  }
+
+  get app(): IDesktopCurrentApp {
+    return DesktopModule.desktopCurrentApp
   }
 
   private layout?:any[] = [];// 必须有初始值
@@ -75,5 +89,24 @@ export default class extends Mixins(BaseVue) {
       }
     }
   }
+
+  appClick(data: any) {
+    const app = {
+      url: data.url,
+      name: data.name
+    }
+    DesktopModule.setDesktopCurrentAppUrl(app)
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+.dashboard-page {
+  height: calc(100vh - 84px);
+  overflow: auto;
+  .single-app-page {
+    width: 100%;
+    height: 100%;
+  }
+}
+</style>
