@@ -38,7 +38,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TableState from './TableState'
 import TableColumn from './TableColumn/index.vue'
-import BaseVue, { FlowState } from '@/admin/base/BaseVue'
+import BaseVue from '@/admin/base/BaseVue'
 import Sortable from 'sortablejs'
 
 @Component({

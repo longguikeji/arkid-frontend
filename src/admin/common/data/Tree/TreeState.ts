@@ -1,8 +1,6 @@
 import { BaseState } from '@/admin/base/BaseVue'
 import TreeNodeProps from './TreeNodeProps'
 
-import { FlowState } from '@/admin/base/BaseVue'
-
 export default interface TreeState extends BaseState {
   data?: Array<TreeNodeProps> // 展示数据
   selectedData?: any // 选中的数据

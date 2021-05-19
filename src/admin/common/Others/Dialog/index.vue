@@ -65,8 +65,8 @@ export default class extends Mixins(BaseVue) {
   }
 
   get defaultWidth() {
-    if (document.body.clientWidth > 1200) {
-      return '50%'
+    if (document.body.clientWidth > 1400) {
+      return '65%'
     } else if (document.body.clientWidth > 800) {
       return '80%'
     } else {

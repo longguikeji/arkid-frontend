@@ -1,6 +1,7 @@
 import { Jump } from '@/arkfbp/flows/jump/nodes/jump'
 import { TenantModule } from '@/store/modules/tenant'
 import { TablePage } from '@/admin/TablePage/TablePageState'
+import { getOriginUrl } from '@/utils/cookies'
 
 export class SwitchTenant extends Jump {
   async run() {
@@ -9,11 +10,11 @@ export class SwitchTenant extends Jump {
     TenantModule.changeCurrentTenant(data)
     let target
     const slug = data.slug
-    if (slug && TenantModule.currentSlugIsValid) {
-      let host = window.location.host.split('.')
-      host.splice(0, 1, slug)
-      let newHost = host.join('.')
-      target = window.location.protocol + '//' + newHost + process.env.VUE_APP_BASE_API + '/'
+    if (slug) {
+      TenantModule.setHasSlug(true)
+      const host = getOriginUrl()
+      const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
+      window.location.replace(newHost + '/' + process.env.VUE_APP_BASE_API)
     } else {
       target = {
         path: '/',

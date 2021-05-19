@@ -99,13 +99,14 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 router.beforeEach((to, from, next) => {
-  const isLogin = getToken()
+  const isLogin = getToken()  
   const currentTenant = TenantModule.currentTenant
+  const hasSlug = TenantModule.hasSlug
   let nextUrl = ''
-  if (to.path === '/third_part_callback') {
-    next()
-  } else if (isLogin) {
-    if (to.path === '/login') {
+  if (isLogin) {
+    if (to.query.next) {
+      next()
+    } else if (to.path === '/login' || to.path === '/third_part_callback') {
       nextUrl = '/'
     } else if (to.path === '/tenant') {
       next()
@@ -113,7 +114,10 @@ router.beforeEach((to, from, next) => {
       nextUrl = '/tenant'
     }
   } else {
-    if (to.path !== '/login') {
+    if (hasSlug) {
+      to.query.tenant = currentTenant.uuid
+    }
+    if (to.path !== '/login' && to.path !== '/third_part_callback') {
       nextUrl = '/login'
     }
   }

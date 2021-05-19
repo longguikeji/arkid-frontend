@@ -108,5 +108,8 @@ export default class extends Mixins(BaseVue) {
     width: 100%;
     height: 100%;
   }
+  ::v-deep .vue-grid-item {
+    touch-action: none;
+  }
 }
 </style>

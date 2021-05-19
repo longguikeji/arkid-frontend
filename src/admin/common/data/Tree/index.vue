@@ -56,7 +56,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TreeState from './TreeState'
 import TreeNodeProps from './TreeNodeProps'
-import BaseVue, { FlowState } from '@/admin/base/BaseVue'
+import BaseVue from '@/admin/base/BaseVue'
 import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 
 @Component({

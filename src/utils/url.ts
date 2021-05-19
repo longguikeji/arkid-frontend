@@ -4,6 +4,7 @@
 // id参数则需要在调用该函数时传入data，通过data.id或data.uuid的方式进行读取
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
+import { getOriginUrl } from '@/utils/cookies'
 
 export default function getUrl(currentUrl: string, data: any = {}) {
   let url = currentUrl
@@ -28,12 +29,6 @@ export default function getUrl(currentUrl: string, data: any = {}) {
   return url
 }
 
-export function getBaseUrl() {
-  let baseUrl = process.env.VUE_APP_BASE_API || ''
-  if (baseUrl.charAt(0) !== '/' && baseUrl.length > 0) baseUrl = '/' + baseUrl
-  return baseUrl
-}
-
 export function getUrlParamByName(name: string) {
   const urlParams = window.location.search.substring(1).split('&')
   for (let i = 0; i < urlParams.length; i++) {
@@ -44,8 +39,11 @@ export function getUrlParamByName(name: string) {
 }
 
 export function getSlug() {
-  const slug = window.location.hostname.split('.')[0]
-  if (slug && slug !== 'localhost' && slug !== 'arkid') {
-    return slug
+  const host = getOriginUrl()
+  const hostname = host?.replace(window.location.protocol + '//', '') || ''
+  let slug = window.location.host.replace(hostname, '')
+  if (slug.length > 0) {
+    slug = slug.substring(0, slug.length - 1)
   }
+  return slug
 }

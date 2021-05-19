@@ -3,6 +3,7 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { VerifyToken } from './nodes/verifyToken'
+import { GetOriginUrl } from './nodes/getOriginUrl'
 import { Tenant } from './nodes/tenant'
 import { AfterLogin } from './nodes/afterLogin'
 
@@ -15,6 +16,10 @@ export class Main extends Flow {
     }, {
       cls: VerifyToken,
       id: 'verifyToken',
+      next: 'getOriginUrl'
+    }, {
+      cls: GetOriginUrl,
+      id: 'getOriginUrl',
       next: 'tenant'
     }, {
       cls: Tenant,

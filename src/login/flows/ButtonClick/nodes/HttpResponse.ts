@@ -5,26 +5,8 @@ import { jsonp } from 'vue-jsonp'
 
 export class HttpResponse extends FunctionNode {
   async run() {
-    const com = this.$state.fetch().com as LoginComponent
-
     if (this.inputs.data && this.inputs.error === '0' && this.inputs.data.token) {
       // login success
-      
-      // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
-      const query = com.$route.query
-      const next = query.next
-      if (next) {
-        let nextUrl = next
-        Object.keys(query).forEach(key => {
-          if (key !== 'next' && key !== 'tenant') {
-            nextUrl += ( '&' + key + '=' + query[key] )
-          }
-        })
-        const redirectUrl = window.location.origin + nextUrl + '&token=' + this.inputs.data.token
-        window.location.replace(redirectUrl)
-        return
-      }
-
       LoginStore.token = this.inputs.data.token
 
       if (LoginStore.ThirdUserID && LoginStore.BindUrl) {

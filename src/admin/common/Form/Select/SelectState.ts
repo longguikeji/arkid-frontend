@@ -1,5 +1,5 @@
 import OptionType from './OptionType'
-import { BaseState, FlowState } from '@/admin/base/BaseVue'
+import { BaseState } from '@/admin/base/BaseVue'
 
 export default interface SelectState extends BaseState {
   value?: any // 绑定值

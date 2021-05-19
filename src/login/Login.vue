@@ -13,7 +13,7 @@ import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import { jsonp } from 'vue-jsonp'
-import { getBaseUrl } from '@/utils/url'
+import getBaseUrl from '@/utils/get-base-url'
 
 @Component({
   name: 'Login',
@@ -40,6 +40,20 @@ export default class Login extends Vue {
   }
 
   private async getLoginPage() {
+    // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
+    const query = this.$route.query
+    if (query.next && LoginStore.token) {
+      let nextUrl = query.next
+      Object.keys(query).forEach(key => {
+        if (key !== 'next') {
+          nextUrl += ('&' + key + '=' + query[key])
+        }
+      })
+      nextUrl = window.location.origin + nextUrl + '&token=' + LoginStore.token
+      window.location.replace(nextUrl)
+      return
+    }
+
     LoginStore.TenantUUID = this.tenantUUID
     let url = '/api/v1/loginpage/'
     if (LoginStore.TenantUUID) {
@@ -71,7 +85,7 @@ export default class Login extends Vue {
       extend.buttons.forEach(btn => {
         btn.img = btn.img || 'extend-icon'
         btn.redirect!.params = {
-          next: encodeURIComponent('http://' + window.location.host + getBaseUrl() + '/third_part_callback')
+          next: encodeURIComponent(window.location.origin + getBaseUrl() + '/third_part_callback')
         }
       })
       return extend

@@ -1,11 +1,10 @@
 import TableColumnState from './TableColumn/TableColumnState'
 import SpecialCellState from './SpecialCellState'
-import { BaseState, FlowState } from '@/admin/base/BaseVue'
+import { BaseState } from '@/admin/base/BaseVue'
 
 export default interface TableState extends BaseState {
   columns?: Array<TableColumnState>
   selection?: SpecialCellState
-  // selectAction?: Array<FlowState | Function>
   selectAction?: Function | string
   isSingle?: boolean 
   index?: SpecialCellState

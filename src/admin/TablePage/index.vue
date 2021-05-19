@@ -4,7 +4,10 @@
     class="table-page"
   >
     <div>
-      <Form :path="filterPath" />
+      <Form
+        :path="filterPath"
+        class="table-page-filter"
+      />
     </div>
     <template v-if="state.list">
       <Card

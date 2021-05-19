@@ -44,7 +44,8 @@ export default class extends Mixins(BaseVue) {
   }
 
   get defaultLabelPosition() {
-    if (document.body.clientWidth < 1200) { return 'top' } else { return 'left' }
+    // if (document.body.clientWidth < 1400) { return 'top' } else { return 'left' }
+    return 'top'
   }
 }
 </script>
@@ -57,5 +58,15 @@ export default class extends Mixins(BaseVue) {
 }
 .fullwidth {
   width: 100%;
+}
+.table-page-filter {
+  .row {
+    ::v-deep .el-form-item {
+      .el-form-item__content {
+        display: inline-block !important;
+        margin-left: 10px;
+      }
+    }
+  }
 }
 </style>
