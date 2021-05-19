@@ -58,6 +58,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { menuRoutes } from '@/router/index'
 import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
+import { DesktopModule, DesktopStatus } from '@/store/modules/desktop'
 import ScrollPane from './ScrollPane.vue'
 
 @Component({
@@ -85,6 +86,7 @@ export default class extends Vue {
   private onRouteChange() {
     this.addTags()
     this.moveToCurrentTag()
+    DesktopModule.setDesktopStatus(DesktopStatus.All)
   }
 
   @Watch('visible')

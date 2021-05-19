@@ -6,31 +6,24 @@ export interface IDesktopCurrentApp {
   name: string
 }
 
+export enum DesktopStatus {
+  All,
+  Single
+}
+
 export interface IDesktopState {
   desktopCurrentApp: IDesktopCurrentApp
-  desktopStatus: string | null
+  desktopStatus: DesktopStatus
 }
 
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
   // desktopCurrentAppUrl 记录下当前页面呈现的app，将用于Breadcrumb组件中进行呈现相关文本
-  private _desktopCurrentApp: IDesktopCurrentApp = {
+  // two status: all and single
+  public desktopStatus: DesktopStatus = DesktopStatus.All
+  public desktopCurrentApp: IDesktopCurrentApp = {
     url: '',
     name: ''
-  }
-  private _desktopStatus: string = ''
-  // two status: all and single
-  public desktopStatus: string | null = this._desktopStatus || localStorage.getItem('desktop-status')
-
-  public get desktopCurrentApp(): IDesktopCurrentApp {
-    if (this._desktopCurrentApp.url) {
-      return this._desktopCurrentApp
-    }
-    const localDesktopCurrentApp = localStorage.getItem('desktop-current-app')
-    if (localDesktopCurrentApp) {
-      this._desktopCurrentApp = JSON.parse(localDesktopCurrentApp)
-    }
-    return this._desktopCurrentApp
   }
 
   @Mutation
@@ -40,14 +33,8 @@ class Desktop extends VuexModule implements IDesktopState {
   }
 
   @Mutation
-  private SET_DESKTOP_STATUS(status: string) {
+  private SET_DESKTOP_STATUS(status: DesktopStatus) {
     this.desktopStatus = status
-  }
-
-  @Mutation
-  private DELETE_DESKTOP_CACHE() {
-    localStorage.removeItem('desktop-current-app')
-    localStorage.removeItem('desktop-status')
   }
 
   @Action
@@ -56,15 +43,9 @@ class Desktop extends VuexModule implements IDesktopState {
   }
 
   @Action
-  public setDesktopStatus(status: string) {
+  public setDesktopStatus(status: DesktopStatus) {
     this.SET_DESKTOP_STATUS(status)
   }
-
-  @Action
-  public deleteDesktopCache() {
-    this.DELETE_DESKTOP_CACHE()
-  }
-
 }
 
 export const DesktopModule = getModule(Desktop)
