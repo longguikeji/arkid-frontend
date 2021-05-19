@@ -1,6 +1,7 @@
 import { StateNode } from '@/nodes/stateNode'
 import { TenantModule } from '@/store/modules/tenant'
 import TablePageState from '@/admin/TablePage/TablePageState'
+import { getOriginUrl } from '@/utils/cookies'
 
 export class SwitchTenant extends StateNode {
   async run() {
@@ -14,7 +15,7 @@ export class SwitchTenant extends StateNode {
     const slug = data.slug
     if (slug) {
       TenantModule.setHasSlug(true)
-      const host = TenantModule.originHost
+      const host = getOriginUrl()
       const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
       window.location.replace(newHost + '/' + process.env.VUE_APP_BASE_API)
     } else {
