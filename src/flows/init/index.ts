@@ -4,7 +4,7 @@ import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { VerifyToken } from './nodes/verifyToken'
 import { GetOriginUrl } from './nodes/getOriginUrl'
-import { Tenant } from './nodes/tenant'
+import { Slug } from './nodes/slug'
 import { AfterLogin } from './nodes/afterLogin'
 
 export class Main extends Flow {
@@ -20,10 +20,10 @@ export class Main extends Flow {
     }, {
       cls: GetOriginUrl,
       id: 'getOriginUrl',
-      next: 'tenant'
+      next: 'slug'
     }, {
-      cls: Tenant,
-      id: 'tenant',
+      cls: Slug,
+      id: 'slug',
       next: 'afterLogin'
     }, {
       cls: AfterLogin,
