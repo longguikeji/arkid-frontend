@@ -3,13 +3,13 @@ import { getOriginUrl, setOriginUrl } from '@/utils/cookies'
 
 export class GetOriginUrl extends APINode {
   async run() {
-    const host = getOriginUrl()
-    if (!host) {
+    const originUrl = getOriginUrl()
+    if (!originUrl) {
       this.url = '/api/v1/get_frontendurl/'
       this.method = 'GET'
       const outputs = await super.run()
-      const originUrl = outputs.url
-      setOriginUrl(originUrl)
+      const url = outputs.url as string
+      setOriginUrl(url)
     }
   }
 }
