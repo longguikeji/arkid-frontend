@@ -1,10 +1,11 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
+import { FlowConfig } from '@/arkfbp'
 
 export class InitFilter extends AuthApiNode {
   async run() {
-    const tempState = this.inputs.state as TablePageState
-    const initContent = this.inputs.initContent
+    const state = this.inputs.state as TablePageState
+    const tempState = state.state as TablePage
 
     // filter element info
     this.url = '/api/v1/tags/'
@@ -25,7 +26,7 @@ export class InitFilter extends AuthApiNode {
           type: 'Select',
           isSetWidth: false,
           state: {
-            value: '',
+            value: [],
             options: tagOptions,
             multiple: true
           }
@@ -35,7 +36,7 @@ export class InitFilter extends AuthApiNode {
           type: 'Select',
           isSetWidth: false,
           state: {
-            value: '',
+            value: [],
             options: typeOptions,
             multiple: true
           }
@@ -45,7 +46,7 @@ export class InitFilter extends AuthApiNode {
           type: 'Select',
           isSetWidth: false,
           state: {
-            value: '',
+            value: [],
             options: typeOptions,
             multiple: true
           }
@@ -56,24 +57,29 @@ export class InitFilter extends AuthApiNode {
           state: {
             label: '搜索',
             type: 'primary',
-            action: [
-              {
-                name: 'flows/tablePage/fetch',
-                params: {
-                  fetchUrl: initContent.init.path,
-                  fetchMethod: initContent.init.method,
-                  isFilter: true
-                }
-              }
-            ]
+            action: 'fetch'
           }
         }
       }
     }
+
+    const fetchAction = tempState.actions!.fetch
+    if (fetchAction) {
+      fetchAction[0] = {
+        ...(fetchAction[0] as FlowConfig),
+        name: 'flows/maketplace/fetch',
+        request: {
+          tags: 'filter.items.tags.state.value',
+          type: 'filter.items.type.state.value',
+          scope: 'filter.items.scope.state.value'
+        }
+      }
+    }
+
     
     return {
       data: this.inputs.data,
-      state: tempState
+      state: state
     }
   }
 }

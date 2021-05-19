@@ -1,4 +1,4 @@
-import { BaseState, FlowState } from '@/admin/base/BaseVue'
+import { BaseState } from '@/admin/base/BaseVue'
 
 export default interface PaginationState extends BaseState {
   currentPage?: number //  当前页数，支持 .sync 修饰符  number  —  1
@@ -22,6 +22,6 @@ export default interface PaginationState extends BaseState {
   actionCurrentChange?: string
   actionPrevClick?: string
   actionNextClick?: string
-  action?: Array<FlowState | Function>
+  action?: string | Function
   data?: any
 }

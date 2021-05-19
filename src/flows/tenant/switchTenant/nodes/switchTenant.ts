@@ -1,17 +1,14 @@
-import { StateNode } from '@/nodes/stateNode'
+import { Jump } from '@/arkfbp/flows/jump/nodes/jump'
 import { TenantModule } from '@/store/modules/tenant'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 import { getOriginUrl } from '@/utils/cookies'
 
-export class SwitchTenant extends StateNode {
+export class SwitchTenant extends Jump {
   async run() {
-    const tenantState: TablePageState = this.getState()
+    const tenantState: TablePage = this.inputs.client
     const data: any = tenantState.dialogs?.switch.data
     TenantModule.changeCurrentTenant(data)
-    if (tenantState && tenantState.dialogs) {
-      tenantState.dialogs.switch.visible = false
-    }
-    const router = this.inputs.params.router
+    let target
     const slug = data.slug
     if (slug) {
       TenantModule.setHasSlug(true)
@@ -19,13 +16,14 @@ export class SwitchTenant extends StateNode {
       const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
       window.location.replace(newHost + '/' + process.env.VUE_APP_BASE_API)
     } else {
-      router.push({
+      target = {
         path: '/',
         query: {
           tenant: TenantModule.currentTenant.uuid
         }
-      })
+      }
     }
-    return this.inputs
+    this.inputs.target = target
+    await super.run()
   }
 }

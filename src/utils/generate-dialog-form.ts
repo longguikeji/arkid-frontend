@@ -3,11 +3,11 @@ import FormObjectItemState from '@/admin/common/Form/FormObjectItem/FormObjectIt
 import FormState from '@/admin/common/Form/FormState'
 import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPageState {
-  const formPageState: FormPageState = {type: 'FormPage'}
+export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPage {
+  const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectState:SelectState = {
@@ -65,17 +65,13 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         options: [],
-        action: [
-          {
-            name: 'flows/list/initInputList',
-            params: {
-              page: schema.page,
-              field: schema.field,
-              title: schema.title,
-              multi: schema.type === 'array',
-            }
-          }
-        ]
+        action: 'initInputList',
+        data: {
+          page: schema.page,
+          field: schema.field,
+          title: schema.title,
+          multi: schema.type === 'array',
+        }
       }
     }
   } else if (schema.type === 'array') {

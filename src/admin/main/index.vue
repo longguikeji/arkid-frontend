@@ -2,45 +2,36 @@
   <div
     v-if="state && initCompleted"
     style="height: 100%"
+    :class="currentPage"
   >
-    <DashboardPage
-      v-if="state.type === 'DashboardPage'"
-      :path="'admin.adminState'"
-    />
-    <FormPage
-      v-if="state.type === 'FormPage'"
-      :path="'admin.adminState'"
-    />
-    <TablePage
-      v-if="state.type === 'TablePage'"
-      :path="'admin.adminState'"
-    />
-    <TreePage
-      v-if="state.type === 'TreePage'"
-      :path="'admin.adminState'"
-    />
+    <div
+      v-if="isMultiPage"
+      class="multi-page"
+    >
+      <template v-for="(page, index) in state">
+        <AdminComponent
+          :key="index"
+          :path="'admin.adminState[' + index + ']'"
+        />
+      </template>
+    </div>
+    <div v-else>
+      <AdminComponent :path="'admin.adminState'" />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { AdminModule } from '@/store/modules/admin'
-import DashboardPage from '@/admin/DashboardPage/index.vue'
-import FormPage from '@/admin/FormPage/index.vue'
-import TablePage from '@/admin/TablePage/index.vue'
-import TreePage from '@/admin/TreePage/index.vue'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
+import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
   name: 'Admin',
-  components: {
-    DashboardPage,
-    FormPage,
-    TablePage,
-    TreePage
-  }
+  components: {}
 })
 export default class extends Vue {
   private initCompleted = false
@@ -49,43 +40,41 @@ export default class extends Vue {
     return AdminModule.adminState
   }
 
+  private get isMultiPage() {
+    return Array.isArray(this.state)
+  }
+
+  private get currentPage() {
+    return this.$route.meta.page
+  }
+
   async created() {
-    const currentPage = this.$route.meta.page
-    const initContent: ITagPage | undefined = getInitContent(currentPage)
+    const currentPage = this.currentPage
+    const initContent: ITagPage | Array<ITagPage> | undefined = getInitContent(currentPage)
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
-    }
-    if (initContent.type) {
+    } else {
       let state
-      // confirm page type
-      let type = ''
-      switch (initContent.type) {
-        case 'table_page':
-          type = 'tablePage'
-          break
-        case 'form_page':
-          type = 'formPage'
-          break
-        case 'tree_page':
-          type = 'treePage'
-          break
-        case 'dashboard_page':
-          type = 'dashboardPage'
-          break
-      }
       // execute init page flow file
-      const initFileName = 'flows/' + type + '/init'
-      await runFlowByFile(initFileName, {
+      await runFlowByFile('flows/initPage', {
         initContent: initContent
       }).then(data => {
         state = data.state
       })
       // execute special page content
+      if (currentPage === 'group') {
+        await runFlowByFile('flows/group/changeFetch', {
+          state: state,
+          initContent: initContent
+        }).then(data => {
+          state = data.state
+        })
+      }
       if (currentPage === 'maketplace') {
         await runFlowByFile('flows/maketplace/initFilter', {
           state: state,
           initContent: initContent
-        }).then(async(data) => {
+        }).then(data => {
           state = data.state
         })
       }
@@ -93,14 +82,12 @@ export default class extends Vue {
         await runFlowByFile('flows/thirdPartyAccount/addUnbindButton', {
           state: state,
           initContent: initContent
-        }).then(async(data) => {
+        }).then(data => {
           state = data.state
         })
       }
       await AdminModule.setAdmin(state)
       this.initCompleted = true
-    } else {
-      throw Error('This page is not page-type, check admin-main file')
     }
   }
 
@@ -109,3 +96,7 @@ export default class extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '../../styles/group.scss';
+</style>

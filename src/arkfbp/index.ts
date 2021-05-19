@@ -1,192 +1,154 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
-import { Loading } from 'element-ui'
-import { cloneDeep } from 'lodash'
+import { getCurrentPageState } from '@/utils/get-page-state'
 import Filter from '@/utils/filter'
+import getUrl from '@/utils/url'
 
-const flows = require.context('@/flows', true, /index\.ts$/)
-const arkfbpFlows = require.context('@/arkfbp/flows', true, /index\.ts$/)
-
-function getUrl(url: string, data: any, state: any) {
-  if (!data) {
-    return url
-  }
-
-  if (url.indexOf('<') !== -1) {
-    const property = url.slice(url.indexOf('<') + 1, url.lastIndexOf('>'))
-    return (
-      url.slice(0, url.indexOf('<')) + data[property] + url.slice(url.indexOf('>') + 1)
-    )
-  }
-  if (url.indexOf('[') !== -1) {
-    const urlParams = url.slice(url.indexOf('[') + 1, url.lastIndexOf(']'))
-    let tempState = state
-    let tempParams: any
-    urlParams.split('.').forEach((v: string) => {
-      tempState = tempState[v]
-      tempParams = tempState
-    })
-    return (
-      url.slice(0, url.indexOf('[')) + tempParams + url.slice(url.indexOf(']') + 1)
-    )
-  }
-
-  return url
+export interface FlowConfig {
+  name: string
+  url?: string
+  method?: string
+  request?: any
+  response?: any
+  target?: string // 配置jump时跳转的目标页面
+  path?: string // 用于组件之间的指向
 }
 
-export function runFlowByFile(flowPath: string, inputs: any) {
-  let flow: any = {}
-
-  if (flowPath.includes('arkfbp')) {
-    flow = arkfbpFlows(flowPath.replace('arkfbp/flows', '.') + '/index.ts')
-  } else {
-    flow = flows(flowPath.replace('flows', '.') + '/index.ts')
-  }
-  return runWorkflowByClass(flow.Main, inputs)
-}
-
-export async function runAction(action: { flow: string, inputs: any }) {
-  if (!action.flow) {
+// 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
+// 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
+// 并逐一执行其中的各个流内容
+export async function runFlowByActionName(com: any, actionName: string, appointedPath?: string) {
+  const path = appointedPath || com.path
+  const baseState = com.$store.state
+  const currentPageState = getCurrentPageState(baseState, path)
+  if (!currentPageState?.actions) {  
     return
   }
-  const loading = Loading.service({ fullscreen: true })
-  const flow = action.flow.split('.').join('/')
-  const outputs = await runFlowByFile(flow, action.inputs)
-  loading.close()
+  const currentFlows: (FlowConfig | string)[] = currentPageState.actions[actionName]
+  if (currentFlows?.length) {
+    for (let i = 0; i < currentFlows.length; i++) {
+      if (typeof currentFlows[i] === 'string') {
+        const appointedFlow = currentFlows[i] as string
+        if (appointedFlow.includes('.')) {
+          const appointedActionMapping = appointedFlow.split('.')
+          const appointedActionName = appointedActionMapping[appointedActionMapping.length - 1]
+          await runFlowByActionName(com, appointedActionName, appointedFlow)
+        } else {
+          await runFlowByActionName(com, appointedFlow)
+        }
+      } else {
+        await runFlow(com, currentPageState, currentFlows[i] as FlowConfig)
+      }
+    }
+  }
+}
+
+// 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
+export async function runFlow (com: any, state: any, flow: FlowConfig) {
+  const { name: filePath, ...args } = flow
+  const data = com.state?.selectedData || com.state?.data
+  const inputs = {
+    url: args.url ? getUrl(args.url, data) : '',
+    method: args.method?.toUpperCase(),
+    params: {},
+    client: state,
+    clientServer: args.response,
+    target: args.target,
+    path: args.path,
+    com: com
+  }
+  // 对 request 请求参数进行解析处理
+  if (args.request) {
+    const mapping = stateMappingProxy(state, args.request)
+    inputs.params = parseStateMapping(state, mapping)
+  }
+  await runFlowByFile(filePath, inputs)
+}
+
+// 使用 arkfbp-javascript 执行配置中的流内容 
+// arkfbp-javascript: https://github.com/longguikeji/arkfbp-javascript
+export async function runFlowByFile(flowPath: string, inputs: any) {
+  if (!flowPath) {
+    return
+  }
+  if (/^(@\/)/.test(flowPath)) {
+    flowPath = flowPath.slice(2)
+  }
+  const flow = await import(`@/${flowPath}`)
+  const outputs = await runWorkflowByClass(flow.Main, inputs)
   return outputs
 }
 
-export async function runFlow(state: any, flow: any, data: any, router:any) {
-  if (flow.type === 'assign') {
-    await runAction({
-      flow: flow.name,
-      inputs: {
-        client: state,
-        clientServer: flow.client_config
-      }
-    })
-
-    return
-  }
-
-  if (flow.type === 'router') {
-    await runAction({
-      flow: flow.name,
-      inputs: {
-        client: state,
-        clientServer: flow.request,
-        data: data,
-        router: router
-      }
-    })
-
-    return
-  }
-
-  if (flow.type === 'api') {
-    let params: any = {}
-    if (typeof flow.request === 'string') {
-      let temp = cloneDeep(state)
-      flow.request.split('.').forEach((v: string) => {
-        temp = temp[v]
-        params = temp
-      })
-    }
-
-    if (typeof flow.request === 'object') {
-      Object.keys(flow.request).forEach(key => {
-        let temp = cloneDeep(state)
-        const vs = flow.request[key].split('.')
-        vs.forEach((v: string) => {
-          if (v.includes('items[prop=')) {
-            const res = Filter(v, temp)
-            temp = temp.items[res]
-          } else if (v.includes('columns[prop=')) {
-            const res = Filter(v, temp)
-            temp = temp.cloumns[res]
-          } else {
-            temp = temp[v]
+// 对Mapping进行一次二次处理
+export function stateMappingProxy(state: any, mapping: any) {
+  Object.keys(mapping).forEach(key => {
+    const m = mapping[key]
+    if (typeof m === 'object') {
+      if (m.value) {
+        let selectItemsObject = {}
+        const selectValMapping = m.value
+        const val = getStateByStringConfig(state, selectValMapping)
+        selectItemsObject = m[val]
+        selectItemsObject[key] = selectValMapping
+        mapping[key] = undefined
+        Object.assign(mapping, selectItemsObject)
+      } else if (m.key && m.data) {
+        const data = getStateByStringConfig(state, m.data)
+        mapping[key] = []
+        data.forEach(d => {
+          if (d[m.key]) {
+            mapping[key].push(d[m.key])
           }
         })
-        params[key] = temp
-      })
-    }
-
-    await runAction({
-      flow: flow.name,
-      inputs: {
-        url: `${getUrl(flow.url, data, state)}`,
-        method: flow.method,
-        params: params,
-        client: state,
-        clientServer: flow.client_config
       }
-    })
-    return
-  }
-
-  if (flow.type === 'client') {
-    let params: any = {}
-    if (typeof flow.client_config === 'string') {
-      let temp = state
-      flow.request.split('.').forEach((v: string) => {
-        temp = temp[v]
-        params = temp
-      })
-    }
-
-    if (typeof flow.request === 'object') {
-      Object.keys(flow.request).forEach(key => {
-        let temp = state
-        const vs = flow.request[key].split('.')
-        vs.forEach((v: string) => {
-          if (v.includes('items[prop=')) {
-            const res = Filter(v, temp)
-            temp = temp.items[res]
-          } else if (v.includes('columns[prop=')) {
-            const res = Filter(v, temp)
-            temp = temp.cloumns[res]
-          } else {
-            temp = temp[v]
-          }
-        })
-        params[key] = temp
-      })
-    }
-
-    await runAction({
-      flow: flow.name,
-      inputs: {
-        url: `${getUrl(flow.url, data, state)}`,
-        method: flow.method,
-        params: params,
-        data: data,
-        client: state,
-        clientServer: flow.client_config
-      }
-    })
-    return
-  }
-
-  let params = state
-  if (flow.request) {
-    flow.request.split('.').forEach((v: string) => {
-      if (v.includes('items[prop=')) {
-        const res = Filter(v, params)
-        params = params.items[res]
-      } else if (v.includes('columns[prop=')) {
-        const res = Filter(v, params)
-        params = params.cloumns[res]
-      } else {
-        params = params[v]
-      }
-    })
-  }
-
-  await runAction({
-    flow: flow.name,
-    inputs: {
-      params: params,
-      client: data
     }
   })
+  return mapping
+}
+
+// 对配置项中的 request 或者 response 进行配置解析
+// 参数说明
+// state: current page state
+// mapping: request or response config
+export function parseStateMapping(state: any, mapping: any) {
+  let params = {}
+  Object.keys(mapping).forEach(key => {
+    let tempState
+    const item = mapping[key]
+    if (typeof item === 'string') {
+      tempState = getStateByStringConfig(state, item)
+      if (tempState) {
+        params[key] = tempState
+      }
+    } else if (typeof item === 'object') {
+      const objectData = parseStateMapping(state, item)
+      params[key] = { ...objectData }
+    } else {
+      params[key] = item
+    }
+  })
+  return params
+}
+
+export function getStateByStringConfig(state: any, str: string) {
+  let tempState = state
+  if (str.includes('forms[')) {
+    const value = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
+    str = str.slice(0, str.indexOf('[')) + '.' + value + str.slice(str.indexOf(']') + 1)
+  }
+  const strMapping = str.split('.')
+  if (strMapping.length) {
+    strMapping.forEach(sm => {
+      if (sm.includes('columns[prop=')) {
+        const res = Filter(sm, tempState)
+        tempState = tempState.cloumns[res]
+      } else {
+        if (tempState[sm] || (!tempState[sm] && sm === 'value')) {
+          tempState = tempState[sm]
+        } else {
+          tempState = str
+        }
+      }
+    })
+  }
+  return tempState
 }

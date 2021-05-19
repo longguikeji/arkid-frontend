@@ -1,15 +1,16 @@
-import { StateNode } from '@/nodes/stateNode'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
+import getDataByPath from '@/utils/datapath'
 
-export class Confirm extends StateNode {
+export class Confirm extends FunctionNode {
   async run() {
-    const tempState = this.getState()
-    const data = tempState.list.data.items
+    const tempState = this.inputs.client
+    const data = tempState.dialogs?.selected?.state?.state?.list?.data
     const params = this.inputs.params
     const multi = params.multi
-    const path = params.path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
-    const parentTempState = this.getState(path)
-    const previousTempState = this.getPreviousState()
-    
+    const path = this.inputs.path
+    const com = this.inputs.com
+    const parentTempState = getDataByPath(com.$store.state, path)
+
     // 确认时需要将之前的options去掉
     parentTempState.options.length = 0
 
@@ -32,6 +33,6 @@ export class Confirm extends StateNode {
     }    
     
     // 关闭页面弹出框
-    previousTempState.dialogs.selected.visible = false
+    tempState.dialogs.selected.visible = false
   }
 }
