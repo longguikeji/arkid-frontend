@@ -28,7 +28,7 @@ export interface GenerateDialogStateParams {
 }
 
 export function generateDialogState(params: GenerateDialogStateParams): DialogState | undefined {
-  const { initActionOperation, method, type, title, actions, buttons, showReadOnly, key } = params
+  const { initActionOperation, method, type, title, buttons, showReadOnly, key } = params
   if (!initActionOperation || method === 'delete' || key === 'export') return undefined
   const isResponses = method.toLowerCase() === "get" ? true : false
   const content = isResponses ? initActionOperation.responses[200].content : initActionOperation.requestBody.content
@@ -145,7 +145,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   const dialogState = generateDialogState(dialogParams)
   if (dialogState) {
     tempState.dialogs![key] = dialogState as DialogState
-    addDialogBtnActions(tempState, url, method, key, showReadOnly)
+    addDialogBtnActions(tempState, url, method, key)
     const importListDialog = whetherImportListDialog(dialogState.state.state)
     if (importListDialog) {
       tempState.dialogs![key].state.state.dialogs = {
@@ -163,7 +163,7 @@ export function generateDialog(tempState: any, url: string, method: string, key:
   return tempState
 }
 
-export function addDialogBtnActions(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
+export function addDialogBtnActions(state: any, url: string, method: string, key: string) {
   const { isUpdatePage, dialogBtnPath, dialogBtnIsRequest, dialogBtnActionName } = getBaseAttributes(key)
   const target = 'dialogs.' + key + '.state.state.'
   const formState = state.dialogs[key].state.state
@@ -193,7 +193,7 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
   state.actions[dialogBtnActionName] = dialogBtnFlows
 }
 
-export function cardButton(state: any, url: string, method: string, key: string, showReadOnly?: boolean) {
+export function cardButton(state: any, url: string, method: string, key: string) {
   const { title, buttonType, pageBtnPath, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
   const cardButton = {
     label: title,
@@ -225,7 +225,7 @@ export function cardButton(state: any, url: string, method: string, key: string,
   return cardButton
 }
 
-export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false, showReadOnly?: boolean) {
+export function itemButton(state: any, url: string, method: string, key: string, isText: boolean = false) {
   const { title, buttonType, pageBtnIsRequestion, pageBtnActionName } = getBaseAttributes(key)
   const itemButton = {
     label: title,
