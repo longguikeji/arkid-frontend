@@ -1,7 +1,8 @@
 <template>
   <div class="dashboard-page">
     <iframe
-      v-if="app.url && !isAll"
+      v-if="isSingle"
+      ref="singleAppWindow"
       class="single-app-page"
       :src="app.url"
     />
@@ -29,7 +30,7 @@
       >
         <DashboardItem
           :path="getChildPath('items[' + item.i + ']')"
-          @appClick="appClick"
+          @appClick="showAppPage"
         />
       </grid-item>
     </grid-layout>
@@ -43,7 +44,8 @@ import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
-import { DesktopModule, IDesktopCurrentApp, DesktopStatus } from '@/store/modules/desktop'
+import { DesktopModule, DesktopStatus, IDesktopSingleApp } from '@/store/modules/desktop'
+import { getDesktopApp } from '@/utils/cookies'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -63,12 +65,13 @@ export default class extends Mixins(BaseVue) {
     return this.state.items
   }
 
-  get app(): IDesktopCurrentApp {
-    return DesktopModule.desktopCurrentApp
+  get app() {
+    const apps = DesktopModule.desktopApp
+    return apps[apps.length - 1]
   }
 
-  get isAll(): boolean {
-    return DesktopModule.desktopStatus === DesktopStatus.All
+  get isSingle(): boolean {
+    return DesktopModule.isSingle
   }
 
   private layout?:any[] = [];// 必须有初始值
@@ -84,6 +87,13 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
+  created() {
+    const localApp = getDesktopApp()
+    if (localApp) {
+      DesktopModule.addDesktopApp(JSON.parse(localApp))
+    }
+  }
+
   resizedHandler(i:number, newH:number, newW:number) {
     if (this.state.items) {
       const item = this.state.items[i]
@@ -94,13 +104,14 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  appClick(data: any) {
-    const app = {
+  showAppPage(data: any) {
+    const app: IDesktopSingleApp = {
       url: data.url,
       name: data.name
     }
-    DesktopModule.setDesktopCurrentAppUrl(app)
-    DesktopModule.setDesktopStatus(DesktopStatus.Single)
+    const isSingle = true
+    DesktopModule.setDesktopStatus(isSingle)
+    DesktopModule.addDesktopApp(app)
   }
 }
 </script>

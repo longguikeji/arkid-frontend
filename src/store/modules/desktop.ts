@@ -1,50 +1,61 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { getDesktopStatus, setDesktopStatus, getDesktopApp, setDesktopApp, removeDesktopApp } from '@/utils/cookies'
 import store from '@/store'
 
-export interface IDesktopCurrentApp {
+export interface IDesktopSingleApp {
   url: string
   name: string
 }
 
-export enum DesktopStatus {
-  All,
-  Single
+export interface IDesktopState {
+  isSingle: boolean
+  desktopApp: Array<IDesktopSingleApp>
 }
 
-export interface IDesktopState {
-  desktopCurrentApp: IDesktopCurrentApp
-  desktopStatus: DesktopStatus
+export enum DesktopStatus {
+  AllApp = 'all',
+  SingleApp = 'single',
 }
 
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
-  // desktopCurrentAppUrl 记录下当前页面呈现的app，将用于Breadcrumb组件中进行呈现相关文本
-  // two status: all and single
-  public desktopStatus: DesktopStatus = DesktopStatus.All
-  public desktopCurrentApp: IDesktopCurrentApp = {
-    url: '',
-    name: ''
+  public isSingle: boolean = getDesktopStatus() === DesktopStatus.SingleApp
+  public desktopApp: Array<IDesktopSingleApp> = []
+
+  @Mutation
+  private SET_DESKTOP_STATUS(isSingle: boolean) {
+    this.isSingle = isSingle
+    if (isSingle) {
+      setDesktopStatus(DesktopStatus.SingleApp)
+    } else {
+      setDesktopStatus(DesktopStatus.AllApp)
+    }
   }
 
   @Mutation
-  private SET_DESKTOP_CURRENT_APP_URL(app: IDesktopCurrentApp) {
-    this.desktopCurrentApp.url = app.url
-    this.desktopCurrentApp.name = app.name || '应用'
+  private ADD_DESKTOP_APP(app: IDesktopSingleApp) {
+    setDesktopApp(JSON.stringify(app))
+    this.desktopApp.push(app)
   }
 
   @Mutation
-  private SET_DESKTOP_STATUS(status: DesktopStatus) {
-    this.desktopStatus = status
+  private REMOVE_DESKTOP_APP() {
+    removeDesktopApp()
   }
 
   @Action
-  public setDesktopCurrentAppUrl(app: IDesktopCurrentApp) {
-    this.SET_DESKTOP_CURRENT_APP_URL(app)
+  public setDesktopStatus(isSingle: boolean) {
+    this.SET_DESKTOP_STATUS(isSingle)
   }
 
   @Action
-  public setDesktopStatus(status: DesktopStatus) {
-    this.SET_DESKTOP_STATUS(status)
+  public addDesktopApp(app: IDesktopSingleApp) {
+    this.ADD_DESKTOP_APP(app)
+  }
+
+  @Action
+  public removeDesktopApp() {
+    this.REMOVE_DESKTOP_APP()
   }
 }
 

@@ -86,7 +86,8 @@ export default class extends Vue {
   private onRouteChange() {
     this.addTags()
     this.moveToCurrentTag()
-    DesktopModule.setDesktopStatus(DesktopStatus.All)
+    const isSingle = false
+    DesktopModule.setDesktopStatus(isSingle)
   }
 
   @Watch('visible')
