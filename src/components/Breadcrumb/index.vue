@@ -11,7 +11,7 @@
         <span
           v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
           class="no-redirect"
-        >{{ item.meta.title }}</span>
+        >{{ getTitle(item) }}</span>
         <a
           v-else
           @click.prevent="handleLink(item)"
@@ -25,12 +25,17 @@
 import { compile } from 'path-to-regexp'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
+import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 @Component({
   name: 'Breadcrumb'
 })
 export default class extends Vue {
   private breadcrumbs: RouteRecord[] = []
+
+  private get desktopVisitedApps() {
+    return DesktopModule.desktopVisitedApps
+  }
 
   @Watch('$route')
   private onRouteChange(route: Route) {
@@ -41,11 +46,30 @@ export default class extends Vue {
     this.getBreadcrumb()
   }
 
+  @Watch('desktopVisitedApps')
+  private onDesktopVisitedAppsChange() {
+    if (DesktopModule.isSingle) {
+      this.getBreadcrumb()
+    }
+  }
+
   created() {
     this.getBreadcrumb()
   }
 
+  private getTitle(item: RouteRecord) {
+    if (item.meta.app?.name) {
+      return item.meta.app.name
+    }
+    return item.meta.title
+  }
+
   private getBreadcrumb() {
+    const desktopVisitedApps = this.desktopVisitedApps
+    const currentApp = desktopVisitedApps[desktopVisitedApps.length - 1]
+    if (this.$route.path === '/desktop') {
+      this.$route.meta.app = DesktopModule.isSingle ? currentApp : undefined
+    }
     let matched = this.$route.matched.filter((item) => item.meta && item.meta.title)
     const first = matched[0]
     if (!this.isDashboard(first)) {
@@ -72,6 +96,9 @@ export default class extends Vue {
   }
 
   private handleLink(item: any) {
+    const isSingle = false
+    DesktopModule.setDesktopStatus(isSingle)
+    this.getBreadcrumb()
     const { redirect, path } = item
     if (redirect) {
       this.$router.push(redirect).catch(err => {

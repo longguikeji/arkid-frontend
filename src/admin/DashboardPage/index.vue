@@ -66,7 +66,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   get app() {
-    const apps = DesktopModule.desktopApp
+    const apps = DesktopModule.desktopVisitedApps
     return apps[apps.length - 1]
   }
 

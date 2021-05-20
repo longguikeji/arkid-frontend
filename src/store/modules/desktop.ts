@@ -9,7 +9,7 @@ export interface IDesktopSingleApp {
 
 export interface IDesktopState {
   isSingle: boolean
-  desktopApp: Array<IDesktopSingleApp>
+  desktopVisitedApps: Array<IDesktopSingleApp>
 }
 
 export enum DesktopStatus {
@@ -20,7 +20,7 @@ export enum DesktopStatus {
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
   public isSingle: boolean = getDesktopStatus() === DesktopStatus.SingleApp
-  public desktopApp: Array<IDesktopSingleApp> = []
+  public desktopVisitedApps: Array<IDesktopSingleApp> = []
 
   @Mutation
   private SET_DESKTOP_STATUS(isSingle: boolean) {
@@ -35,7 +35,7 @@ class Desktop extends VuexModule implements IDesktopState {
   @Mutation
   private ADD_DESKTOP_APP(app: IDesktopSingleApp) {
     setDesktopApp(JSON.stringify(app))
-    this.desktopApp.push(app)
+    this.desktopVisitedApps.push(app)
   }
 
   @Mutation
