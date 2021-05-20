@@ -45,7 +45,9 @@ export default class extends Vue {
     this.isShow = true
     // 执行查看 TenantModule.currentTenant 当前的内容，如果不存在uuid，则设置isShowClose为false
     const currentTenant = TenantModule.currentTenant
-    if (currentTenant?.uuid?.length) this.isShowClose = true
+    if (currentTenant.uuid?.length) {
+      this.isShowClose = true
+    }
     const currentPage = this.$route.meta.page
     const initContent: ITagPage | undefined = getInitContent(currentPage)
     if (!initContent) {

@@ -5,7 +5,6 @@ import TablePageState from '@/admin/TablePage/TablePageState'
 export interface ITenantState {
   tenantState: TablePageState
   currentTenant: any
-  originHost: string
   hasSlug: boolean
 }
 
@@ -15,7 +14,6 @@ class Tenant extends VuexModule implements ITenantState {
     type: 'TablePage'
   }
   currentTenant: any = {}
-  originHost: string = ''
   hasSlug: boolean = false
 
   @Mutation
@@ -26,11 +24,6 @@ class Tenant extends VuexModule implements ITenantState {
   @Mutation
   public changeCurrentTenant(payload: any) {
     this.currentTenant = payload
-  }
-
-  @Mutation
-  public setOriginHost(originHost: string) {
-    this.originHost = originHost
   }
 
   @Mutation

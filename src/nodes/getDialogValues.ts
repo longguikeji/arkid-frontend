@@ -8,7 +8,7 @@ export class GetDialogValues extends AuthApiNode {
       throw Error('dialogs is not data')
     }
     this.url = getUrl(this.inputs.params.url, data)
-    this.method = this.inputs.params.method || 'get'
+    this.method = this.inputs.params.method || 'GET'
     const outputs = await super.run()
     return {
       outputs: outputs,

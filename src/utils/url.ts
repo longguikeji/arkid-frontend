@@ -4,6 +4,7 @@
 // id参数则需要在调用该函数时传入data，通过data.id或data.uuid的方式进行读取
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
+import { getOriginUrl } from '@/utils/cookies'
 
 export default function getUrl(currentUrl: string, data: any = {}) {
   let url = currentUrl
@@ -38,7 +39,7 @@ export function getUrlParamByName(name: string) {
 }
 
 export function getSlug() {
-  const host = TenantModule.originHost
+  const host = getOriginUrl()
   const hostname = host?.replace(window.location.protocol + '//', '') || ''
   let slug = window.location.host.replace(hostname, '')
   if (slug.length > 0) {

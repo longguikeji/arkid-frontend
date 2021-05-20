@@ -13,8 +13,7 @@ const sizeKey = 'size'
 export const getSize = () => Cookies.get(sizeKey)
 export const setSize = (size: string) => Cookies.set(sizeKey, size)
 
-// User
-const tokenKey = 'vue_typescript_admin_access_token'
-export const getToken = () => Cookies.get(tokenKey)
-export const setToken = (token: string) => Cookies.set(tokenKey, token)
-export const removeToken = () => Cookies.remove(tokenKey)
+// OriginUrl
+const originUrlKey = 'origin_url'
+export const getOriginUrl = () => Cookies.get(originUrlKey)
+export const setOriginUrl = (originUrl: string) => Cookies.set(originUrlKey, originUrl)
