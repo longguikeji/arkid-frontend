@@ -11,10 +11,13 @@
     :error="state.error"
   >
     <span
-      v-if="state.label"
+      v-if="isShow"
       slot="label"
     >{{ state.label }}</span>
-    <AdminComponent :path="getChildPath('')" />
+    <AdminComponent
+      v-if="isShow"
+      :path="getChildPath('')"
+    />
   </el-form-item>
 </template>
 
@@ -43,6 +46,14 @@ export default class extends Mixins(BaseVue) {
     } else {
       return 'form-item half-width'
     }
+  }
+
+  private get isShow() {
+    const items = this.state.state?.items
+    if (items !== undefined && Object.keys(items).length === 0) {
+      return false
+    }
+    return true
   }
 }
 </script>

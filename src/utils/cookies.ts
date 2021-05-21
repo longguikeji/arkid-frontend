@@ -19,10 +19,6 @@ export const getOriginUrl = () => Cookies.get(originUrlKey)
 export const setOriginUrl = (originUrl: string) => Cookies.set(originUrlKey, originUrl)
 
 // Desktop
-const desktopStatusKey = 'desktop_status'
-export const getDesktopStatus = () => Cookies.get(desktopStatusKey)
-export const setDesktopStatus = (desktopStatus: string) => Cookies.set(desktopStatusKey, desktopStatus)
-
 const desktopAppKey = 'desktop_current_app'
 export const getDesktopApp = () => Cookies.get(desktopAppKey)
 export const setDesktopApp = (desktopApp: string) => Cookies.set(desktopAppKey, desktopApp)

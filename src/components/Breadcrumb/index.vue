@@ -25,7 +25,7 @@
 import { compile } from 'path-to-regexp'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
-import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
+import { DesktopModule } from '@/store/modules/desktop'
 
 @Component({
   name: 'Breadcrumb'
@@ -48,9 +48,7 @@ export default class extends Vue {
 
   @Watch('desktopVisitedApps')
   private onDesktopVisitedAppsChange() {
-    if (DesktopModule.isSingle) {
-      this.getBreadcrumb()
-    }
+    this.getBreadcrumb()
   }
 
   created() {
@@ -68,7 +66,7 @@ export default class extends Vue {
     const desktopVisitedApps = this.desktopVisitedApps
     const currentApp = desktopVisitedApps[desktopVisitedApps.length - 1]
     if (this.$route.path === '/desktop') {
-      this.$route.meta.app = DesktopModule.isSingle ? currentApp : undefined
+      this.$route.meta.app = currentApp
     }
     let matched = this.$route.matched.filter((item) => item.meta && item.meta.title)
     const first = matched[0]
@@ -96,8 +94,6 @@ export default class extends Vue {
   }
 
   private handleLink(item: any) {
-    const isSingle = false
-    DesktopModule.setDesktopStatus(isSingle)
     this.getBreadcrumb()
     const { redirect, path } = item
     if (redirect) {

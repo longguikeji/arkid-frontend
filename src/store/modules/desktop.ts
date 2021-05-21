@@ -1,5 +1,5 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
-import { getDesktopStatus, setDesktopStatus, getDesktopApp, setDesktopApp, removeDesktopApp } from '@/utils/cookies'
+import { getDesktopApp, setDesktopApp, removeDesktopApp } from '@/utils/cookies'
 import store from '@/store'
 
 export interface IDesktopSingleApp {
@@ -8,44 +8,41 @@ export interface IDesktopSingleApp {
 }
 
 export interface IDesktopState {
-  isSingle: boolean
-  desktopVisitedApps: Array<IDesktopSingleApp>
-}
-
-export enum DesktopStatus {
-  AllApp = 'all',
-  SingleApp = 'single',
+  desktopVisitedApps: Array<IDesktopSingleApp | null>
 }
 
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
-  public isSingle: boolean = getDesktopStatus() === DesktopStatus.SingleApp
-  public desktopVisitedApps: Array<IDesktopSingleApp> = []
+  public desktopVisitedApps: Array<IDesktopSingleApp | null> = this.visitedApps
 
-  @Mutation
-  private SET_DESKTOP_STATUS(isSingle: boolean) {
-    this.isSingle = isSingle
-    if (isSingle) {
-      setDesktopStatus(DesktopStatus.SingleApp)
-    } else {
-      setDesktopStatus(DesktopStatus.AllApp)
+  private get visitedApps(): Array<IDesktopSingleApp | null> {
+    const visitedApps: Array<IDesktopSingleApp | null> = []
+    const localApp = getDesktopApp()
+    if (localApp) {
+      visitedApps.push(JSON.parse(localApp))
     }
+    return visitedApps
   }
 
   @Mutation
   private ADD_DESKTOP_APP(app: IDesktopSingleApp) {
-    setDesktopApp(JSON.stringify(app))
-    this.desktopVisitedApps.push(app)
+    let isAddApp = true
+    for (let i = 0; i < this.desktopVisitedApps.length; i++) {
+      const oneApp = this.desktopVisitedApps[i]
+      if (oneApp?.url === app.url || oneApp?.name === app.name) {
+        isAddApp = false
+        break
+      }
+    }
+    if (isAddApp) {
+      setDesktopApp(JSON.stringify(app))
+      this.desktopVisitedApps.push(app)
+    }
   }
 
   @Mutation
   private REMOVE_DESKTOP_APP() {
     removeDesktopApp()
-  }
-
-  @Action
-  public setDesktopStatus(isSingle: boolean) {
-    this.SET_DESKTOP_STATUS(isSingle)
   }
 
   @Action

@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-page">
     <iframe
-      v-if="isSingle"
+      v-if="app && app.url"
       ref="singleAppWindow"
       class="single-app-page"
       :src="app.url"
@@ -44,8 +44,7 @@ import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
-import { DesktopModule, DesktopStatus, IDesktopSingleApp } from '@/store/modules/desktop'
-import { getDesktopApp } from '@/utils/cookies'
+import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -70,10 +69,6 @@ export default class extends Mixins(BaseVue) {
     return apps[apps.length - 1]
   }
 
-  get isSingle(): boolean {
-    return DesktopModule.isSingle
-  }
-
   private layout?:any[] = [];// 必须有初始值
 
   @Watch('items', { immediate: true })
@@ -84,13 +79,6 @@ export default class extends Mixins(BaseVue) {
       const item = this.items[i]
       if (item.position) { item.position.i = i }
       this.layout?.push(item.position)
-    }
-  }
-
-  created() {
-    const localApp = getDesktopApp()
-    if (localApp) {
-      DesktopModule.addDesktopApp(JSON.parse(localApp))
     }
   }
 
@@ -109,8 +97,6 @@ export default class extends Mixins(BaseVue) {
       url: data.url,
       name: data.name
     }
-    const isSingle = true
-    DesktopModule.setDesktopStatus(isSingle)
     DesktopModule.addDesktopApp(app)
   }
 }
