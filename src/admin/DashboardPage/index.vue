@@ -93,11 +93,19 @@ export default class extends Mixins(BaseVue) {
   }
 
   showAppPage(data: any) {
-    const app: IDesktopSingleApp = {
-      url: data.url,
-      name: data.name
+    if (data.url) {
+      const app: IDesktopSingleApp = {
+        url: data.url,
+        name: data.name || '应用'
+      }
+      DesktopModule.addDesktopApp(app)
+    } else {
+      this.$message({
+        message: '该应用未设置调转路径',
+        type: 'info',
+        showClose: true
+      })
     }
-    DesktopModule.addDesktopApp(app)
   }
 }
 </script>

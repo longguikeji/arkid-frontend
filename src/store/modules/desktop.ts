@@ -25,18 +25,15 @@ class Desktop extends VuexModule implements IDesktopState {
   }
 
   @Mutation
-  private ADD_DESKTOP_APP(app: IDesktopSingleApp) {
-    let isAddApp = true
-    for (let i = 0; i < this.desktopVisitedApps.length; i++) {
-      const oneApp = this.desktopVisitedApps[i]
-      if (oneApp?.url === app.url || oneApp?.name === app.name) {
-        isAddApp = false
-        break
-      }
-    }
-    if (isAddApp) {
-      setDesktopApp(JSON.stringify(app))
+  private ADD_DESKTOP_APP(app: IDesktopSingleApp | null) {
+    const len = this.desktopVisitedApps.length
+    if (len < 5) {
       this.desktopVisitedApps.push(app)
+      setDesktopApp(JSON.stringify(app))
+    } else if (this.desktopVisitedApps[len] !== null || app !== null) {
+      this.desktopVisitedApps.shift()
+      this.desktopVisitedApps.push(app)
+      setDesktopApp(JSON.stringify(app))
     }
   }
 
@@ -46,7 +43,7 @@ class Desktop extends VuexModule implements IDesktopState {
   }
 
   @Action
-  public addDesktopApp(app: IDesktopSingleApp) {
+  public addDesktopApp(app: IDesktopSingleApp | null) {
     this.ADD_DESKTOP_APP(app)
   }
 

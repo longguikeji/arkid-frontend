@@ -94,6 +94,7 @@ export default class extends Vue {
   }
 
   private handleLink(item: any) {
+    DesktopModule.addDesktopApp(null)
     this.getBreadcrumb()
     const { redirect, path } = item
     if (redirect) {
