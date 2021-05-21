@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-page">
     <iframe
-      v-if="app && app.url"
+      v-if="app.url"
       ref="singleAppWindow"
       class="single-app-page"
       :src="app.url"
@@ -44,7 +44,6 @@ import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
-import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -56,6 +55,9 @@ import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
   }
 })
 export default class extends Mixins(BaseVue) {
+  private layout?: any[] = [] // 必须有初始值
+  private app: any = {}
+
   get state(): DashboardPage {
     return this.$state as DashboardPage
   }
@@ -63,13 +65,6 @@ export default class extends Mixins(BaseVue) {
   get items(): DashboardItemState[] | undefined {
     return this.state.items
   }
-
-  get app() {
-    const apps = DesktopModule.desktopVisitedApps
-    return apps[apps.length - 1]
-  }
-
-  private layout?:any[] = [];// 必须有初始值
 
   @Watch('items', { immediate: true })
   freshLayout() {
@@ -82,9 +77,18 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
+  @Watch('$route')
+  onRouteChange() {
+    this.updateDesktopPage()
+  }
+
+  mounted() {
+    this.updateDesktopPage()
+  }
+
   resizedHandler(i:number, newH:number, newW:number) {
-    if (this.state.items) {
-      const item = this.state.items[i]
+    if (this.items) {
+      const item = this.items[i]
       if (item.position) {
         item.position.h = newH
         item.position.w = newW
@@ -92,16 +96,31 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  showAppPage(data: any) {
-    if (data.url) {
-      const app: IDesktopSingleApp = {
-        url: data.url,
-        name: data.name || '应用'
+  updateDesktopPage() {
+    const appUUId = this.$route.query.app
+    const items = this.items
+    if (appUUId && items) {
+      for (const item of items) {
+        if (item.state.uuid === appUUId) {
+          this.app = item.state
+        }
       }
-      DesktopModule.addDesktopApp(app)
+    } else {
+      this.app = {}
+    }
+  }
+
+  showAppPage(data: any) {
+    if (data.url && data.uuid) {
+      this.$router.push({
+        path: '/',
+        query: {
+          app: data.uuid
+        }
+      })
     } else {
       this.$message({
-        message: '该应用未设置调转路径',
+        message: '该应用未设置调转路径或缺少标识信息',
         type: 'info',
         showClose: true
       })

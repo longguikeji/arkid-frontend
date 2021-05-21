@@ -1,5 +1,4 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
-import { getDesktopApp, setDesktopApp, removeDesktopApp } from '@/utils/cookies'
 import store from '@/store'
 
 export interface IDesktopSingleApp {
@@ -13,43 +12,23 @@ export interface IDesktopState {
 
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
-  public desktopVisitedApps: Array<IDesktopSingleApp | null> = this.visitedApps
-
-  private get visitedApps(): Array<IDesktopSingleApp | null> {
-    const visitedApps: Array<IDesktopSingleApp | null> = []
-    const localApp = getDesktopApp()
-    if (localApp) {
-      visitedApps.push(JSON.parse(localApp))
-    }
-    return visitedApps
-  }
+  public desktopVisitedApps: Array<IDesktopSingleApp> = []
 
   @Mutation
   private ADD_DESKTOP_APP(app: IDesktopSingleApp | null) {
-    const len = this.desktopVisitedApps.length
-    if (len < 5) {
-      this.desktopVisitedApps.push(app)
-      setDesktopApp(JSON.stringify(app))
-    } else if (this.desktopVisitedApps[len] !== null || app !== null) {
-      this.desktopVisitedApps.shift()
-      this.desktopVisitedApps.push(app)
-      setDesktopApp(JSON.stringify(app))
+    if (app) {
+      const sameApps = this.desktopVisitedApps.filter((visitedApp) => {
+        return visitedApp?.name === app.name || visitedApp?.url === app.url
+      })
+      if (sameApps.length === 0) {
+        this.desktopVisitedApps.push(app)
+      }
     }
-  }
-
-  @Mutation
-  private REMOVE_DESKTOP_APP() {
-    removeDesktopApp()
   }
 
   @Action
   public addDesktopApp(app: IDesktopSingleApp | null) {
     this.ADD_DESKTOP_APP(app)
-  }
-
-  @Action
-  public removeDesktopApp() {
-    this.REMOVE_DESKTOP_APP()
   }
 }
 

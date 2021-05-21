@@ -17,7 +17,8 @@ export class ChangeState extends FunctionNode {
           img: app.logo,
           name: app.name,
           url: app.url,
-          description: app.description
+          description: app.description,
+          uuid: app.uuid
         },
         position: {
           x: x,

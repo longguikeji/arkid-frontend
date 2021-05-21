@@ -9,9 +9,9 @@
       @scroll="handleScroll"
     >
       <router-link
-        v-for="tag in visitedViews"
+        v-for="(tag, tagIndex) in visitedViews"
         ref="tag"
-        :key="tag.path"
+        :key="tag.path + tagIndex"
         :class="isActive(tag) ? 'active' : ''"
         :to="{path: tag.path, query: tag.query, fullPath: tag.fullPath}"
         tag="span"
@@ -58,7 +58,6 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteConfig } from 'vue-router'
 import { menuRoutes } from '@/router/index'
 import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
-// import { DesktopModule } from '@/store/modules/desktop'
 import ScrollPane from './ScrollPane.vue'
 
 @Component({
