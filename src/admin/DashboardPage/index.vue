@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-page">
     <iframe
-      v-if="app.url"
+      v-if="app && app.url"
       ref="singleAppWindow"
       class="single-app-page"
       :src="app.url"
@@ -44,6 +44,7 @@ import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
+import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -56,7 +57,6 @@ import BaseVue from '@/admin/base/BaseVue'
 })
 export default class extends Mixins(BaseVue) {
   private layout?: any[] = [] // 必须有初始值
-  private app: any = {}
 
   get state(): DashboardPage {
     return this.$state as DashboardPage
@@ -64,6 +64,10 @@ export default class extends Mixins(BaseVue) {
 
   get items(): DashboardItemState[] | undefined {
     return this.state.items
+  }
+
+  get app(): IDesktopSingleApp | null {
+    return DesktopModule.desktopCurrentApp
   }
 
   @Watch('items', { immediate: true })
@@ -75,14 +79,11 @@ export default class extends Mixins(BaseVue) {
       if (item.position) { item.position.i = i }
       this.layout?.push(item.position)
     }
-  }
-
-  @Watch('$route')
-  onRouteChange() {
     this.updateDesktopPage()
   }
 
-  mounted() {
+  @Watch('$route')
+  onCurrentAppChange() {
     this.updateDesktopPage()
   }
 
@@ -99,15 +100,15 @@ export default class extends Mixins(BaseVue) {
   updateDesktopPage() {
     const appUUId = this.$route.query.app
     const items = this.items
+    let app: IDesktopSingleApp | null = null
     if (appUUId && items) {
       for (const item of items) {
         if (item.state.uuid === appUUId) {
-          this.app = item.state
+          app = item.state
         }
       }
-    } else {
-      this.app = {}
     }
+    DesktopModule.updateCurrentDesktopApp(app)
   }
 
   showAppPage(data: any) {
@@ -115,6 +116,7 @@ export default class extends Mixins(BaseVue) {
       this.$router.push({
         path: '/',
         query: {
+          ...this.$route.query,
           app: data.uuid
         }
       })

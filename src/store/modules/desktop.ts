@@ -4,32 +4,27 @@ import store from '@/store'
 export interface IDesktopSingleApp {
   url: string
   name: string
+  uuid: string
 }
 
 export interface IDesktopState {
-  desktopVisitedApps: Array<IDesktopSingleApp | null>
+  desktopCurrentApp: IDesktopSingleApp | null
 }
 
 @Module({ dynamic: true, store, name: 'desktop' })
 class Desktop extends VuexModule implements IDesktopState {
-  public desktopVisitedApps: Array<IDesktopSingleApp> = []
+  public desktopCurrentApp: IDesktopSingleApp | null = null
 
   @Mutation
-  private ADD_DESKTOP_APP(app: IDesktopSingleApp | null) {
-    if (app) {
-      const sameApps = this.desktopVisitedApps.filter((visitedApp) => {
-        return visitedApp?.name === app.name || visitedApp?.url === app.url
-      })
-      if (sameApps.length === 0) {
-        this.desktopVisitedApps.push(app)
-      }
-    }
+  private UPDATE_CURRENT_DESKTOP_APP(app: IDesktopSingleApp | null) {
+    this.desktopCurrentApp = app
   }
 
   @Action
-  public addDesktopApp(app: IDesktopSingleApp | null) {
-    this.ADD_DESKTOP_APP(app)
+  public updateCurrentDesktopApp(app: IDesktopSingleApp | null) {
+    this.UPDATE_CURRENT_DESKTOP_APP(app)
   }
+
 }
 
 export const DesktopModule = getModule(Desktop)
