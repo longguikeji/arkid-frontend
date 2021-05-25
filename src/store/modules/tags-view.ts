@@ -18,7 +18,7 @@ class TagsView extends VuexModule implements ITagsViewState {
 
   @Mutation
   private ADD_VISITED_VIEW(view: ITagView) {
-    if (this.visitedViews.some(v => v.path === view.path)) return
+    if (this.visitedViews.some(v => view.path === '/desktop' ? v.fullPath === view.fullPath : v.path === view.path)) return
     this.visitedViews.push(
       Object.assign({}, view, {
         title: view.meta.title || 'no-name'
@@ -38,7 +38,7 @@ class TagsView extends VuexModule implements ITagsViewState {
   @Mutation
   private DEL_VISITED_VIEW(view: ITagView) {
     for (const [i, v] of this.visitedViews.entries()) {
-      if (v.path === view.path) {
+      if (view.path === '/desktop' ? v.fullPath === view.fullPath : v.path === view.path) {
         this.visitedViews.splice(i, 1)
         break
       }

@@ -1,4 +1,4 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import OpenAPI from '@/config/openapi'
 import { UserModule } from '@/store/modules/user'
 import { getToken } from '@/utils/auth'

@@ -14,14 +14,14 @@ export default function getUrl(currentUrl: string, data: any = {}) {
     let param
     switch (property) {
       case 'parent_lookup_tenant':
-        param = TenantModule.currentTenant.uuid
+        param = TenantModule.currentTenant?.uuid
         break
       case 'parent_lookup_user':
         param = UserModule.userUUId
         break
       case 'id':
       case 'uuid':
-        param = data.uuid
+        param = data?.uuid
     }
     url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
   }

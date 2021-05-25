@@ -11,7 +11,7 @@
         <span
           v-if="item.redirect === 'noredirect' || index === breadcrumbs.length-1"
           class="no-redirect"
-        >{{ item.meta.title }}</span>
+        >{{ appName || item.meta.title }}</span>
         <a
           v-else
           @click.prevent="handleLink(item)"
@@ -25,12 +25,18 @@
 import { compile } from 'path-to-regexp'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
+import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 @Component({
   name: 'Breadcrumb'
 })
 export default class extends Vue {
   private breadcrumbs: RouteRecord[] = []
+  private appName = ''
+
+  private get desktopCurrentApp() {
+    return DesktopModule.desktopCurrentApp
+  }
 
   @Watch('$route')
   private onRouteChange(route: Route) {
@@ -39,6 +45,11 @@ export default class extends Vue {
       return
     }
     this.getBreadcrumb()
+  }
+
+  @Watch('desktopCurrentApp')
+  private onDesktopCurrentAppChange(app: IDesktopSingleApp) {
+    this.appName = app?.name || ''
   }
 
   created() {

@@ -1,0 +1,14 @@
+.group {
+  .multi-page {
+    .tree-page {
+      display: inline-block;
+      width: 30%;
+      height: calc(100vh - 84px);
+    }
+    .table-page {
+      display: inline-block;
+      width: 70%;
+      height: 100%;
+    }
+  }
+}

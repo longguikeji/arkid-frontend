@@ -164,7 +164,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UploadState from './UploadState'
-import { runAction } from '@/arkfbp'
 import { VueCropper } from 'vue-cropper'
 import XLSX from 'xlsx'
 import processTableData from '@/utils/readexcel'

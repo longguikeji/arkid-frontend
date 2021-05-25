@@ -41,8 +41,8 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  private async handleSizeChange(currentSize: number) {
-    this.state.pageCount = currentSize
+  private async handleSizeChange(pageSize: number) {
+    this.state.pageSize = pageSize
     await this.runAction(this.state.action)
   }
 

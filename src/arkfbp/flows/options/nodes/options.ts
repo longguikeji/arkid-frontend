@@ -1,4 +1,4 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 
 export class Options extends AuthApiNode {
   async run() {

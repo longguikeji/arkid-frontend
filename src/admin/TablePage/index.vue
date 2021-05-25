@@ -40,7 +40,7 @@ import Button from '@/admin/common/Button/index.vue'
 import Form from '@/admin/common/Form/index.vue'
 import Pagination from '@/admin/common/data/Pagination/index.vue'
 import Dialog from '@/admin/common/Others/Dialog/index.vue'
-import TablePageState from './TablePageState'
+import { TablePage } from './TablePageState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -55,8 +55,8 @@ import BaseVue from '@/admin/base/BaseVue'
   }
 })
 export default class extends Mixins(BaseVue) {
-  get state(): TablePageState {
-    return this.$state as TablePageState
+  get state(): TablePage {
+    return this.$state as TablePage
   }
 
   get filterPath(): string {
@@ -94,11 +94,15 @@ export default class extends Mixins(BaseVue) {
 .el-dialog {
   .table-page {
     height: auto !important;
-    min-height: auto !important;
+    min-height: 100% !important;
+    position: relative;
     ::v-deep .el-card__body {
       .el-table__body-wrapper {
         height: auto !important;
         min-height: auto !important;
+      }
+      .el-pagination {
+        bottom: 10px;
       }
     }
   }

@@ -1,6 +1,6 @@
-import FormPageState from '@/admin/FormPage/FormPageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
 
-export default function whetherImportListDialog(formData: FormPageState) {
+export default function whetherImportListDialog(formData: FormPage) {
   if (formData.form && formData.form.items) {
     let flag = false
     const items = formData.form.items
@@ -12,47 +12,27 @@ export default function whetherImportListDialog(formData: FormPageState) {
     }
     if (flag) {
       return {
-        type: "ListAssembly",
         visible: false,
         width: '70%',
         title: '',
         data: {},
         state: {
-          treePage: {
+          type: '',
+          state: {
             list: {
               header: {
                 title: '',
                 buttons: []
               },
-              data: {
-                items: []
-              }
+              data: []
             }
-          },
-          tablePage: {
-            list: {
-              header: {
-                title: '',
-                buttons: []
-              },
-              data: {
-                items: []
-              }
-            }
-          },
+          }
         },
-        actions: [
+        buttons: [
           {
             label: '确认所选',
-            action: [
-              {
-                name: 'flows/list/confirm',
-                params: {
-                  path: ''
-                }
-              }
-            ],
-            type: 'primary'
+            type: 'primary',
+            action: 'confirm'
           }
         ]
       }

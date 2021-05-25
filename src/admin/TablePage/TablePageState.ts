@@ -4,18 +4,23 @@ import TableState from '../common/data/Table/TableState'
 import FormState from '../common/Form/FormState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import DialogState from '../common/Others/Dialog/DialogState'
-import ListState from '@/admin/common/data/List/ListState' 
+import ListItemState from '@/admin/common/data/List/ListState' 
+import { FlowConfig } from '@/arkfbp'
 
-export default interface TablePageState extends BaseState {
-  type: 'TablePage'
+export interface TablePage extends BaseState {
   filter?: FormState
   table?: TableState
   pagination?: PaginationState
   card?: CardState
-  dialogs?: {[name:string]:DialogState}
-  pages?: Array<string>
+  dialogs?: { [name:string]: DialogState }
   list?: {
     header?: CardState,
-    data?: ListState
+    data?: Array<ListItemState>
   }
+  actions?: { [name: string]: (FlowConfig | string)[] }
+}
+
+export default interface TablePageState {
+  type?: string // TablePage
+  state?: TablePage
 }
