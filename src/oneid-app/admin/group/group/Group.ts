@@ -180,11 +180,10 @@ export default class Group extends Vue {
 
   async onNodeChange(val: Node, treeNode: TreeNode) {
     const children  = (await api.Node.tree(val.id)).nodes
-
+    val.children = []
+    treeNode.children = []
     for(const child of children){
       const node = Node.fromData(child)
-      val.children = []
-      treeNode.children = []
       val.children.push( node )
       treeNode.children.push( TreeNode.fromNode(node, this.treeOptions) )
     }
