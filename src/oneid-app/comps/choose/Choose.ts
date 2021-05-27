@@ -138,8 +138,7 @@ export default class Choose extends Vue {
     }
   }
 
-  onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
-    this.getCurNodeChildren(cur)
+  async onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
     if (!this.multiple) {
       if (cur.type === 'node') {
         this.nodeSelection = [cur.raw!] as Node[]
@@ -147,6 +146,7 @@ export default class Choose extends Vue {
         this.userSelection = [cur.raw!] as User[]
       }
     }
+    await this.getCurNodeChildren(cur)
   }
 
   getSelectionIcon(type: string): string {
