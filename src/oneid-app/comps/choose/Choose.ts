@@ -130,9 +130,9 @@ export default class Choose extends Vue {
     const id = cur.raw.id as string
     if (id) {
       const children  = (await api.Node.tree(id)).nodes
+      cur.children = []
       for(const child of children){
         const node = Node.fromData(child)
-        cur.children = []
         cur.children.push( TreeNode.fromNode(node, {}) )
       }
     }
