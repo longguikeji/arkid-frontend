@@ -102,6 +102,7 @@ export default class Choose extends Vue {
 
   tree: TreeNode|null = null
 
+
   nodeSelection: Node[] = []
   userSelection: User[] = []
 
@@ -125,7 +126,20 @@ export default class Choose extends Vue {
     }
   }
 
+  async getCurNodeChildren(cur: TreeNode) {
+    const id = cur.raw.id as string
+    if (id) {
+      const children  = (await api.Node.node(id)).nodes
+      for(const child of children){
+        const node = Node.fromData(child)
+        cur.children = []
+        cur.children.push( TreeNode.fromNode(node, {}) )
+      }
+    }
+  }
+
   onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
+    this.getCurNodeChildren(cur)
     if (!this.multiple) {
       if (cur.type === 'node') {
         this.nodeSelection = [cur.raw!] as Node[]
@@ -198,7 +212,7 @@ export default class Choose extends Vue {
   }
 
   async loadTreeData() {
-    const hierachy = await api.Node.tree(this.activeMetaNode!.id)
+    const hierachy = await api.Node.node(this.activeMetaNode!.id)
     // TODO (kaishun): node, user 两者的 id 可能重复， 需处理
     const selectionIds = [
       ...this.nodeSelection.map(n => n.id),
