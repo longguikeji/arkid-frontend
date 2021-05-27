@@ -252,13 +252,13 @@ class Group extends Vue {
     // ucenterNodeApi.user(dept.id).then((data)=>{
     //   dept.users = data.results
     // })
-    this.$app.loadingStart()
+
     dept.users = (await ucenterNodeApi.user(dept.id)).results
     // oneidApi.Node.node(dept.id).then((data)=>{
     //   dept.children = Node.fromData(data).children
     // })
     dept.children = Node.fromData(await oneidApi.Node.node(dept.id)).children
-    this.$app.loadingEnd()
+
     this.users = []
     this.curDept = dept
   }

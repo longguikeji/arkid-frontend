@@ -22,7 +22,6 @@ declare module 'vue/types/vue' {
   template: html`
   <div>
     <router-view />
-    <Spin size="large" fix v-if="loading" class="loading"></Spin>
   </div>
   `,
 
@@ -31,13 +30,6 @@ export default class App extends Mixins(LoginMixin) {
   metaInfo: Config|null = null
 
   loading:boolean = false
-  loadingStart(){
-    this.loading = true
-  }
-
-  loadingEnd(){
-    this.loading = false
-  }
 
   created() {
 
