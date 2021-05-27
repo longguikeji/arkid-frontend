@@ -149,7 +149,8 @@ export default class Group extends Vue {
   }
 
   async loadTreeData() {
-    const hierarchy = await api.Node.node(this.metaNode!.id)
+    const hierarchy = await api.Node.tree(this.metaNode!.id)
+
     const node = Node.fromData(hierarchy)
 
     const isSameTree = this.tree && this.tree.raw.id === node.id
@@ -178,9 +179,12 @@ export default class Group extends Vue {
   }
 
   async onNodeChange(val: Node, treeNode: TreeNode) {
-    const children  = (await api.Node.node(val.id)).nodes
+    const children  = (await api.Node.tree(val.id)).nodes
+
     for(const child of children){
       const node = Node.fromData(child)
+      val.children = []
+      treeNode.children = []
       val.children.push( node )
       treeNode.children.push( TreeNode.fromNode(node, this.treeOptions) )
     }

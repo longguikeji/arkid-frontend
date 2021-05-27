@@ -102,6 +102,7 @@ export default class Choose extends Vue {
 
   tree: TreeNode|null = null
 
+
   nodeSelection: Node[] = []
   userSelection: User[] = []
 
@@ -125,7 +126,19 @@ export default class Choose extends Vue {
     }
   }
 
-  onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
+  async getCurNodeChildren(cur: TreeNode) {
+    const id = cur.raw.id as string
+    if (id) {
+      const children  = (await api.Node.tree(id)).nodes
+      for(const child of children){
+        const node = Node.fromData(child)
+        cur.children = []
+        cur.children.push( TreeNode.fromNode(node, {}) )
+      }
+    }
+  }
+
+  async onTreeSelectChange(array: TreeNode[], cur: TreeNode) {
     if (!this.multiple) {
       if (cur.type === 'node') {
         this.nodeSelection = [cur.raw!] as Node[]
@@ -133,6 +146,7 @@ export default class Choose extends Vue {
         this.userSelection = [cur.raw!] as User[]
       }
     }
+    await this.getCurNodeChildren(cur)
   }
 
   getSelectionIcon(type: string): string {
