@@ -5,7 +5,7 @@ import FormState from '../common/Form/FormState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListItemState from '@/admin/common/data/List/ListState' 
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 
 export interface TablePage extends BaseState {
   filter?: FormState
@@ -17,7 +17,7 @@ export interface TablePage extends BaseState {
     header?: CardState,
     data?: Array<ListItemState>
   }
-  actions?: { [name: string]: (FlowConfig | string)[] }
+  actions?: { [name: string]: (IFlow | string)[] }
 }
 
 export default interface TablePageState {

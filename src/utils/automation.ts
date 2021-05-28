@@ -5,7 +5,7 @@ import generateDialogForm from '@/utils/generate-dialog-form'
 import getSchemaByContent from '@/utils/get-schema-by-content'
 import OpenAPI from '@/config/openapi'
 import whetherImportListDialog from '@/utils/list-dialog'
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
@@ -21,7 +21,7 @@ export interface GenerateDialogStateParams {
   method: string
   type?: string
   title?: string
-  actions?: Array<FlowConfig | string>
+  actions?: Array<IFlow | string>
   buttons?: Array<ButtonState>
   showReadOnly?: boolean
   key?: string
@@ -173,7 +173,7 @@ export function addDialogBtnActions(state: any, url: string, method: string, key
       data: 'dialogs.import.state.state.file'
     }
   }
-  const dialogBtnFlows: (FlowConfig | string)[] = [
+  const dialogBtnFlows: (IFlow | string)[] = [
     {
       name: dialogBtnPath,
       url: url,
@@ -239,7 +239,7 @@ export function itemButton(state: any, url: string, method: string, key: string,
     const { responseMapping } = generateFormPageStateMapping(formState, target)
     response = responseMapping
   }
-  let itemButtonFlows: (FlowConfig | string)[]  = [
+  let itemButtonFlows: (IFlow | string)[]  = [
     {
       name: 'arkfbp/flows/fetch',
       url: url,

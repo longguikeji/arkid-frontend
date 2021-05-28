@@ -3,7 +3,7 @@ import TreeState from '../common/data/Tree/TreeState'
 import CardState from '../common/Card/CardState'
 import DialogState from '../common/Others/Dialog/DialogState'
 import ListItemState from '@/admin/common/data/List/ListState' 
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 
 export interface TreePage extends BaseState {
   card?: CardState,
@@ -13,7 +13,7 @@ export interface TreePage extends BaseState {
     header?: CardState,
     data?: Array<ListItemState>
   }
-  actions: { [name: string]: Array<FlowConfig | string> }
+  actions: { [name: string]: Array<IFlow | string> }
 }
 
 export default interface TreePageState {

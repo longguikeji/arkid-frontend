@@ -3,7 +3,7 @@ import FormState from '../common/Form/FormState'
 import SelectState from '../common/Form/Select/SelectState'
 import ButtonState from '@/admin/common/Button/ButtonState' 
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 
 export interface FormPage extends CardState {
   form?: FormState
@@ -12,7 +12,7 @@ export interface FormPage extends CardState {
   select?: SelectState
   forms?: {[value:string]: FormState}
   bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
-  actions?: { [name: string]: (FlowConfig | string)[] }
+  actions?: { [name: string]: (IFlow | string)[] }
 }
 
 export default interface FromPageState {

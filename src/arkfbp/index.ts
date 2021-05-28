@@ -3,7 +3,7 @@ import { getCurrentPageState } from '@/utils/get-page-state'
 import Filter from '@/utils/filter'
 import getUrl from '@/utils/url'
 
-export interface FlowConfig {
+export interface IFlow {
   name: string
   url?: string
   method?: string
@@ -23,7 +23,7 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
   if (!currentPageState?.actions) {  
     return
   }
-  const currentFlows: (FlowConfig | string)[] = currentPageState.actions[actionName]
+  const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
   if (currentFlows?.length) {
     for (let i = 0; i < currentFlows.length; i++) {
       if (typeof currentFlows[i] === 'string') {
@@ -36,14 +36,14 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
           await runFlowByActionName(com, appointedFlow)
         }
       } else {
-        await runFlow(com, currentPageState, currentFlows[i] as FlowConfig)
+        await runFlow(com, currentPageState, currentFlows[i] as IFlow)
       }
     }
   }
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-export async function runFlow (com: any, state: any, flow: FlowConfig) {
+export async function runFlow (com: any, state: any, flow: IFlow) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data
   const inputs = {

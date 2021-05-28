@@ -1,6 +1,6 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 
 export class InitFilter extends AuthApiNode {
   async run() {
@@ -66,7 +66,7 @@ export class InitFilter extends AuthApiNode {
     const fetchAction = tempState.actions!.fetch
     if (fetchAction) {
       fetchAction[0] = {
-        ...(fetchAction[0] as FlowConfig),
+        ...(fetchAction[0] as IFlow),
         name: 'flows/maketplace/fetch',
         request: {
           tags: 'filter.items.tags.state.value',

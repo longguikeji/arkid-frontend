@@ -1,10 +1,10 @@
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import { BaseState } from '@/admin/base/BaseVue'
-import { FlowConfig } from '@/arkfbp'
+import { IFlow } from '@/arkfbp'
 
 export interface DashboardPage extends BaseState {
   items?: Array<DashboardItemState>
-  actions?: { [name: string]: Array<FlowConfig | string> }
+  actions?: { [name: string]: Array<IFlow | string> }
 }
 
 export default interface DashboardPageState {
