@@ -1,6 +1,7 @@
 import { APINode } from "arkfbp/lib/apiNode"
 import { getToken, removeToken } from '@/utils/auth'
 import getPageState, { getPreviousPageState, getBaseState } from '@/utils/get-page-state'
+import getBaseUrl from '@/utils/get-base-url'
 
 export class AuthApiNode extends APINode {
   async run() {
@@ -17,6 +18,7 @@ export class AuthApiNode extends APINode {
       const isValid = await super.run()
       if (!isValid) {
         removeToken()
+        window.location.replace(window.location.origin + getBaseUrl() + '/login')
       } else {
         this.headers = {
           Authorization: 'Token ' + token

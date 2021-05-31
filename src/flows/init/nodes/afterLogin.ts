@@ -18,17 +18,21 @@ export class AfterLogin extends AuthApiNode {
       this.url = '/api/v1/tenant/'
       this.method = 'GET'
       const outputs = await super.run()
-      outputs.results.forEach(output => {
-        if (output.uuid === tenantUUId || outputs.results.length === 1) { 
-          TenantModule.changeCurrentTenant(output)
-        }
-      })
+      if (outputs && outputs.results) {
+        outputs.results.forEach(output => {
+          if (output.uuid === tenantUUId || outputs.results.length === 1) { 
+            TenantModule.changeCurrentTenant(output)
+          }
+        })
+      }
     }
 
     // 进行用户信息的获取，包括用户的头像、名称、用户的uuid以及用户的权限
     this.url = '/api/v1/user/info/'
     this.method = 'GET'
     const userInfo = await super.run()
-    UserModule.setUser(userInfo)
+    if (userInfo) {
+      UserModule.setUser(userInfo)
+    }
   }
 }
