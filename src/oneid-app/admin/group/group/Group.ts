@@ -162,12 +162,20 @@ export default class Group extends Vue {
       ? this.curNode
       : node.children[0]
 
+    const defaultSelectedNode = node.children.length === 1 ? node.children[0] : null
+
     const options = {
       showUser: false,
       expandIds,
       selectedIds: selectedNode ? [selectedNode.id] : [],
     }
+
+    if (defaultSelectedNode) {
+      options.selectedIds.push(defaultSelectedNode.id)
+    }
+
     this.treeOptions = options
+
     const tree = TreeNode.fromNode(node, options)
 
     if (!selectedNode) {
@@ -179,13 +187,18 @@ export default class Group extends Vue {
   }
 
   async onNodeChange(val: Node, treeNode: TreeNode) {
-    const children  = (await api.Node.tree(val.id)).nodes
+    const hierarchy = await api.Node.tree(val.id)
+    const nodes = Node.fromData(hierarchy)
+    const children = nodes.children
     val.children = []
     treeNode.children = []
+    const options = {
+      parent: treeNode,
+      ...this.treeOptions,
+    }
     for(const child of children){
-      const node = Node.fromData(child)
-      val.children.push( node )
-      treeNode.children.push( TreeNode.fromNode(node, this.treeOptions) )
+      val.children.push( child )
+      treeNode.children.push( TreeNode.fromNode(child, options) )
     }
     this.curNode = val
   }
@@ -202,6 +215,7 @@ export default class Group extends Vue {
 
   async goEdit() {
     const node = await api.Node.retrieve(this.curNode!.id)
+
     // TODO (kaishun): remove this
     node.parent = this.curNode!.parent
 
