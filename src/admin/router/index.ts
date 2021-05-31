@@ -16,8 +16,8 @@ export function initRouterFromOpenAPI(openAPI: any) {
 
 // 根据 OpenAPI 的 info 内容生成 routers
 function generateAsyncRoutersByOpenApiInfo(originRouters: any) {
-  const routers: RouteConfig[] = [];
-  const currentUserRole = UserModule.userRole
+  const routers: RouteConfig[] = []
+  const currentUserRole = UserModule.role
   originRouters.forEach(originRouterItem => {
     if (originRouterItem.role?.indexOf(currentUserRole) >= 0) {
       const routerIntem = generateRouterItem(originRouterItem)

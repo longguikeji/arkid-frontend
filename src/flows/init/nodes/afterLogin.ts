@@ -1,6 +1,6 @@
 import { AuthApiNode } from '@/nodes/authApiNode'
 import OpenAPI from '@/config/openapi'
-import { UserModule } from '@/store/modules/user'
+import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import processUUId from '@/utils/process-uuid'
 import { getUrlParamByName } from '@/utils/url'
@@ -32,7 +32,15 @@ export class AfterLogin extends AuthApiNode {
     this.method = 'GET'
     const userInfo = await super.run()
     if (userInfo) {
-      UserModule.setUser(userInfo)
+      UserModule.setUserInfo(userInfo)
+      if (userInfo.manage_tenants) {
+        userInfo.manage_tenants.forEach((tenant: string) => {
+          const tenantUUId = processUUId(tenant)
+          if (tenantUUId === TenantModule.currentTenant.uuid) {
+            UserModule.setUserRole(UserRole.Tenant)
+          }
+        })
+      }
     }
   }
 }

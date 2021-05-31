@@ -127,7 +127,7 @@ export default class extends Vue {
 
   private show() {
     this.dialogVisible = true
-    this.formData.uuid = UserModule.userUUId
+    this.formData.uuid = UserModule.uuid
   }
 }
 </script>
