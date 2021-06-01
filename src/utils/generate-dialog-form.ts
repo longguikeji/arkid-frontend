@@ -41,18 +41,20 @@ export default function generateDialogForm(schema:ISchema, showReadOnly = true):
 
 function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '') {
   const tempItems:{[prop:string]:FormItemState} = {}
+  const requiredSchema = schema.required
   for (const prop in schema.properties) {
     if (prop === skipProp) {
       continue
     }
     const propSchema = schema.properties[prop]
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly)
+    const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
+    const item = createItemByPropSchema(prop, propSchema, showReadOnly, isRequired)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean):FormItemState | null {
+function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, isRequired?: boolean):FormItemState | null {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (schema.page) {
@@ -64,6 +66,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         multiple: schema.type === 'array',
         value: schema.default,
         default: schema.default,
+        required: isRequired,
         options: [],
         action: [
           {
@@ -88,6 +91,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         options: [],
+        required: isRequired
       }
     }
   } else if (schema.enum) {
@@ -95,11 +99,12 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
     for (const value of schema.enum) {
       options.push({ value: value })
     }
-    const selectState:SelectState = {
+    const selectState: SelectState = {
       options: options,
       value: schema.default,
       default: schema.default,
-      readonly: schema.readOnly
+      readonly: schema.readOnly,
+      required: isRequired
     }
     item = {
       type: 'Select',
@@ -115,7 +120,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       state: {
         value: schema.default,
         default: schema.default,
-        readonly: schema.readOnly
+        readonly: schema.readOnly,
+        required: isRequired
       }
     }
   } else if (schema.type === 'string') {
@@ -126,7 +132,9 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       state: {
         value: schema.default,
         default: schema.default,
-        readonly: schema.readOnly
+        readonly: schema.readOnly,
+        placeholder: '请输入' + schema.title,
+        required: isRequired
       }
     }
   } else if (schema.type === 'object') {

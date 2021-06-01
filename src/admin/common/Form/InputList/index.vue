@@ -1,17 +1,26 @@
 <template>
-  <el-select
-    v-model="state.value"
-    :multiple="state.multiple"
-    :disabled="state.readonly"
-    @focus="toSetListData"
-  >
-    <el-option
-      v-for="item in state.options"
-      :key="item.value"
-      :label="item.label || item.name"
-      :value="item.value || item.uuid"
+  <div>
+    <el-select
+      v-model="state.value"
+      :multiple="state.multiple"
+      :disabled="state.readonly"
+      @focus="toSetListData"
+    >
+      <el-option
+        v-for="item in state.options"
+        :key="item.value"
+        :label="item.label || item.name"
+        :value="item.value || item.uuid"
+      />
+    </el-select>
+    <svg-icon
+      v-if="state.required"
+      class="required"
+      name="required"
+      width="20"
+      height="20"
     />
-  </el-select>
+  </div>
 </template>
 
 <script lang="ts">
