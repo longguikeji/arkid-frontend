@@ -52,13 +52,6 @@
           </el-dropdown-item>
           <el-dropdown-item
             divided
-            @click.native="alterUserPassword"
-          >
-            <span style="display: block">
-              修改密码
-            </span>
-          </el-dropdown-item>
-          <el-dropdown-item
             @click.native="logout"
           >
             <span style="display: block">
@@ -68,7 +61,6 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <AlterUserPassword ref="alterUserPassword" />
   </div>
 </template>
 
@@ -83,7 +75,6 @@ import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
-import AlterUserPassword from './AlterUserPassword.vue'
 import { removeToken } from '@/utils/auth'
 
 @Component({
@@ -95,13 +86,10 @@ import { removeToken } from '@/utils/auth'
     HeaderSearch,
     LangSelect,
     Screenfull,
-    SizeSelect,
-    AlterUserPassword
+    SizeSelect
   }
 })
 export default class extends Vue {
-  private alterUserPasswordDialogVisible = false
-
   get sidebar() {
     return AppModule.sidebar
   }
@@ -125,10 +113,6 @@ export default class extends Vue {
   private async logout() {
     removeToken()
     this.$router.push('/login')
-  }
-
-  private alterUserPassword() {
-    (this.$refs.alterUserPassword as Vue & { show: Function }).show()
   }
 }
 </script>

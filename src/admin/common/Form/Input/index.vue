@@ -14,6 +14,7 @@
       :size="state.size"
       :rows="state.rows"
       :autosize="state.autosize"
+      :autocomplete="state.autocomplete"
     />
     <svg-icon
       v-if="state.required"

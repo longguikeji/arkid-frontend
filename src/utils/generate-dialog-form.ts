@@ -135,7 +135,9 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         default: schema.default,
         readonly: schema.readOnly,
         placeholder: '请输入' + schema.title,
-        required: isRequired
+        required: isRequired,
+        showPassword: prop === 'password',
+        autocomplete: 'new-password'
       }
     }
   } else if (schema.type === 'object') {

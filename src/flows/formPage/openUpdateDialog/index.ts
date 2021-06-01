@@ -2,16 +2,21 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { OpenRequestDialog } from './nodes/open'
+import { GetDialogValues } from '@/nodes/getDialogValues'
+import { OpenUpdateDialog } from './nodes/open'
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'openRequestDialog'
+      next: 'getDialogValues'
     }, {
-      cls: OpenRequestDialog,
-      id: 'openRequestDialog',
+      cls: GetDialogValues,
+      id: 'getDialogValues',
+      next: 'openUpdateDialog'
+    }, {
+      cls: OpenUpdateDialog,
+      id: 'openUpdateDialog',
       next: 'stop'
     }, {
       cls: StopNode,
