@@ -40,7 +40,7 @@ export class AfterLogin extends AuthApiNode {
     this.url = '/api/v1/user/manage_tenants/'
     this.method = 'GET'
     const res = await super.run()
-    const manageTenants = res.manage_tenants
+    const manageTenants = res?.manage_tenants
     if (manageTenants) {
       manageTenants.forEach((tenant: string) => {
         const tenantUUId = processUUId(tenant)

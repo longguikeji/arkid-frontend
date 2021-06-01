@@ -2,7 +2,6 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ButtonConfig } from '@/login/interface'
 // import LoginComponent from '@/login/components/LoginComponent'
 import { jsonp } from 'vue-jsonp'
-import LoginStore from '@/login/store/login'
 
 export class Http extends FunctionNode {
   async run() {
