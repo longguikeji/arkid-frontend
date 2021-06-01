@@ -6,7 +6,7 @@ import SelectState from '@/admin/common/Form/Select/SelectState'
 import FormPageState from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateDialogForm(schema:ISchema, showReadOnly = true): FormPageState {
+export default function generateDialogForm(schema:ISchema, showReadOnly = true, showWriteOnly = true): FormPageState {
   const formPageState: FormPageState = {type: 'FormPage'}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -34,12 +34,12 @@ export default function generateDialogForm(schema:ISchema, showReadOnly = true):
   } else {
     const formState:FormState = {}
     formPageState.form = formState
-    formState.items = getItemsBySchema(schema, showReadOnly)
+    formState.items = getItemsBySchema(schema, showReadOnly, '', showWriteOnly)
   }
   return formPageState
 }
 
-function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '') {
+function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '', showWriteOnly: boolean = true) {
   const tempItems:{[prop:string]:FormItemState} = {}
   const requiredSchema = schema.required
   for (const prop in schema.properties) {
@@ -48,15 +48,16 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '') {
     }
     const propSchema = schema.properties[prop]
     const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly, isRequired)
+    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, isRequired)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, isRequired?: boolean):FormItemState | null {
+function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, isRequired?: boolean):FormItemState | null {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
+  if (!showWriteOnly && schema.writeOnly) return item
   if (schema.page) {
     item = {
       type: 'InputList',
@@ -151,7 +152,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
     const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
     objectSchema.title = schema.title
     objectSchema.default = schema.default
-    item = createItemByPropSchema(prop, objectSchema, showReadOnly)
+    item = createItemByPropSchema(prop, objectSchema, showReadOnly, showWriteOnly)
   }
   return item
 }

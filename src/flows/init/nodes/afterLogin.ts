@@ -11,9 +11,11 @@ export class AfterLogin extends AuthApiNode {
     // 获取OpenAPI内容
     await OpenAPI.instance.init('/api/schema?format=json')
 
+    const currentTenantUUId = TenantModule.currentTenant.uuid
+
     // 此时进行tenant的获取
-    if (TenantModule.currentTenant.uuid === undefined) {
-      let tenantUUId = TenantModule?.currentTenant?.uuid || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')
+    if (currentTenantUUId === undefined) {
+      let tenantUUId = currentTenantUUId || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')
       tenantUUId = processUUId(tenantUUId)
       this.url = '/api/v1/tenant/'
       this.method = 'GET'
@@ -33,14 +35,19 @@ export class AfterLogin extends AuthApiNode {
     const userInfo = await super.run()
     if (userInfo) {
       UserModule.setUserInfo(userInfo)
-      if (userInfo.manage_tenants) {
-        userInfo.manage_tenants.forEach((tenant: string) => {
-          const tenantUUId = processUUId(tenant)
-          if (tenantUUId === TenantModule.currentTenant.uuid) {
-            UserModule.setUserRole(UserRole.Tenant)
-          }
-        })
-      }
+    }
+
+    this.url = '/api/v1/user/manage_tenants/'
+    this.method = 'GET'
+    const res = await super.run()
+    const manageTenants = res.manage_tenants
+    if (manageTenants) {
+      manageTenants.forEach((tenant: string) => {
+        const tenantUUId = processUUId(tenant)
+        if (tenantUUId === currentTenantUUId) {
+          UserModule.setUserRole(UserRole.Tenant)
+        }
+      })
     }
   }
 }
