@@ -22,6 +22,7 @@
       v-if="currentPage"
       v-model="currentFormIndex"
       stretch
+      @tab-click="handleTabClick"
     >
       <el-tab-pane
         v-for="(form, formIndex) in currentPage.forms"
@@ -29,10 +30,15 @@
         :label="form.label"
         :name="formIndex.toString()"
       >
-        <el-form>
+        <el-form
+          :ref="pageData"
+          :rules="rules"
+          :model="currentFormData"
+        >
           <el-form-item
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
+            :prop="item.name"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
