@@ -19,6 +19,15 @@ export class Update extends AuthApiNode {
     if (tempState && tempState.dialogs && tempState.dialogs.update) {
       const currentUpdateFormPage = tempState.dialogs.update.state as FormPageState
       this.params = getDialogParams(currentUpdateFormPage)
+      if (!this.params) {
+        const com = this.inputs.com
+        com.$message({
+          message: '缺少必要参数项',
+          type: 'error',
+          showClose: true
+        })
+        return null
+      }
     } else {
       throw Error('tablePage update flow is not params')
     }

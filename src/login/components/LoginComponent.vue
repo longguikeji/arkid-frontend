@@ -32,7 +32,7 @@
       >
         <el-form
           :ref="pageData"
-          v-model="formData[pageData][formIndex]"
+          :model="formData[pageData][formIndex]"
           :rules="rules"
         >
           <el-form-item

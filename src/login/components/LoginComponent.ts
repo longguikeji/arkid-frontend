@@ -95,12 +95,15 @@ export default class LoginComponent extends Vue {
     if (!btn.gopage) {
       (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
         if (valid) {
-          await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
+          await runWorkflowByClass(ButtonClick, { com: this, btn: btn }).then(() => {
+            this.resetFields()
+          })
         }
       })
     } else {
-      await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-      this.resetFields()
+      await runWorkflowByClass(ButtonClick, { com: this, btn: btn }).then(() => {
+        this.resetFields()
+      })
     }
   }
 
