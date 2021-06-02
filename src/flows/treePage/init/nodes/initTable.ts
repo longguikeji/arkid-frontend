@@ -7,7 +7,6 @@ export class InitTable extends FunctionNode {
     const tempState: TreePageState = this.inputs.state
     const { initContent } = this.inputs.data
     if (initContent.table) {
-      initContent.table.init.path = initContent.table.init.path.split('?')[0]
       await runFlowByFile('flows/tablePage/init', {
         initContent: initContent.table,
         isHooks: false
