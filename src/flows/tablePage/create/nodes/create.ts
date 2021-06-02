@@ -17,6 +17,15 @@ export class Create extends AuthApiNode {
     if (tempState && tempState.dialogs && tempState.dialogs.create) {
       const currentCreateFormPage = tempState.dialogs.create.state as FormPageState
       this.params = getDialogParams(currentCreateFormPage)
+      if (!this.params) {
+        const com = this.inputs.com
+        com.$message({
+          message: '缺少必要参数项',
+          type: 'error',
+          showClose: true
+        })
+        return null
+      }
     } else {
       throw Error('create action is not params, please check')
     }

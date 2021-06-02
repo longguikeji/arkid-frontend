@@ -30,7 +30,9 @@ export class InitForm extends FunctionNode {
         const isResponses = initFormMethod.toLowerCase() === 'get' ? true : false
         const content = isResponses ? initFormOperation.responses[200].content : initFormOperation.requestBody.content 
         const schema = getSchemaByContent(content)
-        const { form, forms, select } = generateDialogForm(schema)
+        const showReadOnly = true
+        const showWriteOnly = false
+        const { form, forms, select } = generateDialogForm(schema, showReadOnly, showWriteOnly)
         if (form) {
           if (!tempState.form) {
             tempState.form = { items: {}, inline: false }

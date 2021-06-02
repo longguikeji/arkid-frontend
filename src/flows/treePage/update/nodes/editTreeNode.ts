@@ -20,6 +20,15 @@ export class EditTreeNode extends AuthApiNode {
     
     const formPage = tempState.dialogs.update.state as FormPageState
     this.params = getDialogParams(formPage)
+    if (!this.params) {
+      const com = this.inputs.com
+      com.$message({
+        message: '缺少必要参数项',
+        type: 'error',
+        showClose: true
+      })
+      return null
+    }
 
     const outputs = await super.run()
     tempState.dialogs.update.visible = false

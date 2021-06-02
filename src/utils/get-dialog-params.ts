@@ -9,11 +9,17 @@ export default function getDialogParams(formPage: FormPageState) {
   } else if (formPage.form) {
     items = formPage.form.items!
   }
+  let isValid = true
   for (const prop in items) {
     const value = items[prop].state.value
-    if (value) {
+    const isRequiredValue = items[prop].state.required
+    const isReadonlyValue = items[prop].state.readonly
+    if (isRequiredValue && !value && !isReadonlyValue) {
+      isValid = false
+      break
+    } else if (value) {
       params[prop] = items[prop].state.value
     }
   }
-  return params
+  return isValid ? params : isValid
 }

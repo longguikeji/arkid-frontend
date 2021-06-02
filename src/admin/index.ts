@@ -4,6 +4,7 @@ import Button from '@/admin/common/Button/index.vue'
 import ButtonArray from '@/admin/common/Button/ButtonArray/index.vue'
 import Link from '@/admin/common/Link/index.vue'
 import Input from '@/admin/common/Form/Input/index.vue'
+import InputLink from '@/admin/common/Form/InputLink/index.vue'
 import InputList from '@/admin/common/Form/InputList/index.vue'
 import Cascader from '@/admin/common/Form/Cascader/index.vue'
 import Select from '@/admin/common/Form/Select/index.vue'
@@ -59,6 +60,7 @@ Vue.component('ButtonArray', ButtonArray)
 Vue.component('Link', Link)
 Vue.component('Input', Input)
 Vue.component('InputList', InputList)
+Vue.component('InputLink', InputLink)
 Vue.component('Cascader', Cascader)
 Vue.component('Select', Select)
 Vue.component('Avator', Avator)

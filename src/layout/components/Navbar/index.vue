@@ -41,7 +41,10 @@
             {{ username[0].toUpperCase() }}
           </div>
         </div>
-        <el-dropdown-menu slot="dropdown">
+        <el-dropdown-menu
+          slot="dropdown"
+          class="usercenter-dropdown-menu"
+        >
           <el-dropdown-item>
             <span style="display: block">
               {{ username }}
@@ -96,11 +99,11 @@ export default class extends Vue {
   }
 
   get avatar() {
-    return UserModule.userAvatar
+    return UserModule.avatar
   }
 
   get username() {
-    return UserModule.userNickname || UserModule.username
+    return UserModule.nickname || UserModule.username
   }
 
   private toggleSideBar() {
@@ -205,6 +208,11 @@ export default class extends Vue {
         }
       }
     }
+  }
+}
+.usercenter-dropdown-menu {
+  li {
+    text-align: center;
   }
 }
 </style>
