@@ -21,6 +21,7 @@ export class AuthApiNode extends APINode {
         window.location.replace(window.location.origin + getBaseUrl() + '/login')
       } else {
         this.headers = {
+          ...this.$state.fetch().headers,
           Authorization: 'Token ' + token
         }
         this.url = url

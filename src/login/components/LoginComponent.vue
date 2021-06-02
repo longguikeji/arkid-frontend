@@ -32,7 +32,7 @@
       >
         <el-form
           :ref="pageData"
-          :model="formData[pageData][formIndex]"
+          :model="currentFormData"
           :rules="rules"
         >
           <el-form-item
@@ -46,6 +46,7 @@
               :name="item.name"
               :placeholder="item.placeholder"
               :show-password="item.type === 'password'"
+              @blur="onBlur($event, item.name)"
             >
               <login-button
                 v-if="item.append"

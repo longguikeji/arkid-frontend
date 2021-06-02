@@ -95,15 +95,12 @@ export default class LoginComponent extends Vue {
     if (!btn.gopage) {
       (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
         if (valid) {
-          await runWorkflowByClass(ButtonClick, { com: this, btn: btn }).then(() => {
-            this.resetFields()
-          })
+          await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
         }
       })
     } else {
-      await runWorkflowByClass(ButtonClick, { com: this, btn: btn }).then(() => {
-        this.resetFields()
-      })
+      await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
+      this.resetFields()
     }
   }
 
@@ -123,6 +120,9 @@ export default class LoginComponent extends Vue {
       if (errorMsg !== '') {
         callback(new Error(errorMsg))
       } else {
+        if (this.currentFormData['repassword']) {
+          this.$refs[this.pageData][this.currentFormIndex].validateField('repassword')
+        }
         callback()
       }
     } else {
@@ -151,6 +151,10 @@ export default class LoginComponent extends Vue {
       errorMsg = '密码不能全为数字'
     }
     return errorMsg
+  }
+
+  onBlur(event: Event, name: string) {
+    this.$refs[this.pageData][this.currentFormIndex].validateField(name)
   }
 
 }
