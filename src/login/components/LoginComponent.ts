@@ -24,13 +24,13 @@ export default class LoginComponent extends Vue {
       { validator: this.validatePassword, trigger: 'blur' }
     ],
     repassword: [
-      { validator: this.validatePassword, trigger: 'blur' }
+      { validator: this.validateRepassword, trigger: 'blur' }
     ],
     username: [
-      { validator: this.validateUsername, trigger: 'blur' }
+      { required: true, message: '用户名为必填项', trigger: 'blur' }
     ],
     mobile: [
-      { validator: this.validateMobile, trigger: 'blur' }
+      { required: true, message: '手机号为必填项', trigger: 'blur' }
     ]
   }
 
@@ -91,17 +91,17 @@ export default class LoginComponent extends Vue {
     return this.formData[this.pageData][this.currentFormIndex]
   }
 
-  btnClickHandler(btn:ButtonConfig) {
+  async btnClickHandler(btn:ButtonConfig) {
     if (!btn.gopage) {
-      (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate((valid: boolean) => {
+      (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
         if (valid) {
-          runWorkflowByClass(ButtonClick, { com: this, btn: btn })
+          await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
         }
       })
     } else {
-      runWorkflowByClass(ButtonClick, { com: this, btn: btn })
+      await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
+      this.resetFields()
     }
-    this.resetFields()
   }
 
   handleTabClick() {
@@ -109,20 +109,31 @@ export default class LoginComponent extends Vue {
   }
 
   resetFields() {
-    this.$refs[this.pageData][this.currentFormIndex].resetFields()
+    this.$nextTick(() => {
+      this.$refs[this.pageData][this.currentFormIndex].resetFields()
+    })
   }
 
   validatePassword(rule: any, value: string, callback: Function) {
+    if (this.pageData === 'register') {
+      const errorMsg = this.validatePasswordIntensity(value)
+      if (errorMsg !== '') {
+        callback(new Error(errorMsg))
+      } else {
+        callback()
+      }
+    } else {
+      callback()
+    }
+  }
+
+  validateRepassword(rule: any, value: string, callback: Function) {
     const errorMsg = this.validatePasswordIntensity(value)
     if (errorMsg !== '') {
       callback(new Error(errorMsg))
+    } else if (value !== this.currentFormData['password']) {
+      callback(new Error('两次输入的密码不同'))
     } else {
-      if (rule.field === 'repassword' || rule.fullField === 'repassword') {
-        const isPass = this.validateRepasswordIsPass(value)
-        if (!isPass) {
-          callback(new Error('两次输入的密码不同'))
-        }
-      }
       callback()
     }
   }
@@ -139,32 +150,4 @@ export default class LoginComponent extends Vue {
     return errorMsg
   }
 
-  validateRepasswordIsPass(value: string): boolean {
-    let isPass = false
-    if (value === this.currentFormData['password']) {
-      return true
-    }
-    return isPass
-  }
-
-  validateUsername(rule: any, value: string, callback: Function) {
-    if (value === '') {
-      callback(new Error('请输入用户名'))
-    } else {
-      callback()
-    }
-  }
-
-  validateMobile(rule: any, value: string, callback: Function) {
-    if (!value) {
-      callback(new Error('请输入手机号'))
-    } else {
-      const reg = /^1(3[0-9]|4[01456879]|5[0-35-9]|6[2567]|7[0-8]|8[0-9]|9[0-35-9])\d{8}$/
-      if (reg.test(value)) {
-        callback()
-      } else {
-        callback(new Error('请输入正确的手机号'))
-      }
-    }
-  }
 }

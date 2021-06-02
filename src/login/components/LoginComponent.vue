@@ -32,8 +32,8 @@
       >
         <el-form
           :ref="pageData"
+          v-model="formData[pageData][formIndex]"
           :rules="rules"
-          :model="currentFormData"
         >
           <el-form-item
             v-for="(item, itemIndex) in form.items"
