@@ -140,6 +140,14 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         autocomplete: 'new-password'
       }
     }
+    if (schema.format === 'uri') {
+      item.type = 'InputLink'
+      item.state.action = [
+        {
+          name: 'arkfbp/flows/upload'
+        }
+      ]
+    }
   } else if (schema.type === 'object') {
     const itemState = new FormObjectItemState()
     itemState.items = getItemsBySchema(schema, showReadOnly)
