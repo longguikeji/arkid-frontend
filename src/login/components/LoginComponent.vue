@@ -56,6 +56,20 @@
               />
             </el-input>
           </el-form-item>
+          <el-form-item
+            v-if="authcode.key"
+            class="authcode"
+          >
+            <el-input
+              v-model="authcode.value"
+              placeholder="输入验证码"
+            />
+            <img
+              :src="authcodeSrc"
+              alt=""
+              @click="getAuthCode"
+            >
+          </el-form-item>
           <login-button
             :long="true"
             :config="form.submit"
@@ -125,6 +139,22 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+::v-deep .authcode {
+  .el-form-item__content {
+    display: flex;
+    input {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+    img {
+      height: 36px;
+      cursor: pointer;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+  }
 }
 
 </style>

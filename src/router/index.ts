@@ -58,6 +58,12 @@ export const menuRoutes: RouteConfig[] = [
     meta: { hidden: true, page: 'tenant' }
   },
   {
+    path: '/auth',
+    component: () => import(/* webpackChunkName: "login" */ '@/auth/AuthPage.vue'),
+    meta: { hidden: true, page: 'auth' },
+    name: 'auth'
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/desktop',

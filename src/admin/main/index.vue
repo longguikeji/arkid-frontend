@@ -97,6 +97,13 @@ export default class extends Vue {
           state = data.state
         })
       }
+      if (currentPage === 'app') {
+        await runFlowByFile('flows/appManager/authPageBtn', {
+          state: state
+        }).then(async(data) => {
+          state = data.state
+        })
+      }
       await AdminModule.setAdmin(state)
       this.initCompleted = true
     } else {

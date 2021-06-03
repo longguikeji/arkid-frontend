@@ -4,6 +4,9 @@ import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig } from '../interface'
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as ButtonClick } from '../flows/ButtonClick'
+import { Main as GetCode } from '../flows/GetCode'
+import { Main as CheckAuthCode } from '../flows/CheckAuthCode'
+import getBaseUrl from '@/utils/get-base-url'
 
 @Component({
   name: 'LoginComponent',
@@ -16,6 +19,10 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
 
+  authcode = {
+    value: '',
+    key: ''
+  }
   page = ''
   currentFormIndex = '0'
   formData = {}
@@ -32,6 +39,10 @@ export default class LoginComponent extends Vue {
     mobile: [
       { required: true, message: '手机号为必填项', trigger: 'blur' }
     ]
+  }
+
+  get authcodeSrc() {
+    return window.location.origin + getBaseUrl() + '/api/v1/authcode/render/' + this.authcode.key
   }
 
   get pageData() {
@@ -51,7 +62,7 @@ export default class LoginComponent extends Vue {
     })
   }
 
-  created() {
+  async created() {
     for (const p in this.config) {
       this.$set(this.formData, p, [])
       const _page = this.config[p]
@@ -72,6 +83,8 @@ export default class LoginComponent extends Vue {
         that.btnClickHandler(that.currentPage.forms[that.currentFormIndex].submit)
       }
     }
+
+    await this.getAuthCode()
   }
 
   get isFullScreen() {
@@ -95,6 +108,8 @@ export default class LoginComponent extends Vue {
     if (!btn.gopage) {
       (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
         if (valid) {
+          const isPass = await this.toAuthcode()
+          if (!isPass) return
           await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
         }
       })
@@ -102,6 +117,21 @@ export default class LoginComponent extends Vue {
       await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
       this.resetFields()
     }
+  }
+
+  async toAuthcode() {
+    let isPass = false
+    await runWorkflowByClass(CheckAuthCode, { authcode: this.authcode }).then((isPassCheck: boolean) => {
+      isPass = isPassCheck
+    })
+    if (!isPass) {
+      this.$message({
+        message: '验证码错误',
+        type: 'error',
+        showClose: true
+      })
+    }
+    return isPass
   }
 
   handleTabClick() {
@@ -155,6 +185,12 @@ export default class LoginComponent extends Vue {
 
   onBlur(event: Event, name: string) {
     this.$refs[this.pageData][this.currentFormIndex].validateField(name)
+  }
+
+  async getAuthCode() {
+    await runWorkflowByClass(GetCode, {}).then((key: string) => {
+      this.authcode.key = key
+    })
   }
 
 }
