@@ -100,6 +100,7 @@ import AuthTemplate from './AuthTemplate.vue'
 import AuthPageTemplate from './AuthPage'
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as SaveAuthPage } from './flows/SaveAuthPage'
+import getBaseUrl from '@/utils/get-base-url'
 
 @Component({
   name: 'Auth',
@@ -113,6 +114,7 @@ export default class extends Vue {
   private btnLabels: Array<string> = ['确认按钮', '取消按钮']
   private useTemplate = false
   private html = ''
+  private style = ''
   private template: AuthPageTemplate = {
     icon: '',
     title: '',
@@ -144,7 +146,11 @@ export default class extends Vue {
   }
 
   get authUrl() {
-    return this.$route.query.auth_url
+    return window.location.origin + getBaseUrl() + this.$route.query.auth_url + '?name=allow'
+  }
+
+  get url() {
+    return '/api/v1/tenant/' + this.tenant + '/app/' + this.app + '/add_auth_tmpl/'
   }
 
   showAuthTemplate() {
@@ -153,33 +159,83 @@ export default class extends Vue {
 
   getTemplateHtml() {
     const template = document.createElement('html')
+    const head = document.createElement('head')
+    head.innerHTML = '<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>应用授权</title>'
+    const body = document.createElement('body')
+    const auth = this.initAuthPage()
+    body.appendChild(auth)
+    const style = document.createElement('style')
+    style.innerHTML = this.style
+    head.appendChild(style)
+    template.appendChild(head)
+    template.appendChild(auth)
+    const page = '<html lang="en">' + template.innerHTML + '</html>'
+    return page
   }
 
-  initAuthPageTitle() {
-    console.log('init')
+  initAuthPage() {
+    const auth = this.createAuthElement('div', ['auth'], '.auth{width: 500px;height: auto;position: absolute;top: 30%;left: 50%;transform: translateX(-50%) translateY(-50%);background-color: #fff;padding: 15px;box-shadow: 0 2px 16px #D3CECE, 0 0 1px #D3CECE, 0 0 1px #D3CECE;}')
+    const header = this.initAuthPageHeader()
+    const info = this.initAuthPageInfo()
+    const footer = this.initAuthPageBtns()
+    auth.appendChild(header)
+    auth.appendChild(info)
+    auth.appendChild(footer)
+    return auth
   }
 
-  initAuthPageIcon() {
-    console.log('init')
+  initAuthPageHeader() {
+    const header = this.createAuthElement('div', ['header'], '.header{text-align: center;}')
+    if (this.template.icon) {
+      const icon = this.createAuthElement('img', ['icon'], '.icon{width: 60px;}')
+      icon.setAttribute('src', this.template.icon)
+      header.appendChild(icon)
+    }
+    if (this.template.title) {
+      const title = this.createAuthElement('div', ['title'], '.title{font-size: 20px;font-weight: bold;}')
+      title.innerHTML = this.template.title
+      header.appendChild(title)
+    }
+    return header
   }
 
   initAuthPageInfo() {
-    console.log('init')
+    const info = this.createAuthElement('div', ['info'], '')
+    info.innerHTML = this.template.info
+    return info
   }
 
-  initAuthPageArgeeBtn() {
-    console.log('init')
-  }
-
-  initAuthPageCancelBtn() {
-    console.log('init')
+  initAuthPageBtns() {
+    const form = this.createAuthElement('form', ['footer'], '.footer{margin-top: 20px;}')
+    form.setAttribute('action', this.authUrl)
+    form.setAttribute('method', 'post')
+    const crsf = this.createAuthElement('span', ['crsf'], '.crsf{display: none}')
+    crsf.innerHTML = '{%  csrf_token %}'
+    form.appendChild(crsf)
+    const agreeBtn = this.createAuthElement('input', ['btn', 'agree'], `.btn{width: ${this.template.btns![0].width || 360}px;height: ${this.template.btns![0].height || 36}px;display: block;margin-bottom: 10px;position: relative;left: 50%;transform: translateX(-50%);border: 0px;cursor: pointer;}.agree{background-color: ${this.template.btns![0].bgcolor || 'rgb(177, 31, 31)'};color: ${this.template.btns![0].color || 'white'};}`)
+    agreeBtn.setAttribute('type', 'submit')
+    agreeBtn.setAttribute('value', this.template.btns![0].text || '授 权')
+    const cancelBtn = this.createAuthElement('input', ['btn', 'cancel'], `.cancel{background-color: ${this.template.btns![1].bgcolor || 'rgb(177, 31, 31)'};color: ${this.template.btns![1].color || 'white'};}`)
+    cancelBtn.setAttribute('type', 'button')
+    cancelBtn.setAttribute('value', this.template.btns![1].text || '取 消')
+    form.appendChild(agreeBtn)
+    form.appendChild(cancelBtn)
+    return form
   }
 
   async onSave() {
+    const html = this.useTemplate ? this.getTemplateHtml() : this.html
     await runWorkflowByClass(SaveAuthPage, {
-      url: '/api/v1/tenant/a8d6968704f24c358663b5541a4c037e/app/6c8b128530ea4023bed574bb33f8d1c8/add_auth_tmpl/',
-      html: this.useTemplate ? this.getTemplateHtml() : this.html
+      url: this.url,
+      html: html
     })
+  }
+
+  createAuthElement(type: string, classNames: Array<string>, style: string) {
+    const el = document.createElement(type)
+    el.className = classNames.join(' ')
+    this.style = this.style + style
+    return el
   }
 }
 </script>
