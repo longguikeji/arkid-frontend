@@ -101,6 +101,7 @@ import AuthPageTemplate from './AuthPage'
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as SaveAuthPage } from './flows/SaveAuthPage'
 import getBaseUrl from '@/utils/get-base-url'
+import { getToken } from '@/utils/auth'
 
 @Component({
   name: 'Auth',
@@ -146,7 +147,7 @@ export default class extends Vue {
   }
 
   get authUrl() {
-    return window.location.origin + getBaseUrl() + this.$route.query.auth_url + '?name=allow'
+    return this.$route.query.auth_url + '?token=' + getToken()
   }
 
   get url() {
@@ -214,9 +215,10 @@ export default class extends Vue {
     form.appendChild(crsf)
     const agreeBtn = this.createAuthElement('input', ['btn', 'agree'], `.btn{width: ${this.template.btns![0].width || 360}px;height: ${this.template.btns![0].height || 36}px;display: block;margin-bottom: 10px;position: relative;left: 50%;transform: translateX(-50%);border: 0px;cursor: pointer;}.agree{background-color: ${this.template.btns![0].bgcolor || 'rgb(177, 31, 31)'};color: ${this.template.btns![0].color || 'white'};}`)
     agreeBtn.setAttribute('type', 'submit')
+    agreeBtn.setAttribute('name', 'allow')
     agreeBtn.setAttribute('value', this.template.btns![0].text || '授 权')
-    const cancelBtn = this.createAuthElement('input', ['btn', 'cancel'], `.cancel{background-color: ${this.template.btns![1].bgcolor || 'rgb(177, 31, 31)'};color: ${this.template.btns![1].color || 'white'};}`)
-    cancelBtn.setAttribute('type', 'button')
+    const cancelBtn = this.createAuthElement('input', ['btn', 'cancel'], `.cancel{background-color: ${this.template.btns![1].bgcolor || ''};color: ${this.template.btns![1].color || ''};}`)
+    cancelBtn.setAttribute('type', 'submit')
     cancelBtn.setAttribute('value', this.template.btns![1].text || '取 消')
     form.appendChild(agreeBtn)
     form.appendChild(cancelBtn)
