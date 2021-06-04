@@ -1,4 +1,5 @@
 import { StateNode } from '@/nodes/stateNode'
+import { TenantModule } from '@/store/modules/tenant'
 
 export class OpenAuthPage extends StateNode {
   async run() {
@@ -8,8 +9,9 @@ export class OpenAuthPage extends StateNode {
     const { href } = router.resolve({
       name: 'auth',
       query: {
-        uuid: data.uuid,
-        authorize: data.data.authorize
+        tenant: TenantModule.currentTenant.uuid,
+        app: data.uuid,
+        auth_url: data.data.authorize
       }
     })
     window.open(href, '_blank')

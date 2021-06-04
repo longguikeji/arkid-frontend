@@ -5,61 +5,64 @@
       :model="form"
       label-width="80px"
     >
-      <el-form-item label="图标">
-        <el-input
-          v-model="form.icon"
-          placeholder="请输入图标"
-        />
-      </el-form-item>
-      <el-form-item label="标题">
-        <el-input
-          v-model="form.title"
-          placeholder="请输入标题"
-        />
-      </el-form-item>
-      <el-form-item label="授权信息">
-        <textarea v-model="form.info" />
-      </el-form-item>
-      <el-form-item
-        v-for="(item, index) in 2"
-        :key="index"
-        :label="btnLabels[index]"
-      >
-        <el-card>
-          <el-form
-            ref="form2"
-            :model="form"
-            label-width="80px"
-          >
-            <el-form-item label="文本">
-              <el-input
-                v-model="form.icon"
-                placeholder="请输入按钮文本"
-              />
-            </el-form-item>
-            <el-form-item label="颜色设置">
-              文字颜色 <el-color-picker
-                v-model="form.icon"
-                class="set-color"
-              />
-              按钮颜色 <el-color-picker
-                v-model="form.icon"
-                class="set-color"
-              />
-            </el-form-item>
-            <el-form-item label="长宽设置">
-              长度 <el-input-number
-                v-model="form.width"
-                placeholder="长度"
-              />
-              宽度 <el-input-number
-                v-model="form.width"
-                placeholder="宽度"
-              />
-            </el-form-item>
-          </el-form>
-        </el-card>
-      </el-form-item>
+      <template />
+      <template>
+        <el-form-item label="图标">
+          <el-input
+            v-model="form.icon"
+            placeholder="请输入图标"
+          />
+        </el-form-item>
+        <el-form-item label="标题">
+          <el-input
+            v-model="form.title"
+            placeholder="请输入标题"
+          />
+        </el-form-item>
+        <el-form-item label="授权信息">
+          <textarea v-model="form.info" />
+        </el-form-item>
+        <el-form-item
+          v-for="(item, index) in 2"
+          :key="index"
+          :label="btnLabels[index]"
+        >
+          <el-card>
+            <el-form
+              ref="form2"
+              :model="form"
+              label-width="80px"
+            >
+              <el-form-item label="文本">
+                <el-input
+                  v-model="form.icon"
+                  placeholder="请输入按钮文本"
+                />
+              </el-form-item>
+              <el-form-item label="颜色设置">
+                文字颜色 <el-color-picker
+                  v-model="form.icon"
+                  class="set-color"
+                />
+                按钮颜色 <el-color-picker
+                  v-model="form.icon"
+                  class="set-color"
+                />
+              </el-form-item>
+              <el-form-item label="长宽设置">
+                长度 <el-input-number
+                  v-model="form.width"
+                  placeholder="长度"
+                />
+                宽度 <el-input-number
+                  v-model="form.width"
+                  placeholder="宽度"
+                />
+              </el-form-item>
+            </el-form>
+          </el-card>
+        </el-form-item>
+      </template>
       <el-form-item>
         <el-button
           type="primary"
@@ -67,18 +70,8 @@
         >
           保存
         </el-button>
-        <el-button
-          type="primary"
-          @click="onPreview"
-        >
-          预览
-        </el-button>
       </el-form-item>
     </el-form>
-    <div
-      id="preview"
-      v-html="content"
-    />
   </div>
 </template>
 
@@ -103,6 +96,18 @@ export default class extends Vue {
     icon: '',
     info: '',
     width: ''
+  }
+
+  get tenant() {
+    return this.$route.query.tenant
+  }
+
+  get app() {
+    return this.$route.query.app
+  }
+
+  get authUrl() {
+    return this.$route.query.auth_url
   }
 
   btnLabels = ['确认按钮', '取消按钮']
