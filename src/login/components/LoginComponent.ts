@@ -121,15 +121,19 @@ export default class LoginComponent extends Vue {
 
   async toAuthcode() {
     let isPass = false
-    await runWorkflowByClass(CheckAuthCode, { authcode: this.authcode }).then((isPassCheck: boolean) => {
-      isPass = isPassCheck
-    })
-    if (!isPass) {
-      this.$message({
-        message: '验证码错误',
-        type: 'error',
-        showClose: true
+    if (!this.authcode.key) {
+      isPass = true
+    } else {
+      await runWorkflowByClass(CheckAuthCode, { authcode: this.authcode }).then((isPassCheck: boolean) => {
+        isPass = isPassCheck
       })
+      if (!isPass) {
+        this.$message({
+          message: '验证码错误',
+          type: 'error',
+          showClose: true
+        })
+      }
     }
     return isPass
   }

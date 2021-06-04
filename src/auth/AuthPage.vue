@@ -18,7 +18,7 @@
         />
       </el-form-item>
       <el-form-item label="授权信息">
-        <Tinymce v-model="form.info" />
+        <textarea v-model="form.info" />
       </el-form-item>
       <el-form-item
         v-for="(item, index) in 2"
@@ -86,6 +86,8 @@
 import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import Tinymce from '@/components/Tinymce/index.vue'
+import { runWorkflowByClass } from 'arkfbp/lib/flow'
+import { Main as SaveAuthPage } from './flows/SaveAuthPage'
 
 @Component({
   name: 'Auth',
@@ -110,13 +112,17 @@ export default class extends Vue {
     preview?.scrollIntoView()
   }
 
-  onSave() {
-    this.initAuthPageTitle()
-    this.initAuthPageIcon()
-    this.initAuthPageInfo()
-    this.initAuthPageArgeeBtn()
-    this.initAuthPageCancelBtn()
-    this.requestSaveAuthPage()
+  async onSave() {
+    await runWorkflowByClass(SaveAuthPage, {
+      url: '/api/v1/tenant/a8d6968704f24c358663b5541a4c037e/app/6c8b128530ea4023bed574bb33f8d1c8/add_auth_tmpl/',
+      html: this.form.info
+    })
+    // this.initAuthPageTitle()
+    // this.initAuthPageIcon()
+    // this.initAuthPageInfo()
+    // this.initAuthPageArgeeBtn()
+    // this.initAuthPageCancelBtn()
+    // this.requestSaveAuthPage()
   }
 
   initAuthPageTitle() {
