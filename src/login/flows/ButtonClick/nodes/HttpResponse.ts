@@ -25,7 +25,7 @@ export class HttpResponse extends FunctionNode {
       }
 
       if (LoginStore.NextUrl) {
-        window.location.href = LoginStore.NextUrl
+        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
         LoginStore.NextUrl = ''
       } else {
         window.location.reload()

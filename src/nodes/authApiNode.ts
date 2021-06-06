@@ -18,7 +18,9 @@ export class AuthApiNode extends APINode {
       const isValid = await super.run()
       if (!isValid) {
         removeToken()
-        window.location.replace(window.location.origin + getBaseUrl() + '/login')
+        if (window.location.pathname !== '/login') {
+          window.location.replace(window.location.origin + getBaseUrl() + '/login')
+        }
       } else {
         this.headers = {
           ...this.$state.fetch().headers,
