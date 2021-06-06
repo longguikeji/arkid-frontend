@@ -100,7 +100,6 @@ import AuthTemplate from './AuthTemplate.vue'
 import AuthPageTemplate from './AuthPage'
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as SaveAuthPage } from './flows/SaveAuthPage'
-import { getToken } from '@/utils/auth'
 
 @Component({
   name: 'Auth',
@@ -146,7 +145,7 @@ export default class extends Vue {
   }
 
   get authUrl() {
-    return window.location.origin + this.$route.query.auth_url + '?token=' + getToken()
+    return window.location.origin + this.$route.query.auth_url
   }
 
   get url() {
@@ -164,8 +163,6 @@ export default class extends Vue {
     const body = document.createElement('body')
     const auth = this.initAuthPage()
     body.appendChild(auth)
-    const script = this.initScript()
-    body.appendChild(script)
     const style = document.createElement('style')
     style.innerHTML = this.style
     head.appendChild(style)
@@ -173,19 +170,6 @@ export default class extends Vue {
     template.appendChild(body)
     const page = '<html lang="en">' + template.innerHTML + '</html>'
     return page
-  }
-
-  initScript() {
-    const script = document.createElement('script')
-    script.type = 'text/javascript'
-    const code = `document.getElementsByClassName('agree')[0].onclick = function() {const footer = document.getElementsByClassName('footer')[0]
-        footer.setAttribute('action', '${this.authUrl + '&name=allow'}');};document.getElementsByClassName('cancel')[0].onclick = function() {const footer = document.getElementsByClassName('footer')[0];footer.setAttribute('action', '${this.authUrl}');}`
-    try {
-      script.appendChild(document.createTextNode(code))
-    } catch (e) {
-      script.text = code
-    }
-    return script
   }
 
   initAuthPage() {
@@ -222,7 +206,7 @@ export default class extends Vue {
 
   initAuthPageBtns() {
     const footer = this.createAuthElement('form', ['footer'], '.footer{margin-top: 20px;}')
-    footer.setAttribute('action', '')
+    footer.setAttribute('action', this.authUrl)
     footer.setAttribute('method', 'post')
     const crsf = this.createAuthElement('span', ['crsf'], '.crsf{display: none}')
     crsf.innerHTML = '{%  csrf_token %}'
@@ -230,6 +214,7 @@ export default class extends Vue {
     const agreeBtn = this.createAuthElement('input', ['btn', 'agree'], `.btn{width: ${this.template.btns![0].width || 360}px;height: ${this.template.btns![0].height || 36}px;display: block;margin-bottom: 10px;position: relative;left: 50%;transform: translateX(-50%);border: 0px;cursor: pointer;}.agree{background-color: ${this.template.btns![0].bgcolor || 'rgb(177, 31, 31)'};color: ${this.template.btns![0].color || 'white'};}`)
     agreeBtn.setAttribute('value', this.template.btns![0].text || '授 权')
     agreeBtn.setAttribute('type', 'submit')
+    agreeBtn.setAttribute('name', 'allow')
     const cancelBtn = this.createAuthElement('input', ['btn', 'cancel'], `.cancel{background-color: ${this.template.btns![1].bgcolor || ''};color: ${this.template.btns![1].color || ''};}`)
     cancelBtn.setAttribute('value', this.template.btns![1].text || '取 消')
     cancelBtn.setAttribute('type', 'submit')
