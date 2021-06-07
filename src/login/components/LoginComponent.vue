@@ -39,6 +39,7 @@
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
             :prop="item.name"
+            :class="{'authcode': item.name === 'code' && !item.append}"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
@@ -55,16 +56,8 @@
                 :action="btnClickHandler"
               />
             </el-input>
-          </el-form-item>
-          <el-form-item
-            v-if="authcode.key"
-            class="authcode"
-          >
-            <el-input
-              v-model="authcode.value"
-              placeholder="输入验证码"
-            />
             <img
+              v-if="item.name === 'code' && !item.append"
               :src="authcodeSrc"
               alt=""
               @click="getAuthCode"
@@ -156,5 +149,4 @@
     }
   }
 }
-
 </style>
