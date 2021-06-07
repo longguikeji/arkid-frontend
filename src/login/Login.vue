@@ -52,8 +52,7 @@ export default class Login extends Vue {
       nextUrl = window.location.origin + nextUrl
       LoginStore.NextUrl = nextUrl
       if (LoginStore.token) {
-        nextUrl = nextUrl + '&token=' + LoginStore.token
-        window.location.replace(nextUrl)
+        window.location.replace(nextUrl + '&token=' + LoginStore.token)
       }
     }
 

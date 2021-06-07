@@ -144,10 +144,6 @@ export default class extends Vue {
     return this.$route.query.app
   }
 
-  get authUrl() {
-    return window.location.origin + this.$route.query.auth_url
-  }
-
   get url() {
     return '/api/v1/tenant/' + this.tenant + '/app/' + this.app + '/add_auth_tmpl/'
   }
@@ -206,7 +202,6 @@ export default class extends Vue {
 
   initAuthPageBtns() {
     const footer = this.createAuthElement('form', ['footer'], '.footer{margin-top: 20px;}')
-    footer.setAttribute('action', this.authUrl)
     footer.setAttribute('method', 'post')
     const crsf = this.createAuthElement('span', ['crsf'], '.crsf{display: none}')
     crsf.innerHTML = '{%  csrf_token %}'

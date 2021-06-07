@@ -10,8 +10,7 @@ export class OpenAuthPage extends StateNode {
       name: 'auth',
       query: {
         tenant: TenantModule.currentTenant.uuid,
-        app: data.uuid,
-        auth_url: data.data.authorize
+        app: data.uuid
       }
     })
     window.open(href, '_blank')
