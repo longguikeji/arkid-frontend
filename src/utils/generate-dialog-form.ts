@@ -140,7 +140,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         autocomplete: 'new-password'
       }
     }
-    if (schema.format === 'uri') {
+    if (schema.format === 'uri' && location.pathname === '/tenant') {
       item.type = 'InputLink'
       item.state.action = [
         {
