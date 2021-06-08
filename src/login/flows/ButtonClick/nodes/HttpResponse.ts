@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import LoginStore from '@/login/store/login'
 import { jsonp } from 'vue-jsonp'
+import { error } from '@/constants/error'
 
 export class HttpResponse extends FunctionNode {
   async run() {
@@ -34,7 +35,7 @@ export class HttpResponse extends FunctionNode {
       if (this.inputs.error) {
         const com = this.$state.fetch().com
         com.$message({
-          message: '用户名或密码不正确',
+          message: error[this.inputs.error] || this.inputs.message || 'error',
           type: 'error',
           showClose: true
         })

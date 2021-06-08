@@ -92,7 +92,7 @@ export default class LoginComponent extends Vue {
   }
 
   async btnClickHandler(btn:ButtonConfig) {
-    if (!btn.gopage) {
+    if (!btn.gopage && !btn.delay && !btn.redirect) {
       (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
         if (valid) {
           await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
@@ -100,7 +100,7 @@ export default class LoginComponent extends Vue {
       })
     } else {
       await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-      this.resetFields()
+      if (btn.gopage) this.resetFields()
     }
   }
 
