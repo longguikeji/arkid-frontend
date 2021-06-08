@@ -75,7 +75,7 @@ import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
-import { removeToken } from '@/utils/auth'
+import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
   name: 'Navbar',
@@ -111,8 +111,9 @@ export default class extends Vue {
   }
 
   private async logout() {
-    removeToken()
-    this.$router.push('/login')
+    await runFlowByFile('flows/user/logout', {
+      router: this.$router
+    })
   }
 }
 </script>
