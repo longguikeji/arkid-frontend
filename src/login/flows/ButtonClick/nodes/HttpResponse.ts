@@ -32,6 +32,9 @@ export class HttpResponse extends FunctionNode {
       }
     } else {
       if (this.inputs.error) {
+        if (this.inputs.is_need_refresh && LoginStore.CodeFileName === '') {
+          window.location.reload()
+        }
         const com = this.$state.fetch().com
         com.$message({
           message: '用户名或密码不正确',

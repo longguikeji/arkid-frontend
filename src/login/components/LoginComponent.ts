@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Prop, Component } from 'vue-property-decorator'
+import { Prop, Component, Watch } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig } from '../interface'
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
@@ -18,8 +18,8 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) title?:string
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
-
-  authcodeSrc = ''
+  
+  graphicCodeSrc: string = ''
   page = ''
   currentFormIndex = '0'
   formData = {}
@@ -55,7 +55,7 @@ export default class LoginComponent extends Vue {
     })
   }
 
-  async created() {
+  created() {
     for (const p in this.config) {
       this.$set(this.formData, p, [])
       const _page = this.config[p]
@@ -76,8 +76,6 @@ export default class LoginComponent extends Vue {
         that.btnClickHandler(that.currentPage.forms[that.currentFormIndex].submit)
       }
     }
-
-    await this.getAuthCode()
   }
 
   get isFullScreen() {
@@ -163,11 +161,19 @@ export default class LoginComponent extends Vue {
     this.$refs[this.pageData][this.currentFormIndex].validateField(name)
   }
 
-  async getAuthCode() {
+  async getGraphicCode() {
     await runWorkflowByClass(GetCode, {}).then((key: string) => {
       LoginStore.CodeFileName = key
-      this.authcodeSrc = window.location.origin + getBaseUrl() + '/api/v1/authcode/render/' + LoginStore.CodeFileName
+      this.graphicCodeSrc = window.location.origin + getBaseUrl() + '/api/v1/authcode/render/' + LoginStore.CodeFileName
     })
+  }
+
+  hasGraphicCode(item: FormItemConfig) {
+    const hasCode = item.name === 'code' && !item.append
+    if (hasCode && this.graphicCodeSrc === '') {
+      this.getGraphicCode()
+    }
+    return hasCode
   }
 
 }

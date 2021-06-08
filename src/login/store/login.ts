@@ -35,5 +35,5 @@ export default class LoginStore {
   public static host = 'http://127.0.0.1:8000'
   public static TenantUUID:string | (string | null)[]
 
-  public static CodeFileName = ''
+  public static CodeFileName: string = ''
 }

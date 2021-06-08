@@ -39,7 +39,7 @@
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
             :prop="item.name"
-            :class="{'authcode': item.name === 'code' && !item.append}"
+            :class="{'authcode': hasGraphicCode(item)}"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
@@ -58,9 +58,9 @@
             </el-input>
             <img
               v-if="item.name === 'code' && !item.append"
-              :src="authcodeSrc"
+              :src="graphicCodeSrc"
               alt=""
-              @click="getAuthCode"
+              @click="getGraphicCode"
             >
           </el-form-item>
           <login-button
