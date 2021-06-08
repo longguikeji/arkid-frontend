@@ -1,7 +1,7 @@
 import OpenAPI, { ISchema } from '@/config/openapi'
 import { getSchemaByPath } from '@/utils/schema'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { BasePage, IPage } from '@/nodes/pageNode'
+import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
 import { generateDialogState, generateButton } from '@/utils/dialog'
@@ -84,6 +84,8 @@ export class StateNode extends FunctionNode {
     if (initContent.page?.hasOwnProperty(key)) {
       if (type !== 'FormPage') {
         state.card?.buttons!.push(btn)
+      } else {
+        state.bottomButtons?.push(btn)
       }
     } else {
       if (type === 'TablePage') {
@@ -104,6 +106,8 @@ export class StateNode extends FunctionNode {
         } else {
           columns![len - 1].scope!.state.push(btn)
         }
+      } else if (type === 'TreePage') {
+        debugger
       }
     }
   }

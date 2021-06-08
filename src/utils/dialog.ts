@@ -1,7 +1,7 @@
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { getSchemaByPath } from '@/utils/schema'
 import generateForm from '@/utils/form'
-import { BasePage } from '@/nodes/pageNode'
+import { BasePage } from '@/flows/basePage/nodes/pageNode'
 import generateAction from '@/utils/generate-action'
 
 const BUTTON_LABEL = {

@@ -26,13 +26,9 @@ export class InitPage extends FunctionNode {
     let initFileName = ''
     switch (initContent.type) {
       case 'table_page':
-        initFileName = 'flows/base/tablePage'
-        break
       case 'form_page':
-        initFileName = 'flows/base/formPage'
-        break
       case 'tree_page':
-        initFileName = 'flows/base/treePage'
+        initFileName = 'flows/basePage'
         break
       case 'dashboard_page':
         initFileName = 'flows/base/dashboardPage/init'

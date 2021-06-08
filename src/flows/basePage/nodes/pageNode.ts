@@ -28,7 +28,7 @@ export interface IPage extends BaseState {
   select?: SelectState
   forms?: { [value:string]: FormState }
   tree?: TreeState
-  buttons?: Array<ButtonState>
+  bottomButtons?: Array<ButtonState>
   actions?: IPageActions
   pagination?: PaginationState
   list?: {
@@ -93,7 +93,8 @@ export class Page {
       card: page.card,
       form: page.form,
       dialogs: page.dialogs,
-      actions: page.actions
+      actions: page.actions,
+      bottomButtons: page.bottomButtons
     }
     return formPage
   }
@@ -126,38 +127,27 @@ export class Page {
     total: 0,
   }
   dialogs: { [name: string]: DialogState }  = {}
-  buttons: Array<ButtonState> = []
+  bottomButtons: Array<ButtonState> = []
   actions: { [name: string]: Array<string | IFlow> } = {
     created: []
   }
 
 }
 
-export class PageNode implements BasePage {
-
-  constructor(type: string) {
-    this.type = type
-  }
-  
-  type: string
-  state: IPage = {}
-
-  getPageState() {
-    return {
-      type: this.type,
-      state: Page.createPage(this.type) || this.state
-    }
-  }
-
-}
-
-export class InitPage extends FunctionNode {
+export class PageNode extends FunctionNode {
   async run() {
     let type = this.inputs.initContent.type
     type = underlinedStrToUpperCamelStr(type)
-    const newPageState = new PageNode(type)
-    const state =  newPageState.getPageState()
+    const state =  this.getPageState(type)
     this.inputs.state = state
     return this.inputs
   }
+
+  getPageState(type: string) {
+    return {
+      type: type,
+      state: Page.createPage(type)
+    }
+  }
+
 }
