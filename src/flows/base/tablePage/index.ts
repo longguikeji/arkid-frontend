@@ -2,10 +2,11 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { InitPage } from './nodes/initPage'
-import { InitTable } from './nodes/initTable'
+import { InitPage } from '@/nodes/pageNode'
+import { StateNode } from '@/nodes/stateNode'
 import { InitSortable } from './nodes/initSortable'
-import { InitAction } from './nodes/initAction'
+// import { InitAction } from './nodes/initAction'
+import { ActionNode } from '@/nodes/actionNode'
 
 export class Main extends Flow {
   createNodes() {
@@ -17,18 +18,18 @@ export class Main extends Flow {
       }, {
         cls: InitPage,
         id: 'initPage',
-        next: 'initTable'
+        next: 'stateNode'
       }, {
-        cls: InitTable,
-        id: 'initTable',
+        cls: StateNode,
+        id: 'stateNode',
         next: 'initSortable'
       }, {
         cls: InitSortable,
         id: 'initSortable',
-        next: 'initAction'
+        next: 'actionNode'
       }, {
-        cls: InitAction,
-        id: 'initAction',
+        cls: ActionNode,
+        id: 'actionNode',
         next: 'stop'
       }, {
         cls: StopNode,

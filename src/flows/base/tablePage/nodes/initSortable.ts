@@ -3,8 +3,8 @@ import { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class InitSortable extends FunctionNode {
   async run() {
-    const tempState: TablePage = this.inputs.state
-    const initContent = this.inputs.data.initContent
+    const { state, initContent } = this.inputs
+    const tempState = state.state
     if (initContent.sort) {
       // 给 table 表格项添加一项 <排序>
       const columnSort = {
@@ -48,9 +48,6 @@ export class InitSortable extends FunctionNode {
       tempState.table?.columns?.push(columnSort)
     }
     
-    return {
-      data: this.inputs.data,
-      state: tempState
-    }
+    return this.inputs
   }
 }

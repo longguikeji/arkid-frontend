@@ -65,7 +65,7 @@ class User extends VuexModule implements IUserState {
     this.userMobile = data.mobile
     this.userType = data.is_extern_user
     this.userNickname = data.nickname
-    this.userRole = data.role || 'global'
+    this.userRole = data.role || 'tenant'
   }
 
   @Mutation

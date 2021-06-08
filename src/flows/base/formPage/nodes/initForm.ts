@@ -1,7 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI from '@/config/openapi'
-import getSchemaByContent from '@/utils/get-schema-by-content'
+import { getSchemaByContent } from '@/utils/schema'
 import generateDialogForm from '@/utils/generate-dialog-form'
 import { generateFormPageStateMapping } from '@/utils/automation'
 

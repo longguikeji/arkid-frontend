@@ -9,7 +9,7 @@
         class="table-page-filter"
       />
     </div>
-    <template v-if="state.list">
+    <template v-if="state.list.data">
       <Card
         :path="getChildPath('list.header')"
         class="tablepage__list"
@@ -60,10 +60,12 @@ export default class extends Mixins(BaseVue) {
   }
 
   get filterPath(): string {
-    if (this.state.filter) {
+    if (this.state.filter?.items) {
       this.state.filter.inline = true
+      return this.getChildPath('filter')
+    } else {
+      return ''
     }
-    return this.getChildPath('filter')
   }
 }
 </script>

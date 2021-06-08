@@ -80,8 +80,8 @@ export interface ITagPageAction {
 export interface ITagPage {
   type: string
   init?: ITagPageAction | { [key: string]: ITagPageAction }
-  page?: { [key: string]: ITagPageAction }
-  item?: { [key: string]: ITagPageAction | { [key: string]: ITagInitUpdateAction } }
+  page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
+  item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
 }
 
 export interface ITagInitUpdateAction {

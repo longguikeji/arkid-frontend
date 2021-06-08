@@ -13,7 +13,7 @@ export interface TreePage extends BaseState {
     header?: CardState,
     data?: Array<ListItemState>
   }
-  actions: { [name: string]: Array<IFlow | string> }
+  actions?: { [name: string]: Array<IFlow | string> }
 }
 
 export default interface TreePageState {
