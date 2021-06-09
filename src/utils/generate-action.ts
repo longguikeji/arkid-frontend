@@ -3,7 +3,7 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
 // target为空或'dialogs.create.state.state.'的形式的内容
-export default function generateAction(path: string, method: string, target: string, isResponse: boolean) {
+export default function generateAction(path: string, method: string, target: string, isResponse: boolean, isEmpty?: boolean) {
   let response = {},
       request = {},
       required: string[] = []
@@ -13,11 +13,11 @@ export default function generateAction(path: string, method: string, target: str
     const selectTarget = `${target}select.value`
     if (isResponse) {
       response[selectTarget] = {
-        value: propertyName
+        value: isEmpty ? '' : propertyName
       }
     } else {
       request[propertyName] = {
-        value: selectTarget
+        value: isEmpty ? '' : selectTarget
       }
     }
     Object.keys(schema.discriminator.mapping).forEach(key => {
@@ -27,7 +27,7 @@ export default function generateAction(path: string, method: string, target: str
       const items = itemSchema.properties
       if (isResponse) {
         response[selectTarget][key] = {}
-        generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName)
+        generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName, isEmpty)
       } else {
         request[propertyName][key] = {}
         generateItemRequestMapping(request[propertyName][key], items, itemTarget)
@@ -38,7 +38,7 @@ export default function generateAction(path: string, method: string, target: str
     const items = schema.properties
     const itemTarget = `${target}form.items.`
     if (isResponse) {
-      generateItemResponseMapping(response, items, itemTarget)
+      generateItemResponseMapping(response, items, itemTarget, '', '', isEmpty)
     } else {
       generateItemRequestMapping(request, items, itemTarget)
     }
@@ -49,7 +49,7 @@ export default function generateAction(path: string, method: string, target: str
   }
 }
 
-export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string, skipProp?: string) {
+export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string, skipProp?: string, isEmpty?: boolean) {
   if (!items) return
   const keys = Object.keys(items)
   for (const key of keys) {
@@ -61,7 +61,7 @@ export function generateItemResponseMapping(response: any, items: { [propertyNam
       const objectTarget = `${target}${key}.state.items.`
       const objectItems = getObjectItems(item)
       if (objectItems) {
-        generateItemResponseMapping(response, objectItems, objectTarget, key)
+        generateItemResponseMapping(response, objectItems, objectTarget, key, '', isEmpty)
       } else {
         const statePoint = `${target}${key}.state.value`
         response[statePoint] = responsePrefix ? `${responsePrefix}.${key}` : key

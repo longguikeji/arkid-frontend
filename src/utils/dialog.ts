@@ -197,11 +197,16 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
       }
     ]
   } else {
+    const target = `dialogs.${key}.state.state.` 
+    const isResponse = true
+    const isEmpty = true
+    const { mapping } = generateAction(path, method, target, isResponse, isEmpty)
     state.actions![actionName] = [
       {
         name: flowName,
         response: {
-          [`dialogs.${key}.visible`]: true
+          [`dialogs.${key}.visible`]: true,
+          ...mapping
         }
       }
     ]
