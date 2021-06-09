@@ -5,7 +5,8 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 // target为空或'dialogs.create.state.state.'的形式的内容
 export default function generateAction(path: string, method: string, target: string, isResponse: boolean) {
   let response = {},
-      request = {}
+      request = {},
+      required: string[] = []
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -33,6 +34,7 @@ export default function generateAction(path: string, method: string, target: str
       }
     })
   } else {
+    if (schema.required?.length) required.push.apply(required, schema.required)
     const items = schema.properties
     const itemTarget = `${target}form.items.`
     if (isResponse) {
@@ -41,7 +43,10 @@ export default function generateAction(path: string, method: string, target: str
       generateItemRequestMapping(request, items, itemTarget)
     }
   }
-  return isResponse ? response : request
+  return {
+    mapping: isResponse ? response : request,
+    required: required
+  }
 }
 
 export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string) {

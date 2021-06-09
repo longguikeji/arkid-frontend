@@ -118,13 +118,14 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
     } else {
       const target = `dialogs.${key}.state.state.`
       const isResponse = false
-      const request = generateAction(path, method, target, isResponse)
+      const { mapping, required } = generateAction(path, method, target, isResponse)
       state.actions![actionName] = [
         {
           name: flowName,
           url: path,
           method: method,
-          request: request
+          request: mapping,
+          required: required
         },
         {
           name: 'arkfbp/flows/assign',
@@ -147,8 +148,8 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     }
     const target = `dialogs.${key}.state.state.` 
     const isResponse = true 
-    const action = generateAction(path, method, target, isResponse)
-    response = Object.assign(response, action)
+    const { mapping } = generateAction(path, method, target, isResponse)
+    response = Object.assign(response, mapping)
     state.actions![actionName] = [
       {
         name: flowName,

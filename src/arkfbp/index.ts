@@ -2,6 +2,7 @@ import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { getCurrentPageState } from '@/utils/get-page-state'
 import Filter from '@/utils/filter'
 import getUrl from '@/utils/url'
+import { FlowModule } from '@/store/modules/flow'
 
 export interface IFlow {
   name: string
@@ -11,6 +12,7 @@ export interface IFlow {
   response?: any
   target?: string // 配置jump时跳转的目标页面
   path?: string // 用于组件之间的指向
+  required?: Array<string>
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -25,7 +27,9 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
   }
   const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
   if (currentFlows?.length) {
+    FlowModule.setFlowStatus(false)
     for (let i = 0; i < currentFlows.length; i++) {
+      if (FlowModule.stop) break
       if (typeof currentFlows[i] === 'string') {
         const appointedFlow = currentFlows[i] as string
         if (appointedFlow.includes('.')) {
@@ -54,7 +58,8 @@ export async function runFlow (com: any, state: any, flow: IFlow) {
     clientServer: args.response,
     target: args.target,
     path: args.path,
-    com: com
+    com: com,
+    required: args.required
   }
   // 对 request 请求参数进行解析处理
   if (args.request) {

@@ -1,10 +1,29 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { firstArrContainSecondArr, getObjAllKeys } from '@/utils/common'
+import { FlowModule } from '@/store/modules/flow'
 
 export class Update extends AuthApiNode {
   async run() {
-    this.url = this.inputs.url
-    this.method = this.inputs.method
-    this.params = this.inputs.params
+    const { url, method, params, com, required } = this.inputs
+    this.url = url
+    this.method = method
+    this.params = params
+
+    // 进行必填字段的统一判断
+    if (required?.length) {
+      const paramKeys = getObjAllKeys(this.params)
+      const isPass = firstArrContainSecondArr(paramKeys, required)
+      if (!isPass) {
+        FlowModule.setFlowStatus(true)
+        com.$message({
+          message: '缺少必填字段',
+          type: 'error',
+          showClose: true
+        })
+        return null
+      }
+    }
+
     const outputs = await super.run()
     return outputs
   }

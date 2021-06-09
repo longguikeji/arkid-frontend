@@ -41,6 +41,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputLinkState from './InputLinkState'
 import BaseVue from '@/admin/base/BaseVue'
+import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
   name: 'InputLink',
@@ -53,7 +54,7 @@ export default class extends Mixins(BaseVue) {
 
   async upload(data: any) {
     this.state.file = data.file
-    await this.runAction(this.state.action)
+    await runFlowByFile('arkfbp/flows/upload', { com: this })
   }
 }
 </script>

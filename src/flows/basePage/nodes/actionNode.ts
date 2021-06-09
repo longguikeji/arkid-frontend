@@ -67,8 +67,8 @@ export class ActionNode extends FunctionNode {
     }
     const isResponse = true
     const target = ''
-    const response = generateAction(path, method, target, isResponse)
-    this.initFetchAction(state, path, method, response)
+    const { mapping } = generateAction(path, method, target, isResponse)
+    this.initFetchAction(state, path, method, mapping)
   }
 
   initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
