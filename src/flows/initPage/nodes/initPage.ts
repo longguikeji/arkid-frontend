@@ -11,18 +11,19 @@ export class InitPage extends FunctionNode {
     if (isMultiPage) {
       state = []
       for (let i = 0; i < initContent.length; i++) {
-        const pageState = await this.initPage(initContent[i], currentPage)
+        const pageState = await this.initPage(initContent[i])
         state.push(pageState)
       }
     } else {
-      state = await this.initPage(initContent, currentPage)
+      state = await this.initPage(initContent)
     }
+    this.runCustomPageFlow(state, initContent, currentPage)
     return {
       state: state
     }
   }
 
-  async initPage(initContent: ITagPage, currentPage?: string) {
+  async initPage(initContent: ITagPage) {
     let state
     let initFileName = ''
     switch (initContent.type) {
@@ -40,7 +41,10 @@ export class InitPage extends FunctionNode {
     }).then(async (data) => {
       state = data.state
     })
-    // special page
+    return state
+  }
+
+  async runCustomPageFlow(state: any, initContent: ITagPage, currentPage: string) {
     if (currentPage === 'group') {
       await runFlowByFile('flows/group/changeFetch', {
         state: state,
@@ -65,7 +69,6 @@ export class InitPage extends FunctionNode {
         state = data.state
       })
     }
-    return state
   }
 
 }

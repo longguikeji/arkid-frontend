@@ -64,11 +64,11 @@ export function generateItemResponseMapping(response: any, items: { [propertyNam
         generateItemResponseMapping(response, objectItems, objectTarget, key, '', isEmpty)
       } else {
         const statePoint = `${target}${key}.state.value`
-        response[statePoint] = responsePrefix ? `${responsePrefix}.${key}` : key
+        response[statePoint] = isEmpty ? '' : ( responsePrefix ? `${responsePrefix}.${key}` : key )
       }
     } else {
       const statePoint = `${target}${key}.state.value`
-      response[statePoint] = responsePrefix ? `${responsePrefix}.${key}` : key
+      response[statePoint] = isEmpty ? '' : ( responsePrefix ? `${responsePrefix}.${key}` : key )
     }
   }
 }
