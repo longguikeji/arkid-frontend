@@ -8,7 +8,7 @@ export class InitAction extends FunctionNode {
     if (initContent?.init) {
       tempState.actions!.fetch = [
         {
-          name: 'flows/base/dashboardPage/fetch',
+          name: 'flows/dashboardPage/fetch',
           url: initContent.init.path,
           method: initContent.init.method
         }
