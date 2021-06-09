@@ -85,8 +85,7 @@ export interface ITagPage {
 }
 
 export interface ITagInitUpdateAction {
-  read: ITagPageAction
-  write: ITagPageAction
+  [ name: string ]: ITagPageAction
 }
 
 export interface ITag {

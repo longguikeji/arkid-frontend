@@ -2,26 +2,26 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ISchema } from '@/config/openapi'
 import { getContent, getSchemaByContent } from '@/utils/schema'
 import { getFetchAttrs } from '@/utils/table'
-import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
-import { addDialogAction, addPageAction, addChildrenAction } from '@/utils/dialog'
+import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import generateForm from '@/utils/form'
 import generateAction from '@/utils/generate-action'
 
 export class ActionNode extends FunctionNode {
 
-  private static schema: ISchema | undefined = {}
+  private static _schema: ISchema | undefined = {}
   
   async run() {
     const { state, initContent } = this.inputs
-    this.pageInitAction(state, initContent.init?.path, initContent.init?.method)
-    this.pageOperationAction(state, initContent)
+    this.initPageFetchAction(state, initContent.init?.path, initContent.init?.method)
+    this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  private pageInitAction(pageState: BasePage, path: string, method: string) {
+  initPageFetchAction(pageState: BasePage, path: string, method: string) {
     const content = getContent(path, method)
-    ActionNode.schema = getSchemaByContent(content)
+    ActionNode._schema = getSchemaByContent(content)
     const { type, state } = pageState
     if (type === 'TablePage') {
       this.initTablePageFetchAction(state, path, method, content)
@@ -34,7 +34,7 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  private initTablePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTablePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
     const attrs = getFetchAttrs(content)
     const response = {},
           request = {}
@@ -53,8 +53,8 @@ export class ActionNode extends FunctionNode {
     this.initFetchAction(state, path, method, response, request)
   }
 
-  private initFormPageFetchAction(state: IPage, path: string, method: string) {
-    const schema = ActionNode.schema as ISchema
+  initFormPageFetchAction(state: IPage, path: string, method: string) {
+    const schema = ActionNode._schema as ISchema
     const { form, forms, select } = generateForm(schema)
     if (form) {
       if (!state.form) {
@@ -71,14 +71,14 @@ export class ActionNode extends FunctionNode {
     this.initFetchAction(state, path, method, response)
   }
 
-  private initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
     const attrs = getFetchAttrs(content)
     const response = {}
     response['tree.data'] = attrs.data
     this.initFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }
 
-  private initFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+  initFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
     state.created = 'created'
     if (!state.actions) state.actions = {}
     state.actions!.created.push('fetch')
@@ -93,25 +93,32 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  private pageOperationAction(pageState: BasePage, initContent: ITagPage) {
-    const combinations = Object.assign({}, initContent.page, initContent.item)
-    if (combinations) {
-      const keys = Object.keys(combinations)
-      for (let i = 0; i < keys.length; i++) {
-        const key = keys[i]
-        const pageAction = (combinations[key] as ITagInitUpdateAction).read || combinations[key]
-        const pagePath = (pageAction as ITagPageAction).path
-        const pageMethod = (pageAction as ITagPageAction).method
-        if (key === 'children') { 
-          addChildrenAction(pageState, pagePath, pageMethod, key) 
-          break
+  initPageOperationAction(pageState: BasePage, initContent: ITagPage) {
+    const { state } = pageState
+    if (initContent.page) {
+      Object.keys(initContent.page).forEach(key => {
+        let action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
+        addCardAction(state, action.path, action.method, key)
+        action = (initContent.page![key] as ITagInitUpdateAction).write || initContent.page![key]
+        addDialogAction(state, action.path, action.method, key)
+      })
+    }
+    if (initContent.item) {
+      Object.keys(initContent.item).forEach(key => {
+        let action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+        switch (key) {
+          case 'sort':
+            addSortAction(state, action)
+            break
+          case 'children':
+            addChildrenAction(state, action.path, action.method)
+            break
+          default:
+            addItemAction(state, action.path, action.method, key)
+            action = (initContent.item![key] as ITagInitUpdateAction).write || initContent.item![key]
+            addDialogAction(state, action.path, action.method, key)
         }
-        addPageAction(pageState, pagePath, pageMethod, key)
-        const dialogAction = (combinations[key] as ITagInitUpdateAction).write || combinations[key]
-        const dialogPath = (dialogAction as ITagPageAction).path
-        const dialogMethod = (dialogAction as ITagPageAction).method
-        addDialogAction(pageState, dialogPath, dialogMethod, key) // showReadOnly
-      }
+      })
     }
   }
 

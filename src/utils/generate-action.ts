@@ -1,5 +1,4 @@
 import { getSchemaByPath } from '@/utils/schema'
-import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行

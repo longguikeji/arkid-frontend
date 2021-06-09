@@ -1,8 +1,10 @@
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { getSchemaByPath } from '@/utils/schema'
 import generateForm from '@/utils/form'
-import { BasePage } from '@/flows/basePage/nodes/pageNode'
+import { IPage} from '@/flows/basePage/nodes/pageNode'
 import generateAction from '@/utils/generate-action'
+import ButtonState from '@/admin/common/Button/ButtonState'
+import { ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -43,7 +45,6 @@ const PAGE_ACTION_FLOW = {
   import: 'arkfbp/flows/assign',
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
-  delete: 'arkfbp/flows/update',
   retrieve: 'arkfbp/flows/fetch'
 }
 
@@ -60,8 +61,8 @@ const DIALOG_ACTION_FLOW = {
 }
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
-export function generateButton(key: string, pageType?: string, isDialog?: boolean) {
-  const btn = {
+export function generateButton(key: string, pageType?: string, isDialog?: boolean): ButtonState {
+  const btn: ButtonState = {
     label: BUTTON_LABEL[key],
     action: isDialog ? DIALOG_ACTION_NAME[key] : PAGE_ACTION_NAME[key],
     type: (pageType === 'TreePage' && (key === 'update' || key === 'delete')) ? 'text' : BUTTON_TYPE[key],
@@ -99,19 +100,25 @@ export function generateDialogState(path: string, method: string, key: string, s
   return dialogState
 }
 
-export function addDialogAction(pageState: BasePage, path: string, method: string, key: string, showReadOnly?: boolean) {
-  const { state, type } = pageState
+export function addDialogAction(state: IPage, path: string, method: string, key: string) {
   const actionName = DIALOG_ACTION_NAME[key]
   const flowName = DIALOG_ACTION_FLOW[key]
   if (actionName) {
-    let request = {}
     if (key === 'import') {
+      const request = {}
       request['data'] = 'dialogs.import.state.state.file'
+      state.actions![actionName] = [
+        {
+          name: flowName,
+          url: path,
+          method: method,
+          request: request
+        }
+      ]
     } else {
       const target = `dialogs.${key}.state.state.`
       const isResponse = false
-      const action = generateAction(path, method, target, isResponse)
-      request = Object.assign(request, action)
+      const request = generateAction(path, method, target, isResponse)
       state.actions![actionName] = [
         {
           name: flowName,
@@ -131,20 +138,24 @@ export function addDialogAction(pageState: BasePage, path: string, method: strin
   }
 }
 
-
-export function addPageAction(pageState: BasePage, path: string, method: string, key: string) {
-  const { state } = pageState
+export function addItemAction(state: IPage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
-  if (actionName.includes('open')) {
+  if (flowName) {
     let response = {
       [`dialogs.${key}.data`]: '',
     }
     const target = `dialogs.${key}.state.state.` 
     const isResponse = true 
-    const action = key === 'create' ? {} : generateAction(path, method, target, isResponse)
+    const action = generateAction(path, method, target, isResponse)
     response = Object.assign(response, action)
     state.actions![actionName] = [
+      {
+        name: flowName,
+        url: path,
+        method: method,
+        response: response
+      },
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -152,31 +163,67 @@ export function addPageAction(pageState: BasePage, path: string, method: string,
         }
       }
     ]
-    if (key === 'update') {
-      state.actions![actionName].unshift({
-        name: flowName,
-        url: path,
-        method: method,
-        response: response
-      })
-    }
   } else {
+    state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/update',
+        url: path,
+        method: method
+      },
+      'fetch'
+    ]
+  }
+}
+
+export function addCardAction(state: IPage, path: string, method: string, key: string) {
+  const actionName = PAGE_ACTION_NAME[key]
+  const flowName = PAGE_ACTION_FLOW[key]
+  if (key === 'export') {
     state.actions![actionName] = [
       {
         name: flowName,
         url: path,
         method: method
-      },
+      }
     ]
-    if (key === 'delete') {
-      state.actions![actionName].push('fetch')
-    }
+  } else {
+    state.actions![actionName] = [
+      {
+        name: flowName,
+        response: {
+          [`dialogs.${key}.visible`]: true
+        }
+      }
+    ]
   }
 }
 
+export function addSortAction(state: IPage, action: ITagInitUpdateAction | ITagPageAction) {
+  if (!action) return
+  Object.keys(action).forEach((sortName) => {
+    const url = action[sortName].path
+    const method = action[sortName].method
+    const actionName = 'sortBy' + sortName
+    state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/sort',
+        url: url,
+        method: method
+      },
+      'fetch'
+    ]
+    if (sortName === 'batch') {
+      state.actions![actionName][0]['request'] = {
+        idps: {
+          key: 'uuid',
+          data: 'table.data'
+        }
+      }
+    }
+  })
+}
 
-export function addChildrenAction(pageState: BasePage, path: string, method: string, key: string) {
-  const { state } = pageState
+export function addChildrenAction(state: IPage, path: string, method: string) {
   state.tree!.action = 'fetchTreeNode'
   state.actions!.fetchTreeNode = [
     {

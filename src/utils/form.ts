@@ -125,6 +125,15 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         readonly: schema.readOnly
       }
     }
+  } else if (schema.type === 'boolean') {
+    item = {
+      type: 'SwitchForm',
+      label: schema.title,
+      prop: prop,
+      state: {
+        value: schema.default || false
+      }
+    }
   } else if (schema.type === 'object') {
     const itemState = new FormObjectItemState()
     itemState.items = getItemsBySchema(schema, showReadOnly)
