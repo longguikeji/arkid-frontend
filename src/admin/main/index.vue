@@ -57,35 +57,11 @@ export default class extends Vue {
       let state
       // execute init page flow file
       await runFlowByFile('flows/initPage', {
-        initContent: initContent
+        initContent: initContent,
+        currentPage: currentPage
       }).then(data => {
         state = data.state
       })
-      // execute special page content
-      if (currentPage === 'group') {
-        await runFlowByFile('flows/group/changeFetch', {
-          state: state,
-          initContent: initContent
-        }).then(data => {
-          state = data.state
-        })
-      }
-      if (currentPage === 'maketplace') {
-        await runFlowByFile('flows/maketplace/initFilter', {
-          state: state,
-          initContent: initContent
-        }).then(data => {
-          state = data.state
-        })
-      }
-      if (currentPage === 'third_party_account') {
-        await runFlowByFile('flows/thirdPartyAccount/addUnbindButton', {
-          state: state,
-          initContent: initContent
-        }).then(data => {
-          state = data.state
-        })
-      }
       await AdminModule.setAdmin(state)
       this.initCompleted = true
     }
