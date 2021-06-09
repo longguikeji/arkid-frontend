@@ -70,7 +70,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  private initTable(state: IPage, schema: ISchema) {
+  initTable(state: IPage, schema: ISchema) {
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const columnState: TableColumnState = {
@@ -81,8 +81,10 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  private initForm(state: IPage, schema: ISchema) {
-    const { form, forms, select } = generateForm(schema)
+  initForm(state: IPage, schema: ISchema) {
+    const showReadOnly = true, showWriteOnly = true
+    const disabled = true
+    const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
     if (form) {
       if (!state.form) {
         state.form = { items: {}, inline: false }
@@ -97,11 +99,7 @@ export class StateNode extends FunctionNode {
   // type => page type( TablePage, FormPage, TreePage )
   initCardButtons(state: IPage, key: string, type: string) {
     const btn = generateButton(key, type)
-    if (type !== 'FormPage') {
-      state.card?.buttons!.push(btn)
-    } else {
-      state.bottomButtons?.push(btn)
-    }
+    state.card?.buttons!.push(btn)
   }
 
   // type => page type( TablePage, FormPage, TreePage )
@@ -112,6 +110,8 @@ export class StateNode extends FunctionNode {
     } else if (type === 'TreePage') {
       if (key === 'children') return
       this.initTreeItemButtons(state, btn)
+    } else if (type === 'FormPage') {
+      state.bottomButtons?.push(btn)
     }
   }
 

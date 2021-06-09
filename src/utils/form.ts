@@ -6,8 +6,8 @@ import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateForm(schema:ISchema, showReadOnly = true): FormPage {
-  const formPageState: FormPage = {}
+export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false): FormPage {
+  const formPageState: FormPage = {}  
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectState:SelectState = {
@@ -28,18 +28,18 @@ export default function generateForm(schema:ISchema, showReadOnly = true): FormP
       const refSchema = OpenAPI.instance.getSchemaByRef(schema.discriminator.mapping[refValue])
       if (refSchema.properties![propertyName]) formPageState.title = refSchema.properties![propertyName].title
       refForms[refValue] = {
-        items: getItemsBySchema(refSchema, showReadOnly, propertyName)
+        items: getItemsBySchema(refSchema, showReadOnly, showWriteOnly, disabled, propertyName)
       }
     }
   } else {
     const formState:FormState = {}
     formPageState.form = formState
-    formState.items = getItemsBySchema(schema, showReadOnly, '')
+    formState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
   }
   return formPageState
 }
 
-function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '', showWriteOnly: boolean = true) {
+function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
   const tempItems:{[prop:string]:FormItemState} = {}
   const requiredSchema = schema.required
   for (const prop in schema.properties) {
@@ -48,13 +48,13 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, skipProp = '', s
     }
     const propSchema = schema.properties[prop]
     const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, isRequired)
+    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, isRequired?: boolean):FormItemState | null {
+function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, isRequired: boolean = false):FormItemState | null {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
@@ -68,6 +68,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         required: isRequired,
+        disabled: disabled && !schema.readOnly,
         options: [],
         action: 'initInputList',
         data: {
@@ -88,7 +89,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         options: [],
-        required: isRequired
+        required: isRequired,
+        disabled: disabled && !schema.readOnly
       }
     }
   } else if (schema.enum) {
@@ -101,7 +103,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       value: schema.default,
       default: schema.default,
       readonly: schema.readOnly,
-      required: isRequired
+      required: isRequired,
+      disabled: disabled && !schema.readOnly
     }
     item = {
       type: 'Select',
@@ -118,7 +121,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         value: schema.default,
         default: schema.default,
         readonly: schema.readOnly,
-        required: isRequired
+        required: isRequired,
+        disabled: disabled && !schema.readOnly
       }
     }
   } else if (schema.type === 'string') {
@@ -133,7 +137,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         placeholder: '请输入' + schema.title,
         required: isRequired,
         showPassword: prop === 'password',
-        autocomplete: 'new-password'
+        autocomplete: 'new-password',
+        disabled: disabled && !schema.readOnly
       }
     }
     if (schema.format === 'uri' && location.pathname === '/tenant') {
@@ -145,7 +150,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       label: schema.title,
       prop: prop,
       state: {
-        value: schema.default || false
+        value: schema.default || false,
+        disabled: disabled && !schema.readOnly
       }
     }
   } else if (schema.type === 'boolean') {
@@ -154,12 +160,13 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       label: schema.title,
       prop: prop,
       state: {
-        value: schema.default || false
+        value: schema.default || false,
+        disabled: disabled && !schema.readOnly
       }
     }
   } else if (schema.type === 'object') {
     const itemState = new FormObjectItemState()
-    itemState.items = getItemsBySchema(schema, showReadOnly)
+    itemState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
     item = {
       type: 'FormObjectItem',
       label: schema.title,
@@ -171,7 +178,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
     const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
     objectSchema.title = schema.title
     objectSchema.default = schema.default
-    item = createItemByPropSchema(prop, objectSchema, showReadOnly, showWriteOnly)
+    item = createItemByPropSchema(prop, objectSchema, showReadOnly, showWriteOnly, disabled)
   }
   return item
 }

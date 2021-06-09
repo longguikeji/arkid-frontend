@@ -1,16 +1,13 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ISchema } from '@/config/openapi'
-import { getContent, getSchemaByContent } from '@/utils/schema'
+import { getContent } from '@/utils/schema'
 import { getFetchAttrs } from '@/utils/table'
 import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
-import generateForm from '@/utils/form'
 import generateAction from '@/utils/generate-action'
 
 export class ActionNode extends FunctionNode {
-
-  private static _schema: ISchema | undefined = {}
   
   async run() {
     const { state, initContent } = this.inputs
@@ -21,7 +18,6 @@ export class ActionNode extends FunctionNode {
 
   initPageFetchAction(pageState: BasePage, path: string, method: string) {
     const content = getContent(path, method)
-    ActionNode._schema = getSchemaByContent(content)
     const { type, state } = pageState
     if (type === 'TablePage') {
       this.initTablePageFetchAction(state, path, method, content)
@@ -54,17 +50,6 @@ export class ActionNode extends FunctionNode {
   }
 
   initFormPageFetchAction(state: IPage, path: string, method: string) {
-    const schema = ActionNode._schema as ISchema
-    const { form, forms, select } = generateForm(schema)
-    if (form) {
-      if (!state.form) {
-        state.form = { items: {}, inline: false }
-      }
-      state.form.items = form.items
-    } else if (forms) {
-      state.forms = forms
-      state.select = select
-    }
     const isResponse = true
     const target = ''
     const { mapping } = generateAction(path, method, target, isResponse)

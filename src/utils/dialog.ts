@@ -12,7 +12,8 @@ const BUTTON_LABEL = {
   export: '导出',
   update: '编辑',
   delete: '删除',
-  retrieve: '查看'
+  retrieve: '查看',
+  password: '修改密码'
 }
 
 const BUTTON_TYPE = {
@@ -21,14 +22,16 @@ const BUTTON_TYPE = {
   export: 'primary',
   update: 'primary',
   delete: 'danger',
-  retrieve: 'info'
+  retrieve: 'info',
+  password: 'primary'
 }
 
 const DIALOG_TYPE = {
   create: 'FormPage',
   import: 'Upload',
   update: 'FormPage',
-  retrieve: 'FormPage'
+  retrieve: 'FormPage',
+  password: 'FormPage'
 }
 
 const PAGE_ACTION_NAME = {
@@ -37,7 +40,8 @@ const PAGE_ACTION_NAME = {
   export: 'export',
   update: 'openUpdateDialog',
   delete: 'delete',
-  retrieve: 'openRetrieveDialog'
+  retrieve: 'openRetrieveDialog',
+  password: 'openPasswordDialog'
 }
 
 const PAGE_ACTION_FLOW = {
@@ -45,19 +49,22 @@ const PAGE_ACTION_FLOW = {
   import: 'arkfbp/flows/assign',
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
-  retrieve: 'arkfbp/flows/fetch'
+  retrieve: 'arkfbp/flows/fetch',
+  password: 'arkfbp/flows/assign'
 }
 
 const DIALOG_ACTION_NAME = {
   create: 'create',
   import: 'import',
-  update: 'update'
+  update: 'update',
+  password: 'password'
 }
 
 const DIALOG_ACTION_FLOW = {
   create: 'arkfbp/flows/update',
   import: 'arkfbp/flows/import',
-  update: 'arkfbp/flows/update'
+  update: 'arkfbp/flows/update',
+  password: 'arkfbp/flows/update'
 }
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
@@ -152,18 +159,20 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     response = Object.assign(response, mapping)
     state.actions![actionName] = [
       {
-        name: flowName,
-        url: path,
-        method: method,
-        response: response
-      },
-      {
         name: 'arkfbp/flows/assign',
         response: {
           [`dialogs.${key}.visible`]: true
         }
       }
     ]
+    if (method.toUpperCase() === 'GET') {
+      state.actions![actionName].unshift({
+        name: flowName,
+        url: path,
+        method: method,
+        response: response
+      })
+    }
   } else {
     state.actions![actionName] = [
       {
