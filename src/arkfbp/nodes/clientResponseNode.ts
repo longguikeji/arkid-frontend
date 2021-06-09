@@ -21,6 +21,7 @@ export class ClientResponseNode extends FunctionNode {
         const len = ks.length
         let temp = client
         for (let i = 0; i < len - 1; i++) {
+          if (!temp) break
           const k = ks[i]
           if (k.includes('forms[')) {
             temp = temp.forms
@@ -37,30 +38,32 @@ export class ClientResponseNode extends FunctionNode {
           }
         }
         // 判断此时的类型内容 -- 之后需要进一步增大兼容性
-        const lastKey = ks[len - 1]
-        if (type === 'fetch') {
-          const vs = clientServer[key].split('.')
-          let tempS = data
-          for (let i = 0; i < vs.length - 1; i++) {
-            tempS = tempS[vs[i]]
-          }
-          let res = tempS[vs[vs.length - 1]]
-          if (res === undefined) { 
-            if (lastKey !== 'value') {
-              res = clientServer[key]
+        if (temp) {
+          const lastKey = ks[len - 1]
+          if (type === 'fetch') {
+            const vs = clientServer[key].split('.')
+            let tempS = data
+            for (let i = 0; i < vs.length - 1; i++) {
+              tempS = tempS[vs[i]]
             }
-            if (lastKey === 'data') {
-              res = tempS
+            let res = tempS[vs[vs.length - 1]]
+            if (res === undefined) { 
+              if (lastKey !== 'value') {
+                res = clientServer[key]
+              }
+              if (lastKey === 'data') {
+                res = tempS
+              }
+            }
+            if (lastKey === 'disabled') {
+              temp[lastKey] = res ? false : true
+            } else {
+              temp[lastKey] = res
             }
           }
-          if (lastKey === 'disabled') {
-            temp[lastKey] = res ? false : true
-          } else {
-            temp[lastKey] = res
+          if (type === 'assign') {
+            temp[lastKey] = clientServer[key]
           }
-        }
-        if (type === 'assign') {
-          temp[lastKey] = clientServer[key]
         }
       })
     }

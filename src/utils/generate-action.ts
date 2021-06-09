@@ -27,7 +27,7 @@ export default function generateAction(path: string, method: string, target: str
       const items = itemSchema.properties
       if (isResponse) {
         response[selectTarget][key] = {}
-        generateItemResponseMapping(response[selectTarget][key], items, itemTarget)
+        generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName)
       } else {
         request[propertyName][key] = {}
         generateItemRequestMapping(request[propertyName][key], items, itemTarget)
@@ -49,47 +49,57 @@ export default function generateAction(path: string, method: string, target: str
   }
 }
 
-export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string) {
+export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string, skipProp?: string) {
   if (!items) return
-  Object.keys(items).forEach(key => {
-    if (items[key].type === 'object') {
+  const keys = Object.keys(items)
+  for (const key of keys) {
+    if (key === skipProp) {
+      continue
+    }
+    const item = items[key]
+    if (item.allOf?.length || item.oneOf?.length || item.type === 'object') {
       const objectTarget = `${target}${key}.state.items.`
-      const objectItems = items[key].properties
-      generateItemResponseMapping(response, objectItems, objectTarget, key)
-    } else if (items[key].allOf?.length || items[key].oneOf?.length) {
-      const item = items[key]
-      const ref = item.allOf?.length ? item.allOf[0].$ref : item.oneOf![0].$ref
-      const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
-      const objectTarget = `${target}${key}.state.items.`
-      const objectItems = objectSchema.properties
-      generateItemResponseMapping(response, objectItems, objectTarget, key)
+      const objectItems = getObjectItems(item)
+      if (objectItems) {
+        generateItemResponseMapping(response, objectItems, objectTarget, key)
+      } else {
+        const statePoint = `${target}${key}.state.value`
+        response[statePoint] = responsePrefix ? `${responsePrefix}.${key}` : key
+      }
     } else {
       const statePoint = `${target}${key}.state.value`
       response[statePoint] = responsePrefix ? `${responsePrefix}.${key}` : key
     }
-  })
+  }
 }
 
 export function generateItemRequestMapping(request: any, items: { [propertyName: string]: ISchema } | undefined, target: string) {
   if (!items) return
   Object.keys(items).forEach(key => {
-    if (items[key].type === 'object') {
+    const item = items[key]
+    if (item.allOf?.length || item.oneOf?.length || item.type === 'object') {
       const objectTarget = `${target}${key}.state.items.`
-      const objectItems = items[key].properties
-      request[key] = {}
-      const objectRequest = request[key]
-      generateItemRequestMapping(objectRequest, objectItems, objectTarget)
-    } else if (items[key].allOf?.length || items[key].oneOf?.length) {
-      const item = items[key]
-      const ref = item.allOf?.length ? item.allOf[0].$ref : item.oneOf![0].$ref
-      const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
-      const objectTarget = `${target}${key}.state.items.`
-      const objectItems = objectSchema.properties
-      request[key] = {}
-      const objectRquest = request[key]
-      generateItemRequestMapping(objectRquest, objectItems, objectTarget)
+      const objectItems = getObjectItems(item)
+      if (objectItems) {
+        request[key] = {}
+        const objectRquest = request[key]
+        generateItemRequestMapping(objectRquest, objectItems, objectTarget)
+      } else {
+        request[key] = `${target}${key}.state.value`
+      }
     } else {
       request[key] = `${target}${key}.state.value`
     }
   })
+}
+
+export function getObjectItems(item: ISchema) {
+  const refOf = item.allOf || item.oneOf
+  let objectItems = item.properties
+  if (refOf?.length) {
+    const ref = refOf[0].$ref
+    const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
+    objectItems = objectSchema.properties
+  }
+  return objectItems
 }
