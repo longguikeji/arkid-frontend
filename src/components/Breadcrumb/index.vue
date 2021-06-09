@@ -92,11 +92,14 @@ export default class extends Vue {
       })
       return
     }
-    this.$router.push(this.pathCompile(path)).catch(err => {
-      // Throw Error "NavigationDuplicated"
-      // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
-      console.warn(err)
-    })
+    if (path === '/desktop') {
+      this.$router.push(path)
+    }
+    // this.$router.push(this.pathCompile(path)).catch(err => {
+    //   // Throw Error "NavigationDuplicated"
+    //   // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
+    //   console.warn(err)
+    // })
   }
 }
 </script>

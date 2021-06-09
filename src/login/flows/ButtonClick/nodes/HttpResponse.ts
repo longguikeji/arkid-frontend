@@ -1,4 +1,3 @@
-import LoginComponent from '@/login/components/LoginComponent'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import LoginStore from '@/login/store/login'
 import { jsonp } from 'vue-jsonp'
@@ -26,10 +25,22 @@ export class HttpResponse extends FunctionNode {
       }
 
       if (LoginStore.NextUrl) {
-        window.location.href = LoginStore.NextUrl
+        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
         LoginStore.NextUrl = ''
       } else {
         window.location.reload()
+      }
+    } else {
+      if (this.inputs.error) {
+        if (this.inputs.is_need_refresh && LoginStore.CodeFileName === '') {
+          window.location.reload()
+        }
+        const com = this.$state.fetch().com
+        com.$message({
+          message: '用户名或密码不正确',
+          type: 'error',
+          showClose: true
+        })
       }
     }
   }

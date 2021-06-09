@@ -22,6 +22,7 @@
       v-if="currentPage"
       v-model="currentFormIndex"
       stretch
+      @tab-click="handleTabClick"
     >
       <el-tab-pane
         v-for="(form, formIndex) in currentPage.forms"
@@ -29,10 +30,16 @@
         :label="form.label"
         :name="formIndex.toString()"
       >
-        <el-form>
+        <el-form
+          :ref="pageData"
+          :model="currentFormData"
+          :rules="rules"
+        >
           <el-form-item
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
+            :prop="item.name"
+            :class="{'authcode': hasGraphicCode(item)}"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
@@ -40,6 +47,7 @@
               :name="item.name"
               :placeholder="item.placeholder"
               :show-password="item.type === 'password'"
+              @blur="onBlur($event, item.name)"
             >
               <login-button
                 v-if="item.append"
@@ -48,6 +56,12 @@
                 :action="btnClickHandler"
               />
             </el-input>
+            <img
+              v-if="item.name === 'code' && !item.append"
+              :src="graphicCodeSrc"
+              alt=""
+              @click="getGraphicCode"
+            >
           </el-form-item>
           <login-button
             :long="true"
@@ -120,4 +134,19 @@
   flex-wrap: wrap;
 }
 
+::v-deep .authcode {
+  .el-form-item__content {
+    display: flex;
+    input {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+    img {
+      height: 36px;
+      cursor: pointer;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+  }
+}
 </style>

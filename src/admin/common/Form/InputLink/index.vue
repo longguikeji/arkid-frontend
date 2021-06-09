@@ -14,8 +14,19 @@
       :size="state.size"
       :rows="state.rows"
       :autosize="state.autosize"
-      :autocomplete="state.autocomplete"
-    />
+    >
+      <template slot="append">
+        <el-upload
+          action=""
+          :http-request="upload"
+          :show-file-list="false"
+        >
+          <el-button size="small">
+            点击上传
+          </el-button>
+        </el-upload>
+      </template>
+    </el-input>
     <svg-icon
       v-if="state.required"
       class="required"
@@ -28,16 +39,21 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import InputState from './InputState'
+import InputLinkState from './InputLinkState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
-  name: 'Input',
+  name: 'InputLink',
   components: {}
 })
 export default class extends Mixins(BaseVue) {
-  get state(): InputState {
-    return this.$state as InputState
+  get state(): InputLinkState {
+    return this.$state as InputLinkState
+  }
+
+  async upload(data: any) {
+    this.state.file = data.file
+    await this.runAction(this.state.action)
   }
 }
 </script>

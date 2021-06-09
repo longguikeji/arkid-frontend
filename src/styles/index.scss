@@ -154,3 +154,9 @@ aside {
 .no-padding {
   padding: 0px !important;
 }
+
+.required {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}

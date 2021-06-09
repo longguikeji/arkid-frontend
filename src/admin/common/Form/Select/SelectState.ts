@@ -32,4 +32,5 @@ export default interface SelectState extends BaseState {
   popperAppendToBody?: boolean // 是否将弹出框插入至 body 元素。在弹出框的定位出现问题时，可将该属性设置为 false
   automaticDropdown?: boolean // 对于不可搜索的 Select，是否在输入框获得焦点后自动弹出选项菜单
   action?: string | Function // 下拉选项发生变化是出发的action动作
+  required?: boolean // 是否必填
 }

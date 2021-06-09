@@ -2,19 +2,13 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 import store from '@/store'
 
 export interface IUserState {
-  userUUId: string
+  uuid: string
   username: string
-  userType: string
-  userAvatar: string
-  userMobile: string
-  userAddress: string
-  userDes: string
-  userOcc: string
-  userWeChatId: string
-  userGithubId: string
-  userRole: string
-  userNickname: string
-  userApps: Array<IUserApp>
+  avatar?: string
+  mobile?: string
+  role?: UserRole
+  nickname?: string
+  userApps?: Array<IUserApp>
 }
 
 export interface IUserApp {
@@ -26,58 +20,43 @@ export interface IUserApp {
   [key: string]: any
 }
 
+export enum UserRole {
+  User = 'user',
+  Tenant = 'tenant'
+}
+
 @Module({ dynamic: true, store, name: 'user' })
 class User extends VuexModule implements IUserState {
-  public userUUId = '' // 用户id
+  public uuid = ''
   public username = ''
-  public userType = ''
-  public userAvatar = ''
-  public userMobile = ''
-  public userAddress = ''
-  public userDes = ''
-  public userOcc = ''
-  public userWeChatId = '' // 微信Id
-  public userGithubId = '' // Git Id
-  public userRole = ''
-  public userNickname = ''
+  public avatar = ''
+  public mobile = ''
+  public role = UserRole.User
+  public nickname = ''
   public userApps: Array<IUserApp> = []
 
   @Mutation
   setUserMobile(mobile: string) {
-    this.userMobile = mobile
+    this.mobile = mobile
   }
 
   @Mutation
-  setGithubId(github_id: string) {
-    this.userGithubId = github_id
+  setUserRole(role: UserRole) {
+    this.role = role
   }
 
   @Mutation
-  setWechatId(wechat_id: string) {
-    this.userWeChatId = wechat_id
-  }
-
-  @Mutation
-  setUser(data: any) {
-    this.userUUId = data.uuid
+  setUserInfo(data: any) {
+    this.uuid = data.uuid
     this.username = data.username
-    this.userAvatar = data.avatar
-    this.userMobile = data.mobile
-    this.userType = data.is_extern_user
-    this.userNickname = data.nickname
-    this.userRole = data.role || 'tenant'
+    this.avatar = data.avatar
+    this.mobile = data.mobile
+    this.nickname = data.nickname
   }
 
   @Mutation
-  setUserDetail(data: any) {
-    this.userAddress = data.custom_user.data.url
-    this.userDes = data.custom_user.data.des
-    this.userOcc = data.custom_user.data.occ
-  }
-
-  @Mutation
-  setUserAvatar(data: any) {
-    this.userAvatar = data
+  setUserAvatar(avatar: string) {
+    this.avatar = avatar
   }
 
   @Mutation
@@ -85,10 +64,6 @@ class User extends VuexModule implements IUserState {
     this.userApps = apps
   }
 
-  @Action
-  setUserInfo(data: any) {
-    this.setUser(data)
-  }
 }
 
 export const UserModule = getModule(User)

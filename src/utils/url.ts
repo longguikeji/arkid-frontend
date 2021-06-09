@@ -18,7 +18,7 @@ export default function getUrl(currentUrl: string, data: any = {}) {
         param = TenantModule.currentTenant?.uuid
         break
       case 'parent_lookup_user':
-        param = UserModule.userUUId
+        param = UserModule.uuid
         break
       case 'id':
       case 'uuid':
