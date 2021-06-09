@@ -3,7 +3,6 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 export class AuthPageBtn extends FunctionNode {
   async run() {
     const tempState = this.inputs.state
-    debugger
     // button
     const authPageBtn = {
       label: '配置授权页面',

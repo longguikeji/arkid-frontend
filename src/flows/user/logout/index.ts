@@ -2,16 +2,17 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { AlterPassword } from './nodes/alterPassword'
+import { Logout } from './nodes/logout'
+
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'alterPassword'
+      next: 'logout​'
     }, {
-      cls: AlterPassword,
-      id: 'alterPassword',
+      cls: Logout,
+      id: 'logout​',
       next: 'stop'
     }, {
       cls: StopNode,
