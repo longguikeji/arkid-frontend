@@ -120,7 +120,7 @@ export class Page {
     data: [],
     action: ''
   }
-  list = {}
+  list = undefined
   pagination: PaginationState = {
     currentPage: 1,
     pageSize: 10,

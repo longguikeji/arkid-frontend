@@ -31,7 +31,7 @@ export class InitPage extends FunctionNode {
         initFileName = 'flows/basePage'
         break
       case 'dashboard_page':
-        initFileName = 'flows/base/dashboardPage/init'
+        initFileName = 'flows/dashboardPage/init'
         break
     }
     await runFlowByFile(initFileName, {

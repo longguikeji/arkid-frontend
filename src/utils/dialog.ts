@@ -175,3 +175,14 @@ export function addPageAction(pageState: BasePage, path: string, method: string,
 }
 
 
+export function addChildrenAction(pageState: BasePage, path: string, method: string, key: string) {
+  const { state } = pageState
+  state.tree!.action = 'fetchTreeNode'
+  state.actions!.fetchTreeNode = [
+    {
+      name: "arkfbp/flows/fetchTreeNode",
+      url: path,
+      method: method
+    }
+  ]
+}

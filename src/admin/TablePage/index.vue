@@ -9,7 +9,7 @@
         class="table-page-filter"
       />
     </div>
-    <template v-if="state.list.data">
+    <template v-if="state.list">
       <Card
         :path="getChildPath('list.header')"
         class="tablepage__list"

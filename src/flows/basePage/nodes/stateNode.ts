@@ -107,7 +107,16 @@ export class StateNode extends FunctionNode {
           columns![len - 1].scope!.state.push(btn)
         }
       } else if (type === 'TreePage') {
-        debugger
+        if (key === 'children') return
+        if (!state.tree?.slot) {
+          state.tree!.slot = {
+            buttons: {
+              type: 'ButtonArray',
+              state: []
+            }
+          }
+        }
+        state.tree!.slot.buttons.state.push(btn)
       }
     }
   }

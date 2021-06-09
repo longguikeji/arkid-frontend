@@ -15,7 +15,7 @@ export function generateTableColumns(schema: ISchema, isReadOnly?: boolean, isWr
   return columns
 }
 
-export function getFetchTableAttrs(content: { [contentType: string]: {schema: ISchema} } | undefined): FetchTableAttrs {
+export function getFetchAttrs(content: { [contentType: string]: {schema: ISchema} } | undefined): FetchTableAttrs {
   if (!content) return {}
   const type = Object.keys(content)[0]
   const responseSchema = content[type].schema
