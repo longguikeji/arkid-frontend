@@ -16,7 +16,8 @@ export class Main extends Flow {
     }, {
       cls: InterceptToken,
       id: 'interceptToken',
-      next: 'getOriginUrl'
+      positiveNext: "getOriginUrl",
+      negativeNext: "stop",
     }, {
       cls: GetOriginUrl,
       id: 'getOriginUrl',
