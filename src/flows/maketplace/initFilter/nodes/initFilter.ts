@@ -75,11 +75,5 @@ export class InitFilter extends AuthApiNode {
         }
       }
     }
-
-    
-    return {
-      data: this.inputs.data,
-      state: state
-    }
   }
 }

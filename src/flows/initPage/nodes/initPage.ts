@@ -17,7 +17,7 @@ export class InitPage extends FunctionNode {
     } else {
       state = await this.initPage(initContent)
     }
-    this.runCustomPageFlow(state, initContent, currentPage)
+    await this.runCustomPageFlow(state, initContent, currentPage)
     return {
       state: state
     }
@@ -45,30 +45,25 @@ export class InitPage extends FunctionNode {
   }
 
   async runCustomPageFlow(state: any, initContent: ITagPage, currentPage: string) {
-    if (currentPage === 'group') {
-      await runFlowByFile('flows/group/changeFetch', {
-        state: state,
-        initContent: initContent
-      }).then(data => {
-        state = data.state
-      })
+    let curstomPageFlow: string = ''
+    switch (currentPage) {
+      case 'app':
+        curstomPageFlow = 'flows/appManager/authPageBtn'
+        break
+      case 'group':
+        curstomPageFlow = 'flows/group/changeFetch'
+        break
+      case 'maketplace':
+        curstomPageFlow = 'flows/maketplace/initFilter'
+        break
+      case 'third_party_account':
+        curstomPageFlow = 'flows/thirdPartyAccount/addUnbindButton'
     }
-    if (currentPage === 'maketplace') {
-      await runFlowByFile('flows/maketplace/initFilter', {
+    if (curstomPageFlow !== '') {
+      await runFlowByFile(curstomPageFlow, {
         state: state,
         initContent: initContent
-      }).then(data => {
-        state = data.state
-      })
-    }
-    if (currentPage === 'third_party_account') {
-      await runFlowByFile('flows/thirdPartyAccount/addUnbindButton', {
-        state: state,
-        initContent: initContent
-      }).then(data => {
-        state = data.state
       })
     }
   }
-
 }

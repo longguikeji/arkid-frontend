@@ -24,8 +24,5 @@ export class AddUnbindButton extends FunctionNode {
       },
       'fetch'
     ]
-    return {
-      state: state
-    }
   }
 }

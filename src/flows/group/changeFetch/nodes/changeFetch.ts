@@ -7,8 +7,5 @@ export class ChangeFetch extends FunctionNode {
     state[0].state.actions.fetch.push(fetchTableName)
     state[0].state.actions.fetchTreeNode.push(fetchTableName)
     state[1].state.actions.fetch[0].name = 'flows/group/fetchTable'
-    return {
-      state: state
-    }
   }
 }
