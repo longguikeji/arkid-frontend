@@ -44,9 +44,10 @@ export class ClientResponseNode extends FunctionNode {
             const vs = clientServer[key].split('.')
             let tempS = data
             for (let i = 0; i < vs.length - 1; i++) {
+              if (!tempS) break
               tempS = tempS[vs[i]]
             }
-            let res = tempS[vs[vs.length - 1]]
+            let res = tempS ? tempS[vs[vs.length - 1]] : undefined
             if (res === undefined) { 
               if (lastKey !== 'value') {
                 res = clientServer[key]

@@ -9,8 +9,9 @@ export class Update extends AuthApiNode {
     this.method = method
     this.params = params
 
+    const route = com.$route
     // 进行必填字段的统一判断
-    if (required?.length) {
+    if (required?.length && route.name !== 'group') {
       const paramKeys = getObjAllKeys(this.params)
       const isPass = firstArrContainSecondArr(paramKeys, required)
       if (!isPass) {

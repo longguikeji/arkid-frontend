@@ -51,7 +51,7 @@ export class InitInputList extends FunctionNode {
         request: {
           multi: params.multi,
           field: params.field,
-          type: 'tableType'
+          type: tempState.type
         }
       }
     ]

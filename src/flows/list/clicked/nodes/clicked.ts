@@ -27,13 +27,12 @@ export class Clicked extends FunctionNode {
     const treeNodeActionType = domState.actionType
     
     if (treeNodeActionType === "expand") return 
-    
     // 定义当前点击的数据
     let currentClickedData
     // 判断当前的是否为table表格中的全选
     // tree结构的内容选择时，data为Object
     // table结构的内容选择时，如果为单选-data为Object，如果为多选-data为Array，取消时data为空数组
-    if (params.type === 'treeType') {
+    if (params.type === 'TreePage') {
       currentClickedData = {}
       currentClickedData['value'] = data.uuid
       currentClickedData['label'] = data.label || data.name || ''
