@@ -9,21 +9,21 @@ export class Update extends AuthApiNode {
     this.method = method
     this.params = params
 
-    const route = com.$route
     // 进行必填字段的统一判断
-    if (required?.length && route.name !== 'group') {
-      const paramKeys = getObjAllKeys(this.params)
-      const isPass = firstArrContainSecondArr(paramKeys, required)
-      if (!isPass) {
-        FlowModule.setFlowStatus(true)
-        com.$message({
-          message: '缺少必填字段',
-          type: 'error',
-          showClose: true
-        })
-        return null
-      }
-    }
+    // const route = com.$route
+    // if (required?.length && route.name !== 'group') {
+    //   const paramKeys = getObjAllKeys(this.params)
+    //   const isPass = firstArrContainSecondArr(paramKeys, required)
+    //   if (!isPass) {
+    //     FlowModule.setFlowStatus(true)
+    //     com.$message({
+    //       message: '缺少必填字段',
+    //       type: 'error',
+    //       showClose: true
+    //     })
+    //     return null
+    //   }
+    // }
 
     const outputs = await super.run()
     return outputs
