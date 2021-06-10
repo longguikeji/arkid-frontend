@@ -7,6 +7,7 @@ import generateForm from '@/utils/form'
 import { generateDialogState, generateButton } from '@/utils/dialog'
 import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
 import ButtonState from '@/admin/common/Button/ButtonState'
+import whetherImportListDialog from '@/utils/list-dialog'
 
 export class StateNode extends FunctionNode {
 
@@ -67,6 +68,19 @@ export class StateNode extends FunctionNode {
     const dialogState = generateDialogState(path, method, key) // showReadOnly
     if (dialogState) {
       state.dialogs![key] = dialogState
+      const importListDialog = whetherImportListDialog(dialogState.state.state)
+      if (importListDialog) {
+        state.dialogs![key].state.state.dialogs = {
+          selected: importListDialog
+        }
+        state.dialogs![key].state.state.actions = {
+          initInputList: [
+            {
+              name: 'flows/list/initInputList'
+            }
+          ]
+        }
+      }  
     }
   }
 

@@ -2,10 +2,12 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import getInitContent from '@/utils/get-init-content'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
+import TablePageState from '@/admin/TablePage/TablePageState'
+import TreePageState from '@/admin/TreePage/TreePageState'
 
 export class InitInputList extends FunctionNode {
   async run() {
-    const tempState = this.inputs.client
+    const state = this.inputs.client
     const params = this.inputs.com.state.data
     const path = this.inputs.com.path
     // 给 第二层弹出框的 点击按钮相关事件添加 path 参数
@@ -24,78 +26,78 @@ export class InitInputList extends FunctionNode {
     if (params.page === 'group') {
       initContent = initContent[0]
     }
-    // 通过initContent.type来判断初始化的类型
-    if (initContent && initContent.type) {
-      if (initContent.type === 'tree_page') {
-        await runFlowByFile('flows/base/treePage', {
-          initContent: initContent
-        }).then((data) => {
-          // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 弹出框的内容只需要此时data.state中的tree相关的内容
-          tempState.dialogs.selected.state = {
-            type: 'TreePage',
-            state: {
-              ...data.state.state,
-              list: tempState.dialogs.selected.state.state.list
-            }
-          }
-          tempState.dialogs.selected.state.state.tree.action = 'clicked'
-          tempState.actions.confirm = confirmFlows
-          tempState.dialogs.selected.state.state.actions.clicked = [
-            {
-              name: 'flows/list/clicked',
-              request: {
-                multi: params.multi,
-                field: params.field,
-                type: 'treeType'
-              }
-            }
-          ]
-          tempState.dialogs.selected.state.state.list.header = {
-            title: '已选数据列表' || ''
-          }
-          tempState.dialogs.selected.state.state.list.data.length = 0
-          tempState.dialogs.selected.state.state.list.data = nowInputListData
-        })
-      } else if (initContent.type === 'table_page') {
-        await runFlowByFile('flows/base/tablePage', {
-          initContent: {
-            ...initContent,
-            hiddenReadOnly: true
-          }
-        }).then((data) => {
-          // 根据初始化公用流返回的state初始化此InputList弹出框的内容 -- 此时的tablePage只需要data.state中的部分内容
-          tempState.dialogs.selected.state = {
-            type: 'TablePage',
-            state: {
-              ...data.state.state,
-              list: tempState.dialogs.selected.state.state.list
-            }
-          }
-          tempState.dialogs.selected.state.state.table.selection = {
-            exist: params.multi,
-            values: []
-          }
-          tempState.dialogs.selected.state.state.table.selectAction = 'clicked'
-          tempState.actions.confirm = confirmFlows
-          tempState.dialogs.selected.state.state.actions.clicked = [
-            {
-              name: 'flows/list/clicked',
-              request: {
-                multi: params.multi,
-                field: params.field,
-                type: 'tableType'
-              }
-            }
-          ]
-          tempState.dialogs.selected.state.state.list.header = {
-            title: '已选数据列表' || ''
-          }
-          tempState.dialogs.selected.state.state.list.data.length = 0
-          tempState.dialogs.selected.state.state.list.data = nowInputListData
-        })
+    await runFlowByFile('flows/basePage', {
+      initContent: initContent
+    }).then((data) => {
+      const tempState = data.state
+      this.initDialogPage(state, tempState)
+    })
+    state.dialogs.selected.visible = true
+  }
+
+  initDialogPage(state: any, tempState: TablePageState | TreePageState) {
+    const { params, flow, data } = this.getInitAttrs() 
+    state.dialogs.selected.state = {
+      type: tempState.type,
+      state: {
+        ...tempState.state,
+        list: state.dialogs.selected.state.state.list
       }
     }
-    // 最后，打开对话框
-    tempState.dialogs.selected.visible = true
+    state.actions.confirm = flow
+    state.dialogs.selected.state.state.actions.clicked = [
+      {
+        name: 'flows/list/clicked',
+        request: {
+          multi: params.multi,
+          field: params.field,
+          type: 'tableType'
+        }
+      }
+    ]
+    state.dialogs.selected.state.state.list.header = {
+      title: '已选数据列表' || ''
+    }
+    state.dialogs.selected.state.state.list.data.length = 0
+    state.dialogs.selected.state.state.list.data = data
+    // switch
+    switch (tempState.type) {
+      case 'TablePage':
+        this.initDialogTablePage(state, tempState, params)
+        break
+      case 'TreePage':
+        this.initDialogTreePage(state, tempState)
+    }
+  }
+
+  initDialogTreePage(state: any, tempState: TablePageState) {
+    state.dialogs.selected.state.state.tree.action = 'clicked'
+  }
+
+  initDialogTablePage(state: any, tempState: TreePageState, params: any) {
+    state.dialogs.selected.state.state.table.selection = {
+      exist: params.multi,
+      values: []
+    }
+    state.dialogs.selected.state.state.table.selectAction = 'clicked'
+  }
+
+  getInitAttrs() {
+    const com = this.inputs.com
+    const params = com.state.data
+    const path = com.path
+    const data = [...com.state.options]
+    const flow = [
+      {
+        name: 'flows/list/confirm',
+        path: path,
+        request: { ...params }
+      }
+    ]
+    return {
+      params,
+      data,
+      flow
+    }
   }
 }
