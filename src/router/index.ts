@@ -3,8 +3,7 @@ import Router, { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
-import { initRouterFromOpenAPI } from '@/admin/router/index'
-import OpenAPI from '@/config/openapi'
+import { getDynamicRoutes } from './dynamic'
 import { getToken } from '@/utils/auth'
 
 /* Solve the problem of router repeatedly jumping to the same route */
@@ -81,7 +80,11 @@ export const menuRoutes: RouteConfig[] = [
       }
     ]
   },
-  ...initRouterFromOpenAPI(OpenAPI.instance.config)
+  ...getDynamicRoutes(),
+  {
+    path: '*',
+    redirect: '/desktop',
+  }
 ]
 
 /**

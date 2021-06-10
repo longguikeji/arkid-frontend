@@ -45,3 +45,11 @@ export function getContent(path: string, method: string) {
   const content = responseOrRequest ? operation.responses[200].content : operation.requestBody.content
   return content
 }
+
+export function getApiRoles(path: string, method: string): string[] {
+  const operation = OpenAPI.instance.getOperation(path, method)
+  if (operation.roles) {
+    return operation.roles
+  }
+  return []
+}

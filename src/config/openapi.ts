@@ -54,6 +54,7 @@ export interface Info {
   termsOfService?: string
   contact?: IContact
   license?: ILicense
+  routers?: IOpenAPIRouter[]
 }
 
 export interface IContact {
@@ -79,7 +80,7 @@ export interface ITagPageAction {
 
 export interface ITagPage {
   type: string
-  init?: ITagPageAction | { [key: string]: ITagPageAction }
+  init?: ITagPageAction
   page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
   item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
 }
@@ -164,6 +165,7 @@ export interface IOperation {
   deprecated?: boolean
   security?: [Secuirty]
   tags?: [string]
+  roles?: string[]
 }
 export interface IRequestBody {
   content: { [requestBodyType: string]: {schema:ISchema}}
@@ -299,4 +301,13 @@ export interface ISpec {
   security?: [Secuirty]
   securityDefinitions?: { [securityDefinitionName: string]: Secuirty }
   tags?: [ITag]
+}
+
+
+export interface IOpenAPIRouter {
+  name: string
+  path: string
+  icon: string
+  page?: string
+  children?: IOpenAPIRouter[]
 }
