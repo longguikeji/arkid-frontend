@@ -39,27 +39,44 @@ export class StateNode extends FunctionNode {
   }
 
   initOperation(pageState: BasePage, initContent: ITagPage) {
-    const { state, type } = pageState
+    const state = pageState.state
     if (!state.dialogs) state.dialogs = {}
     if (initContent.page) {
-      Object.keys(initContent.page).forEach(key => {
-        const action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
-        const { path, method } = action
-        this.initDialogState(state, path, method, key)
-        this.initCardButtons(state, key, type, path, method)
-      })
+      this.initPageBtnState(pageState, initContent)
     }
     if (initContent.item) {
-      Object.keys(initContent.item).forEach(key => {
-        const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
-        const { path, method } = action
-        this.initDialogState(state, path, method, key)
-        if (key === 'sort') {
-          this.initSortButtons(state, action)
-        } else {
-          this.initItemButtons(state, key, type, path, method)
-        }
-      })
+      this.initItemBtnState(pageState, initContent)
+    }
+  }
+
+  initPageBtnState(pageState: BasePage, initContent: ITagPage) {
+    const { state, type } = pageState
+    const page = initContent.page
+    const pagekeys = Object.keys(page!)
+    for (let i = 0, len = pagekeys.length; i < len; i++) {
+      const key = pagekeys[i]
+      const action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
+      const { path, method } = action
+      this.initDialogState(state, path, method, key)
+      this.initCardButtons(state, key, type, path, method)
+    }
+  }
+
+  initItemBtnState(pageState: BasePage, initContent: ITagPage) {
+    const { state, type } = pageState
+    const items = initContent.item
+    const itemkeys = Object.keys(items!)
+    for (let i = 0, len = itemkeys.length; i < len; i++) {
+      const key = itemkeys[i]
+      if (key === 'children') break
+      const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+      const { path, method } = action
+      this.initDialogState(state, path, method, key)
+      if (key === 'sort') {
+        this.initSortButtons(state, action)
+      } else {
+        this.initItemButtons(state, key, type, path, method)
+      }
     }
   }
 
@@ -124,7 +141,6 @@ export class StateNode extends FunctionNode {
     if (type === 'TablePage') {
       this.initTableItemButtons(state, btn)
     } else if (type === 'TreePage') {
-      if (key === 'children') return
       this.initTreeItemButtons(state, btn)
     } else if (type === 'FormPage') {
       state.bottomButtons?.push(btn)
