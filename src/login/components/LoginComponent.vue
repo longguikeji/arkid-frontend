@@ -39,6 +39,7 @@
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
             :prop="item.name"
+            :class="{'authcode': hasGraphicCode(item)}"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
@@ -55,6 +56,12 @@
                 :action="btnClickHandler"
               />
             </el-input>
+            <img
+              v-if="item.name === 'code' && !item.append"
+              :src="graphicCodeSrc"
+              alt=""
+              @click="getGraphicCode"
+            >
           </el-form-item>
           <login-button
             :long="true"
@@ -127,4 +134,19 @@
   flex-wrap: wrap;
 }
 
+::v-deep .authcode {
+  .el-form-item__content {
+    display: flex;
+    input {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+    }
+    img {
+      height: 36px;
+      cursor: pointer;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+  }
+}
 </style>

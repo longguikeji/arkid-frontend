@@ -54,6 +54,7 @@ export interface Info {
   termsOfService?: string
   contact?: IContact
   license?: ILicense
+  routers?: IOpenAPIRouter[]
 }
 
 export interface IContact {
@@ -79,31 +80,13 @@ export interface ITagPageAction {
 
 export interface ITagPage {
   type: string
-  list?: ITagPageAction
-  create?: ITagPageAction
-  update?: ITagPageAction
-  delete?: ITagPageAction
-  treeList?: ITagPageAction
-  treeCreate?: ITagPageAction
-  treeUpdate?: ITagPageAction
-  treeDelete?: ITagPageAction
-  tableList?: ITagPageAction
-  tableCreate?: ITagPageAction
-  tableUpdate?: ITagPageAction
-  tableDelete?: ITagPageAction
-  childrenList?: ITagPageAction
+  init?: ITagPageAction
+  page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
+  item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
 }
 
 export interface ITagInitUpdateAction {
-  read: ITagPageAction
-  write: ITagPageAction
-}
-
-export interface IPageInitContent {
-  type: string
-  init?: ITagPageAction | { [key: string]: ITagPageAction }
-  page?: { [key: string]: ITagPageAction }
-  item?: { [key: string]: ITagPageAction | { [key: string]: ITagPageAction } }
+  [ name: string ]: ITagPageAction
 }
 
 export interface ITag {
@@ -182,6 +165,7 @@ export interface IOperation {
   deprecated?: boolean
   security?: [Secuirty]
   tags?: [string]
+  roles?: string[]
 }
 export interface IRequestBody {
   content: { [requestBodyType: string]: {schema:ISchema}}
@@ -317,4 +301,13 @@ export interface ISpec {
   security?: [Secuirty]
   securityDefinitions?: { [securityDefinitionName: string]: Secuirty }
   tags?: [ITag]
+}
+
+
+export interface IOpenAPIRouter {
+  name: string
+  path: string
+  icon: string
+  page?: string
+  children?: IOpenAPIRouter[]
 }

@@ -49,9 +49,11 @@ import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 import FormPage from '@/admin/FormPage/index.vue'
 import FormItem from '@/admin/common/Form/FormItem/index.vue'
 import List from '@/admin/common/data/List/index.vue'
-import ListAssembly from '@/admin/common/data/ListAssembly/index.vue'
 import Sort from '@/admin/common/data/Sort/index.vue'
 import TablePage from '@/admin/TablePage/index.vue'
+import TreePage from '@/admin/TreePage/index.vue'
+import DashboardPage from '@/admin/DashboardPage/index.vue'
+import Password from '@/admin/common/Password/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -102,6 +104,8 @@ Vue.component('Markdown', Markdown)
 Vue.component('FormObjectItem', FormObjectItem)
 Vue.component('AdminComponent', AdminComponent)
 Vue.component('List', List)
-Vue.component('ListAssembly', ListAssembly)
 Vue.component('Sort', Sort)
 Vue.component('TablePage', TablePage)
+Vue.component('TreePage', TreePage)
+Vue.component('DashboardPage', DashboardPage)
+Vue.component('Password', Password)

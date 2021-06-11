@@ -7,7 +7,7 @@
   >
     <table-page
       v-if="initCompleted"
-      path="tenant.tenantState"
+      path="tenant.tenantState.state"
     />
   </el-dialog>
 </template>
@@ -49,16 +49,15 @@ export default class extends Vue {
       this.isShowClose = true
     }
     const currentPage = this.$route.meta.page
-    const initContent: ITagPage | undefined = getInitContent(currentPage)
+    const initContent = getInitContent(currentPage) as ITagPage
     if (!initContent) {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     }
-    await runFlowByFile('flows/tablePage/init', {
+    await runFlowByFile('flows/basePage', {
       initContent: initContent
     }).then(async(data) => {
       await runFlowByFile('flows/tenant/addSwitchTenant', {
-        tempState: data.state,
-        router: this.$router
+        tempState: data.state
       }).then((data) => {
         TenantModule.changeState(data.state)
         this.initCompleted = true

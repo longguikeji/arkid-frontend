@@ -22,7 +22,7 @@ export default function getUrl(currentUrl: string, data: any = {}) {
         break
       case 'id':
       case 'uuid':
-        param = data.uuid
+        param = data?.uuid
     }
     url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
   }

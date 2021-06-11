@@ -1,6 +1,13 @@
 <template>
   <div class="dashboard-page">
+    <iframe
+      v-if="app && app.url"
+      ref="singleAppWindow"
+      class="single-app-page"
+      :src="app.url"
+    />
     <grid-layout
+      v-else
       :layout.sync="layout"
       :col-num="8"
       :is-draggable="true"
@@ -21,7 +28,10 @@
         :i="item.i"
         @resized="resizedHandler"
       >
-        <DashboardItem :path="getChildPath('items[' + item.i + ']')" />
+        <DashboardItem
+          :path="getChildPath('items[' + item.i + ']')"
+          @appClick="showAppPage"
+        />
       </grid-item>
     </grid-layout>
   </div>
@@ -30,10 +40,11 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import DashboardItem from './DashboardItem/index.vue'
-import DashboardPageState from './DashboardPageState'
+import { DashboardPage } from './DashboardPageState'
 import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
+import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -45,15 +56,19 @@ import BaseVue from '@/admin/base/BaseVue'
   }
 })
 export default class extends Mixins(BaseVue) {
-  get state(): DashboardPageState {
-    return this.$state as DashboardPageState
+  private layout?: any[] = [] // 必须有初始值
+
+  get state(): DashboardPage {
+    return this.$state as DashboardPage
   }
 
   get items(): DashboardItemState[] | undefined {
     return this.state.items
   }
 
-  private layout?:any[] = [];// 必须有初始值
+  get app(): IDesktopSingleApp | null {
+    return DesktopModule.desktopCurrentApp
+  }
 
   @Watch('items', { immediate: true })
   freshLayout() {
@@ -64,15 +79,53 @@ export default class extends Mixins(BaseVue) {
       if (item.position) { item.position.i = i }
       this.layout?.push(item.position)
     }
+    this.updateDesktopPage()
+  }
+
+  @Watch('$route')
+  onCurrentAppChange() {
+    this.updateDesktopPage()
   }
 
   resizedHandler(i:number, newH:number, newW:number) {
-    if (this.state.items) {
-      const item = this.state.items[i]
+    if (this.items) {
+      const item = this.items[i]
       if (item.position) {
         item.position.h = newH
         item.position.w = newW
       }
+    }
+  }
+
+  updateDesktopPage() {
+    const appUUId = this.$route.query.app
+    const items = this.items
+    let app: IDesktopSingleApp | null = null
+    if (appUUId && items) {
+      for (const item of items) {
+        if (item.state.uuid === appUUId) {
+          app = item.state
+        }
+      }
+    }
+    DesktopModule.updateCurrentDesktopApp(app)
+  }
+
+  showAppPage(data: any) {
+    if (data.url && data.uuid) {
+      this.$router.push({
+        path: '/',
+        query: {
+          ...this.$route.query,
+          app: data.uuid
+        }
+      })
+    } else {
+      this.$message({
+        message: '该应用未设置调转路径或缺少标识信息',
+        type: 'info',
+        showClose: true
+      })
     }
   }
 }
@@ -80,6 +133,12 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .dashboard-page {
+  height: calc(100vh - 84px);
+  overflow: auto;
+  .single-app-page {
+    width: 100%;
+    height: 100%;
+  }
   ::v-deep .vue-grid-item {
     touch-action: none;
   }

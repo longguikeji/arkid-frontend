@@ -38,11 +38,19 @@ export default class extends Mixins(BaseVue) {
             class: 'full',
             props: {
               path: this.getChildPath('state')
+            },
+            nativeOn: {
+              click: this.handleClick
             }
           }
         )
       }
     }
+  }
+
+  private handleClick() {
+    const item = this.state.state
+    this.$emit('appClick', item)
   }
 }
 </script>

@@ -1,23 +1,22 @@
 import { BaseState } from '../base/BaseVue'
-import TablePageState from '../TablePage/TablePageState'
 import TreeState from '../common/data/Tree/TreeState'
 import CardState from '../common/Card/CardState'
 import DialogState from '../common/Others/Dialog/DialogState'
-import ListState from '@/admin/common/data/List/ListState' 
+import ListItemState from '@/admin/common/data/List/ListState' 
+import { IFlow } from '@/arkfbp'
 
-export interface Tree {
-  header?: CardState,
-  nodes?: TreeState,
-}
-
-export default interface TreePageState extends BaseState {
-  type: 'TreePage'
-  tree?: Tree
-  table?: TablePageState
+export interface TreePage extends BaseState {
+  card?: CardState,
+  tree?: TreeState
   dialogs?: { [dialogName: string]: DialogState }
-  pages?: Array<string>
   list?: {
     header?: CardState,
-    data?: ListState
+    data?: Array<ListItemState>
   }
+  actions?: { [name: string]: Array<IFlow | string> }
+}
+
+export default interface TreePageState {
+  type?: string // TreePage
+  state?: TreePage
 }

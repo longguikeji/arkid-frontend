@@ -1,10 +1,11 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import { getOriginUrl } from '@/utils/cookies'
+import getDataByPath from '@/utils/datapath'
 
 export class Upload extends AuthApiNode {
   async run() {
-    const path = this.inputs.com.path
-    const state = this.getState(path)
+    const com = this.inputs.com
+    const state = getDataByPath(com.$store.state, com.path)
     if (state.file) {
       let formData = new FormData();
       formData.append("file", state.file);

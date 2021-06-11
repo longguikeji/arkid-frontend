@@ -1,8 +1,9 @@
-import { StateNode } from '@/nodes/stateNode'
-
-export class AddUnbindButton extends StateNode {
+import { FunctionNode } from 'arkfbp/lib/functionNode'
+import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
+export class AddUnbindButton extends FunctionNode {
   async run() {
-    const state = this.inputs.state
+    const state: TablePageState = this.inputs.state
+    const tempState = state.state as TablePage
     const actionColumn = {
       label: '操作',
       scope: {
@@ -11,18 +12,17 @@ export class AddUnbindButton extends StateNode {
           {
             label: '解绑',
             type: 'danger',
-            action: [
-              {
-                name: 'flows/thirdPartyAccount/unbind',
-              }
-            ]
+            action: 'unbind'
           }
         ]
       }
     }
-    state.table?.columns?.push(actionColumn)
-    return {
-      state: state
-    }
+    tempState.table?.columns?.push(actionColumn)
+    tempState.actions!.unbind = [
+      {
+        name: 'flows/thirdPartyAccount/unbind'
+      },
+      'fetch'
+    ]
   }
 }

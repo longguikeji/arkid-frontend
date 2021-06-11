@@ -3,14 +3,19 @@ import FormState from '../common/Form/FormState'
 import SelectState from '../common/Form/Select/SelectState'
 import ButtonState from '@/admin/common/Button/ButtonState' 
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
+import { IFlow } from '@/arkfbp'
 
-export default interface FromPageState extends CardState {
-  type: 'FormPage',
-  pages?: Array<string>
+export interface FormPage extends CardState {
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
   card?: CardState
   select?: SelectState
   forms?: {[value:string]: FormState}
   bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
+  actions?: { [name: string]: (IFlow | string)[] }
+}
+
+export default interface FromPageState {
+  type?: string // FormPage
+  state?: FormPage
 }

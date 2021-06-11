@@ -9,9 +9,9 @@
       @scroll="handleScroll"
     >
       <router-link
-        v-for="tag in visitedViews"
+        v-for="(tag, tagIndex) in visitedViews"
         ref="tag"
-        :key="tag.path"
+        :key="tag.path + tagIndex"
         :class="isActive(tag) ? 'active' : ''"
         :to="{path: tag.path, query: tag.query, fullPath: tag.fullPath}"
         tag="span"
@@ -59,6 +59,7 @@ import { RouteConfig } from 'vue-router'
 import { menuRoutes } from '@/router/index'
 import { TagsViewModule, ITagView } from '@/store/modules/tags-view'
 import ScrollPane from './ScrollPane.vue'
+import { DesktopModule } from '@/store/modules/desktop'
 
 @Component({
   name: 'TagsView',
@@ -75,6 +76,10 @@ export default class extends Vue {
 
   get visitedViews() {
     return TagsViewModule.visitedViews
+  }
+
+  get desktopCurrentApp() {
+    return DesktopModule.desktopCurrentApp
   }
 
   get routes() {
@@ -96,17 +101,47 @@ export default class extends Vue {
     }
   }
 
+  @Watch('desktopCurrentApp')
+  private onDesktopCurrentAppChange() {
+    this.addDesktopAppTag()
+  }
+
   mounted() {
     this.initTags()
     this.addTags()
   }
 
+  private addDesktopAppTag() {
+    const name = this.desktopCurrentApp?.name
+    if (!name) return
+    const appTag: ITagView = {
+      ...this.$route,
+      meta: {
+        title: name,
+        affix: false,
+        icon: 'desktop',
+        page: 'desktop'
+      }
+    }
+    TagsViewModule.addVisitedView(appTag)
+  }
+
   private isActive(route: ITagView) {
+    if (route.path === '/desktop') {
+      return this.isAffix(route) ? route.path === this.$route.fullPath : route.fullPath === this.$route.fullPath
+    }
     return route.path === this.$route.path
   }
 
   private isAffix(tag: ITagView) {
     return tag.meta && tag.meta.affix
+  }
+
+  private isDesktopTag() {
+    if (this.$route.path === '/desktop' && this.$route.fullPath !== '/desktop' && !this.$route.meta.affix) {
+      return true
+    }
+    return false
   }
 
   private filterAffixTags(routes: RouteConfig[], basePath = '/') {
@@ -142,6 +177,7 @@ export default class extends Vue {
   }
 
   private addTags() {
+    if (this.$route.path === '/desktop' && this.$route.fullPath !== '/desktop' && this.$route.meta.affix) return
     const { name } = this.$route
     if (name) {
       TagsViewModule.addView(this.$route)
@@ -153,10 +189,12 @@ export default class extends Vue {
     const tags = this.$refs.tag as any[] // TODO: better typescript support for router-link
     this.$nextTick(() => {
       for (const tag of tags) {
-        if ((tag.to as ITagView).path === this.$route.path) {
+        const target = tag.to as ITagView
+        const currentPath = this.$route.path
+        if (currentPath === '/desktop' ? target.fullPath === this.$route.fullPath : target.path === this.$route.path) {
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update
-          if ((tag.to as ITagView).fullPath !== this.$route.fullPath) {
+          if (target.fullPath !== this.$route.fullPath && currentPath !== '/desktop') {
             TagsViewModule.updateVisitedView(this.$route)
           }
           break

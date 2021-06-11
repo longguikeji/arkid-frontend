@@ -1,50 +1,39 @@
-import { TenantModule } from '@/store/modules/tenant'
-import { AdminModule } from '@/store/modules/admin'
-import getBaseUrl from './get-base-url'
+import { getOneCharacterIndexsInString } from '@/utils/common'
+import getDataByPath from '@/utils/datapath'
 
-function getStateByPath(tempState: any, path: string) {
-  if (path === '' || path === 'admin.adminState' || path === 'tenant.tenantState' || path === undefined) {
-    return tempState
+export function getPageState(baseState: any, path: string) {
+  let state = getDataByPath(baseState, path)
+  const isMultiPageState = state?.type === 'TablePage' || state?.type === 'FormPage' || state?.type === 'TreePage' || state?.type === 'DashboardPage'
+  if (isMultiPageState) {
+    state = state.state
   } else {
-    const tempPath = path.replace('admin.adminState.', '').replace('tenant.tenantState.', '')
-    let reTempState = tempState
-    const paths = tempPath.split('.')
-    for (const p of paths) {
-      if (p.indexOf('[') > 0) {
-        const index = Number(p.slice(p.indexOf('[') + 1, p.indexOf(']')))
-        reTempState = reTempState[index]
-      } else {
-        reTempState = reTempState[p]
+    state = null
+  }
+  return state
+}
+
+export function getCurrentPageState(baseState: any, path: string) {
+  let tempState
+  let spiltPath = path.split('.')
+  if (spiltPath.length === 3) {
+    spiltPath.pop()
+  }
+  const newPath = spiltPath.join('.')
+  if (newPath) {
+    const indexs = getOneCharacterIndexsInString(newPath, '.')
+    const pathMapping: Array<string> = []
+    pathMapping.push(newPath)
+    for (let i = indexs.length - 1; i >= 1; i--) {
+      const iPath = newPath.substring(0, indexs[i])
+      pathMapping.push(iPath)
+    }
+    for (let i = 0; i <= pathMapping.length - 1; i++) {
+      const state = getPageState(baseState, pathMapping[i])
+      if (state) {
+        tempState = state
+        break
       }
     }
-    return reTempState
   }
-}
-
-export default function getPageState(specifiedPath = '') {
-  const tempState = getBaseState()
-  if (!tempState) return
-  let path = ''
-  if (specifiedPath) {
-    path = specifiedPath
-  } else if (tempState?.pages) {
-    path = tempState?.pages[tempState.pages.length - 1]
-  }
-  return getStateByPath(tempState, path)
-}
-
-export function getPreviousPageState() {
-  const tempState = getBaseState()
-  if (!tempState) return
-  const path = tempState.pages.length === 1 ? tempState.pages[tempState.pages.length - 1] : tempState.pages[tempState.pages.length - 2]
-  return getStateByPath(tempState, path)
-}
-
-export function getBaseState() {
-  return isTenantState() ? TenantModule.tenantState : AdminModule.adminState
-}
-
-export function isTenantState() {
-  const baseUrl = getBaseUrl()
-  return (location.hash === '#' + baseUrl + '/tenant' || location.pathname === baseUrl + '/tenant')
+  return tempState
 }

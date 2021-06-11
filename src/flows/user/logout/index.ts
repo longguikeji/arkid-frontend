@@ -2,7 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { Logout } from './nodes/logout​'
+import { Logout } from './nodes/logout'
 
 export class Main extends Flow {
   createNodes() {

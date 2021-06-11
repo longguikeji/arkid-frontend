@@ -1,23 +1,15 @@
-import { AuthApiNode } from '@/nodes/authApiNode'
-import getUrl from '@/utils/url'
-import DashboardPageState from '@/admin/DashboardPage/DashboardPageState'
+import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 
 export class Fetch extends AuthApiNode {
   async run() {
-    const tempState: DashboardPageState = this.getState()
-
-    this.url = getUrl(this.inputs.params.fetchUrl)
-    this.method = (this.inputs.params.fetchMethod as string).toUpperCase() || 'GET'
+    this.url = this.inputs.url
+    this.method = this.inputs.method
 
     this.$state.commit((state: any) => {
-      state.client = tempState
+      state.client = this.inputs.client
+      state.com = this.inputs.com
     })
-
     const outputs = await super.run()
-    
-    return {
-      data: outputs,
-      com: this.inputs.com
-    }
+    return outputs
   }
 }

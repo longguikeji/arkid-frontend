@@ -26,13 +26,16 @@ export class HttpResponse extends FunctionNode {
       }
 
       if (LoginStore.NextUrl) {
-        window.location.href = LoginStore.NextUrl
+        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
         LoginStore.NextUrl = ''
       } else {
         window.location.reload()
       }
     } else {
       if (this.inputs.error) {
+        if (this.inputs.is_need_refresh && LoginStore.CodeFileName === '') {
+          window.location.reload()
+        }
         const com = this.$state.fetch().com
         com.$message({
           message: error[this.inputs.error] || this.inputs.message || 'error',

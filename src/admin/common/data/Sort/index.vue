@@ -1,11 +1,9 @@
 <template>
   <div>
     <template v-for="(item, index) in state">
-      <i
+      <SortItem
         :key="index"
-        :title="item.type"
-        :class="iconClass(item.type)"
-        @click.stop="sort(item.type)"
+        :path="getChildPath(index)"
       />
     </template>
   </div>
@@ -13,12 +11,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import SortItem from './SortItem.vue'
 import SortState from './SortState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
   name: 'Sort',
-  components: {}
+  components: {
+    SortItem
+  }
 })
 export default class extends Mixins(BaseVue) {
   get state(): Array<SortState> {

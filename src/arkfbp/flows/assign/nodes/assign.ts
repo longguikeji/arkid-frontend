@@ -1,27 +1,12 @@
-import { FunctionNode } from 'arkfbp/lib/functionNode'
-import Filter from '@/utils/filter'
-export class Assign extends FunctionNode {
+import { ClientResponseNode } from '@/arkfbp/nodes/clientResponseNode'
+
+export class Assign extends ClientResponseNode {
   async run() {
-    if (this.inputs === null) {
-      return this.inputs
-    }
-    Object.keys(this.inputs.clientServer).forEach((key) => {
-      const ks = key.split('.')
-      let temp = this.inputs.client
-      for (let i = 0; i < ks.length - 1; i++) {
-        const k = ks[i]
-        if (k.includes('items[prop=')) {
-          const res = Filter(k, temp)
-          temp = temp['items'][res]
-        } else if (k.includes('columns[prop=')) {
-          const col = Filter(k, temp)
-          temp = temp['columns'][col]
-        } else {
-          temp = temp[k]
-        }
-      }
-      temp[ks[ks.length - 1]] = this.inputs.clientServer[key]
-      return this.inputs
+    this.$state.commit(state => {
+      state.type = 'assign'
+      state.client = this.inputs.client
+      state.clientServer = this.inputs.clientServer
     })
+    await super.run()
   }
 }
