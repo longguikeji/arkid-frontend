@@ -2,9 +2,9 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
+import { GetOriginUrl } from './nodes/getOriginUrl'
 import { Slug } from './nodes/slug'
 import { InterceptToken } from './nodes/interceptToken'
-import { GetOriginUrl } from './nodes/getOriginUrl'
 import { AfterLogin } from './nodes/afterLogin'
 
 export class Main extends Flow {
@@ -12,6 +12,10 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
+      next: 'getOriginUrl'
+    }, {
+      cls: GetOriginUrl,
+      id: 'getOriginUrl',
       next: 'slug'
     }, {
       cls: Slug,
@@ -20,12 +24,8 @@ export class Main extends Flow {
     }, {
       cls: InterceptToken,
       id: 'interceptToken',
-      positiveNext: "getOriginUrl",
+      positiveNext: "afterLogin",
       negativeNext: "stop",
-    }, {
-      cls: GetOriginUrl,
-      id: 'getOriginUrl',
-      next: 'afterLogin'
     }, {
       cls: AfterLogin,
       id: 'afterLogin',

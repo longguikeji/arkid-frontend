@@ -9,15 +9,10 @@ export class Slug extends APINode {
     if (slug) {
       this.url = '/api/v1/tenant/' + slug + '/slug/'
       this.method = 'GET'
-      try {
-        const outputs = await super.run()
-        if (outputs.uuid) {
-          TenantModule.setHasSlug(true)
-          TenantModule.changeCurrentTenant(outputs)
-        }
-      }
-      catch (e) {
-        throw new Error(e)
+      const outputs = await super.run()
+      if (outputs.uuid) {
+        TenantModule.setHasSlug(true)
+        TenantModule.changeCurrentTenant(outputs)
       }
     }
   }
