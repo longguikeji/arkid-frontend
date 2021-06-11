@@ -21,4 +21,5 @@ export default interface DialogState extends AdminComponentState {
   destroyOnClose?: boolean // 关闭时销毁 Dialog 中的元素
   reliantValues?: any // 对话框所依赖的其他数据值的集合
   cancelButtonSize?: string
+  isCancelFooter?: boolean
 }

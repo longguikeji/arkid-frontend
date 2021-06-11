@@ -15,7 +15,7 @@ export class Update extends AuthApiNode {
     //   const paramKeys = getObjAllKeys(this.params)
     //   const isPass = firstArrContainSecondArr(paramKeys, required)
     //   if (!isPass) {
-    //     FlowModule.setFlowStatus(true)
+        // FlowModule.stopRunFlow()
     //     com.$message({
     //       message: '缺少必填字段',
     //       type: 'error',

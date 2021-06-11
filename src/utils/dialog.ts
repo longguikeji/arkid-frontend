@@ -32,7 +32,7 @@ const DIALOG_TYPE = {
   import: 'Upload',
   update: 'FormPage',
   retrieve: 'FormPage',
-  password: 'FormPage'
+  password: 'Password'
 }
 
 const PAGE_ACTION_NAME = {
@@ -65,7 +65,7 @@ const DIALOG_ACTION_FLOW = {
   create: 'arkfbp/flows/update',
   import: 'arkfbp/flows/import',
   update: 'arkfbp/flows/update',
-  password: 'arkfbp/flows/update'
+  password: 'arkfbp/flows/password'
 }
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
@@ -93,7 +93,11 @@ export function generateDialogState(path: string, method: string, key: string, s
   const btn = generateButton(key, path, method, '', true)
   if (!btn) return null
   if (!dialogState.buttons?.length) dialogState.buttons = []
-  dialogState.buttons.push(btn)
+  if (dialogType === 'Password') {
+    dialogState.isCancelFooter = true
+  } else {
+    dialogState.buttons.push(btn)
+  } 
   switch (dialogType) {
     case 'FormPage':
       dialogState.state = {
@@ -106,6 +110,15 @@ export function generateDialogState(path: string, method: string, key: string, s
         type: 'Upload',
         state: {
           type: 'xlsx'
+        }
+      }
+      break
+    case 'Password':
+      dialogState.state = {
+        type: 'Password',
+        state: {
+          action: 'password',
+          hasOldPassword: isFillOldPassword(path, method)
         }
       }
   }
@@ -252,4 +265,13 @@ export function addChildrenAction(state: IPage, path: string, method: string) {
       method: method
     }
   ]
+}
+
+export function isFillOldPassword(path: string, method: string): boolean {
+  let isFill = false
+  const schema = getSchemaByPath(path, method)
+  if (schema.properties?.old_password) {
+    isFill = true
+  }
+  return isFill
 }

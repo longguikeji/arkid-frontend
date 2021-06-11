@@ -17,7 +17,7 @@ export class Slug extends APINode {
         }
       }
       catch (e) {
-        console.error(e)
+        throw new Error(e)
       }
     }
   }

@@ -9,18 +9,6 @@ export class InitInputList extends FunctionNode {
   async run() {
     const state = this.inputs.client
     const params = this.inputs.com.state.data
-    const path = this.inputs.com.path
-    // 给 第二层弹出框的 点击按钮相关事件添加 path 参数
-    // 以便其在确认后将对应的值赋值给点击的DOM元素
-    const confirmFlows = [
-      {
-        name: 'flows/list/confirm',
-        path: path,
-        request: { ...params }
-      }
-    ]
-    // 获取当前的数据内容  --  初始化List的右侧内容
-    const nowInputListData = [...this.inputs.com.state.options]
     // 通过page字段信息获取list的初始化资源  --  初始化List的左侧内容
     let initContent = getInitContent(params.page) as ITagPage
     if (params.page === 'group') {

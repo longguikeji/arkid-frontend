@@ -2,16 +2,21 @@ import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-dec
 import store from '@/store'
 
 export interface IFlowState {
-  stop: boolean
+  run: boolean
 }
 
 @Module({ dynamic: true, store, name: 'flow' })
 class Flow extends VuexModule implements IFlowState {
-  public stop = false
+  public run = true
 
   @Mutation
-  setFlowStatus(status: boolean) {
-    this.stop = status
+  stopRunFlow() {
+    this.run = false
+  }
+
+  @Mutation
+  startRunFlow() {
+    this.run = true
   }
 
 }

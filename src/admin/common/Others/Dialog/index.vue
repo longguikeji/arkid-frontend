@@ -20,6 +20,7 @@
     <AdminComponent :path="getChildPath('state')" />
 
     <span
+      v-if="!state.isCancelFooter"
       slot="footer"
       class="dialog-footer"
     >

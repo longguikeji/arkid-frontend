@@ -7,6 +7,7 @@ import { Main as ButtonClick } from '../flows/ButtonClick'
 import { Main as GetCode } from '../flows/GetCode'
 import getBaseUrl from '@/utils/get-base-url'
 import LoginStore from '../store/login'
+import { RULES } from '@/utils/rules'
 
 @Component({
   name: 'LoginComponent',
@@ -24,17 +25,19 @@ export default class LoginComponent extends Vue {
   currentFormIndex = '0'
   formData = {}
   rules = {
-    password: [
-      { validator: this.validatePassword, trigger: 'blur' }
+    password: <any>[
+      RULES.required
     ],
-    repassword: [
-      { validator: this.validateRepassword, trigger: 'blur' }
+    checkpassword: [
+      RULES.required,
+      RULES.password,
+      { validator: this.checkPassword, trigger: 'blur' }
     ],
     username: [
-      { required: true, message: '用户名为必填项', trigger: 'blur' }
+      RULES.required
     ],
     mobile: [
-      { required: true, message: '手机号为必填项', trigger: 'blur' }
+      RULES.required
     ]
   }
 
@@ -104,7 +107,10 @@ export default class LoginComponent extends Vue {
       })
     } else {
       await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-      if (btn.gopage) this.resetFields()
+      if (btn.gopage) {
+        this.resetFields()
+        this.resetRules()
+      }
     }
   }
 
@@ -118,43 +124,33 @@ export default class LoginComponent extends Vue {
     })
   }
 
-  validatePassword(rule: any, value: string, callback: Function) {
-    if (this.pageData === 'register') {
-      const errorMsg = this.validatePasswordIntensity(value)
-      if (errorMsg !== '') {
-        callback(new Error(errorMsg))
-      } else {
-        if (this.currentFormData['repassword']) {
-          this.$refs[this.pageData][this.currentFormIndex].validateField('repassword')
-        }
-        callback()
-      }
+  resetRules() {
+    if (this.page === 'register') {
+      this.rules.password = [
+        RULES.required,
+        RULES.password,
+        { validator: this.validateCheckPassword, trigger: 'blur' }
+      ]
     } else {
-      callback()
+      this.rules.password = [
+        RULES.required
+      ]
     }
   }
 
-  validateRepassword(rule: any, value: string, callback: Function) {
-    const errorMsg = this.validatePasswordIntensity(value)
-    if (errorMsg !== '') {
-      callback(new Error(errorMsg))
-    } else if (value !== this.currentFormData['password']) {
+  validateCheckPassword(rule: any, value: string, callback: Function) {
+    if (this.currentFormData['checkpassword']) {
+      this.$refs[this.pageData][this.currentFormIndex].validateField('checkpassword')
+    }
+    callback()
+  }
+
+  checkPassword(rule: any, value: string, callback: Function) {
+    if (value !== this.currentFormData['password']) {
       callback(new Error('两次输入的密码不同'))
     } else {
       callback()
     }
-  }
-
-  validatePasswordIntensity(value: string): string {
-    let errorMsg = ''
-    if (!value) {
-      errorMsg = '请输入密码'
-    } else if (value.length < 8) {
-      errorMsg = '密码长度应大于等于8位'
-    } else if (/^([0-9]+)$/.test(value)) {
-      errorMsg = '密码不能全为数字'
-    }
-    return errorMsg
   }
 
   onBlur(event: Event, name: string) {

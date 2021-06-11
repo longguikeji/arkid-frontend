@@ -27,9 +27,9 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
   }
   const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
   if (currentFlows?.length) {
-    FlowModule.setFlowStatus(false)
+    FlowModule.startRunFlow()
     for (let i = 0; i < currentFlows.length; i++) {
-      if (FlowModule.stop) break
+      if (!FlowModule.run) break
       if (typeof currentFlows[i] === 'string') {
         const appointedFlow = currentFlows[i] as string
         if (appointedFlow.includes('.')) {
