@@ -23,33 +23,35 @@
         </el-menu-item>
       </sidebar-item-link>
     </template>
-    <el-submenu
-      v-else
-      :index="resolvePath(item.path)"
-      popper-append-to-body
-    >
-      <template slot="title">
-        <svg-icon
-          v-if="item.meta && item.meta.icon"
-          :name="item.meta.icon"
-        />
-        <span
-          v-if="item.meta && item.meta.title"
-          slot="title"
-        >{{ item.meta.title }}</span>
-      </template>
-      <template v-if="item.children">
-        <sidebar-item
-          v-for="child in item.children"
-          :key="child.path"
-          :item="child"
-          :is-collapse="isCollapse"
-          :is-first-level="false"
-          :base-path="resolvePath(child.path)"
-          class="nest-menu"
-        />
-      </template>
-    </el-submenu>
+    <template v-else>
+      <el-submenu
+        v-if="item.children.length"
+        :index="resolvePath(item.path)"
+        popper-append-to-body
+      >
+        <template slot="title">
+          <svg-icon
+            v-if="item.meta && item.meta.icon"
+            :name="item.meta.icon"
+          />
+          <span
+            v-if="item.meta && item.meta.title"
+            slot="title"
+          >{{ item.meta.title }}</span>
+        </template>
+        <template v-if="item.children">
+          <sidebar-item
+            v-for="child in item.children"
+            :key="child.path"
+            :item="child"
+            :is-collapse="isCollapse"
+            :is-first-level="false"
+            :base-path="resolvePath(child.path)"
+            class="nest-menu"
+          />
+        </template>
+      </el-submenu>
+    </template>
   </div>
 </template>
 

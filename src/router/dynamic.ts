@@ -72,13 +72,18 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
         if (!isValid) continue
       }
       const { path, children } = routes[i]
-      childRoutes.push({
+      const childRoute = {
         path: path,
         name: path,
         component: isAdmin ? Admin : undefined,
         children: children ? generateChildRoutes(children, false) : undefined,
         meta: getRouteMeta(routes[i])
-      })
+      }
+      if (children) {
+        const childrenRoutes = generateChildRoutes(children, false)
+        if (!childrenRoutes.length) continue
+      }
+      childRoutes.push(childRoute)
     }
   }
   return childRoutes

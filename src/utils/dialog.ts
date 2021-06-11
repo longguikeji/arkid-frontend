@@ -1,10 +1,11 @@
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
-import { getSchemaByPath } from '@/utils/schema'
+import { getSchemaByPath, getApiRoles } from '@/utils/schema'
 import generateForm from '@/utils/form'
 import { IPage} from '@/flows/basePage/nodes/pageNode'
 import generateAction from '@/utils/generate-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import { ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { UserModule } from '@/store/modules/user'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -68,7 +69,10 @@ const DIALOG_ACTION_FLOW = {
 }
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
-export function generateButton(key: string, pageType?: string, isDialog?: boolean): ButtonState {
+export function generateButton(key: string, path: string, method: string, pageType?: string, isDialog?: boolean): ButtonState | null {
+  const apiRoles = getApiRoles(path, method)
+  const userRole = UserModule.role
+  if (!apiRoles.includes(userRole)) return null
   const btn: ButtonState = {
     label: BUTTON_LABEL[key],
     action: isDialog ? DIALOG_ACTION_NAME[key] : PAGE_ACTION_NAME[key],
@@ -86,7 +90,8 @@ export function generateDialogState(path: string, method: string, key: string, s
   dialogState.title = BUTTON_LABEL[key]
   dialogState.visible = false
   dialogState.data = {}
-  const btn = generateButton(key, '', true)
+  const btn = generateButton(key, path, method, '', true)
+  if (!btn) return null
   if (!dialogState.buttons?.length) dialogState.buttons = []
   dialogState.buttons.push(btn)
   switch (dialogType) {
