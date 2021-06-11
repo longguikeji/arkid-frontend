@@ -107,10 +107,7 @@ export default class LoginComponent extends Vue {
       })
     } else {
       await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-      if (btn.gopage) {
-        this.resetFields()
-        this.resetRules()
-      }
+      if (btn.gopage) this.resetFields()
     }
   }
 
