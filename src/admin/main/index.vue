@@ -19,6 +19,12 @@
       <AdminComponent :path="'admin.adminState'" />
     </div>
   </div>
+  <div
+    v-else
+    class="placeholder"
+  >
+    页面功能正在开发中...
+  </div>
 </template>
 
 <script lang="ts">
@@ -51,9 +57,7 @@ export default class extends Vue {
   async created() {
     const currentPage = this.currentPage
     const initContent: ITagPage | Array<ITagPage> | undefined = getInitContent(currentPage)
-    if (!initContent) {
-      throw Error('This Page is not initContent Source, Please Check OpenAPI')
-    } else {
+    if (initContent) {
       let state
       // execute init page flow file
       await runFlowByFile('flows/initPage', {
@@ -75,4 +79,9 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 @import '../../styles/group.scss';
+
+.placeholder {
+  text-align: center;
+  padding-top: 50px;
+}
 </style>
