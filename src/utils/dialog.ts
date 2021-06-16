@@ -82,7 +82,7 @@ export function generateButton(key: string, path: string, method: string, pageTy
   return btn
 }
 
-export function generateDialogState(path: string, method: string, key: string, showReadOnly?: boolean): DialogState | null {
+export function generateDialogState(path: string, method: string, key: string, showReadOnly: boolean = false ): DialogState | null {
   const dialogType = DIALOG_TYPE[key]
   if (!dialogType) return null
   const schema = getSchemaByPath(path, method)
@@ -97,7 +97,7 @@ export function generateDialogState(path: string, method: string, key: string, s
     dialogState.isCancelFooter = true
   } else {
     dialogState.buttons.push(btn)
-  } 
+  }
   switch (dialogType) {
     case 'FormPage':
       dialogState.state = {
