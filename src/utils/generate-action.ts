@@ -25,6 +25,7 @@ export default function generateAction(path: string, method: string, target: str
       const itemRef = schema.discriminator!.mapping[key]
       const itemSchema = OpenAPI.instance.getSchemaByRef(itemRef)
       const items = itemSchema.properties
+      filterReuqiredItems(itemSchema, required)
       if (isResponse) {
         response[selectTarget][key] = {}
         generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName, isEmpty)
@@ -34,7 +35,7 @@ export default function generateAction(path: string, method: string, target: str
       }
     })
   } else {
-    if (schema.required?.length) required.push.apply(required, schema.required)
+    filterReuqiredItems(schema, required)
     const items = schema.properties
     const itemTarget = `${target}form.items.`
     if (isResponse) {
@@ -102,4 +103,18 @@ export function getObjectItems(item: ISchema) {
     objectItems = objectSchema.properties
   }
   return objectItems
+}
+
+export function filterReuqiredItems(schema: ISchema, required: string[]) {
+  if (schema.required && schema.properties) {
+    const items = schema.properties
+    required = schema.required.filter(prop => {
+      const item = items[prop]
+      if (!item.readOnly && (item.allOf || item.oneOf)) {
+        debugger
+      } else { 
+        return !item.readOnly
+      }
+    })
+  }
 }

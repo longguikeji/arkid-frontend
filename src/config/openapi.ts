@@ -203,6 +203,7 @@ export interface IBaseSchema {
   items?: ISchema | [ISchema]
   field?: string
   page?: string
+  hint?: string
 }
 
 export interface ISchema extends IBaseSchema {

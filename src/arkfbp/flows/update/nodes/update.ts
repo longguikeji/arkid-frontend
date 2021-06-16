@@ -1,6 +1,7 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import { firstArrContainSecondArr, getObjAllKeys } from '@/utils/common'
 import { FlowModule } from '@/store/modules/flow'
+import { error } from '@/constants/error'
 
 export class Update extends AuthApiNode {
   async run() {
@@ -26,6 +27,16 @@ export class Update extends AuthApiNode {
     }
 
     const outputs = await super.run()
+
+    if (outputs.error) {
+      FlowModule.stopRunFlow()
+      com.$message({
+        message: error[outputs.error],
+        type: 'error',
+        showClose: true
+      })
+    }
+
     return outputs
   }
 }

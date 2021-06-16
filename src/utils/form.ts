@@ -138,7 +138,10 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         required: isRequired,
         showPassword: prop === 'password',
         autocomplete: 'new-password',
-        disabled: disabled && !schema.readOnly
+        disabled: disabled && !schema.readOnly,
+        format: schema.format,
+        hint: schema.hint,
+        prop: prop
       }
     }
     if (schema.format === 'uri' && location.pathname === '/tenant') {

@@ -1,6 +1,7 @@
 export const RULES = {
   required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRegexRule('密码长度大于等于8位的字母数字组合', /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/)
+  password: getRegexRule('密码长度大于等于8位的字母数字组合', /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/),
+  email: { type: 'email', required: true }
 }
 
 export function getRegexRule(message: string, regex: RegExp) {
@@ -14,3 +15,4 @@ export function getRegexRule(message: string, regex: RegExp) {
     }
   }
 }
+

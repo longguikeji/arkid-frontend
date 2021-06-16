@@ -15,6 +15,7 @@
       :rows="state.rows"
       :autosize="state.autosize"
       :autocomplete="state.autocomplete"
+      @blur="onBlur"
     />
     <svg-icon
       v-if="state.required"
@@ -30,6 +31,8 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
+import { getRegexRule, RULES } from '@/utils/rules'
+import AsyncValidator from 'async-validator'
 
 @Component({
   name: 'Input',
@@ -39,6 +42,28 @@ export default class extends Mixins(BaseVue) {
   get state(): InputState {
     return this.$state as InputState
   }
+
+  onBlur() {
+    if (this.state.value && this.state.format) {
+      // const { prop, value, format, hint } = this.state
+      // let rule = RULES[prop!]
+      // const descriptor = { [prop!]: {} }
+      // descriptor[prop!] = Object.assign({} ,rule, { message: hint})
+      // const target = { [prop!]: value }
+      // const validator = new AsyncValidator(descriptor)
+      // validator.validate(target).then((data) => {
+      //   debugger
+      //   console.log(data)
+      // }).catch((err) => {
+      //   debugger
+      //   console.log(err)
+      // })
+    }
+  }
+
+  // handleErrors(errors, fields) {
+
+  // }
 }
 </script>
 
