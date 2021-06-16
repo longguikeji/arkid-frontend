@@ -50,3 +50,26 @@ export function getObjAllKeys(obj: Object) {
   }
   return keys
 }
+
+// isExternal
+export function isExternal(path: string) {
+  return /^(https?:|mailto:|tel:)/.test(path)
+}
+
+// 判断是否为数组类型
+export function isArray(arg: any): boolean {
+  if (typeof Array.isArray === 'undefined') {
+    return Object.prototype.toString.call(arg) === '[object Array]'
+  }
+  return Array.isArray(arg)
+}
+
+// 判断某个字符串是否可以转回为数字类型
+export function stringConvertNumber(str: string): string | number {
+  const num = Number(str)
+  if (!isNaN(num)) {
+    return num
+  } else {
+    return str
+  }
+}

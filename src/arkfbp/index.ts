@@ -1,6 +1,6 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { getCurrentPageState } from '@/utils/get-page-state'
-import Filter from '@/utils/filter'
+import stateFilter from '@/utils/state-filter'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
 
@@ -144,7 +144,7 @@ export function getStateByStringConfig(state: any, str: string) {
   if (strMapping.length) {
     strMapping.forEach(sm => {
       if (sm.includes('columns[prop=')) {
-        const res = Filter(sm, tempState)
+        const res = stateFilter(sm, tempState)
         tempState = tempState.cloumns[res]
       } else {
         if (tempState[sm] || (!tempState[sm] && sm === 'value')) {

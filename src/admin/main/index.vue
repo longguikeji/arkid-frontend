@@ -34,6 +34,7 @@ import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
 import BaseVue from '@/admin/base/BaseVue'
+import { isArray } from '@/utils/common'
 
 @Component({
   name: 'Admin',
@@ -47,7 +48,7 @@ export default class extends Vue {
   }
 
   private get isMultiPage() {
-    return Array.isArray(this.state)
+    return isArray(this.state)
   }
 
   private get currentPage() {

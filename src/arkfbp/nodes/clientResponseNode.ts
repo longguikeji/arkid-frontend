@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import Filter from '@/utils/filter'
+import stateFilter from '@/utils/state-filter'
 
 export class ClientResponseNode extends FunctionNode {
   async run() {
@@ -23,16 +23,11 @@ export class ClientResponseNode extends FunctionNode {
         for (let i = 0; i < len - 1; i++) {
           if (!temp) break
           const k = ks[i]
-          if (k.includes('forms[')) {
-            temp = temp.forms
-            const newK = k.substring(6, k.length - 1)
-            temp = temp[newK]
-          } else if (k.includes('columns[prop=')) {
-            const col = Filter(k, temp)
-            temp = temp['columns'][col]
-          } else if (k.includes('buttons[action=')) {
-            const cardBtnIndex = Filter(k, temp)
-            temp = temp['buttons'][cardBtnIndex]
+          if (k.includes('[')) {
+            const idx = k.indexOf('[')
+            const firstKey = k.substring(0, idx)
+            const secondKey = stateFilter(k, temp)
+            temp = temp[firstKey][secondKey]
           } else {
             temp = temp[k]
           }
@@ -61,8 +56,7 @@ export class ClientResponseNode extends FunctionNode {
             } else {
               temp[lastKey] = res
             }
-          }
-          if (type === 'assign') {
+          } else if (type === 'assign') {
             temp[lastKey] = clientServer[key]
           }
         }

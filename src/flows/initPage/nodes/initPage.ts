@@ -1,12 +1,13 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import { ITagPage } from '@/config/openapi'
+import { isArray } from '@/utils/common'
 
 export class InitPage extends FunctionNode {
   async run() {
     const initContent = this.inputs.initContent
     const currentPage = this.inputs.currentPage
-    const isMultiPage = Array.isArray(initContent)
+    const isMultiPage = isArray(initContent)
     let state
     if (isMultiPage) {
       state = []

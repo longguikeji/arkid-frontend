@@ -2,9 +2,10 @@ import { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { UserModule } from '@/store/modules/user'
-import OpenAPI, { ISpec, IOpenAPIRouter } from '@/config/openapi'
+import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
 import { getApiRoles } from '@/utils/schema'
+import { isArray } from '@/utils/common'
 
 interface RouteMeta {
   title: string
@@ -107,8 +108,8 @@ function getPageValidity(page: string): boolean {
     return true
   }
   let pageRoles: string[] = []
-  if (Array.isArray(initContent)) {
-    initContent.forEach(page => {
+  if (isArray(initContent)) {
+    (initContent as ITagPage[]).forEach(page => {
       const path = page?.init?.path
       const method = page?.init?.method
       if (path && method) {
@@ -117,8 +118,8 @@ function getPageValidity(page: string): boolean {
       }
     })
   } else {
-    const path = initContent?.init?.path
-    const method = initContent?.init?.method
+    const path = (initContent as ITagPage).init?.path
+    const method = (initContent as ITagPage).init?.method
     if (path && method) {
       const roles = getApiRoles(path, method)
       pageRoles.push.apply(pageRoles, roles)
