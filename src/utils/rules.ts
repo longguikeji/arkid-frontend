@@ -14,3 +14,5 @@ export function getRegexRule(message: string, regex: RegExp) {
     }
   }
 }
+
+
