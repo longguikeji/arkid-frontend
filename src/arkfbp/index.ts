@@ -121,7 +121,7 @@ export function parseStateMapping(state: any, mapping: any) {
     const item = mapping[key]
     if (typeof item === 'string') {
       tempState = getStateByStringConfig(state, item)
-      if (tempState !== undefined) {
+      if (tempState && tempState !== false) {
         params[key] = tempState
       }
     } else if (typeof item === 'object') {
