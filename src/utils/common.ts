@@ -73,3 +73,12 @@ export function stringConvertNumber(str: string): string | number {
     return str
   }
 }
+
+// 删除数组中的某个指定元素
+export function deleteValueInArray(arr: any[], value: any): any[] {
+  const index = arr.indexOf(value)
+  if (arr.length > 0 && index !== -1) {
+    arr.splice(index, 1)
+  }
+  return arr
+}

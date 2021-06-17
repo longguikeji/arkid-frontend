@@ -24,6 +24,12 @@
       width="20"
       height="20"
     />
+    <div
+      v-if="hint"
+      class="error-hint"
+    >
+      {{ hint }}
+    </div>
   </div>
 </template>
 
@@ -31,39 +37,37 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
-import { getRegexRule, RULES } from '@/utils/rules'
 import AsyncValidator from 'async-validator'
+import { ValidateModule } from '@/store/modules/validate'
+import { error } from '@/constants/error'
 
 @Component({
   name: 'Input',
   components: {}
 })
 export default class extends Mixins(BaseVue) {
+  private hint = ''
+
   get state(): InputState {
     return this.$state as InputState
   }
 
   onBlur() {
-    if (this.state.value && this.state.format) {
-      // const { prop, value, format, hint } = this.state
-      // let rule = RULES[prop!]
-      // const descriptor = { [prop!]: {} }
-      // descriptor[prop!] = Object.assign({} ,rule, { message: hint})
-      // const target = { [prop!]: value }
-      // const validator = new AsyncValidator(descriptor)
-      // validator.validate(target).then((data) => {
-      //   debugger
-      //   console.log(data)
-      // }).catch((err) => {
-      //   debugger
-      //   console.log(err)
-      // })
+    const { prop, value, format, hint, required } = this.state
+    if (prop && format && hint) {
+      const rule = { type: format, required: required, message: hint }
+      const descriptor = { [prop!]: {} }
+      descriptor[prop!] = Object.assign({}, rule)
+      const validator = new AsyncValidator(descriptor)
+      validator.validate({ [prop]: value }).then(() => {
+        this.hint = ''
+        ValidateModule.deleteInvalidItem(prop)
+      }).catch(() => {
+        this.hint = hint
+        ValidateModule.addInvalidItem(prop)
+      })
     }
   }
-
-  // handleErrors(errors, fields) {
-
-  // }
 }
 </script>
 
@@ -74,5 +78,10 @@ export default class extends Mixins(BaseVue) {
 .col {
   margin: 12px;
   flex: auto;
+}
+.error-hint {
+  color: #f53e3e;
+  position: absolute;
+  font-size: 12px;
 }
 </style>

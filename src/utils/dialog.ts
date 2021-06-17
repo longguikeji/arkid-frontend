@@ -146,6 +146,9 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
       const { mapping, required } = generateAction(path, method, target, isResponse)
       state.actions![actionName] = [
         {
+          name: 'arkfbp/flows/validate'
+        },
+        {
           name: flowName,
           url: path,
           method: method,
@@ -157,6 +160,9 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
           response: {
             [`dialogs.${key}.visible`]: false
           }
+        },
+        {
+          name: 'arkfbp/flows/cancelValidate'
         },
         'fetch'
       ]
@@ -176,6 +182,9 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     const { mapping } = generateAction(path, method, target, isResponse)
     response = Object.assign(response, mapping)
     state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/cancelValidate'
+      },
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -220,6 +229,9 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
     const isEmpty = true
     const { mapping } = generateAction(path, method, target, isResponse, isEmpty)
     state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/cancelValidate'
+      },
       {
         name: flowName,
         response: {

@@ -25,7 +25,7 @@ export default function generateAction(path: string, method: string, target: str
       const itemRef = schema.discriminator!.mapping[key]
       const itemSchema = OpenAPI.instance.getSchemaByRef(itemRef)
       const items = itemSchema.properties
-      filterReuqiredItems(itemSchema, required)
+      required = filterReuqiredItems(itemSchema)
       if (isResponse) {
         response[selectTarget][key] = {}
         generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName, isEmpty)
@@ -35,7 +35,7 @@ export default function generateAction(path: string, method: string, target: str
       }
     })
   } else {
-    filterReuqiredItems(schema, required)
+    required = filterReuqiredItems(schema)
     const items = schema.properties
     const itemTarget = `${target}form.items.`
     if (isResponse) {
@@ -105,7 +105,8 @@ export function getObjectItems(item: ISchema) {
   return objectItems
 }
 
-export function filterReuqiredItems(schema: ISchema, required: string[]) {
+export function filterReuqiredItems(schema: ISchema) {
+  let required: string[] = []
   if (schema.required && schema.properties) {
     const items = schema.properties
     required = schema.required.filter(prop => {
@@ -117,4 +118,5 @@ export function filterReuqiredItems(schema: ISchema, required: string[]) {
       }
     })
   }
+  return required
 }

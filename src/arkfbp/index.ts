@@ -12,7 +12,7 @@ export interface IFlow {
   response?: any
   target?: string // 配置jump时跳转的目标页面
   path?: string // 用于组件之间的指向
-  required?: Array<string>
+  required?: Array<string> // 用于验证
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -143,9 +143,11 @@ export function getStateByStringConfig(state: any, str: string) {
   const strMapping = str.split('.')
   if (strMapping.length) {
     strMapping.forEach(sm => {
-      if (sm.includes('columns[prop=')) {
-        const res = stateFilter(sm, tempState)
-        tempState = tempState.cloumns[res]
+      if (sm.includes('[')) {
+        const idx = sm.indexOf('[')
+        const firstKey = sm.substring(0, idx)
+        const secondKey = stateFilter(sm, tempState)
+        tempState = tempState[firstKey][secondKey]
       } else {
         if (tempState[sm] || (!tempState[sm] && sm === 'value')) {
           tempState = tempState[sm]
