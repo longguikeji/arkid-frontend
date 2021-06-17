@@ -1,5 +1,5 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
-import { getOriginUrl } from '@/utils/cookies'
+import { GlobalValueModule } from '@/store/modules/global-value'
 import getDataByPath from '@/utils/datapath'
 
 export class Upload extends AuthApiNode {
@@ -18,7 +18,7 @@ export class Upload extends AuthApiNode {
       this.url = '/api/v1/upload/'
       this.method = 'POST'
       const outputs = await super.run()
-      state.value = getOriginUrl() + '/api/v1/upload/render/' + outputs.key
+      state.value = GlobalValueModule.originUrl + '/api/v1/upload/render/' + outputs.key
     }
   }
 }

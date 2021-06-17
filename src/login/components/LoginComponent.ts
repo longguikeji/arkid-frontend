@@ -5,7 +5,6 @@ import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemCo
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as ButtonClick } from '../flows/ButtonClick'
 import { Main as GetCode } from '../flows/GetCode'
-import getBaseUrl from '@/utils/get-base-url'
 import LoginStore from '../store/login'
 import { RULES } from '@/utils/rules'
 

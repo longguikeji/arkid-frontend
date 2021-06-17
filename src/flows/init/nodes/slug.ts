@@ -1,6 +1,8 @@
 import { APINode } from "arkfbp/lib/apiNode"
 import { TenantModule } from '@/store/modules/tenant'
 import { getSlug } from '@/utils/url'
+import { GlobalValueModule } from '@/store/modules/global-value'
+import getBaseUrl from '@/utils/get-base-url'
 
 export class Slug extends APINode {
   async run() {
@@ -11,8 +13,12 @@ export class Slug extends APINode {
       this.method = 'GET'
       const outputs = await super.run()
       if (outputs.uuid) {
-        TenantModule.setHasSlug(true)
+        GlobalValueModule.setSlug(slug)
         TenantModule.changeCurrentTenant(outputs)
+      } else {
+        const originUrl = GlobalValueModule.originUrl
+        const newHref = originUrl + "/" + getBaseUrl()
+        window.location.href = newHref
       }
     }
   }
