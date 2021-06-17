@@ -1,8 +1,8 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
-import { firstArrContainSecondArr, getObjAllKeys } from '@/utils/common'
 import { FlowModule } from '@/store/modules/flow'
 import { error } from '@/constants/error'
 import { isArray } from '@/utils/common'
+import { isLackRequiredParams } from '@/utils/flow'
 
 export class Update extends AuthApiNode {
   async run() {
@@ -12,19 +12,19 @@ export class Update extends AuthApiNode {
     this.params = params
 
     // 进行必填字段的统一判断
-    let isNotLackRequiredParams = true
-    // if (required) {
-    //   if (!isArray(required)) {
-    //     const mainKey = Object.keys(required)[0]
-    //     const mainValue = this.params[mainKey]
-    //     const mainRequired = required[mainKey][mainValue]
-    //   }
-    //   const paramKeys = getObjAllKeys(this.params)
-    //   isNotLackRequiredParams = firstArrContainSecondArr(paramKeys, required)
-    // }
+    let lackRequiredParams = false
+    if (required) {
+      let requiredSet = required
+      if (!isArray(required)) {
+        const mainKey = Object.keys(required)[0]
+        const mainValue = this.params[mainKey]
+        requiredSet = required[mainKey][mainValue]
+      }
+      lackRequiredParams = isLackRequiredParams(this.params, requiredSet)
+    }
 
     // 判断是否
-    if (!isNotLackRequiredParams) {
+    if (lackRequiredParams) {
       FlowModule.stopRunFlow()
       com.$message({
         message: '缺少必填字段',

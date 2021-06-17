@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash'
+import { isArray } from '@/utils/common'
 
 export function proxyClientServer(clientServer: any, data: any) {
   let newClientServer = cloneDeep(clientServer)
@@ -18,4 +19,22 @@ export function proxyClientServer(clientServer: any, data: any) {
     })
     return newClientServer
   }
+}
+
+
+export function isLackRequiredParams(params: any, required: any): boolean {
+  let lackRequiredParams = false
+  for (const r of required) {
+    if (isArray(r)) {
+      const childParams = params[r]
+      lackRequiredParams = isLackRequiredParams(childParams, r)
+      if (lackRequiredParams) break
+    } else {
+      if (params[r] === undefined) {
+        lackRequiredParams = true
+        break
+      }
+    }
+  }
+  return lackRequiredParams
 }

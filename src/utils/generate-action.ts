@@ -123,9 +123,7 @@ export function filterReuqiredItems(schema: ISchema) {
         const objSchema = getObjectSchema(item)
         if (objSchema) {
           const objRequired = filterReuqiredItems(objSchema)
-          required.push({
-            [r]: objRequired
-          })
+          required[r] = objRequired
         }
       } else {
         if (!item.readOnly) {
