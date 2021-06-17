@@ -6,6 +6,6 @@ export class GetCode extends APINode {
     this.url = '/api/v1/authcode/generate'
     this.method = 'GET'
     const response = await super.run()
-    return response.key
+    return response
   }
 }

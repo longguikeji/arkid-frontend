@@ -155,9 +155,10 @@ export default class LoginComponent extends Vue {
   }
 
   async getGraphicCode() {
-    await runWorkflowByClass(GetCode, {}).then((key: string) => {
+    await runWorkflowByClass(GetCode, {}).then((data) => {
+      const { key, base64 } = data
       LoginStore.CodeFileName = key
-      this.graphicCodeSrc = window.location.origin + getBaseUrl() + '/api/v1/authcode/render/' + LoginStore.CodeFileName
+      this.graphicCodeSrc = `data:image/png;base64,${base64}`
     })
   }
 
