@@ -2,7 +2,8 @@ import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 
 export interface IGlobalValueState {
-  
+  originUrl: string
+  slug: string
 }
 
 @Module({ dynamic: true, store, name: 'flow' })

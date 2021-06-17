@@ -37,9 +37,8 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
-import AsyncValidator from 'async-validator'
+import { validateFormat } from '@/utils/rules'
 import { ValidateModule } from '@/store/modules/validate'
-import { error } from '@/constants/error'
 
 @Component({
   name: 'Input',
@@ -52,19 +51,18 @@ export default class extends Mixins(BaseVue) {
     return this.$state as InputState
   }
 
-  onBlur() {
+  async onBlur() {
     const { prop, value, format, hint, required } = this.state
     if (prop && format && hint) {
-      const rule = { type: format, required: required, message: hint }
-      const descriptor = { [prop!]: {} }
-      descriptor[prop!] = Object.assign({}, rule)
-      const validator = new AsyncValidator(descriptor)
-      validator.validate({ [prop]: value }).then(() => {
-        this.hint = ''
-        ValidateModule.deleteInvalidItem(prop)
-      }).catch(() => {
-        this.hint = hint
-        ValidateModule.addInvalidItem(prop)
+      const info = { prop, value, format, hint, required }
+      validateFormat(info).then((err) => {
+        if (err) {
+          this.hint = hint
+          ValidateModule.addInvalidItem(prop)
+        } else {
+          this.hint = ''
+          ValidateModule.deleteInvalidItem(prop)
+        }
       })
     }
   }

@@ -20,8 +20,6 @@ export default function stateFilter(strEquality: string, state: any): number | s
           break
         }
       }
-    } else {
-      debugger
     }
   }
   return secondKey
