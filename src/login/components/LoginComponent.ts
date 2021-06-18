@@ -7,6 +7,7 @@ import { Main as ButtonClick } from '../flows/ButtonClick'
 import { Main as GetCode } from '../flows/GetCode'
 import LoginStore from '../store/login'
 import { getRule, RULES } from '@/utils/rules'
+import { preventPaste } from '@/utils/event'
 
 @Component({
   name: 'LoginComponent',
@@ -172,4 +173,7 @@ export default class LoginComponent extends Vue {
     return hasCode
   }
 
+  onPaste(e, name: string) {
+    preventPaste(e, name)
+  }
 }

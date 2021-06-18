@@ -16,6 +16,7 @@
       :autosize="state.autosize"
       :autocomplete="state.autocomplete"
       @blur="onBlur"
+      @paste.native.capture="onPaste"
     />
     <svg-icon
       v-if="state.required"
@@ -39,6 +40,7 @@ import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
 import { formateValidator } from '@/utils/rules'
 import { ValidateModule } from '@/store/modules/validate'
+import { preventPaste } from '@/utils/event'
 
 @Component({
   name: 'Input',
@@ -64,6 +66,10 @@ export default class extends Mixins(BaseVue) {
         ValidateModule.deleteInvalidItem(name)
       }
     })
+  }
+
+  onPaste(event: Event) {
+    preventPaste(event, this.state.name)
   }
 }
 </script>

@@ -16,6 +16,7 @@
         type="password"
         autocomplete="off"
         show-password
+        @paste.native.capture.prevent="onPaste"
       />
     </el-form-item>
     <el-form-item
@@ -27,6 +28,7 @@
         type="password"
         autocomplete="off"
         show-password
+        @paste.native.capture.prevent="onPaste"
       />
     </el-form-item>
     <el-form-item
@@ -38,6 +40,7 @@
         type="password"
         autocomplete="off"
         show-password
+        @paste.native.capture.prevent="onPaste"
       />
     </el-form-item>
     <el-form-item>
@@ -116,6 +119,10 @@ export default class extends Mixins(BaseVue) {
 
   resetPasswordForm() {
     (this.$refs.passwordFormCom as Vue & { resetFields: Function }).resetFields()
+  }
+
+  onPaste() {
+    return false
   }
 }
 </script>

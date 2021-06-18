@@ -48,6 +48,7 @@
               :placeholder="item.placeholder"
               :show-password="item.type === 'password'"
               @blur="onBlur($event, item.name)"
+              @paste.native.capture="onPaste($event, item.name)"
             >
               <login-button
                 v-if="item.append"
