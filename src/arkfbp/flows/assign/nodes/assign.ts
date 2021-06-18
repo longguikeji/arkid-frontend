@@ -1,4 +1,5 @@
 import { ClientResponseNode } from '@/arkfbp/nodes/clientResponseNode'
+import { proxyClientServer } from '@/utils/flow'
 
 export class Assign extends ClientResponseNode {
   async run() {

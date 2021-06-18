@@ -46,15 +46,6 @@ export function stringConvertNumber(str: string): string | number {
   }
 }
 
-// 删除数组中的某个指定元素
-export function deleteValueInArray(arr: any[], value: any): any[] {
-  const index = arr.indexOf(value)
-  if (arr.length > 0 && index !== -1) {
-    arr.splice(index, 1)
-  }
-  return arr
-}
-
 // 判断是否为对象类型
 export function isObject(obj: any): boolean {
   return Object.prototype.toString.call(obj) === '[object Object]'

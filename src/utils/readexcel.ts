@@ -1,4 +1,4 @@
-function processTableData(sheets:any) {
+export default function processTableData(sheets:any) {
   const tableBody:any = [];
   const tableHeader:any = [];
   sheets.forEach((item:any, index:any) => {
@@ -10,6 +10,7 @@ function processTableData(sheets:any) {
       tableBody[index].push(item[objKeyItem]);
     });
   });
-  return [tableHeader, tableBody];
+  return {
+    tableHeader, tableBody
+  };
 }
-export { processTableData as default };

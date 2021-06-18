@@ -8,9 +8,10 @@ export const RULES = {
 export const RULE_REGEXP = {
   password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/,
   mobile: /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/,
-  other: /[#$@&/\\()"'<>{}[\] ]/gi,
+  other: /[<>"'()&/ ]/gi,
 }
 
+// 获取所使用到的一些规则
 export function getRule(field: string, message: string, required?: boolean) {
   let rule 
   switch (field) {
@@ -38,6 +39,7 @@ export function getRule(field: string, message: string, required?: boolean) {
   return rule
 }
 
+// 校验 el-input 中输入的内容
 export function formateValidator(value: any, field?: string, message?: string, required?: boolean) {
   if (!field) field = 'other'
   if (!message) message = ''
@@ -49,4 +51,24 @@ export function formateValidator(value: any, field?: string, message?: string, r
       resolve(errors)
     })
   })
+}
+
+// 校验csv, excel等导入的文件内容
+export function xlsxValidator(header: any[], body: any[]): boolean {
+  let xlsxIsValid = true
+  for (let i = 0,len = header.length; i < len; i++) {
+    if (RULE_REGEXP.other.test(header[i])) {
+      xlsxIsValid = false
+      break
+    }
+  }
+  if (xlsxIsValid) {
+    for (let i = 0,len = body.length; i < len; i++) {
+      if (RULE_REGEXP.other.test(body[i])) {
+        xlsxIsValid = false
+        break
+      }
+    }
+  }
+  return xlsxIsValid
 }

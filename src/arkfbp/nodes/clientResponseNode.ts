@@ -33,6 +33,7 @@ export class ClientResponseNode extends FunctionNode {
           }
         }
         // 判断此时的类型内容 -- 之后需要进一步增大兼容性
+        
         if (temp) {
           const lastKey = ks[len - 1]
           if (type === 'fetch') {

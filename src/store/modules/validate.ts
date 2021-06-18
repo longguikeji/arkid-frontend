@@ -1,6 +1,5 @@
 import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
 import store from '@/store'
-import { deleteValueInArray } from '@/utils/common'
 
 export interface IValidateState {
   invalidValues: string[]
@@ -18,7 +17,10 @@ class Validate extends VuexModule implements IValidateState {
 
   @Mutation
   DELETE_INVALID_ITEM(prop: string) {
-    this.invalidValues = deleteValueInArray(this.invalidValues, prop)
+    const index = this.invalidValues.indexOf(prop)
+    if (index !== -1) {
+      this.invalidValues.splice(index, 1)
+    }
   }
 
   @Mutation
