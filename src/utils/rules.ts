@@ -28,8 +28,14 @@ export function getRegexRule(message: string, regex: RegExp) {
 export function getFormatRule(prop: string, format: string | RegExp, message: string, required: boolean = false) {
   if (format === 'uri') format = 'url'
   const rule = { type: format, message: message, required: required }
-  if (format == 'password') rule['pattern'] = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/
-  if (prop === 'mobile' || format === 'mobile') rule.type = 'string'
+  if (format === 'password') {
+    rule['pattern'] = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/
+    rule.type = 'string'
+  }
+  if (prop === 'mobile' || format === 'mobile') {
+    rule.type = 'string'
+    rule['pattern'] = /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/  
+  }
   return rule
 }
 
