@@ -37,7 +37,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
-import { validateFormat } from '@/utils/rules'
+import { formateValidator } from '@/utils/rules'
 import { ValidateModule } from '@/store/modules/validate'
 
 @Component({
@@ -52,19 +52,18 @@ export default class extends Mixins(BaseVue) {
   }
 
   async onBlur() {
-    const { prop, value, format, hint, required } = this.state
-    if (prop && format && hint) {
-      const info = { prop, value, format, hint, required }
-      validateFormat(info).then((err) => {
-        if (err) {
-          this.hint = hint
-          ValidateModule.addInvalidItem(prop)
-        } else {
-          this.hint = ''
-          ValidateModule.deleteInvalidItem(prop)
-        }
-      })
-    }
+    let { name, value, format, hint, required } = this.state
+    if (!format) format = 'other'
+    if (!hint) hint = '请输入正确格式'
+    formateValidator(value, format, hint, required).then((err) => {
+      if (err) {
+        this.hint = hint || ''
+        ValidateModule.addInvalidItem(name)
+      } else {
+        this.hint = ''
+        ValidateModule.deleteInvalidItem(name)
+      }
+    })
   }
 }
 </script>

@@ -1,54 +1,50 @@
 import AsyncValidator from 'async-validator'
 
-interface FormatRule {
-  prop: string
-  hint: string
-  format: string | RegExp
-  value?: any
-  required?: boolean
-}
-
 export const RULES = {
   required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRegexRule('密码长度大于等于8位的字母数字组合', /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/),
+  password: getRule('password', '', true)
 }
 
-export function getRegexRule(message: string, regex: RegExp) {
-  return {
-    trigger: 'blur', validator: (rule: any, value: string, callback: Function) => {
-      if (regex.test(value) || !value) {
-        callback()
-      } else {
-        callback(new Error(message))
-      }
-    }
-  }
+export const RULE_REGEXP = {
+  password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/,
+  mobile: /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/,
+  other: /[#$@&/\\()"'<>{}[\] ]/gi,
 }
 
-export function getFormatRule(prop: string, format: string | RegExp, message: string, required: boolean = false) {
-  if (format === 'uri') format = 'url'
-  const rule = { type: format, message: message, required: required }
-  if (format === 'password') {
-    rule['pattern'] = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/
-    rule.type = 'string'
-  }
-  if (prop === 'mobile' || format === 'mobile') {
-    rule.type = 'string'
-    rule['pattern'] = /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/  
+export function getRule(field: string, message: string, required?: boolean) {
+  let rule 
+  switch (field) {
+    case 'password':
+      rule = { type: 'string', trigger: 'blur', required, validator: (rule, value, callback) => {
+        if (RULE_REGEXP.password.test(value)) {
+          callback()
+        } else {
+          callback(new Error(message || '密码长度大于等于8位的字母数字组合'))
+        }
+      }}
+      break
+    case 'email':
+      rule = { type: 'email', message, required }
+      break
+    case 'uri':
+    case 'url':
+      rule = { type: 'url', message, required }
+      break
+    case 'mobile':
+      rule = { type: 'string', message, required, pattern: RULE_REGEXP.mobile }
+    default:
+      rule = { required, message, validator: (rule, value) => { return !RULE_REGEXP.other.test(value) } }
   }
   return rule
 }
 
-export function validateFormat(info: FormatRule) {
-  const { format, hint, value, required, prop } = info
-  const rule = getFormatRule(prop, format, hint, required)
-  const descriptor = { [prop!]: {} }
-  descriptor[prop!] = Object.assign({}, rule)
-  const formatValidator = new Promise(function (resolve, reject) {
+export function formateValidator(value: any, field: string, message: string, required?: boolean) {
+  const rule = getRule(field, message, required)
+  const descriptor = { [field]: { ...rule } }
+  return new Promise(function(resolve, reject) {
     const validator = new AsyncValidator(descriptor)
-    validator.validate({ [prop]: value }, { firstFields: true }, (errors) => {
+    validator.validate({ [field]: value }, { firstFields: true }, (errors) => {
       resolve(errors)
     })
   })
-  return formatValidator
 }

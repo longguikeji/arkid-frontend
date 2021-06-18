@@ -58,7 +58,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import PasswordState from './PasswordState'
 import BaseVue from '@/admin/base/BaseVue'
-import { RULES } from '@/utils/rules'
+import { RULES, getRule } from '@/utils/rules'
 
 @Component({
   name: 'Password',

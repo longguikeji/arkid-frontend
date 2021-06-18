@@ -141,12 +141,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         disabled: disabled && !schema.readOnly,
         format: schema.format,
         hint: schema.hint,
-        prop: prop
+        name: prop
       }
-    }
-    if (!schema.format && (prop.includes('mobile') || prop.includes('email'))) {
-      item.state.format = 'string'
-      item.state.hint = '请输入正确格式'
     }
     if (schema.format === 'uri' && location.pathname === '/tenant') {
       item.type = 'InputLink'
