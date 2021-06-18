@@ -54,12 +54,10 @@ export default class extends Mixins(BaseVue) {
   }
 
   async onBlur() {
-    let { name, value, format, hint, required } = this.state
-    if (!format) format = 'other'
-    if (!hint) hint = '请输入正确格式'
+    const { name, value, format, hint, required } = this.state
     formateValidator(value, format, hint, required).then((err) => {
       if (err) {
-        this.hint = hint || ''
+        this.hint = hint || '请重新输入'
         ValidateModule.addInvalidItem(name)
       } else {
         this.hint = ''

@@ -33,17 +33,19 @@ export function getRule(field: string, message: string, required?: boolean) {
     case 'mobile':
       rule = { type: 'string', message, required, pattern: RULE_REGEXP.mobile }
     default:
-      rule = { required, message, validator: (rule, value) => { return !RULE_REGEXP.other.test(value) } }
+      rule = { required, message: '请重新输入', validator: (rule, value) => { return !RULE_REGEXP.other.test(value) } }
   }
   return rule
 }
 
-export function formateValidator(value: any, field: string, message: string, required?: boolean) {
+export function formateValidator(value: any, field?: string, message?: string, required?: boolean) {
+  if (!field) field = 'other'
+  if (!message) message = ''
   const rule = getRule(field, message, required)
   const descriptor = { [field]: { ...rule } }
   return new Promise(function(resolve, reject) {
     const validator = new AsyncValidator(descriptor)
-    validator.validate({ [field]: value }, { firstFields: true }, (errors) => {
+    validator.validate({ [field!]: value }, { firstFields: true }, (errors) => {
       resolve(errors)
     })
   })
