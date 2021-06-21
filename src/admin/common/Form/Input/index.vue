@@ -53,9 +53,9 @@ export default class extends Mixins(BaseVue) {
     return this.$state as InputState
   }
 
-  onBlur() {
+  async onBlur() {
     const { name, value, format, hint, required } = this.state
-    formateValidator(value, format, hint, required).then(async(err) => {
+    await formateValidator(value, format, hint, required).then(async(err) => {
       if (err) {
         this.hint = hint || '请重新输入'
         await ValidateModule.addInvalidItem(name)
