@@ -138,7 +138,14 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
           url: path,
           method: method,
           request: request
-        }
+        },
+        {
+          name: 'arkfbp/flows/assign',
+          response: {
+            [`dialogs.${key}.visible`]: false
+          }
+        },
+        'fetch'
       ]
     } else {
       const target = `dialogs.${key}.state.state.`
