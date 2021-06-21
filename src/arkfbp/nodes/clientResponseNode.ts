@@ -58,7 +58,7 @@ export class ClientResponseNode extends FunctionNode {
               temp[lastKey] = res
             }
           } else if (type === 'assign') {
-            temp[lastKey] = clientServer[key]
+            temp[lastKey] = temp?.default || clientServer[key]
           }
         }
       })

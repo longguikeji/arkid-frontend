@@ -2,7 +2,7 @@ import { ValidateModule } from '@/store/modules/validate'
 
 const RULE_REGEXP = {
   password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/, // 之后需要进行动态的读取
-  mobile: /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/,
+  mobile: /(^(1)\d{10}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
     '^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
@@ -49,7 +49,7 @@ export function validate(value: any, name: string, format?: string, hint?: strin
       ValidateModule.addInvalidItem(name)
     }
   } else {
-    const isValid = format === 'other' ? !RULE_REGEXP[format].test(value) : RULE_REGEXP[format].test(value)
+    const isValid = format === 'other' ? !RULE_REGEXP.other.test(value) : RULE_REGEXP[format].test(value)
     if (isValid) {
       ValidateModule.deleteInvalidItem(name)
     } else {

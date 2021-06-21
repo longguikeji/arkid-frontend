@@ -136,7 +136,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         readonly: schema.readOnly,
         placeholder: '请输入' + schema.title,
         required: isRequired,
-        showPassword: prop.includes('password'),
+        showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
         autocomplete: 'new-password',
         disabled: disabled && !schema.readOnly,
         format: schema.format,

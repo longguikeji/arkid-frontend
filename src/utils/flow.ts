@@ -1,24 +1,25 @@
-import { cloneDeep } from 'lodash'
 import { isArray } from '@/utils/common'
 
-export function proxyClientServer(clientServer: any, data: any) {
-  let newClientServer = cloneDeep(clientServer)
-  if (newClientServer) {
-    Object.keys(newClientServer).forEach(key => {
-      const item = newClientServer[key]
-      if (typeof item === 'object') {
-        const val = data[item?.value]
-        if (val) {
-          const selectClientServer = {
-            ...item[val]
-          }
-          newClientServer[key] = item.value
-          Object.assign(newClientServer, selectClientServer)
+export function proxyClientServer(clientServer: any, data?: any) {
+  let proxyClientServer = {}
+  Object.keys(clientServer).forEach(key => {
+    const cs = clientServer[key]
+    if (typeof cs === 'object') {
+      const val = data ? data[cs.value] : undefined
+      if (val) {
+        Object.assign(proxyClientServer, cs[val])
+      } else {
+        delete cs.value
+        const enums = Object.keys(cs)
+        for (let i = 0, len = enums.length; i < len; i++) {
+          Object.assign(proxyClientServer, cs[enums[i]])
         }
       }
-    })
-    return newClientServer
-  }
+    } else {
+      proxyClientServer[key] = cs
+    }
+  })
+  return proxyClientServer
 }
 
 
