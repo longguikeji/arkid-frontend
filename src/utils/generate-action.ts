@@ -6,7 +6,7 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 export default function generateAction(path: string, method: string, target: string, isResponse: boolean, isEmpty?: boolean) {
   let response = {},
       request = {},
-      required: string[] = []
+      required
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -20,11 +20,14 @@ export default function generateAction(path: string, method: string, target: str
         value: isEmpty ? '' : selectTarget
       }
     }
+    required = { [ propertyName ]: {} }
+    const objRequired = required[propertyName]
     Object.keys(schema.discriminator.mapping).forEach(key => {
       const itemTarget = `${target}forms[${key}].items.`
       const itemRef = schema.discriminator!.mapping[key]
       const itemSchema = OpenAPI.instance.getSchemaByRef(itemRef)
       const items = itemSchema.properties
+      objRequired[key] = filterReuqiredItems(itemSchema)
       if (isResponse) {
         response[selectTarget][key] = {}
         generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName, isEmpty)
@@ -34,7 +37,7 @@ export default function generateAction(path: string, method: string, target: str
       }
     })
   } else {
-    if (schema.required?.length) required.push.apply(required, schema.required)
+    required = filterReuqiredItems(schema)
     const items = schema.properties
     const itemTarget = `${target}form.items.`
     if (isResponse) {
@@ -94,12 +97,40 @@ export function generateItemRequestMapping(request: any, items: { [propertyName:
 }
 
 export function getObjectItems(item: ISchema) {
+  const objectSchema = getObjectSchema(item)
+  const objectItems = objectSchema?.properties
+  return objectItems
+}
+
+export function getObjectSchema(item: ISchema) {
   const refOf = item.allOf || item.oneOf
-  let objectItems = item.properties
   if (refOf?.length) {
     const ref = refOf[0].$ref
     const objectSchema = OpenAPI.instance.getSchemaByRef(ref!)
-    objectItems = objectSchema.properties
+    return objectSchema
+  } else {
+    return null
   }
-  return objectItems
+}
+
+export function filterReuqiredItems(schema: ISchema) {
+  let required: any[] = []
+  if (schema.required && schema.properties) {
+    const items = schema.properties
+    schema.required.forEach(r => {
+      const item = items[r]
+      if (!item.readOnly && (item.allOf || item.oneOf)) {
+        const objSchema = getObjectSchema(item)
+        if (objSchema) {
+          const objRequired = filterReuqiredItems(objSchema)
+          required[r] = objRequired
+        }
+      } else {
+        if (!item.readOnly) {
+          required.push(r)
+        }
+      }
+    })
+  }
+  return required
 }

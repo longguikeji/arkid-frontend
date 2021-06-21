@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ErrorLogModule } from '@/store/modules/error-log'
-import { isArray } from '@/utils/validate'
+import { isArray } from '@/utils/common'
 
 const needErrorLog = ''
 

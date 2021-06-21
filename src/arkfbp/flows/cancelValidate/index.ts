@@ -2,16 +2,17 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { AddSwitchTenantButton } from './nodes/addSwitchTenantButton'
+import { CancelValidate } from './nodes/cancelValidate'
+
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'addSwitchTenantButton'
+      next: 'cancelValidate'
     }, {
-      cls: AddSwitchTenantButton,
-      id: 'addSwitchTenantButton',
+      cls: CancelValidate,
+      id: 'cancelValidate',
       next: 'stop'
     }, {
       cls: StopNode,

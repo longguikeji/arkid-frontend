@@ -23,30 +23,30 @@ export function underlinedStrToUpperCamelStr(str: string): string {
   return str
 }
 
-// 判断A数组是否包含B数组，A >= B
-export function firstArrContainSecondArr<T>(firstArr: Array<T>, secondArr: Array<T>): boolean {
-  let isContain = true
-  if(!(firstArr instanceof Array) || !(secondArr instanceof Array)) return false
-  if(firstArr.length < firstArr.length) return false
-  for(let i = 0, len = secondArr.length; i < len; i++){
-    if(firstArr.indexOf(secondArr[i]) < 0) {
-      isContain = false
-      break
-    }
-  }
-  return isContain
+// isExternal
+export function isExternal(path: string) {
+  return /^(https?:|mailto:|tel:)/.test(path)
 }
 
-
-// 获取某个对象的所有keys
-export function getObjAllKeys(obj: Object) {
-  const keys: Array<string> = []
-  keys.push.apply(keys, Object.keys(obj))
-  for (let i = 0, len = keys.length; i < len; i++) {
-    if (Object.prototype.toString.call(obj[keys[i]]) === '[object Object]') {
-      const deepKeys = getObjAllKeys(obj[keys[i]])      
-      keys.push.apply(keys, deepKeys)
-    }
+// 判断是否为数组类型
+export function isArray(arg: any): boolean {
+  if (typeof Array.isArray === 'undefined') {
+    return Object.prototype.toString.call(arg) === '[object Array]'
   }
-  return keys
+  return Array.isArray(arg)
+}
+
+// 判断某个字符串是否可以转回为数字类型
+export function stringConvertNumber(str: string): string | number {
+  const num = Number(str)
+  if (!isNaN(num)) {
+    return num
+  } else {
+    return str
+  }
+}
+
+// 判断是否为对象类型
+export function isObject(obj: any): boolean {
+  return Object.prototype.toString.call(obj) === '[object Object]'
 }

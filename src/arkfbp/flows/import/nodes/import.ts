@@ -1,16 +1,28 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { FlowModule } from '@/store/modules/flow'
+import { error } from '@/constants/error'
 
 export class Import extends AuthApiNode {
   async run() {
-    const data = this.inputs.params.data
+    const { com, url, method, params } = this.inputs
+    const data = params.data
     if (!data || !data.raw) {
       throw Error('import file is empty')
     }
-    this.url = this.inputs.url
-    this.method = this.inputs.method
+    this.url = url
+    this.method = method
     let formData = new FormData()
     formData.append("file", data.raw)
     this.params = formData
-    await super.run()
+    const outputs = await super.run()
+    const errorStatus = outputs.error
+    if (errorStatus && errorStatus !== '0') {
+      FlowModule.stopRunFlow()
+      com.$message({
+        message: error[errorStatus],
+        type: 'error',
+        showClose: true
+      })
+    }
   }
 }

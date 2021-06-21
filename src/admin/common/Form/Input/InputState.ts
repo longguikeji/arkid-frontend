@@ -27,4 +27,7 @@ export default interface InputState extends BaseState {
   label: string //  输入框关联的label文字  string  —  —
   tabindex: string //  输入框的tabindex  string  -  -
   validateEvent: boolean //  输入时是否触发表单的校验  boolean  -  true
+  format?: string // 输入的内容所需要遵循的格式，可以在 utils/rules中进行查找
+  hint?: string // 输入后如果不符合格式要求则显示提示信息
+  required?: boolean // 是否为必填项
 }

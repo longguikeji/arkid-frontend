@@ -82,7 +82,7 @@ export function generateButton(key: string, path: string, method: string, pageTy
   return btn
 }
 
-export function generateDialogState(path: string, method: string, key: string, showReadOnly?: boolean): DialogState | null {
+export function generateDialogState(path: string, method: string, key: string, showReadOnly: boolean = false ): DialogState | null {
   const dialogType = DIALOG_TYPE[key]
   if (!dialogType) return null
   const schema = getSchemaByPath(path, method)
@@ -97,7 +97,7 @@ export function generateDialogState(path: string, method: string, key: string, s
     dialogState.isCancelFooter = true
   } else {
     dialogState.buttons.push(btn)
-  } 
+  }
   switch (dialogType) {
     case 'FormPage':
       dialogState.state = {
@@ -138,13 +138,23 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
           url: path,
           method: method,
           request: request
-        }
+        },
+        {
+          name: 'arkfbp/flows/assign',
+          response: {
+            [`dialogs.${key}.visible`]: false
+          }
+        },
+        'fetch'
       ]
     } else {
       const target = `dialogs.${key}.state.state.`
       const isResponse = false
       const { mapping, required } = generateAction(path, method, target, isResponse)
       state.actions![actionName] = [
+        {
+          name: 'arkfbp/flows/validate'
+        },
         {
           name: flowName,
           url: path,
@@ -157,6 +167,9 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
           response: {
             [`dialogs.${key}.visible`]: false
           }
+        },
+        {
+          name: 'arkfbp/flows/cancelValidate'
         },
         'fetch'
       ]
@@ -176,6 +189,9 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     const { mapping } = generateAction(path, method, target, isResponse)
     response = Object.assign(response, mapping)
     state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/cancelValidate'
+      },
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -220,6 +236,9 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
     const isEmpty = true
     const { mapping } = generateAction(path, method, target, isResponse, isEmpty)
     state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/cancelValidate'
+      },
       {
         name: flowName,
         response: {

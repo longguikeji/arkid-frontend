@@ -168,6 +168,7 @@ import { VueCropper } from 'vue-cropper'
 import XLSX from 'xlsx'
 import processTableData from '@/utils/readexcel'
 import BaseVue from '@/admin/base/BaseVue'
+import { xlsxValidator } from '@/utils/rules'
 
 @Component({
   name: 'Upload',
@@ -206,7 +207,7 @@ export default class extends Mixins(BaseVue) {
 
   onSuccess(file: any, fileList: []) {
     if (fileList.length > 0) {
-      this.fileList = [fileList[fileList.length - 1]] // 这一步，是 展示最后一次选择的csv文件
+      this.fileList = [fileList[fileList.length - 1]] // 这一步，是 展示最后一次选择的文件
     }
     this.fileUrl = URL.createObjectURL(file.raw)
     this.dialogVisible = true
@@ -225,9 +226,18 @@ export default class extends Mixins(BaseVue) {
         jsonobject = XLSX.utils.sheet_to_json(
           workbook.Sheets[workbook.SheetNames[0]]
         )
-        const tableData = processTableData(jsonobject)
-        this.tableHeader = tableData[0]
-        this.tableBody = tableData[1]
+        const { tableHeader, tableBody } = processTableData(jsonobject)
+        const xlsxIsValid = xlsxValidator(tableHeader, tableBody)
+        if (!xlsxIsValid) {
+          this.$message({
+            message: '该文件包含不规则内容',
+            type: 'error',
+            showClose: true
+          })
+          return
+        }
+        this.tableHeader = tableHeader
+        this.tableBody = tableBody
       }
       reader.readAsBinaryString(f)
     }

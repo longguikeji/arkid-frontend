@@ -2,21 +2,22 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { Options } from './nodes/options'
-import { OptionClient } from '@/arkfbp/nodes/optionsClient'
+import { AddLoyoutButton } from './nodes/addLogoutButton'
+import { AddSwitchTenantButton } from './nodes/addSwitchTenantButton'
+
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: '1'
+      next: 'addLoyoutButton'
     }, {
-      cls: Options,
-      id: '1',
-      next: '2'
+      cls: AddLoyoutButton,
+      id: 'addLoyoutButton',
+      next: 'addSwitchTenantButton'
     }, {
-      cls: OptionClient,
-      id: '2',
+      cls: AddSwitchTenantButton,
+      id: 'addSwitchTenantButton',
       next: 'stop'
     }, {
       cls: StopNode,

@@ -54,7 +54,19 @@ export default class extends Mixins(BaseVue) {
 
   async upload(data: any) {
     this.state.file = data.file
-    await runFlowByFile('arkfbp/flows/upload', { com: this })
+    const type = data.file.type
+    if (type) {
+      const t = type.split('/')[0]
+      if (t === 'image') {
+        await runFlowByFile('arkfbp/flows/upload', { com: this })
+      } else {
+        this.$message({
+          message: '文件类型不符合',
+          type: 'error',
+          showClose: true
+        })
+      }
+    }
   }
 }
 </script>

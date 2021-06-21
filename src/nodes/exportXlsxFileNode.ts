@@ -24,7 +24,7 @@ export class ExportXlsxFileNode extends APINode {
     }).then((response) => {
       const data = response.data
       let blob = new Blob([data], { type: 'application/vnd.ms-excel' })
-      const fileName = new Date().toLocaleDateString().replace(/\//g, '-') + '.xlsx'
+      const fileName = new Date().toLocaleDateString().replace(/\//g, '-') + '.csv'
       if ('download' in document.createElement('a')) {
         const link = document.createElement('a')
         link.style.display = 'none'

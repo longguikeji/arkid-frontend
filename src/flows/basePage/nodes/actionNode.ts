@@ -6,6 +6,7 @@ import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import generateAction from '@/utils/generate-action'
+import { getImportBtnMapping } from '@/utils/button'
 
 export class ActionNode extends FunctionNode {
   
@@ -46,6 +47,10 @@ export class ActionNode extends FunctionNode {
         action: 'fetch'
       }
     }
+    const importMapping = getImportBtnMapping(state)
+    if (importMapping !== '') {
+      response[importMapping] = `${attrs.data}.length`
+    }
     this.initFetchAction(state, path, method, response, request)
   }
 
@@ -60,6 +65,10 @@ export class ActionNode extends FunctionNode {
     const attrs = getFetchAttrs(content)
     const response = {}
     response['tree.data'] = attrs.data
+    const importMapping = getImportBtnMapping(state)
+    if (importMapping !== '') {
+      response[importMapping] = `${attrs.data}.length`
+    }
     this.initFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }
 

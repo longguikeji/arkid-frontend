@@ -12,8 +12,3 @@ export const setLanguage = (language: string) => Cookies.set(languageKey, langua
 const sizeKey = 'size'
 export const getSize = () => Cookies.get(sizeKey)
 export const setSize = (size: string) => Cookies.set(sizeKey, size)
-
-// OriginUrl
-const originUrlKey = 'origin_url'
-export const getOriginUrl = () => Cookies.get(originUrlKey)
-export const setOriginUrl = (originUrl: string) => Cookies.set(originUrlKey, originUrl)

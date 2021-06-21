@@ -36,6 +36,8 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import TableColumnState from './TableColumnState'
 import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
+import { isArray } from '@/utils/common'
+
 @Component({
   name: 'TableColumn',
   components: {
@@ -95,7 +97,7 @@ export default class extends Mixins(BaseVue) {
     const scopeRowState: Array<any> = []
     if (this.state.scope) {
       this.data.forEach((item, index) => {
-        if (Array.isArray(this.state.scope?.state)) {
+        if (isArray(this.state.scope?.state)) {
           scopeRowState[index] = JSON.parse(JSON.stringify({
             state: this.state.scope?.state.map((e) => {
               return {

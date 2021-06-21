@@ -15,6 +15,8 @@
       :rows="state.rows"
       :autosize="state.autosize"
       :autocomplete="state.autocomplete"
+      @blur="onBlur"
+      @paste.native.capture="onPaste"
     />
     <svg-icon
       v-if="state.required"
@@ -23,6 +25,12 @@
       width="20"
       height="20"
     />
+    <div
+      v-if="hint"
+      class="error-hint"
+    >
+      {{ hint }}
+    </div>
   </div>
 </template>
 
@@ -30,14 +38,27 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
+import { validate } from '@/utils/rules'
+import { preventPaste } from '@/utils/event'
 
 @Component({
   name: 'Input',
   components: {}
 })
 export default class extends Mixins(BaseVue) {
+  private hint = ''
+
   get state(): InputState {
     return this.$state as InputState
+  }
+
+  onBlur() {
+    const { name, value, format, hint, required } = this.state
+    this.hint = validate(value, name, format, hint, required)
+  }
+
+  onPaste(event: Event) {
+    preventPaste(event, this.state.name)
   }
 }
 </script>
@@ -49,5 +70,10 @@ export default class extends Mixins(BaseVue) {
 .col {
   margin: 12px;
   flex: auto;
+}
+.error-hint {
+  color: #f53e3e;
+  position: absolute;
+  font-size: 12px;
 }
 </style>

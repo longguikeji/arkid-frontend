@@ -17,7 +17,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { isExternal } from '@/utils/validate'
+import { isExternal } from '@/utils/common'
+import { GlobalValueModule } from '@/store/modules/global-value'
 import { TenantModule } from '@/store/modules/tenant'
 
 @Component({
@@ -33,7 +34,7 @@ export default class extends Vue {
   }
 
   private toTarget() {
-    if (TenantModule.hasSlug) {
+    if (GlobalValueModule.slug !== '') {
       return {
         path: this.to
       }
