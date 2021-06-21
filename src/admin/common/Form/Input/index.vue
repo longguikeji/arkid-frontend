@@ -38,8 +38,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
-import { formateValidator } from '@/utils/rules'
-import { ValidateModule } from '@/store/modules/validate'
+import { validate } from '@/utils/rules'
 import { preventPaste } from '@/utils/event'
 
 @Component({
@@ -53,17 +52,9 @@ export default class extends Mixins(BaseVue) {
     return this.$state as InputState
   }
 
-  async onBlur() {
+  onBlur() {
     const { name, value, format, hint, required } = this.state
-    await formateValidator(value, format, hint, required).then(async(err) => {
-      if (err) {
-        this.hint = hint || '请重新输入'
-        await ValidateModule.addInvalidItem(name)
-      } else {
-        this.hint = ''
-        await ValidateModule.deleteInvalidItem(name)
-      }
-    })
+    this.hint = validate(value, name, format, hint, required)
   }
 
   onPaste(event: Event) {

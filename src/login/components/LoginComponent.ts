@@ -6,7 +6,7 @@ import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { Main as ButtonClick } from '../flows/ButtonClick'
 import { Main as GetCode } from '../flows/GetCode'
 import LoginStore from '../store/login'
-import { getRule, RULES } from '@/utils/rules'
+import { RULES } from '@/utils/rules'
 import { preventPaste } from '@/utils/event'
 
 @Component({
@@ -35,9 +35,11 @@ export default class LoginComponent extends Vue {
     ],
     username: [
       RULES.required,
+      RULES.username
     ],
     mobile: [
       RULES.required,
+      RULES.mobile
     ]
   }
 
@@ -128,7 +130,7 @@ export default class LoginComponent extends Vue {
     if (this.page === 'register') {
       this.rules.password = [
         RULES.required,
-        getRule('password', '', true),
+        RULES.password,
         { validator: this.validateCheckPassword, trigger: 'blur' }
       ]
     } else {

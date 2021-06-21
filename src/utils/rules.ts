@@ -1,12 +1,7 @@
-import AsyncValidator from 'async-validator'
+import { ValidateModule } from '@/store/modules/validate'
 
-export const RULES = {
-  required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRule('password', '', true)
-}
-
-export const RULE_REGEXP = {
-  password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/,
+const RULE_REGEXP = {
+  password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/, // 之后需要进行动态的读取
   mobile: /(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
@@ -16,55 +11,53 @@ export const RULE_REGEXP = {
   other: /[<>"'()&/ ]/gi
 }
 
-// 获取所使用到的一些规则
-export function getRule(field: string, message: string, required?: boolean) {
-  let rule 
-  switch (field) {
-    case 'password':
-      rule = { type: 'string', trigger: 'blur', required, validator: (rule, value, callback) => {
-        if (RULE_REGEXP.password.test(value)) {
-          callback()
-        } else {
-          callback(new Error(message || '密码长度大于等于8位的字母数字组合'))
-        }
-      }}
-      break
-    case 'email':
-      rule = { type: 'email', message, required }
-      break
-    case 'uri':
-    case 'url':
-      rule = { type: 'url', message, required }
-      break
-    case 'mobile':
-      rule = { type: 'string', message, required, pattern: RULE_REGEXP.mobile }
-    default:
-      rule = { required, message: '请重新输入', validator: (rule, value) => { return !RULE_REGEXP.other.test(value) } }
+const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
+  return {
+    trigger: 'blur', validator: (rule: any, value: string, callback: Function) => {
+      const isValid = isAnti ? (!regex.test(value) || !value) : (regex.test(value) || !value)
+      if (isValid) {
+        callback()
+      } else {
+        callback(new Error(message))
+      }
+    }
   }
-  return rule
 }
 
-// 校验 el-input 中输入的内容
-export function formateValidator(value: any, field?: string, message?: string, required?: boolean) {
-  if (!field) field = 'other'
-  if (!message) message = ''
-  const rule = getRule(field, message, required)
-  const descriptor = { [field]: { ...rule } }
-  return new Promise(function(resolve, reject) {
-    const validator = new AsyncValidator(descriptor)
-    validator.validate({ [field!]: value }, { firstFields: true }, (errors) => {
-      resolve(errors)
-    })
-  })
+// 主要用于登录、注册、password组件等Form表单的统一校验
+export const RULES = {
+  required: { required: true, message: '必填项', trigger: 'blur' },
+  password: getRegexRule('密码长度大于等于8位的字母数字组合', RULE_REGEXP.password),
+  mobile: getRegexRule('手机号码格式有误', RULE_REGEXP.mobile),
+  username: getRegexRule('用户名不包含' + "<>'()&/" + '"', RULE_REGEXP.other, true)
 }
 
 // 输入框的内容校验
 // 参数说明 =>
 // value 当前值
+// name 当前字段名称
 // format OpenAPI描述的校验字段类型  uri email password mobile other
-export function validate(value: any, format?: string, message?: string, required?: boolean) {
+// hint 对应OpenAPI字段描述中的hint内容，文本提示
+// required 是否为必填字段
+export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
   if (!format) format = 'other'
-  if (!message) message = ''
+  if (format === 'uri') format = 'url'
+  let message: string = ''
+  if (!value) {
+    if (required) {
+      message = `请输入${name}`
+      ValidateModule.addInvalidItem(name)
+    }
+  } else {
+    const isValid = format === 'other' ? !RULE_REGEXP[format].test(value) : RULE_REGEXP[format].test(value)
+    if (isValid) {
+      ValidateModule.deleteInvalidItem(name)
+    } else {
+      message = hint || ''
+      ValidateModule.addInvalidItem(name)
+    }
+  }
+  return message
 }
 
 // 校验csv, excel等导入的文件内容

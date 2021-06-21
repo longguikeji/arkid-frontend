@@ -11,13 +11,13 @@ class Validate extends VuexModule implements IValidateState {
   public invalidValues: string[] = []
 
   @Mutation
-  ADD_INVALID_ITEM(prop: string) {
-    this.invalidValues.push(prop)
+  ADD_INVALID_ITEM(name: string) {
+    this.invalidValues.push(name)
   }
 
   @Mutation
-  DELETE_INVALID_ITEM(prop: string) {
-    const index = this.invalidValues.indexOf(prop)
+  DELETE_INVALID_ITEM(name: string) {
+    const index = this.invalidValues.indexOf(name)
     if (index !== -1) {
       this.invalidValues.splice(index, 1)
     }
@@ -29,13 +29,15 @@ class Validate extends VuexModule implements IValidateState {
   }
 
   @Action
-  addInvalidItem(prop: string) {
-    this.ADD_INVALID_ITEM(prop)
+  addInvalidItem(name: string) {
+    if (this.invalidValues.indexOf(name) === -1) {
+      this.ADD_INVALID_ITEM(name)
+    }
   }
 
   @Action
-  deleteInvalidItem(prop: string) {
-    this.DELETE_INVALID_ITEM(prop)
+  deleteInvalidItem(name: string) {
+    this.DELETE_INVALID_ITEM(name)
   }
 
   @Action
