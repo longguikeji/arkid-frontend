@@ -33,7 +33,6 @@ export class ClientResponseNode extends FunctionNode {
           }
         }
         // 判断此时的类型内容 -- 之后需要进一步增大兼容性
-        
         if (temp) {
           const lastKey = ks[len - 1]
           if (type === 'fetch') {
@@ -58,7 +57,7 @@ export class ClientResponseNode extends FunctionNode {
               temp[lastKey] = res
             }
           } else if (type === 'assign') {
-            temp[lastKey] = temp?.default || clientServer[key]
+            temp[lastKey] = clientServer[key] || temp?.default
           }
         }
       })

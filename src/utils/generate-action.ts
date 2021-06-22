@@ -23,7 +23,7 @@ export default function generateAction(path: string, method: string, target: str
     required = { [ propertyName ]: {} }
     const objRequired = required[propertyName]
     Object.keys(schema.discriminator.mapping).forEach(key => {
-      const itemTarget = `${target}forms[${key}].items.`
+      const itemTarget = `${target}forms.${key}.items.`
       const itemRef = schema.discriminator!.mapping[key]
       const itemSchema = OpenAPI.instance.getSchemaByRef(itemRef)
       const items = itemSchema.properties

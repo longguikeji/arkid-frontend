@@ -2,7 +2,7 @@
   <div
     :class="{fullscreen: fullscreen}"
     class="tinymce-container"
-    :style="{width: state.width || '360px', height: state.height || '600px'}"
+    :style="{'--width': state.width || '100%', '--height': state.height || '500px'}"
   >
     <tinymce-editor
       :id="id"
@@ -171,8 +171,14 @@ export default class extends Mixins(BaseVue) {
 .tinymce-container {
   position: relative;
   line-height: normal;
+  width: var(--width);
+  height: var(--height);
   .mce-fullscreen {
     z-index: 10000;
+  }
+  .tox-tinymce {
+    width: var(--width) !important;
+    height: var(--height) !important;
   }
 }
 .editor-custom-btn-container {
