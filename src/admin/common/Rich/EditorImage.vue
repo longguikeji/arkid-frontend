@@ -21,7 +21,7 @@
         :on-success="handleSuccess"
         :before-upload="beforeUpload"
         class="editor-slide-upload"
-        action="https://httpbin.org/post"
+        action="/api/v1/upload/"
         list-type="picture-card"
       >
         <el-button
@@ -47,6 +47,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { ElUploadInternalRawFile } from 'element-ui/types/upload'
+import { SettingsModule } from '@/store/modules/settings'
 
 export interface IUploadObject {
   hasSuccess: boolean
@@ -57,17 +58,19 @@ export interface IUploadObject {
 }
 
 @Component({
-  name: 'EditorImageUpload'
+  name: 'EditorImage'
 })
 export default class extends Vue {
-  @Prop({ required: true }) private color!: string
-
   private dialogVisible = false
   private listObj: { [key: string]: IUploadObject } = {}
   private defaultFileList = []
 
   private checkAllSuccess() {
     return Object.keys(this.listObj).every(item => this.listObj[item].hasSuccess)
+  }
+
+  get color() {
+    return SettingsModule.theme
   }
 
   private handleSubmit() {

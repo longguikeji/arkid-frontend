@@ -2,7 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { SaveAuthPage } from './nodes/SaveAuthPage'
+import { SaveTemplate } from './nodes/saveTemplate'
 
 export class Main extends Flow {
   createNodes() {
@@ -10,11 +10,11 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'saveauthpage'
+        next: 'saveTemplate'
       },
       {
-        cls: SaveAuthPage,
-        id: 'saveauthpage',
+        cls: SaveTemplate,
+        id: 'saveTemplate',
         next: 'stop'
       },
       {

@@ -48,7 +48,7 @@ export class InitPage extends FunctionNode {
   async runCustomPageFlow(state: any, initContent: ITagPage, currentPage: string) {
     let curstomPageFlow: string = ''
     switch (currentPage) {
-      case 'app':
+      case 'app_list':
         curstomPageFlow = 'flows/appManager/authPageBtn'
         break
       case 'group':
