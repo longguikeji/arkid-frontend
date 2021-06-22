@@ -9,7 +9,7 @@ export class Logout extends AuthApiNode {
     const outputs = await super.run()
     if (outputs.is_succeed) {
       removeToken()
-      router.push('/login')
+      if (router) router.push('/login')
     }
   }
 }

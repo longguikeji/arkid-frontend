@@ -59,6 +59,9 @@ export class InitPage extends FunctionNode {
         break
       case 'third_party_account':
         curstomPageFlow = 'flows/thirdPartyAccount/addUnbindButton'
+        break
+      case 'lr_config':
+        curstomPageFlow = 'flows/loginRegisterConfig/updated'
     }
     if (curstomPageFlow !== '') {
       await runFlowByFile(curstomPageFlow, {

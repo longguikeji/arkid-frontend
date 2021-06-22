@@ -4,12 +4,14 @@ import store from '@/store'
 export interface IGlobalValueState {
   originUrl: string
   slug: string
+  closePageAutoLogout: boolean
 }
 
-@Module({ dynamic: true, store, name: 'flow' })
+@Module({ dynamic: true, store, name: 'global' })
 class GlobalValue extends VuexModule implements IGlobalValueState {
   public originUrl: string = ''
   public slug: string = ''
+  public closePageAutoLogout: boolean = false
 
   @Mutation
   setOriginUrl(url: string) {
@@ -19,6 +21,11 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   @Mutation
   setSlug(slug: string) {
     this.slug = slug
+  }
+
+  @Mutation
+  setClosePageAutoLogout(value: boolean) {
+    this.closePageAutoLogout = value
   }
 
 }

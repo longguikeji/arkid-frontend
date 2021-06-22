@@ -70,7 +70,7 @@ export default class extends Vue {
   async runAction(action?: string | Function) {
     if (action) {
       if (action instanceof Function) {
-        action()
+        action(this)
       } else {
         await runFlowByActionName(this, action)
       }

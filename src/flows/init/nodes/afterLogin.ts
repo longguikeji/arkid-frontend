@@ -2,6 +2,7 @@ import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import OpenAPI from '@/config/openapi'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
+import { GlobalValueModule } from '@/store/modules/global-value'
 import processUUId from '@/utils/process-uuid'
 
 export class AfterLogin extends AuthApiNode {
@@ -17,6 +18,8 @@ export class AfterLogin extends AuthApiNode {
     await this.setCurrentUserInfo()
     // 获取用户权限
     await this.setCurrentUserPermission()
+    // 获取config
+    await this.setTenantConfig()
   }
 
   async setCurrentTenantInfo() {
@@ -58,6 +61,13 @@ export class AfterLogin extends AuthApiNode {
     } else {
       UserModule.setUserRole(UserRole.User)
     }
+  }
+
+  async setTenantConfig() {
+    this.url = `/api/v1/tenant/${TenantModule.currentTenant.uuid}/config/`
+    this.method = 'GET'
+    const { data } = await super.run()
+    GlobalValueModule.setClosePageAutoLogout(data?.close_page_auto_logout || false)
   }
 
 }
