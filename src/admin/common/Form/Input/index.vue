@@ -17,7 +17,22 @@
       :autocomplete="state.autocomplete"
       @blur="onBlur"
       @paste.native.capture="onPaste"
-    />
+    >
+      <template
+        v-if="state.type === 'link'"
+        slot="append"
+      >
+        <el-upload
+          action=""
+          :http-request="upload"
+          :show-file-list="false"
+        >
+          <el-button size="small">
+            点击上传
+          </el-button>
+        </el-upload>
+      </template>
+    </el-input>
     <svg-icon
       v-if="state.required"
       class="required"
@@ -40,6 +55,7 @@ import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
 import { validate } from '@/utils/rules'
 import { preventPaste } from '@/utils/event'
+import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
   name: 'Input',
@@ -59,6 +75,23 @@ export default class extends Mixins(BaseVue) {
 
   onPaste(event: Event) {
     preventPaste(event, this.state.name)
+  }
+
+  async upload(data: any) {
+    this.state.file = data.file
+    const type = data.file.type
+    if (type) {
+      const t = type.split('/')[0]
+      if (t === 'image') {
+        await runFlowByFile('arkfbp/flows/upload', { com: this })
+      } else {
+        this.$message({
+          message: '文件类型不符合',
+          type: 'error',
+          showClose: true
+        })
+      }
+    }
   }
 }
 </script>

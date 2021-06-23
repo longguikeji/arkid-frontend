@@ -67,7 +67,7 @@ export class AfterLogin extends AuthApiNode {
     this.url = `/api/v1/tenant/${TenantModule.currentTenant.uuid}/config/`
     this.method = 'GET'
     const { data } = await super.run()
-    GlobalValueModule.setClosePageAutoLogout(data?.close_page_auto_logout || false)
+    GlobalValueModule.setGlobalConfig(data)
   }
 
 }

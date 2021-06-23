@@ -1,13 +1,14 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { GlobalValueModule } from '@/store/modules/global-value'
 
 export class LoginRegisterConfig extends FunctionNode {
   async run() {
     const tempState = this.inputs.state
-    const saveConfig = (com) => {
-      const value = com.state.value
-      GlobalValueModule.setClosePageAutoLogout(value)
+    tempState.state.dialogs.update.state.state.form.items.data.state.items.upload_file_format.state.options = [
+      { value: 'gif' }, { value: 'jpg' }, { value: 'png' }, { value: 'jpeg' }
+    ]
+    const saveConfig = {
+      name: 'flows/loginRegisterConfig/saveConfig'
     }
-    tempState.state.form.items.data.state.items.close_page_auto_logout.state.updated = saveConfig
+    tempState.state.actions.update.push(saveConfig)
   }
 }

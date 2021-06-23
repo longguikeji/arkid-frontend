@@ -1,4 +1,22 @@
 import { ValidateModule } from '@/store/modules/validate'
+import { GlobalValueModule } from '@/store/modules/global-value'
+
+const getFileRegexp = (): RegExp => {
+  const formats = GlobalValueModule.uploadFileFormat
+  let formatStr = ''
+  for (const format of formats) {
+    formatStr += `\\.${format}|`
+  }
+  formatStr = formatStr.substring(0, formatStr.length - 1)
+  formatStr = `/\\w(${formatStr})/i`
+  return eval(formatStr)
+}
+
+const getFileHint = (): string => {
+  let format = GlobalValueModule.uploadFileFormat.join(',')
+  format = `请输入${format}格式的文件`
+  return format
+}
 
 const RULE_REGEXP = {
   password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/, // 之后需要进行动态的读取
@@ -42,18 +60,32 @@ export const RULES = {
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
   if (!format) format = 'other'
   if (format === 'uri') format = 'url'
+  if (name.includes('icon')) format = 'icon'
+  let regex: RegExp = new RegExp('')
   let message: string = ''
+  switch (format) {
+    case 'icon':
+      regex = getFileRegexp()
+      message = getFileHint()
+      break
+    default:
+      regex = RULE_REGEXP[format]
+  }
   if (!value) {
     if (required) {
       message = `请输入${name}`
       ValidateModule.addInvalidItem(name)
+    } else {
+      message = ''
+      ValidateModule.deleteInvalidItem(name)
     }
   } else {
-    const isValid = format === 'other' ? !RULE_REGEXP.other.test(value) : RULE_REGEXP[format].test(value)
+    const isValid = format === 'other' ? !regex.test(value) : regex.test(value)
     if (isValid) {
+      message = ''
       ValidateModule.deleteInvalidItem(name)
     } else {
-      message = hint || ''
+      message = hint || message || ''
       ValidateModule.addInvalidItem(name)
     }
   }

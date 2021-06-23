@@ -5,6 +5,12 @@ export interface IGlobalValueState {
   originUrl: string
   slug: string
   closePageAutoLogout: boolean
+  uploadFileFormat: string[]
+}
+
+interface IGlobalConfig {
+  upload_file_format: string[]
+  close_page_auto_logout: boolean
 }
 
 @Module({ dynamic: true, store, name: 'global' })
@@ -12,6 +18,7 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   public originUrl: string = ''
   public slug: string = ''
   public closePageAutoLogout: boolean = false
+  public uploadFileFormat: string[] = []
 
   @Mutation
   setOriginUrl(url: string) {
@@ -24,8 +31,9 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   }
 
   @Mutation
-  setClosePageAutoLogout(value: boolean) {
-    this.closePageAutoLogout = value
+  setGlobalConfig(data: IGlobalConfig) {
+    this.closePageAutoLogout = data.close_page_auto_logout || false
+    this.uploadFileFormat = data.upload_file_format || []
   }
 
 }

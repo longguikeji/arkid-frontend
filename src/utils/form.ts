@@ -133,19 +133,18 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       state: {
         value: schema.default,
         default: schema.default,
-        readonly: schema.readOnly,
+        readonly: schema.readOnly || disabled,
         placeholder: '请输入' + schema.title,
         required: isRequired,
         showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
         autocomplete: 'new-password',
-        disabled: disabled && !schema.readOnly,
         format: schema.format,
         hint: schema.hint,
         name: prop
       }
     }
     if (schema.format === 'uri' && location.pathname === '/tenant') {
-      item.type = 'InputLink'
+      item.state.type = 'link'
     }
   } else if (schema.type === 'boolean') {
     item = {

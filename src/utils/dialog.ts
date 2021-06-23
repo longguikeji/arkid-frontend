@@ -68,6 +68,11 @@ const DIALOG_ACTION_FLOW = {
   password: 'arkfbp/flows/password'
 }
 
+const PAGE_READONLY = {
+  'app_list': true,
+  'external_idp': true
+}
+
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
 export function generateButton(key: string, path: string, method: string, pageType?: string, isDialog?: boolean): ButtonState | null {
   const apiRoles = getApiRoles(path, method)
@@ -82,8 +87,9 @@ export function generateButton(key: string, path: string, method: string, pageTy
   return btn
 }
 
-export function generateDialogState(path: string, method: string, key: string, showReadOnly: boolean = false ): DialogState | null {
+export function generateDialogState(path: string, method: string, key: string, currentPage: string, showReadOnly: boolean = false ): DialogState | null {
   const dialogType = DIALOG_TYPE[key]
+  const isShowReadOnly = PAGE_READONLY[currentPage] || showReadOnly
   if (!dialogType) return null
   const schema = getSchemaByPath(path, method)
   const dialogState: DialogState = {}
@@ -102,7 +108,7 @@ export function generateDialogState(path: string, method: string, key: string, s
     case 'FormPage':
       dialogState.state = {
         type: 'FormPage',
-        state: generateForm(schema, showReadOnly)
+        state: generateForm(schema, isShowReadOnly)
       }
       break
     case 'Upload':

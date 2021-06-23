@@ -12,11 +12,11 @@ export class InitPage extends FunctionNode {
     if (isMultiPage) {
       state = []
       for (let i = 0; i < initContent.length; i++) {
-        const pageState = await this.initPage(initContent[i])
+        const pageState = await this.initPage(initContent[i], currentPage)
         state.push(pageState)
       }
     } else {
-      state = await this.initPage(initContent)
+      state = await this.initPage(initContent, currentPage)
     }
     await this.runCustomPageFlow(state, initContent, currentPage)
     return {
@@ -24,7 +24,7 @@ export class InitPage extends FunctionNode {
     }
   }
 
-  async initPage(initContent: ITagPage) {
+  async initPage(initContent: ITagPage, currentPage: string) {
     let state
     let initFileName = ''
     switch (initContent.type) {
@@ -38,7 +38,8 @@ export class InitPage extends FunctionNode {
         break
     }
     await runFlowByFile(initFileName, {
-      initContent: initContent
+      initContent,
+      currentPage
     }).then(async (data) => {
       state = data.state
     })
@@ -65,8 +66,8 @@ export class InitPage extends FunctionNode {
     }
     if (curstomPageFlow !== '') {
       await runFlowByFile(curstomPageFlow, {
-        state: state,
-        initContent: initContent
+        state,
+        initContent
       })
     }
   }

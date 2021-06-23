@@ -30,4 +30,5 @@ export default interface InputState extends BaseState {
   format?: string // 输入的内容所需要遵循的格式，可以在 utils/rules中进行查找
   hint?: string // 输入后如果不符合格式要求则显示提示信息
   required?: boolean // 是否为必填项
+  file?: File // 当input输入框为link时，可以上传图片文件
 }
