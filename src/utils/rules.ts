@@ -50,6 +50,28 @@ export const RULES = {
   username: getRegexRule('用户名不包含' + "<>'()&/" + '"', RULE_REGEXP.other, true)
 }
 
+// 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
+const getDynamicRule = (format?: string, hint?: string, required?: boolean) => {
+  if (!format) format = 'other'
+  let pattern: RegExp = new RegExp(''),
+      isAnti: boolean = false
+  switch (format) {
+    case 'other':
+      hint = '输入内容不应包含' + "<>'()&/" + '" '
+      isAnti = true
+      break
+    case 'uri':
+      format = 'url'
+      break
+    case 'icon':
+      pattern = getFileRegexp()
+      hint = getFileHint()
+      break
+  }
+  const rule = { pattern: RULE_REGEXP[format] || pattern, message: hint, isAnti, required }
+  return rule
+}
+
 // 输入框的内容校验
 // 参数说明 =>
 // value 当前值
@@ -58,35 +80,23 @@ export const RULES = {
 // hint 对应OpenAPI字段描述中的hint内容，文本提示
 // required 是否为必填字段
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
-  if (!format) format = 'other'
-  if (format === 'uri') format = 'url'
-  if (name.includes('icon')) format = 'icon'
-  let regex: RegExp = new RegExp('')
-  let message: string = ''
-  switch (format) {
-    case 'icon':
-      regex = getFileRegexp()
-      message = getFileHint()
-      break
-    default:
-      regex = RULE_REGEXP[format]
-  }
-  if (!value) {
+  let { message, pattern, isAnti } = getDynamicRule(format, hint, required)
+  if (value) {
+    const isValid = isAnti ? !pattern.test(value) : pattern.test(value)
+    if (isValid) {
+      message = ''
+      ValidateModule.deleteInvalidItem(name)
+    } else {
+      message = message || '输入内容不正确'
+      ValidateModule.addInvalidItem(name)
+    }
+  } else {
     if (required) {
       message = `请输入${name}`
       ValidateModule.addInvalidItem(name)
     } else {
       message = ''
       ValidateModule.deleteInvalidItem(name)
-    }
-  } else {
-    const isValid = format === 'other' ? !regex.test(value) : regex.test(value)
-    if (isValid) {
-      message = ''
-      ValidateModule.deleteInvalidItem(name)
-    } else {
-      message = hint || message || ''
-      ValidateModule.addInvalidItem(name)
     }
   }
   return message

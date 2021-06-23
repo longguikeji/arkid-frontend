@@ -145,6 +145,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
     }
     if (schema.format === 'uri' && location.pathname === '/tenant') {
       item.state.type = 'link'
+      item.state.format = 'icon'
     }
   } else if (schema.type === 'boolean') {
     item = {

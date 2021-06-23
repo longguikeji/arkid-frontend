@@ -23,12 +23,15 @@
         "first": {
           "items": {
             "icon": {
-              "type": "InputLink",
+              "type": "Input",
               "label": "图标",
               "prop": "icon",
               "state": {
                 "value": "",
-                "placeholder": "请输入或上传图标"
+                "placeholder": "请输入或上传图标",
+                "type": "link",
+                "name": "icon",
+                "format": "icon"
               }
             },
             "title": {
@@ -37,7 +40,8 @@
               "prop": "title",
               "state": {
                 "value": "",
-                "placeholder": "请输入标题"
+                "placeholder": "请输入标题",
+                "name": "title"
               }
             },
             "info": {
@@ -62,7 +66,8 @@
                       "prop": "text",
                       "state": {
                         "placeholder": "请输入确认按钮文本",
-                        "value": ""
+                        "value": "",
+                        "name": "text"
                       }
                     },
                     "tcolor": {
@@ -114,7 +119,8 @@
                       "prop": "text",
                       "state": {
                         "placeholder": "请输入取消按钮文本",
-                        "value": ""
+                        "value": "",
+                        "name": "text"
                       }
                     },
                     "tcolor": {

@@ -13,10 +13,16 @@ export class AuthPageBtn extends FunctionNode {
     tempState.table?.columns[tempState.table.columns.length - 1]?.scope?.state?.push(authPageBtn)
     tempState.actions!['openAuthPage'] = [
       {
+        name: 'arkfbp/flows/cancelValidate'
+      },
+      {
         name: 'flows/appManager/openAuthPage'
       }
     ]
     tempState.actions!['saveTemplate'] = [
+      {
+        name: 'arkfbp/flows/validate'
+      },
       {
         name: 'flows/appManager/saveTemplate',
         url: '/api/v1/tenant/{tenant_uuid}/app/{uuid}/add_auth_tmpl/',
