@@ -1,6 +1,6 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { getCurrentPageState } from '@/utils/get-page-state'
-import stateFilter from '@/utils/state-filter'
+import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
 

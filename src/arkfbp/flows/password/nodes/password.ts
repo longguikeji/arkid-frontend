@@ -1,7 +1,5 @@
 import { Update } from '@/arkfbp/flows/update/nodes/update'
 import { UserModule } from '@/store/modules/user'
-import { FlowModule } from '@/store/modules/flow'
-import { error } from '@/constants/error'
 
 export class Password extends Update {
   async run() {
@@ -15,14 +13,6 @@ export class Password extends Update {
     this.inputs.url = url
     this.inputs.method = method
     this.inputs.params = params
-    const outputs = await super.run()
-    if (outputs.error) {
-      FlowModule.stopRunFlow()
-      com.$message({
-        message: error[outputs.error],
-        type: 'error',
-        showClose: true,
-      })
-    }
+    await super.run()
   }
 }

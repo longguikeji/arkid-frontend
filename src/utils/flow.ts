@@ -1,4 +1,4 @@
-import { isArray } from '@/utils/common'
+import { isArray, stringConvertNumber } from '@/utils/common'
 
 export function proxyClientServer(clientServer: any, data?: any) {
   let proxyClientServer = {}
@@ -6,6 +6,7 @@ export function proxyClientServer(clientServer: any, data?: any) {
     const cs = clientServer[key]
     if (typeof cs === 'object') {
       const val = data ? data[cs.value] : undefined
+      proxyClientServer = { [key]: cs.value }
       if (val) {
         Object.assign(proxyClientServer, cs[val])
       } else {
@@ -38,4 +39,29 @@ export function isLackRequiredParams(params: any, required: any): boolean {
     }
   }
   return lackRequiredParams
+}
+
+export function stateFilter(strEquality: string, state: any): number | string {
+  let secondKey: number | string = 0
+  const leftBracketIndex = strEquality.indexOf('[')
+  const rightBracketIndex = strEquality.indexOf(']')
+  const arrayStateMapping = strEquality.slice(leftBracketIndex + 1, rightBracketIndex)
+  if (arrayStateMapping.indexOf('=') < 0) {
+    secondKey = stringConvertNumber(arrayStateMapping)
+  } else {
+    const arrayStateMappingSpilt = arrayStateMapping.split('=')
+    const representKey = arrayStateMappingSpilt[0]
+    const representValue = arrayStateMappingSpilt[1]
+    const requiredStateKey = strEquality.substring(0, leftBracketIndex)
+    const target = state[requiredStateKey]
+    if (isArray(target)) {
+      for (let i = 0, len = target.length; i < len; i++) {
+        if (target[i][representKey] === representValue) {
+          secondKey = i
+          break
+        }
+      }
+    }
+  }
+  return secondKey
 }

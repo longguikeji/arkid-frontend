@@ -15,8 +15,6 @@ export class FetchTable extends Fetch {
       }
       const outputs = await super.run()
       return outputs
-    } else {
-      return null
     }
   }
 }
