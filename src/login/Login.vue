@@ -12,8 +12,9 @@ import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
-import { jsonp } from 'vue-jsonp'
+// import { jsonp } from 'vue-jsonp'
 import getBaseUrl from '@/utils/get-base-url'
+import request from './request'
 
 @Component({
   name: 'Login',
@@ -65,7 +66,9 @@ export default class Login extends Vue {
       url,
       method: 'get'
     }
-    const { data, tenant } = await jsonp('/api/v1/jsonp', params)
+    const response = await request.get(url)
+    const page = response.data
+    const { tenant, data } = page
     const config = {}
     Object.keys(data).forEach(key => {
       if (key === 'login') {
