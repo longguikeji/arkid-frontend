@@ -154,17 +154,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       prop: prop,
       state: {
         value: schema.default || false,
-        disabled: disabled && !schema.readOnly
-      }
-    }
-  } else if (schema.type === 'boolean') {
-    item = {
-      type: 'SwitchForm',
-      label: schema.title,
-      prop: prop,
-      state: {
-        value: schema.default || false,
-        disabled: disabled && !schema.readOnly
+        disabled: disabled && !schema.readOnly,
+        default: schema.default || false,
       }
     }
   } else if (schema.type === 'object') {

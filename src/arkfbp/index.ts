@@ -145,8 +145,9 @@ export function getStateByStringConfig(state: any, str: string) {
         const secondKey = stateFilter(sm, tempState)
         tempState = tempState[firstKey][secondKey]
       } else {
-        if (tempState[sm] || (!tempState[sm] && sm === 'value')) {
-          tempState = tempState[sm]
+        const value = tempState[sm]
+        if (value !== undefined && value !== null && value !== '') {
+          tempState = value
         } else {
           tempState = str
         }
