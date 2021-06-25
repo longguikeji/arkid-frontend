@@ -133,13 +133,14 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       state: {
         value: schema.default,
         default: schema.default,
-        readonly: schema.readOnly || disabled,
+        readonly: schema.readOnly,
         placeholder: '请输入' + schema.title,
         required: isRequired,
         showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
         autocomplete: 'new-password',
         format: schema.format,
         hint: schema.hint,
+        disabled: disabled,
         name: prop
       }
     }

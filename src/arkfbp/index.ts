@@ -146,7 +146,7 @@ export function getStateByStringConfig(state: any, str: string) {
         tempState = tempState[firstKey][secondKey]
       } else {
         const value = tempState[sm]
-        if (value !== undefined && value !== null && value !== '') {
+        if (value || (!value && sm === 'value')) {
           tempState = value
         } else {
           tempState = str

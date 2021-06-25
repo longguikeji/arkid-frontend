@@ -26,14 +26,16 @@ const RULE_REGEXP = {
     '^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
     'i',
     ),
-  other: /[<>"'()&/ ]/gi
+  other: /[<>"'()&/ ]/gi,
+  path: /^(?!.\/|..\/).*/
 }
 
 const RULE_HINT = {
   password: GlobalValueModule.passwordComplexity.hint,
   mobile: '请输入11位手机号码',
   username: '用户名不应包含' + "<>'()&/ " + '"',
-  other: '输入内容不应包含' + "<>'()&/ " + '"等特殊字符'
+  other: '输入内容不应包含' + "<>'()&/ " + '"等特殊字符',
+  path: '路径不能以/或./或../开头'
 }
 
 const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
@@ -58,8 +60,12 @@ export const RULES = {
 }
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
-const getDynamicRule = (format?: string, hint?: string, required?: boolean) => {
+const getDynamicRule = (name?: string, format?: string, hint?: string, required?: boolean) => {
   if (!format) format = 'other'
+  if (name === 'data_path') {
+    format = 'path'
+    hint =RULE_HINT.path
+  }
   let pattern: RegExp = new RegExp(''),
       isAnti: boolean = false
   switch (format) {
@@ -88,7 +94,7 @@ const getDynamicRule = (format?: string, hint?: string, required?: boolean) => {
 // required 是否为必填字段
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
   if (name === 'regular') return ''
-  let { message, pattern, isAnti } = getDynamicRule(format, hint, required)
+  let { message, pattern, isAnti } = getDynamicRule(name, format, hint, required)
   if (value) {
     const isValid = isAnti ? !pattern.test(value) : pattern.test(value)
     if (isValid) {
