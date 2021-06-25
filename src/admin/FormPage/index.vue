@@ -57,7 +57,7 @@ export default class extends Mixins(BaseVue) {
 </script>
 <style lang="scss" scoped>
 .form-page {
-  height: calc(100vh - 84px);
+  height: auto;
   .el-card {
     height: 100% !important;
   }

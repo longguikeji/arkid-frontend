@@ -63,6 +63,10 @@ export class InitPage extends FunctionNode {
         break
       case 'lr_config':
         curstomPageFlow = 'flows/loginRegisterConfig/updated'
+        break
+      case 'password_factor':
+        curstomPageFlow = 'flows/passwordManager/addAction'
+        break
     }
     if (curstomPageFlow !== '') {
       await runFlowByFile(curstomPageFlow, {

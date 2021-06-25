@@ -19,7 +19,7 @@ const getFileHint = (): string => {
 }
 
 const RULE_REGEXP = {
-  password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/, // 之后需要进行动态的读取
+  password: GlobalValueModule.passwordComplexity.regex,
   mobile: /(^(1)\d{10}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
@@ -27,6 +27,13 @@ const RULE_REGEXP = {
     'i',
     ),
   other: /[<>"'()&/ ]/gi
+}
+
+const RULE_HINT = {
+  password: GlobalValueModule.passwordComplexity.hint,
+  mobile: '请输入11位手机号码',
+  username: '用户名不应包含' + "<>'()&/ " + '"',
+  other: '输入内容不应包含' + "<>'()&/ " + '"等特殊字符'
 }
 
 const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
@@ -45,9 +52,9 @@ const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
 // 主要用于登录、注册、password组件等Form表单的统一校验
 export const RULES = {
   required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRegexRule('密码长度大于等于8位的字母数字组合', RULE_REGEXP.password),
-  mobile: getRegexRule('手机号码格式有误', RULE_REGEXP.mobile),
-  username: getRegexRule('用户名不包含' + "<>'()&/" + '"', RULE_REGEXP.other, true)
+  password: getRegexRule(RULE_HINT.password, RULE_REGEXP.password),
+  mobile: getRegexRule(RULE_HINT.mobile, RULE_REGEXP.mobile),
+  username: getRegexRule(RULE_HINT.username, RULE_REGEXP.other, true)
 }
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
@@ -57,7 +64,7 @@ const getDynamicRule = (format?: string, hint?: string, required?: boolean) => {
       isAnti: boolean = false
   switch (format) {
     case 'other':
-      hint = '输入内容不应包含' + "<>'()&/" + '" '
+      hint = RULE_HINT.other
       isAnti = true
       break
     case 'uri':
@@ -80,6 +87,7 @@ const getDynamicRule = (format?: string, hint?: string, required?: boolean) => {
 // hint 对应OpenAPI字段描述中的hint内容，文本提示
 // required 是否为必填字段
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
+  if (name === 'regular') return ''
   let { message, pattern, isAnti } = getDynamicRule(format, hint, required)
   if (value) {
     const isValid = isAnti ? !pattern.test(value) : pattern.test(value)

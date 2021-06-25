@@ -22,6 +22,7 @@ export default function getUrl(currentUrl: string, data: any = {}) {
         break
       case 'id':
       case 'uuid':
+      case 'complexity_uuid':
         param = data?.uuid
     }
     url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
@@ -36,7 +37,7 @@ export function getUrlParamByName(name: string) {
     const thisParams = urlParams[i].split('=')
     if (thisParams[0] === name) return thisParams[1]
   }
-  return false
+  return undefined
 }
 
 export function getSlug() {

@@ -14,12 +14,15 @@ export class AfterLogin extends AuthApiNode {
     if (!TenantModule.currentTenant.uuid) {
       await this.setCurrentTenantInfo()
     }
+    const tenantUUId = TenantModule.currentTenant.uuid
     // 获取用户信息
     await this.setCurrentUserInfo()
     // 获取用户权限
-    await this.setCurrentUserPermission()
+    await this.setCurrentUserPermission(tenantUUId)
     // 获取config
-    await this.setTenantConfig()
+    await this.setTenantConfig(tenantUUId)
+    // 获取租户的密码复杂度
+    await this.setTenantPasswordComplexity(tenantUUId)
   }
 
   async setCurrentTenantInfo() {
@@ -40,20 +43,19 @@ export class AfterLogin extends AuthApiNode {
     }
   }
 
-  async setCurrentUserPermission() {
+  async setCurrentUserPermission(tenantUUId: string) {
     this.url = '/api/v1/user/manage_tenants/'
     this.method = 'GET'
     const res = await super.run()
     const isGlobalAdmin = res?.is_global_admin
     const manageTenants = res?.manage_tenants
-    const currentTenantUUId = TenantModule.currentTenant.uuid
     if (isGlobalAdmin) {
       UserModule.setUserRole(UserRole.Global)
-    } else if (manageTenants?.length && currentTenantUUId) {
+    } else if (manageTenants?.length && tenantUUId) {
       for (let i = 0, len = manageTenants.length; i < len; i++) {
         let uuid = manageTenants[i]
         uuid = processUUId(uuid)
-        if (uuid === currentTenantUUId) {
+        if (uuid === tenantUUId) {
           UserModule.setUserRole(UserRole.Tenant)
           break
         }
@@ -63,11 +65,20 @@ export class AfterLogin extends AuthApiNode {
     }
   }
 
-  async setTenantConfig() {
-    this.url = `/api/v1/tenant/${TenantModule.currentTenant.uuid}/config/`
+  async setTenantConfig(tenantUUId: string) {
+    if (tenantUUId === '') return 
+    this.url = `/api/v1/tenant/${tenantUUId}/config/`
     this.method = 'GET'
     const { data } = await super.run()
     GlobalValueModule.setGlobalConfig(data)
+  }
+
+  async setTenantPasswordComplexity(tenantUUId: string) {
+    if (tenantUUId === '') return
+    this.url = `/api/v1/tenant/${tenantUUId}/current_password_complexity/`
+    this.method = 'GET'
+    const data = await super.run()
+    GlobalValueModule.setPasswordComplexify(data)
   }
 
 }

@@ -1,11 +1,23 @@
 import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 
+export interface IPasswordComplexity {
+  regex: RegExp
+  isApply: boolean
+  hint: string
+}
+
+interface IUploadFileFormat {
+  regex: RegExp
+  hint: string
+}
+
 export interface IGlobalValueState {
   originUrl: string
   slug: string
   closePageAutoLogout: boolean
   uploadFileFormat: string[]
+  passwordComplexity: IPasswordComplexity
 }
 
 interface IGlobalConfig {
@@ -19,6 +31,11 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   public slug: string = ''
   public closePageAutoLogout: boolean = false
   public uploadFileFormat: string[] = []
+  public passwordComplexity: IPasswordComplexity = {
+    regex: new RegExp(''),
+    isApply: true,
+    hint: ''
+  }
 
   @Mutation
   setOriginUrl(url: string) {
@@ -34,6 +51,15 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   setGlobalConfig(data: IGlobalConfig) {
     this.closePageAutoLogout = data.close_page_auto_logout || false
     this.uploadFileFormat = data.upload_file_format || []
+  }
+
+  @Mutation
+  setPasswordComplexify(data) {
+    this.passwordComplexity = {
+      regex: eval(`/${data.regular}/`),
+      isApply: data.is_apply,
+      hint: data.title
+    }
   }
 
 }

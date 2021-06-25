@@ -7,12 +7,22 @@ export interface ITenantState {
   currentTenant: any
 }
 
+interface ITenant {
+  uuid: string
+  name?: string
+  slug?: string
+  icon?: string
+  created?: string
+}
+
 @Module({ dynamic: true, store, name: 'tenant' })
 class Tenant extends VuexModule implements ITenantState {
   tenantState:TablePageState = {
     type: 'TablePage'
   }
-  currentTenant: any = {}
+  currentTenant: ITenant = {
+    uuid: ''
+  }
 
   @Mutation
   public changeState(payload: any) {
