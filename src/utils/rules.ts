@@ -93,16 +93,19 @@ const getDynamicRule = (name?: string, format?: string, hint?: string, required?
 // hint 对应OpenAPI字段描述中的hint内容，文本提示
 // required 是否为必填字段
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
-  if (name === 'regular') return ''
   let { message, pattern, isAnti } = getDynamicRule(name, format, hint, required)
   if (value) {
-    const isValid = isAnti ? !pattern.test(value) : pattern.test(value)
-    if (isValid) {
-      message = ''
-      ValidateModule.deleteInvalidItem(name)
+    if (name === 'regular') {
+      message = regexValidator(value)
     } else {
-      message = message || '输入内容不正确'
-      ValidateModule.addInvalidItem(name)
+      const isValid = isAnti ? !pattern.test(value) : pattern.test(value)
+      if (isValid) {
+        message = ''
+        ValidateModule.deleteInvalidItem(name)
+      } else {
+        message = message || '输入内容不正确'
+        ValidateModule.addInvalidItem(name)
+      }
     }
   } else {
     if (required) {
@@ -134,4 +137,15 @@ export function xlsxValidator(header: any[], body: any[]): boolean {
     }
   }
   return xlsxIsValid
+}
+
+function regexValidator(val: any): string {
+  let message: string = ''
+  if (val && !(eval(`/${val}/`) instanceof RegExp)) {
+    message = '正则表达式格式错误'
+    ValidateModule.addInvalidItem('regular')
+  } else {
+    ValidateModule.deleteInvalidItem('regular')
+  }
+  return message
 }
