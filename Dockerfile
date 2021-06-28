@@ -1,12 +1,20 @@
-FROM node:10.20.1-buster AS builder
+FROM node:10.20.1-buster AS build_deps
 USER root
 WORKDIR /workspace
 
 COPY . .
 RUN npm install 
+
+FROM build_deps AS run_lint
+RUN echo "lint"
+
+FROM build_deps AS run_test
+RUN echo "test"
+
+FROM build_deps AS build
 RUN npm run build:prod
 
 FROM nginx:alpine
 ENV TZ Asia/Shanghai
 EXPOSE 80
-COPY --from=builder /workspace/dist /usr/share/nginx/html/
+COPY --from=build /workspace/dist /usr/share/nginx/html/
