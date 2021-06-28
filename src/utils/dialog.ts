@@ -51,7 +51,7 @@ const PAGE_ACTION_FLOW = {
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
   retrieve: 'arkfbp/flows/fetch',
-  password: 'arkfbp/flows/assign'
+  password: 'arkfbp/flows/fetch'
 }
 
 const DIALOG_ACTION_NAME = {
@@ -190,10 +190,12 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     let response = {
       [`dialogs.${key}.data`]: '',
     }
-    const target = `dialogs.${key}.state.state.` 
-    const isResponse = true 
-    const { mapping } = generateAction(path, method, target, isResponse)
-    response = Object.assign(response, mapping)
+    if (key !== 'password') {
+      const target = `dialogs.${key}.state.state.` 
+      const isResponse = true 
+      const { mapping } = generateAction(path, method, target, isResponse)
+      response = Object.assign(response, mapping)
+    }
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate'
