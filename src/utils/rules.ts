@@ -1,25 +1,22 @@
 import { ValidateModule } from '@/store/modules/validate'
 import { GlobalValueModule } from '@/store/modules/global-value'
+import { getRegexRule } from '@/login/util/rules'
 
-const getFileRegexp = (): RegExp => {
+const getUploadFileRegular = () => {
   const formats = GlobalValueModule.uploadFileFormat
+  const hint = `请输入${formats.join(',')}格式的文件`
   let formatStr = ''
   for (const format of formats) {
     formatStr += `\\.${format}|`
   }
   formatStr = formatStr.substring(0, formatStr.length - 1)
-  formatStr = `/\\w(${formatStr})/i`
-  return eval(formatStr)
-}
-
-const getFileHint = (): string => {
-  let format = GlobalValueModule.uploadFileFormat.join(',')
-  format = `请输入${format}格式的文件`
-  return format
+  return {
+    pattern: new RegExp(formatStr, 'i'),
+    hint: hint
+  }
 }
 
 const RULE_REGEXP = {
-  password: GlobalValueModule.passwordComplexity.regex,
   mobile: /(^(1)\d{10}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
@@ -31,32 +28,14 @@ const RULE_REGEXP = {
 }
 
 const RULE_HINT = {
-  password: GlobalValueModule.passwordComplexity.hint,
   mobile: '请输入11位手机号码',
-  username: '用户名不应包含' + "<>'()&/ " + '"',
   other: '输入内容不应包含' + "<>'()&/ " + '"等特殊字符',
   path: '路径不能以/或./或../开头'
 }
 
-const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
-  return {
-    trigger: 'blur', validator: (rule: any, value: string, callback: Function) => {
-      const isValid = isAnti ? (!regex.test(value) || !value) : (regex.test(value) || !value)
-      if (isValid) {
-        callback()
-      } else {
-        callback(new Error(message))
-      }
-    }
-  }
-}
-
-// 主要用于登录、注册、password组件等Form表单的统一校验
-export const RULES = {
-  required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRegexRule(RULE_HINT.password, RULE_REGEXP.password),
-  mobile: getRegexRule(RULE_HINT.mobile, RULE_REGEXP.mobile),
-  username: getRegexRule(RULE_HINT.username, RULE_REGEXP.other, true)
+export function getPasswordRule() {
+  const { regex, hint } = GlobalValueModule.passwordComplexity
+  return getRegexRule(hint || '', regex || new RegExp(''))
 }
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
@@ -77,8 +56,9 @@ const getDynamicRule = (name?: string, format?: string, hint?: string, required?
       format = 'url'
       break
     case 'icon':
-      pattern = getFileRegexp()
-      hint = getFileHint()
+      const regular = getUploadFileRegular()
+      pattern = regular.pattern
+      hint = regular.hint
       break
   }
   const rule = { pattern: RULE_REGEXP[format] || pattern, message: hint, isAnti, required }

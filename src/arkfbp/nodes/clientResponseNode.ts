@@ -11,7 +11,6 @@ export class ClientResponseNode extends FunctionNode {
     let { client, clientServer } = this.$state.fetch().inputs
     let data = this.inputs
     clientServer = proxyClientServer(clientServer, data)
-
     if (!clientServer || !client) {
       throw new Error('ClientResponseNode Error')
     }

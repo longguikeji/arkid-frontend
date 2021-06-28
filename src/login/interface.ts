@@ -51,3 +51,8 @@ export interface LoginTenant {
   icon?: string
   created?: string
 }
+
+export interface PasswordComplexity {
+  regex?: RegExp
+  hint?: string
+}

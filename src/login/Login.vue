@@ -10,9 +10,8 @@
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
-import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
+import { LoginPagesConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
-// import { jsonp } from 'vue-jsonp'
 import getBaseUrl from '@/utils/get-base-url'
 import request from './request'
 
@@ -62,10 +61,6 @@ export default class Login extends Vue {
     if (LoginStore.TenantUUID) {
       url = '/api/v1/loginpage/?tenant=' + LoginStore.TenantUUID
     }
-    const params = {
-      url,
-      method: 'get'
-    }
     const response = await request.get(url)
     const page = response.data
     const { tenant, data } = page
@@ -83,11 +78,18 @@ export default class Login extends Vue {
     this.config = config
     this.tenant = tenant
     this.isRenderLoginPage = true
+    // set tenant or arkid password-complexity
+    const passwordComplexity = tenant.password_complexity
+    LoginStore.passwordComplexity = {
+      regex: new RegExp(passwordComplexity.regular || ''),
+      hint: passwordComplexity.title
+    }
   }
 
+  // third-party
   private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
     if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
-      extend.buttons.forEach(btn => {
+      extend.buttons.forEach((btn: ButtonConfig) => {
         btn.img = btn.img || 'extend-icon'
         btn.redirect!.params = {
           next: encodeURIComponent(window.location.origin + getBaseUrl() + '/third_part_callback')

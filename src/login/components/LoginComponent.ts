@@ -3,8 +3,7 @@ import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig } from '../interface'
 import LoginStore from '../store/login'
-import { RULES } from '@/utils/rules'
-import { preventPaste } from '@/utils/event'
+import { RULES } from '../util/rules'
 import request from '../request'
 import { error } from '@/constants/error'
 
@@ -243,6 +242,9 @@ export default class LoginComponent extends Vue {
   }
 
   onPaste(e, name: string) {
-    preventPaste(e, name)
+    if (name.includes('password')) {
+      e.preventDefault()
+      return false
+    }
   }
 }
