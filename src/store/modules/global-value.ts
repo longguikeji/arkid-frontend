@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
-import LoginStore from '@/login/store/login'
+import { DEFAULT_PASSWORD_COMPLEXITY } from '@/login/util/rules'
 
 export interface IValidatorStrategy {
   regex?: RegExp
@@ -27,8 +27,8 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   public closePageAutoLogout: boolean = false
   public uploadFileFormat: string[] = []
   public passwordComplexity: IValidatorStrategy = {
-    regex: LoginStore.passwordComplexity.regex,
-    hint: LoginStore.passwordComplexity.hint
+    regex: DEFAULT_PASSWORD_COMPLEXITY.regex,
+    hint: DEFAULT_PASSWORD_COMPLEXITY.hint
   }
 
   @Mutation

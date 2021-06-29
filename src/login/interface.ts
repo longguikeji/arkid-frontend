@@ -50,6 +50,12 @@ export interface LoginTenant {
   slug?: string
   icon?: string
   created?: string
+  password_complexity?: TenantPasswordComplexity
+}
+
+export interface TenantPasswordComplexity {
+  regular?: string
+  title?: string
 }
 
 export interface PasswordComplexity {

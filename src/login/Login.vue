@@ -4,6 +4,7 @@
     :title="tenant ? tenant.name : ''"
     :icon="tenant ? tenant.icon : ''"
     :config="config"
+    :complexity="tenant ? tenant.password_complexity : undefined"
   />
 </template>
 <script lang="ts">
@@ -78,12 +79,6 @@ export default class Login extends Vue {
     this.config = config
     this.tenant = tenant
     this.isRenderLoginPage = true
-    // set tenant or arkid password-complexity
-    const passwordComplexity = tenant.password_complexity
-    LoginStore.passwordComplexity = {
-      regex: new RegExp(passwordComplexity.regular || ''),
-      hint: passwordComplexity.title
-    }
   }
 
   // third-party
