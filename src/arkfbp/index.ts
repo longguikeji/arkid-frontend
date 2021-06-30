@@ -50,8 +50,9 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
 export async function runFlow (com: any, state: any, flow: IFlow) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data
+  const currentPage = com.$route.meta?.page
   const inputs = {
-    url: args.url ? getUrl(args.url, data) : '',
+    url: args.url ? getUrl(args.url, data, currentPage) : '',
     method: args.method?.toUpperCase(),
     params: {},
     client: state,
