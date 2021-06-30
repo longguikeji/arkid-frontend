@@ -3,16 +3,15 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
 // target为空或'dialogs.create.state.state.'的形式的内容
-export function getActionMapping(path: string, method: string, target: string, blank?: boolean) {
+export function getActionMapping(path: string, method: string, target: string, isReponse?: boolean, blank?: boolean) {
   let mapping = {}, required
-  const mappingWay = method.toUpperCase() === 'GET' ? 'response' : 'request'
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectTarget = `${target}select.value`
     required = { [ propertyName ]: {} }
     const selectRequired = required[propertyName]
-    if (mappingWay === 'response') {
+    if (isReponse) {
       mapping[selectTarget] = { value: blank ? '' : propertyName }
     } else {
       mapping[propertyName] = { value: blank ? '' : selectTarget }
@@ -23,7 +22,7 @@ export function getActionMapping(path: string, method: string, target: string, b
       const discriminatorSchema = OpenAPI.instance.getSchemaByRef(discriminatorRef)
       const props = discriminatorSchema.properties
       selectRequired[key] = filterReuqiredItems(discriminatorSchema)
-      if (mappingWay === 'response') {
+      if (isReponse) {
         mapping[selectTarget][key] = {}
       } else {
         mapping[propertyName][key] = {}
@@ -31,7 +30,7 @@ export function getActionMapping(path: string, method: string, target: string, b
       for (const prop in props) {
         if (prop === propertyName) continue
         const item = props[prop]
-        if (mappingWay === 'response') {
+        if (isReponse) {
           getResponseMapping(prop, item, mapping[selectTarget][key], discriminatorTarget, blank)
         } else {
           getRequestMapping(prop, item, mapping[propertyName][key], discriminatorTarget)
@@ -44,7 +43,7 @@ export function getActionMapping(path: string, method: string, target: string, b
     const propTarget = `${target}form.items.`
     for (const prop in props) {
       const item = props[prop]
-      if (mappingWay === 'response') {
+      if (isReponse) {
         getResponseMapping(prop, item, mapping, propTarget, blank)
       } else {
         getRequestMapping(prop, item, mapping, propTarget)

@@ -156,8 +156,7 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
     } else {
       const target = `dialogs.${key}.state.state.`
       const isResponse = false
-      // const { mapping, required } = generateAction(path, method, target, isResponse)
-      const { mapping, required } = getActionMapping(path, method, target)
+      const { mapping, required } = getActionMapping(path, method, target, isResponse)
       state.actions![actionName] = [
         {
           name: 'arkfbp/flows/validate'
@@ -193,9 +192,8 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     }
     if (key !== 'password') {
       const target = `dialogs.${key}.state.state.` 
-      const isResponse = true 
-      // const { mapping } = generateAction(path, method, target, isResponse)
-      const { mapping } = getActionMapping(path, method, target)
+      const isResponse = true
+      const { mapping } = getActionMapping(path, method, target, isResponse)
       response = Object.assign(response, mapping)
     }
     state.actions![actionName] = [
@@ -244,8 +242,7 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
     const target = `dialogs.${key}.state.state.` 
     const isResponse = true
     const isEmpty = true
-    // const { mapping } = generateAction(path, method, target, isResponse, isEmpty)
-    const { mapping } = getActionMapping(path, method, target, isEmpty)
+    const { mapping } = getActionMapping(path, method, target, isResponse, isEmpty)
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate'

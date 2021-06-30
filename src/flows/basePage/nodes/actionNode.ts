@@ -57,8 +57,7 @@ export class ActionNode extends FunctionNode {
   initFormPageFetchAction(state: IPage, path: string, method: string) {
     const isResponse = true
     const target = ''
-    // const { mapping } = generateAction(path, method, target, isResponse)
-    const { mapping } = getActionMapping(path, method, target)
+    const { mapping } = getActionMapping(path, method, target, isResponse)
     this.initFetchAction(state, path, method, mapping)
   }
 
