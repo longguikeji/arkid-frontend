@@ -33,9 +33,10 @@ export class AfterLogin extends AuthApiNode {
   async setCurrentTenantInfo() {
     this.url = '/api/v1/tenant/'
     this.method = 'GET'
-    const { results } = await super.run()
-    if (results?.length === 1) {
-      TenantModule.changeCurrentTenant(results[0])
+    const data = await super.run()
+    const res = data?.results
+    if (res?.length === 1) {
+      TenantModule.changeCurrentTenant(res[0])
     }
   }
 

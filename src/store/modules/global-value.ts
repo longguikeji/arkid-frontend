@@ -49,8 +49,8 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
 
   @Mutation
   setPasswordComplexify(data) {
-    this.passwordComplexity.regex = new RegExp(data.regular)
-    this.passwordComplexity.hint = data.title
+    this.passwordComplexity.regex = new RegExp(data.regular || '')
+    this.passwordComplexity.hint = data.title || ''
   }
 
 }
