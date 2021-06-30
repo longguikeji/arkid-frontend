@@ -8,7 +8,7 @@ export interface ITenantState {
 }
 
 interface ITenant {
-  uuid: string
+  uuid?: string
   name?: string
   slug?: string
   icon?: string
@@ -20,9 +20,7 @@ class Tenant extends VuexModule implements ITenantState {
   tenantState: AdminComponentState = {
     type: 'TablePage'
   }
-  currentTenant: ITenant = {
-    uuid: ''
-  }
+  currentTenant: ITenant = {}
 
   @Mutation
   public changeState(payload: any) {

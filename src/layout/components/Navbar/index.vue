@@ -111,7 +111,9 @@ export default class extends Vue {
   }
 
   private async logout() {
-    await runFlowByFile('flows/user/logout', {})
+    await runFlowByFile('flows/user/logout', {
+      com: this
+    })
   }
 }
 </script>

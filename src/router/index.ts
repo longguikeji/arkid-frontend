@@ -112,7 +112,7 @@ router.beforeEach((to, from, next) => {
       nextUrl = '/'
     } else if (to.path === '/tenant') {
       next()
-    } else if (tenantUUId === '') {
+    } else if (!tenantUUId) {
       nextUrl = '/tenant'
     }
   } else {

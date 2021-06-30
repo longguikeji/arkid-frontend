@@ -2,6 +2,7 @@ import { AuthApiNode } from "@/arkfbp/nodes/authApiNode"
 import { removeToken } from '@/utils/auth'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import getBaseUrl from '@/utils/get-base-url'
+import { TenantModule } from '@/store/modules/tenant'
 
 export class Logout extends AuthApiNode {
   async run() {
@@ -14,6 +15,9 @@ export class Logout extends AuthApiNode {
     const outputs = await super.run()
     if (outputs.is_succeed) {
       removeToken()
+      if (GlobalValueModule.slug === '') {
+        TenantModule.changeCurrentTenant({})
+      }
       if (currentPage === 'tenant_config') {
         window.location.href = originUrl + getBaseUrl() + '/login'
       } else {

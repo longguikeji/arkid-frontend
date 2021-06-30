@@ -17,8 +17,8 @@ export class AfterLogin extends AuthApiNode {
     const tenantUUId = TenantModule.currentTenant.uuid
     // 获取用户信息
     await this.setCurrentUserInfo()
-    
-    if (tenantUUId !== '') {
+    // 设置其他变量
+    if (tenantUUId) {
       // 获取用户权限
       await this.setCurrentUserPermission(tenantUUId)
       // 获取config
