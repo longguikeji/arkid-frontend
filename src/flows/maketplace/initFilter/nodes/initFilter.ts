@@ -1,10 +1,10 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
-import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 import { IFlow } from '@/arkfbp'
 
 export class InitFilter extends AuthApiNode {
   async run() {
-    const state = this.inputs.state as TablePageState
+    const state = this.inputs.state
     const tempState = state.state as TablePage
 
     // filter element info

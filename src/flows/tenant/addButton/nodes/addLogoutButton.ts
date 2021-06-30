@@ -1,11 +1,11 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import TablePageState, { TablePage } from '@/admin/TablePage/TablePageState'
+import { TablePage } from '@/admin/TablePage/TablePageState'
 import { runFlowByFile } from '@/arkfbp/index'
 
 export class AddLoyoutButton extends FunctionNode {
   async run() {
-    const state = this.inputs.tempState as TablePageState
+    const state = this.inputs.tempState
     const tempState = state.state as TablePage
     
     const logoutButton: ButtonState = {

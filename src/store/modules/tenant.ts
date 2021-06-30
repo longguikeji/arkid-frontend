@@ -1,9 +1,9 @@
-import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
-import TablePageState from '@/admin/TablePage/TablePageState'
+import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 
 export interface ITenantState {
-  tenantState: TablePageState
+  tenantState: AdminComponentState
   currentTenant: any
 }
 
@@ -17,7 +17,7 @@ interface ITenant {
 
 @Module({ dynamic: true, store, name: 'tenant' })
 class Tenant extends VuexModule implements ITenantState {
-  tenantState:TablePageState = {
+  tenantState: AdminComponentState = {
     type: 'TablePage'
   }
   currentTenant: ITenant = {

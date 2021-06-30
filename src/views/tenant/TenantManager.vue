@@ -17,7 +17,6 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import TablePage from '@/admin/TablePage/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
-import TablePageState from '@/admin/TablePage/TablePageState'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
@@ -34,8 +33,8 @@ export default class extends Vue {
   initCompleted = false
   isShowClose = false
 
-  private get state():TablePageState {
-    return TenantModule.tenantState as TablePageState
+  private get state() {
+    return TenantModule.tenantState
   }
 
   goHome() {

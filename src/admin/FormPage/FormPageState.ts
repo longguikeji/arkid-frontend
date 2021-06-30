@@ -14,8 +14,3 @@ export interface FormPage extends CardState {
   bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
   actions?: { [name: string]: (IFlow | string)[] }
 }
-
-export default interface FromPageState {
-  type?: string // FormPage
-  state?: FormPage
-}
