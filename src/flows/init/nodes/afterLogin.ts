@@ -17,20 +17,26 @@ export class AfterLogin extends AuthApiNode {
     const tenantUUId = TenantModule.currentTenant.uuid
     // 获取用户信息
     await this.setCurrentUserInfo()
-    // 获取用户权限
-    await this.setCurrentUserPermission(tenantUUId)
-    // 获取config
-    await this.setTenantConfig(tenantUUId)
-    // 获取租户的密码复杂度
-    await this.setTenantPasswordComplexity(tenantUUId)
+    // 设置其他变量
+    if (tenantUUId) {
+      // 获取用户权限
+      await this.setCurrentUserPermission(tenantUUId)
+      // 获取config
+      await this.setTenantConfig(tenantUUId)
+      // 获取租户的密码复杂度
+      await this.setTenantPasswordComplexity(tenantUUId)
+    } else {
+      UserModule.setUserRole(UserRole.Platform)
+    }
   }
 
   async setCurrentTenantInfo() {
     this.url = '/api/v1/tenant/'
     this.method = 'GET'
-    const { results } = await super.run()
-    if (results?.length === 1) {
-      TenantModule.changeCurrentTenant(results[0])
+    const data = await super.run()
+    const res = data?.results
+    if (res?.length === 1) {
+      TenantModule.changeCurrentTenant(res[0])
     }
   }
 
@@ -48,7 +54,9 @@ export class AfterLogin extends AuthApiNode {
     this.method = 'GET'
     const res = await super.run()
     const isGlobalAdmin = res?.is_global_admin
+    const isPlatformUser = res?.is_platform_user
     const manageTenants = res?.manage_tenants
+    // console.log('权限信息', res)
     if (isGlobalAdmin) {
       UserModule.setUserRole(UserRole.Global)
     } else if (manageTenants?.length && tenantUUId) {
@@ -60,13 +68,14 @@ export class AfterLogin extends AuthApiNode {
           break
         }
       }
+    } else if (isPlatformUser) {
+      UserModule.setUserRole(UserRole.Platform)
     } else {
       UserModule.setUserRole(UserRole.User)
     }
   }
 
   async setTenantConfig(tenantUUId: string) {
-    if (tenantUUId === '') return 
     this.url = `/api/v1/tenant/${tenantUUId}/config/`
     this.method = 'GET'
     const { data } = await super.run()
@@ -74,7 +83,6 @@ export class AfterLogin extends AuthApiNode {
   }
 
   async setTenantPasswordComplexity(tenantUUId: string) {
-    if (tenantUUId === '') return
     this.url = `/api/v1/tenant/${tenantUUId}/current_password_complexity/`
     this.method = 'GET'
     const data = await super.run()

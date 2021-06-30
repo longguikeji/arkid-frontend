@@ -67,6 +67,8 @@ export class InitPage extends FunctionNode {
       case 'password_factor':
         curstomPageFlow = 'flows/passwordManager/addAction'
         break
+      case 'tenant_config':
+        curstomPageFlow = 'flows/tenant/deleteTenant'
     }
     if (curstomPageFlow !== '') {
       await runFlowByFile(curstomPageFlow, {

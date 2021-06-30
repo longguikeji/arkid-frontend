@@ -15,8 +15,3 @@ export interface TreePage extends BaseState {
   }
   actions?: { [name: string]: Array<IFlow | string> }
 }
-
-export default interface TreePageState {
-  type?: string // TreePage
-  state?: TreePage
-}

@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig } from '../interface'
+import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
-import { RULES } from '../util/rules'
+import { RULES, getRegexRule, DEFAULT_PASSWORD_COMPLEXITY } from '../util/rules'
 import request from '../request'
 import { error } from '@/constants/error'
 
@@ -17,6 +17,7 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) title?:string
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
+  @Prop({ required: true }) complexity?: TenantPasswordComplexity
   
   graphicCodeSrc: string = ''
   page = ''
@@ -28,7 +29,7 @@ export default class LoginComponent extends Vue {
     ],
     checkpassword: [
       RULES.required,
-      RULES.password,
+      this.currentPasswordComplexity,
       { validator: this.checkPassword, trigger: 'blur' }
     ],
     username: [
@@ -96,6 +97,16 @@ export default class LoginComponent extends Vue {
 
   get currentFormData() {
     return this.formData[this.pageData][this.currentFormIndex]
+  }
+
+  get currentPasswordComplexity() {
+    let regex =  DEFAULT_PASSWORD_COMPLEXITY.regex
+    let hint = DEFAULT_PASSWORD_COMPLEXITY.hint
+    if (this.complexity?.regular) {
+      regex = new RegExp(this.complexity?.regular)
+      hint = this.complexity.title || ''
+    }
+    return getRegexRule(hint, regex)
   }
 
   async http(url: string, method: string, data?: any) {
@@ -192,7 +203,7 @@ export default class LoginComponent extends Vue {
     if (this.page === 'register') {
       this.rules.password = [
         RULES.required,
-        RULES.password,
+        this.currentPasswordComplexity,
         { validator: this.validateCheckPassword, trigger: 'blur' }
       ]
     } else {

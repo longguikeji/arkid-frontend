@@ -3,6 +3,7 @@ import { getCurrentPageState } from '@/utils/get-page-state'
 import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
+import { isEmptyObject } from '@/utils/common'
 
 export interface IFlow {
   name: string
@@ -50,8 +51,9 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
 export async function runFlow (com: any, state: any, flow: IFlow) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data
+  const currentPage = com.$route.meta?.page
   const inputs = {
-    url: args.url ? getUrl(args.url, data) : '',
+    url: args.url ? getUrl(args.url, data, currentPage) : '',
     method: args.method?.toUpperCase(),
     params: {},
     client: state,
@@ -62,7 +64,7 @@ export async function runFlow (com: any, state: any, flow: IFlow) {
     required: args.required
   }
   // 对 request 请求参数进行解析处理
-  if (args.request) {
+  if (args.request && !isEmptyObject(args.request)) {
     const mapping = stateMappingProxy(state, args.request)
     inputs.params = parseStateMapping(state, mapping)
   }
@@ -124,9 +126,6 @@ export function parseStateMapping(state: any, mapping: any) {
       if (tempState !== undefined && tempState !== null && tempState !== '') {
         params[key] = tempState
       }
-    } else if (typeof item === 'object') {
-      const objectData = parseStateMapping(state, item)
-      params[key] = { ...objectData }
     } else {
       params[key] = item
     }

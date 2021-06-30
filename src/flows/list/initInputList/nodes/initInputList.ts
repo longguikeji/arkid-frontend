@@ -2,8 +2,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import getInitContent from '@/utils/get-init-content'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
-import TablePageState from '@/admin/TablePage/TablePageState'
-import TreePageState from '@/admin/TreePage/TreePageState'
+import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 
 export class InitInputList extends FunctionNode {
   async run() {
@@ -23,7 +22,7 @@ export class InitInputList extends FunctionNode {
     state.dialogs.selected.visible = true
   }
 
-  initDialogPage(state: any, tempState: TablePageState | TreePageState) {
+  initDialogPage(state: any, tempState: AdminComponentState) {
     const { params, flow, data } = this.getInitAttrs() 
     state.dialogs.selected.state = {
       type: tempState.type,
@@ -58,11 +57,11 @@ export class InitInputList extends FunctionNode {
     }
   }
 
-  initDialogTreePage(state: any, tempState: TablePageState) {
+  initDialogTreePage(state: any, tempState: AdminComponentState) {
     state.dialogs.selected.state.state.tree.action = 'clicked'
   }
 
-  initDialogTablePage(state: any, tempState: TreePageState, params: any) {
+  initDialogTablePage(state: any, tempState: AdminComponentState, params: any) {
     state.dialogs.selected.state.state.table.selection = {
       exist: params.multi,
       values: []

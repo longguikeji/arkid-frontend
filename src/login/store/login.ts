@@ -1,5 +1,3 @@
-import { PasswordComplexity } from '../interface'
-
 export default class LoginStore {
   public static readonly TOKEN = 'token'
 
@@ -39,8 +37,4 @@ export default class LoginStore {
 
   public static CodeFileName: string = ''
 
-  public static passwordComplexity: PasswordComplexity = {
-    regex: undefined,
-    hint: undefined
-  }
 }

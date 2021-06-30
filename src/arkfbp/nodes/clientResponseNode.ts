@@ -51,9 +51,7 @@ export class ClientResponseNode extends FunctionNode {
         }
         tempC[lastKey] = lastKey === 'disabled' ? !value : value
       } else {
-        const clientServerValue = clientServer[key]
-        const value = (clientServerValue === undefined) ? tempC.default || tempC[lastKey] : clientServerValue
-        tempC[lastKey] = value
+        tempC[lastKey] = clientServer[key]
       }
     }
   }

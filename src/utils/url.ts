@@ -6,10 +6,11 @@ import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
 
-export default function getUrl(currentUrl: string, data: any = {}) {
+export default function getUrl(currentUrl: string, data: any = {}, page: string = '') {
   let url = currentUrl
   if (url.indexOf('{') !== -1) {
-    const property = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
+    let property = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
+    if (page === 'tenant_config') property = 'tenant_uuid'
     // 之后如果某个url中有其他的参数需要，可以继续在这里进行添加
     let param
     switch (property) {

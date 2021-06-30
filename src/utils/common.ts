@@ -47,6 +47,7 @@ export function stringConvertNumber(str: string): string | number {
 }
 
 // 判断是否为对象类型
-export function isObject(obj: any): boolean {
-  return Object.prototype.toString.call(obj) === '[object Object]'
+export function isEmptyObject(obj: Object): boolean {
+  const keys = Object.keys(obj)
+  return keys.length === 0
 }

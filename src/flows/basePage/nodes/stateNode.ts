@@ -58,7 +58,7 @@ export class StateNode extends FunctionNode {
       const action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
       const { path, method } = action
       this.initDialogState(state, path, method, key, currentPage)
-      this.initCardButtons(state, key, type, path, method)
+      this.initCardButtons(state, key, type, path, method, currentPage)
     }
   }
 
@@ -75,7 +75,7 @@ export class StateNode extends FunctionNode {
       if (key === 'sort') {
         this.initSortButtons(state, action)
       } else {
-        this.initItemButtons(state, key, type, path, method)
+        this.initItemButtons(state, key, type, path, method, currentPage)
       }
     }
   }
@@ -128,15 +128,15 @@ export class StateNode extends FunctionNode {
   }
 
   // type => page type( TablePage, FormPage, TreePage )
-  initCardButtons(state: IPage, key: string, type: string, path: string, method: string) {
-    const btn = generateButton(key, path, method, type)
+  initCardButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
+    const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
     state.card?.buttons!.push(btn)
   }
 
   // type => page type( TablePage, FormPage, TreePage )
-  initItemButtons(state: IPage, key: string, type: string, path: string, method: string) {
-    const btn = generateButton(key, path, method, type)
+  initItemButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
+    const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
     if (type === 'TablePage') {
       this.initTableItemButtons(state, btn)

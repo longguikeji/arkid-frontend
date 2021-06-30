@@ -5,7 +5,7 @@ export function proxyClientServer(clientServer: any, data?: any) {
   Object.keys(clientServer).forEach(key => {
     const cs = clientServer[key]
     if (typeof cs === 'object') {
-      const val = data ? data[cs.value] : undefined
+      const val = data ? data[cs.value] : cs.value || undefined 
       Object.assign(proxyClientServer, { [key]: cs.value })
       if (val) {
         Object.assign(proxyClientServer, cs[val])

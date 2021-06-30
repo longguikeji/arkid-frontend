@@ -5,7 +5,7 @@ import { getFetchAttrs } from '@/utils/table'
 import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
-import generateAction from '@/utils/generate-action'
+import { getActionMapping } from '@/utils/generate-action'
 import { getImportBtnMapping } from '@/utils/button'
 
 export class ActionNode extends FunctionNode {
@@ -57,7 +57,7 @@ export class ActionNode extends FunctionNode {
   initFormPageFetchAction(state: IPage, path: string, method: string) {
     const isResponse = true
     const target = ''
-    const { mapping } = generateAction(path, method, target, isResponse)
+    const { mapping } = getActionMapping(path, method, target, isResponse)
     this.initFetchAction(state, path, method, mapping)
   }
 
