@@ -3,103 +3,94 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
 // target为空或'dialogs.create.state.state.'的形式的内容
-export default function generateAction(path: string, method: string, target: string, isResponse: boolean, isEmpty?: boolean) {
-  let response = {},
-      request = {},
-      required
+export function getActionMapping(path: string, method: string, target: string, blank?: boolean) {
+  let mapping = {}, required
+  const mappingWay = method.toUpperCase() === 'GET' ? 'response' : 'request'
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectTarget = `${target}select.value`
-    if (isResponse) {
-      response[selectTarget] = {
-        value: isEmpty ? '' : propertyName
-      }
-    } else {
-      request[propertyName] = {
-        value: isEmpty ? '' : selectTarget
-      }
-    }
     required = { [ propertyName ]: {} }
-    const objRequired = required[propertyName]
+    const selectRequired = required[propertyName]
+    if (mappingWay === 'response') {
+      mapping[selectTarget] = { value: blank ? '' : propertyName }
+    } else {
+      mapping[propertyName] = { value: blank ? '' : selectTarget }
+    }
     Object.keys(schema.discriminator.mapping).forEach(key => {
-      const itemTarget = `${target}forms.${key}.items.`
-      const itemRef = schema.discriminator!.mapping[key]
-      const itemSchema = OpenAPI.instance.getSchemaByRef(itemRef)
-      const items = itemSchema.properties
-      objRequired[key] = filterReuqiredItems(itemSchema)
-      if (isResponse) {
-        response[selectTarget][key] = {}
-        generateItemResponseMapping(response[selectTarget][key], items, itemTarget, '', propertyName, isEmpty)
+      const discriminatorTarget = `${target}forms.${key}.items.`
+      const discriminatorRef = schema.discriminator!.mapping[key]
+      const discriminatorSchema = OpenAPI.instance.getSchemaByRef(discriminatorRef)
+      const props = discriminatorSchema.properties
+      selectRequired[key] = filterReuqiredItems(discriminatorSchema)
+      if (mappingWay === 'response') {
+        mapping[selectTarget][key] = {}
       } else {
-        request[propertyName][key] = {}
-        generateItemRequestMapping(request[propertyName][key], items, itemTarget)
+        mapping[propertyName][key] = {}
+      }
+      for (const prop in props) {
+        if (prop === propertyName) continue
+        const item = props[prop]
+        if (mappingWay === 'response') {
+          getResponseMapping(prop, item, mapping[selectTarget][key], discriminatorTarget, blank)
+        } else {
+          getRequestMapping(prop, item, mapping[propertyName][key], discriminatorTarget)
+        }
       }
     })
   } else {
     required = filterReuqiredItems(schema)
-    const items = schema.properties
-    const itemTarget = `${target}form.items.`
-    if (isResponse) {
-      generateItemResponseMapping(response, items, itemTarget, '', '', isEmpty)
-    } else {
-      generateItemRequestMapping(request, items, itemTarget)
-    }
-  }
-  return {
-    mapping: isResponse ? response : request,
-    required: required
-  }
-}
-
-export function generateItemResponseMapping(response: any, items: { [propertyName: string]: ISchema } | undefined, target: string, responsePrefix?: string, skipProp?: string, isEmpty?: boolean) {
-  if (!items) return
-  const keys = Object.keys(items)
-  for (const key of keys) {
-    if (key === skipProp) {
-      continue
-    }
-    const item = items[key]
-    if (item.allOf?.length || item.oneOf?.length || item.type === 'object') {
-      const objectTarget = `${target}${key}.state.items.`
-      const objectItems = getObjectItems(item)
-      if (objectItems) {
-        generateItemResponseMapping(response, objectItems, objectTarget, key, '', isEmpty)
+    const props = schema.properties
+    const propTarget = `${target}form.items.`
+    for (const prop in props) {
+      const item = props[prop]
+      if (mappingWay === 'response') {
+        getResponseMapping(prop, item, mapping, propTarget, blank)
       } else {
-        const statePoint = `${target}${key}.state.value`
-        response[statePoint] = isEmpty ? '' : ( responsePrefix ? `${responsePrefix}.${key}` : key )
+        getRequestMapping(prop, item, mapping, propTarget)
       }
-    } else {
-      const statePoint = `${target}${key}.state.value`
-      response[statePoint] = isEmpty ? '' : ( responsePrefix ? `${responsePrefix}.${key}` : key )
     }
+  }
+  return { mapping, required }
+}
+
+// prop为元素属性值，相当于name
+// schema表示当前数据项在OpenAPI中的描述信息
+// response指的是生成的response响应体映射信息
+// target表示当前response指向那个Vue-Component内容，并最终去给该组件的vaule进行赋值
+// prefix可以支持复杂响应体信息的获取
+function getResponseMapping(prop: string, schema: ISchema, response: any, target: string, blank: boolean = false, prefix: string = '') {
+  if (schema.type === 'object') {
+    const objectMapping = `${target}value`
+    response[objectMapping] = blank ? '' : ( prefix !== '' ? `${prefix}.${prop}` : prop )
+  } else if (schema.allOf?.length || schema.oneOf?.length) {
+    const dataSchema = getObjectSchema(schema)
+    const dataMapping = `${target}${prop}.state.`
+    if (dataSchema) {
+      getResponseMapping(prop, dataSchema, response, dataMapping, blank)
+    }
+  } else {
+    const stateMapping = `${target}${prop}.state.value`
+    response[stateMapping] = blank ? '' : ( prefix !== '' ? `${prefix}.${prop}` : prop )
   }
 }
 
-export function generateItemRequestMapping(request: any, items: { [propertyName: string]: ISchema } | undefined, target: string) {
-  if (!items) return
-  Object.keys(items).forEach(key => {
-    const item = items[key]
-    if (item.allOf?.length || item.oneOf?.length || item.type === 'object') {
-      const objectTarget = `${target}${key}.state.items.`
-      const objectItems = getObjectItems(item)
-      if (objectItems) {
-        request[key] = {}
-        const objectRquest = request[key]
-        generateItemRequestMapping(objectRquest, objectItems, objectTarget)
-      } else {
-        request[key] = `${target}${key}.state.value`
-      }
-    } else {
-      request[key] = `${target}${key}.state.value`
+// prop为元素属性值，相当于name
+// schema表示当前数据项在OpenAPI中的描述信息
+// request指的是生成的request请求体映射信息
+// target表示当前request指向那个Vue-Component内容，并最终去读取该组件的vaule
+function getRequestMapping(prop: string, schema: ISchema, request: any, target: string) {
+  if (schema.type === 'object') {
+    request[prop] = `${target}value`
+  } else if (schema.allOf?.length || schema.oneOf?.length) {
+    const dataSchema = getObjectSchema(schema)
+    const dataMapping = `${target}${prop}.state.`
+    if (dataSchema) {
+      getRequestMapping(prop, dataSchema, request, dataMapping)
     }
-  })
-}
-
-export function getObjectItems(item: ISchema) {
-  const objectSchema = getObjectSchema(item)
-  const objectItems = objectSchema?.properties
-  return objectItems
+  } else {
+    request[prop] = `${target}${prop}.state.value`
+  }
 }
 
 export function getObjectSchema(item: ISchema) {
