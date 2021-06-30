@@ -11,12 +11,14 @@ export function getActionMapping(path: string, method: string, target: string, i
     const selectTarget = `${target}select.value`
     required = { [ propertyName ]: {} }
     const selectRequired = required[propertyName]
+    const selectKeys = Object.keys(schema.discriminator.mapping)
     if (isReponse) {
-      mapping[selectTarget] = { value: blank ? '' : propertyName }
+      const defaultValue = selectKeys.length ? selectKeys[0] : undefined
+      mapping[selectTarget] = { value: blank ? (defaultValue !== undefined ? defaultValue : '') : propertyName }
     } else {
-      mapping[propertyName] = { value: blank ? '' : selectTarget }
+      mapping[propertyName] = { value: selectTarget }
     }
-    Object.keys(schema.discriminator.mapping).forEach(key => {
+    for (const key of selectKeys) {
       const discriminatorTarget = `${target}forms.${key}.items.`
       const discriminatorRef = schema.discriminator!.mapping[key]
       const discriminatorSchema = OpenAPI.instance.getSchemaByRef(discriminatorRef)
@@ -36,7 +38,7 @@ export function getActionMapping(path: string, method: string, target: string, i
           getRequestMapping(prop, item, mapping[propertyName][key], discriminatorTarget)
         }
       }
-    })
+    }
   } else {
     required = filterReuqiredItems(schema)
     const props = schema.properties
@@ -57,20 +59,16 @@ export function getActionMapping(path: string, method: string, target: string, i
 // schema表示当前数据项在OpenAPI中的描述信息
 // response指的是生成的response响应体映射信息
 // target表示当前response指向那个Vue-Component内容，并最终去给该组件的vaule进行赋值
-// prefix可以支持复杂响应体信息的获取
-function getResponseMapping(prop: string, schema: ISchema, response: any, target: string, blank: boolean = false, prefix: string = '') {
-  if (schema.type === 'object') {
-    const objectMapping = `${target}value`
-    response[objectMapping] = blank ? '' : ( prefix !== '' ? `${prefix}.${prop}` : prop )
-  } else if (schema.allOf?.length || schema.oneOf?.length) {
+function getResponseMapping(prop: string, schema: ISchema, response: any, target: string, blank: boolean = false) {
+  const defaultValue = schema.type === 'boolean' ? !!schema.default : schema.default
+  if (schema.allOf?.length || schema.oneOf?.length) {
     const dataSchema = getObjectSchema(schema)
-    const dataMapping = `${target}${prop}.state.`
     if (dataSchema) {
-      getResponseMapping(prop, dataSchema, response, dataMapping, blank)
+      getResponseMapping(prop, dataSchema, response, target, blank)
     }
   } else {
     const stateMapping = `${target}${prop}.state.value`
-    response[stateMapping] = blank ? '' : ( prefix !== '' ? `${prefix}.${prop}` : prop )
+    response[stateMapping] = blank ? ( defaultValue !== undefined ? defaultValue : '' ) : prop
   }
 }
 
@@ -79,13 +77,10 @@ function getResponseMapping(prop: string, schema: ISchema, response: any, target
 // request指的是生成的request请求体映射信息
 // target表示当前request指向那个Vue-Component内容，并最终去读取该组件的vaule
 function getRequestMapping(prop: string, schema: ISchema, request: any, target: string) {
-  if (schema.type === 'object') {
-    request[prop] = `${target}value`
-  } else if (schema.allOf?.length || schema.oneOf?.length) {
+  if (schema.allOf?.length || schema.oneOf?.length) {
     const dataSchema = getObjectSchema(schema)
-    const dataMapping = `${target}${prop}.state.`
     if (dataSchema) {
-      getRequestMapping(prop, dataSchema, request, dataMapping)
+      getRequestMapping(prop, dataSchema, request, target)
     }
   } else {
     request[prop] = `${target}${prop}.state.value`
