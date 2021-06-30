@@ -11,7 +11,7 @@
     :append-to-body="state.appendToBody || true"
     :lock-scroll="state.lockScroll"
     :custom-class="state.customClass"
-    :close-on-click-modal="state.closeOnClickModal || true"
+    :close-on-click-modal="state.closeOnClickModal || false"
     :close-on-press-escape="state.closeOnPressEscape"
     :show-close="state.showClose"
     :center="state.center"
