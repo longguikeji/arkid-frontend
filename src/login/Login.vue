@@ -4,16 +4,17 @@
     :title="tenant ? tenant.name : ''"
     :icon="tenant ? tenant.icon : ''"
     :config="config"
+    :complexity="tenant ? tenant.password_complexity : undefined"
   />
 </template>
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
-import { LoginPagesConfig, LoginPageConfig, LoginTenant, ButtonConfig } from './interface'
+import { LoginPagesConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
-import { jsonp } from 'vue-jsonp'
 import getBaseUrl from '@/utils/get-base-url'
+import request from './request'
 
 @Component({
   name: 'Login',
@@ -61,11 +62,9 @@ export default class Login extends Vue {
     if (LoginStore.TenantUUID) {
       url = '/api/v1/loginpage/?tenant=' + LoginStore.TenantUUID
     }
-    const params = {
-      url,
-      method: 'get'
-    }
-    const { data, tenant } = await jsonp('/api/v1/jsonp', params)
+    const response = await request.get(url)
+    const page = response.data
+    const { tenant, data } = page
     const config = {}
     Object.keys(data).forEach(key => {
       if (key === 'login') {
@@ -82,9 +81,10 @@ export default class Login extends Vue {
     this.isRenderLoginPage = true
   }
 
+  // third-party
   private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
     if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
-      extend.buttons.forEach(btn => {
+      extend.buttons.forEach((btn: ButtonConfig) => {
         btn.img = btn.img || 'extend-icon'
         btn.redirect!.params = {
           next: encodeURIComponent(window.location.origin + getBaseUrl() + '/third_part_callback')

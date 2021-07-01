@@ -1,8 +1,9 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { getCurrentPageState } from '@/utils/get-page-state'
-import stateFilter from '@/utils/state-filter'
+import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
+import { isEmptyObject } from '@/utils/common'
 
 export interface IFlow {
   name: string
@@ -50,8 +51,9 @@ export async function runFlowByActionName(com: any, actionName: string, appointe
 export async function runFlow (com: any, state: any, flow: IFlow) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data
+  const currentPage = com.$route.meta?.page
   const inputs = {
-    url: args.url ? getUrl(args.url, data) : '',
+    url: args.url ? getUrl(args.url, data, currentPage) : '',
     method: args.method?.toUpperCase(),
     params: {},
     client: state,
@@ -62,7 +64,7 @@ export async function runFlow (com: any, state: any, flow: IFlow) {
     required: args.required
   }
   // 对 request 请求参数进行解析处理
-  if (args.request) {
+  if (args.request && !isEmptyObject(args.request)) {
     const mapping = stateMappingProxy(state, args.request)
     inputs.params = parseStateMapping(state, mapping)
   }
@@ -121,12 +123,9 @@ export function parseStateMapping(state: any, mapping: any) {
     const item = mapping[key]
     if (typeof item === 'string') {
       tempState = getStateByStringConfig(state, item)
-      if (tempState !== undefined && tempState !== null ) {
+      if (tempState !== undefined && tempState !== null && tempState !== '') {
         params[key] = tempState
       }
-    } else if (typeof item === 'object') {
-      const objectData = parseStateMapping(state, item)
-      params[key] = { ...objectData }
     } else {
       params[key] = item
     }
@@ -136,10 +135,6 @@ export function parseStateMapping(state: any, mapping: any) {
 
 export function getStateByStringConfig(state: any, str: string) {
   let tempState = state
-  if (str.includes('forms[')) {
-    const value = str.slice(str.indexOf('[') + 1, str.indexOf(']'))
-    str = str.slice(0, str.indexOf('[')) + '.' + value + str.slice(str.indexOf(']') + 1)
-  }
   const strMapping = str.split('.')
   if (strMapping.length) {
     strMapping.forEach(sm => {
@@ -149,8 +144,9 @@ export function getStateByStringConfig(state: any, str: string) {
         const secondKey = stateFilter(sm, tempState)
         tempState = tempState[firstKey][secondKey]
       } else {
-        if (tempState[sm] || (!tempState[sm] && sm === 'value')) {
-          tempState = tempState[sm]
+        const value = tempState[sm]
+        if (value || (!value && sm === 'value')) {
+          tempState = value
         } else {
           tempState = str
         }

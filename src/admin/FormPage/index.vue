@@ -1,27 +1,28 @@
 <template>
-  <div class="form-page">
-    <Card :path="getChildPath('')">
-      <Select
-        v-if="state.select"
-        slot="header"
-        :path="getChildPath('select')"
+  <Card
+    :path="getChildPath('')"
+    class="form-page"
+  >
+    <Select
+      v-if="state.select"
+      slot="header"
+      :path="getChildPath('select')"
+    />
+    <Form :path="formPath" />
+    <template v-if="state.bottomButtons">
+      <ButtonArray
+        :path="getChildPath('bottomButtons')"
+        class="form__page__buttons"
       />
-      <Form :path="formPath" />
-      <template v-if="state.bottomButtons">
-        <ButtonArray
-          :path="getChildPath('bottomButtons')"
-          class="form__page__buttons"
-        />
-      </template>
-      <template v-if="state.dialogs">
-        <Dialog
-          v-for="dialogName in Object.keys(state.dialogs)"
-          :key="dialogName"
-          :path="getChildPath('dialogs.' + dialogName)"
-        />
-      </template>
-    </Card>
-  </div>
+    </template>
+    <template v-if="state.dialogs">
+      <Dialog
+        v-for="dialogName in Object.keys(state.dialogs)"
+        :key="dialogName"
+        :path="getChildPath('dialogs.' + dialogName)"
+      />
+    </template>
+  </Card>
 </template>
 
 <script lang="ts">
@@ -57,7 +58,7 @@ export default class extends Mixins(BaseVue) {
 </script>
 <style lang="scss" scoped>
 .form-page {
-  height: calc(100vh - 84px);
+  height: auto;
   .el-card {
     height: 100% !important;
   }

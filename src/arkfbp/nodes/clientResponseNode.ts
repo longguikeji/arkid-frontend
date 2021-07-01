@@ -1,68 +1,58 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import stateFilter from '@/utils/state-filter'
+import { proxyClientServer, stateFilter } from '@/utils/flow'
 
+// 客户端响应节点
 export class ClientResponseNode extends FunctionNode {
   async run() {
-    // 客户端进行响应的必要内容说明
     // client 代表当前页面的 state
     // clientServer 代表需要进行响应的数据映射关系
-    // data 代表刚刚请求的返回的数据内容 -- fetch和update时使用
-    // type 代表为那种响应类型
-    const { client, clientServer } = this.$state.fetch()
+    // data 代表刚刚请求的返回的数据内容 -- 只有fetch时才存在
+    if (!this.$state.fetch().inputs) { return null }
+    let { client, clientServer } = this.$state.fetch().inputs
     let data = this.inputs
-    if (!data) {
-      return null
+    clientServer = proxyClientServer(clientServer, data)
+    if (!clientServer || !client) {
+      throw new Error('ClientResponseNode Error')
     }
-    const type = this.$state.fetch().type
-    // start to change
-    if (clientServer && client) {
-      Object.keys(clientServer).forEach((key) => {
-        const ks = key.split('.')
-        const len = ks.length
-        let temp = client
-        for (let i = 0; i < len - 1; i++) {
-          if (!temp) break
-          const k = ks[i]
-          if (k.includes('[')) {
-            const idx = k.indexOf('[')
-            const firstKey = k.substring(0, idx)
-            const secondKey = stateFilter(k, temp)
-            temp = temp[firstKey][secondKey]
-          } else {
-            temp = temp[k]
-          }
+
+    const keys = Object.keys(clientServer)
+    const length = keys.length
+    for (let i = 0; i < length; i++) {
+      const key = keys[i]
+      const splitKeys = key.split('.')
+      const splitLength = splitKeys.length - 1
+      let tempC = client
+      for (let j = 0; j < splitLength; j++) {
+        if (!tempC) break
+        const splitKey = splitKeys[j]
+        if (splitKey.indexOf('[') >= 0) {
+          const idx = splitKey.indexOf('[')
+          const firstKey = splitKey.substring(0, idx)
+          const secondKey = stateFilter(splitKey, tempC)
+          tempC = tempC[firstKey][secondKey]
+        } else {
+          tempC = tempC[splitKey]
         }
-        // 判断此时的类型内容 -- 之后需要进一步增大兼容性
-        
-        if (temp) {
-          const lastKey = ks[len - 1]
-          if (type === 'fetch') {
-            const vs = clientServer[key].split('.')
-            let tempS = data
-            for (let i = 0; i < vs.length - 1; i++) {
-              if (!tempS) break
-              tempS = tempS[vs[i]]
-            }
-            let res = tempS ? tempS[vs[vs.length - 1]] : undefined
-            if (res === undefined) { 
-              if (lastKey !== 'value') {
-                res = clientServer[key]
-              }
-              if (lastKey === 'data') {
-                res = tempS
-              }
-            }
-            if (lastKey === 'disabled') {
-              temp[lastKey] = res ? false : true
-            } else {
-              temp[lastKey] = res
-            }
-          } else if (type === 'assign') {
-            temp[lastKey] = temp?.default || clientServer[key]
-          }
+      }
+      if (!tempC) continue
+      const lastKey = splitKeys[splitLength]
+      if (data) {
+        const valueMapping = clientServer[key].split('.')
+        let tempS = data
+        const valueMappinglength = valueMapping.length - 1
+        for (let k = 0; k < valueMappinglength; k++) {
+          if (!tempS) break
+          tempS = tempS[valueMapping[k]]
         }
-      })
+        let value = tempS ? tempS[valueMapping[valueMappinglength]] : undefined
+        if (value === undefined) {
+          if (lastKey !== 'value' && lastKey !== 'data') { value = clientServer[key] }
+          if (lastKey === 'data') { value = tempS }
+        }
+        tempC[lastKey] = lastKey === 'disabled' ? !value : value
+      } else {
+        tempC[lastKey] = clientServer[key]
+      }
     }
-    return this.inputs
   }
 }

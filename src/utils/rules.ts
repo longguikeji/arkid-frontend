@@ -1,35 +1,68 @@
 import { ValidateModule } from '@/store/modules/validate'
+import { GlobalValueModule } from '@/store/modules/global-value'
+import { getRegexRule } from '@/login/util/rules'
+
+const getUploadFileRegular = () => {
+  const formats = GlobalValueModule.uploadFileFormat
+  const hint = `请输入${formats.join(',')}格式的文件`
+  let formatStr = ''
+  for (const format of formats) {
+    formatStr += `\\.${format}|`
+  }
+  formatStr = formatStr.substring(0, formatStr.length - 1)
+  return {
+    pattern: new RegExp(formatStr, 'i'),
+    hint: hint
+  }
+}
 
 const RULE_REGEXP = {
-  password: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{8,}$/, // 之后需要进行动态的读取
   mobile: /(^(1)\d{10}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
     '^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
     'i',
     ),
-  other: /[<>"'()&/ ]/gi
+  other: /[<>"'()&/ ]/gi,
+  path: /^(?!.\/|..\/).*/
 }
 
-const getRegexRule = (message: string, regex: RegExp, isAnti?: boolean) => {
-  return {
-    trigger: 'blur', validator: (rule: any, value: string, callback: Function) => {
-      const isValid = isAnti ? (!regex.test(value) || !value) : (regex.test(value) || !value)
-      if (isValid) {
-        callback()
-      } else {
-        callback(new Error(message))
-      }
-    }
+const RULE_HINT = {
+  mobile: '请输入11位手机号码',
+  other: '输入内容不应包含' + "<>'()&/ " + '"等特殊字符',
+  path: '路径不能以/或./或../开头'
+}
+
+export function getPasswordRule() {
+  const { regex, hint } = GlobalValueModule.passwordComplexity
+  return getRegexRule(hint || '', regex || new RegExp(''))
+}
+
+// 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
+const getDynamicRule = (name?: string, format?: string, hint?: string, required?: boolean) => {
+  if (!format) format = 'other'
+  if (name === 'data_path') {
+    format = 'path'
+    hint =RULE_HINT.path
   }
-}
-
-// 主要用于登录、注册、password组件等Form表单的统一校验
-export const RULES = {
-  required: { required: true, message: '必填项', trigger: 'blur' },
-  password: getRegexRule('密码长度大于等于8位的字母数字组合', RULE_REGEXP.password),
-  mobile: getRegexRule('手机号码格式有误', RULE_REGEXP.mobile),
-  username: getRegexRule('用户名不包含' + "<>'()&/" + '"', RULE_REGEXP.other, true)
+  let pattern: RegExp = new RegExp(''),
+      isAnti: boolean = false
+  switch (format) {
+    case 'other':
+      hint = RULE_HINT.other
+      isAnti = true
+      break
+    case 'uri':
+      format = 'url'
+      break
+    case 'icon':
+      const regular = getUploadFileRegular()
+      pattern = regular.pattern
+      hint = regular.hint
+      break
+  }
+  const rule = { pattern: RULE_REGEXP[format] || pattern, message: hint, isAnti, required }
+  return rule
 }
 
 // 输入框的内容校验
@@ -40,21 +73,27 @@ export const RULES = {
 // hint 对应OpenAPI字段描述中的hint内容，文本提示
 // required 是否为必填字段
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
-  if (!format) format = 'other'
-  if (format === 'uri') format = 'url'
-  let message: string = ''
-  if (!value) {
+  let { message, pattern, isAnti } = getDynamicRule(name, format, hint, required)
+  if (value) {
+    if (name === 'regular') {
+      message = regexValidator(value)
+    } else {
+      const isValid = isAnti ? !pattern.test(value) : pattern.test(value)
+      if (isValid) {
+        message = ''
+        ValidateModule.deleteInvalidItem(name)
+      } else {
+        message = message || '输入内容不正确'
+        ValidateModule.addInvalidItem(name)
+      }
+    }
+  } else {
     if (required) {
       message = `请输入${name}`
       ValidateModule.addInvalidItem(name)
-    }
-  } else {
-    const isValid = format === 'other' ? !RULE_REGEXP.other.test(value) : RULE_REGEXP[format].test(value)
-    if (isValid) {
-      ValidateModule.deleteInvalidItem(name)
     } else {
-      message = hint || ''
-      ValidateModule.addInvalidItem(name)
+      message = ''
+      ValidateModule.deleteInvalidItem(name)
     }
   }
   return message
@@ -78,4 +117,15 @@ export function xlsxValidator(header: any[], body: any[]): boolean {
     }
   }
   return xlsxIsValid
+}
+
+function regexValidator(val: any): string {
+  let message: string = ''
+  if (val && !(eval(`/${val}/`) instanceof RegExp)) {
+    message = '正则表达式格式错误'
+    ValidateModule.addInvalidItem('regular')
+  } else {
+    ValidateModule.deleteInvalidItem('regular')
+  }
+  return message
 }

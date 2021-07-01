@@ -1,13 +1,9 @@
-import { ClientResponseNode } from '@/arkfbp/nodes/clientResponseNode'
-import { proxyClientServer } from '@/utils/flow'
+import { FunctionNode } from 'arkfbp/lib/functionNode'
 
-export class Assign extends ClientResponseNode {
+export class Assign extends FunctionNode {
   async run() {
-    this.$state.commit(state => {
-      state.type = 'assign'
-      state.client = this.inputs.client
-      state.clientServer = proxyClientServer(this.inputs.clientServer)
+    this.$state.commit((state: any) => {
+      state.inputs = this.inputs
     })
-    await super.run()
   }
 }

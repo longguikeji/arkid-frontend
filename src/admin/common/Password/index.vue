@@ -61,7 +61,8 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import PasswordState from './PasswordState'
 import BaseVue from '@/admin/base/BaseVue'
-import { RULES } from '@/utils/rules'
+import { getPasswordRule } from '@/utils/rules'
+import { RULES } from '@/login/util/rules'
 
 @Component({
   name: 'Password',
@@ -84,12 +85,12 @@ export default class extends Mixins(BaseVue) {
     ],
     password: [
       RULES.required,
-      RULES.password,
+      getPasswordRule(),
       { validator: this.validateCheckPassword, trigger: 'blur' }
     ],
     checkPassword: [
       RULES.required,
-      RULES.password,
+      getPasswordRule(),
       { validator: this.checkSecondPassword, trigger: 'blur' }
     ]
   }

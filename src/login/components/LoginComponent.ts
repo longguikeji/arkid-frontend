@@ -1,13 +1,11 @@
 import Vue from 'vue'
-import { Prop, Component, Watch } from 'vue-property-decorator'
+import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig } from '../interface'
-import { runWorkflowByClass } from 'arkfbp/lib/flow'
-import { Main as ButtonClick } from '../flows/ButtonClick'
-import { Main as GetCode } from '../flows/GetCode'
+import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
-import { RULES } from '@/utils/rules'
-import { preventPaste } from '@/utils/event'
+import { RULES, getRegexRule, DEFAULT_PASSWORD_COMPLEXITY } from '../util/rules'
+import request from '../request'
+import { error } from '@/constants/error'
 
 @Component({
   name: 'LoginComponent',
@@ -19,6 +17,7 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) title?:string
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
+  @Prop({ required: true }) complexity?: TenantPasswordComplexity
   
   graphicCodeSrc: string = ''
   page = ''
@@ -30,7 +29,7 @@ export default class LoginComponent extends Vue {
     ],
     checkpassword: [
       RULES.required,
-      RULES.password,
+      this.currentPasswordComplexity,
       { validator: this.checkPassword, trigger: 'blur' }
     ],
     username: [
@@ -100,19 +99,93 @@ export default class LoginComponent extends Vue {
     return this.formData[this.pageData][this.currentFormIndex]
   }
 
+  get currentPasswordComplexity() {
+    let regex =  DEFAULT_PASSWORD_COMPLEXITY.regex
+    let hint = DEFAULT_PASSWORD_COMPLEXITY.hint
+    if (this.complexity?.regular) {
+      regex = new RegExp(this.complexity?.regular)
+      hint = this.complexity.title || ''
+    }
+    return getRegexRule(hint, regex)
+  }
+
+  async http(url: string, method: string, data?: any) {
+    method = method.toLowerCase()
+    const response = await request[method](url, data)
+    return response
+  }
+
   async btnClickHandler(btn:ButtonConfig) {
-    if (!btn.gopage && !btn.delay && !btn.redirect) {
-      (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
-        if (valid) {
-          await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-        }
-      })
-    } else {
-      await runWorkflowByClass(ButtonClick, { com: this, btn: btn })
-      if (btn.gopage) {
-        this.resetFields()
-        this.resetRules()
+    if (btn.http || btn.delay) this.btnHttp(btn)
+    if (btn.gopage) this.togglePage(btn)
+    if (btn.redirect) this.redirect(btn)
+  }
+
+  btnHttp(btn: ButtonConfig) {
+    (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
+      if (valid) {
+        await this.btnResponse(btn)
       }
+    })
+  }
+
+  redirect(btn: ButtonConfig) {
+    let redirectParams = ``
+    const params = btn.redirect!.params
+    for (const key in params) {
+      redirectParams += `&${key}=${params[key]}`
+    }
+    redirectParams = redirectParams.substring(1)
+    const url = btn.redirect!.url + '?' + redirectParams
+    window.location.replace(url)
+  }
+
+  togglePage(btn: ButtonConfig) {
+    this.pageData = btn.gopage!
+    this.resetFields()
+    this.resetRules()
+  }
+
+  async btnResponse(btn: ButtonConfig) {
+    let { url, method, params } = btn.http!
+    for (let key in params) {
+      if (this.currentFormData.hasOwnProperty(key)) {
+        params[key] = this.currentFormData[key]
+      } else {
+        if (key === 'code_filename') params[key] = LoginStore.CodeFileName
+      }
+    }
+    const response = await this.http(url, method, params)
+    const data = response.data
+    if (data.error === '0' && data.data.token) {
+      // set token
+      LoginStore.token = data.data.token
+      // 绑定用户与第三方账号
+      if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
+        let data = 'user_id=' + LoginStore.ThirdUserID
+        if (LoginStore.hasToken()) {
+          data += '&token=' + LoginStore.token
+        }
+        await this.http(url, method, data)
+        LoginStore.BindUrl = ''
+        LoginStore.ThirdUserID = ''
+      }
+      // next url
+      if (LoginStore.NextUrl) {
+        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
+        LoginStore.NextUrl = ''
+      } else {
+        window.location.reload()
+      }
+    } else {
+      if (data.is_need_refresh && LoginStore.CodeFileName === '') {
+        window.location.reload()
+      }
+      this.$message({
+        message: error[data.error] || data.message || 'error',
+        type: 'error',
+        showClose: true
+      })
     }
   }
 
@@ -130,7 +203,7 @@ export default class LoginComponent extends Vue {
     if (this.page === 'register') {
       this.rules.password = [
         RULES.required,
-        RULES.password,
+        this.currentPasswordComplexity,
         { validator: this.validateCheckPassword, trigger: 'blur' }
       ]
     } else {
@@ -160,11 +233,15 @@ export default class LoginComponent extends Vue {
   }
 
   async getGraphicCode() {
-    await runWorkflowByClass(GetCode, {}).then((data) => {
+    const url = '/api/v1/authcode/generate'
+    const method = 'get'
+    const response = await this.http(url, method)
+    const data = response.data
+    if (!data.error) {
       const { key, base64 } = data
       LoginStore.CodeFileName = key
       this.graphicCodeSrc = `data:image/png;base64,${base64}`
-    })
+    }  
   }
 
   hasGraphicCode(item: FormItemConfig) {
@@ -176,6 +253,9 @@ export default class LoginComponent extends Vue {
   }
 
   onPaste(e, name: string) {
-    preventPaste(e, name)
+    if (name.includes('password')) {
+      e.preventDefault()
+      return false
+    }
   }
 }

@@ -37,6 +37,6 @@ export default function whetherImportListDialog(formData: FormPage) {
         ]
       }
     }
-    return {}
+    return null
   }
 }

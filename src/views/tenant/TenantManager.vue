@@ -17,10 +17,10 @@ import Vue from 'vue'
 import { Component, Prop, Watch } from 'vue-property-decorator'
 import TablePage from '@/admin/TablePage/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
-import TablePageState from '@/admin/TablePage/TablePageState'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
+import { UserRole, UserModule } from '@/store/modules/user'
 
 @Component({
   name: 'TenantManager',
@@ -33,8 +33,8 @@ export default class extends Vue {
   initCompleted = false
   isShowClose = false
 
-  private get state():TablePageState {
-    return TenantModule.tenantState as TablePageState
+  private get state() {
+    return TenantModule.tenantState
   }
 
   goHome() {
@@ -44,8 +44,8 @@ export default class extends Vue {
   async created() {
     this.isShow = true
     // 执行查看 TenantModule.currentTenant 当前的内容，如果不存在uuid，则设置isShowClose为false
-    const currentTenant = TenantModule.currentTenant
-    if (currentTenant.uuid?.length) {
+    const tenantUUId = TenantModule.currentTenant.uuid
+    if (tenantUUId) {
       this.isShowClose = true
     }
     const currentPage = this.$route.meta.page
@@ -54,7 +54,8 @@ export default class extends Vue {
       throw Error('This Page is not initContent Source, Please Check OpenAPI')
     }
     await runFlowByFile('flows/basePage', {
-      initContent: initContent
+      initContent,
+      currentPage
     }).then(async(data) => {
       await runFlowByFile('flows/tenant/addButton', {
         tempState: data.state,

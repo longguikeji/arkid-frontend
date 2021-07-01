@@ -2,10 +2,10 @@ import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { getSchemaByPath, getApiRoles } from '@/utils/schema'
 import generateForm from '@/utils/form'
 import { IPage} from '@/flows/basePage/nodes/pageNode'
-import generateAction from '@/utils/generate-action'
+import { getActionMapping } from '@/utils/generate-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import { ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
-import { UserModule } from '@/store/modules/user'
+import { UserModule, UserRole } from '@/store/modules/user'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -51,7 +51,7 @@ const PAGE_ACTION_FLOW = {
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
   retrieve: 'arkfbp/flows/fetch',
-  password: 'arkfbp/flows/assign'
+  password: 'arkfbp/flows/fetch'
 }
 
 const DIALOG_ACTION_NAME = {
@@ -68,11 +68,16 @@ const DIALOG_ACTION_FLOW = {
   password: 'arkfbp/flows/password'
 }
 
+const PAGE_READONLY = {
+  'app_list': true,
+  'external_idp': true
+}
+
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
-export function generateButton(key: string, path: string, method: string, pageType?: string, isDialog?: boolean): ButtonState | null {
+export function generateButton(key: string, path: string, method: string, currentPage: string, pageType?: string, isDialog?: boolean): ButtonState | null {
   const apiRoles = getApiRoles(path, method)
   const userRole = UserModule.role
-  if (!apiRoles.includes(userRole)) return null
+  if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
   const btn: ButtonState = {
     label: BUTTON_LABEL[key],
     action: isDialog ? DIALOG_ACTION_NAME[key] : PAGE_ACTION_NAME[key],
@@ -82,15 +87,16 @@ export function generateButton(key: string, path: string, method: string, pageTy
   return btn
 }
 
-export function generateDialogState(path: string, method: string, key: string, showReadOnly: boolean = false ): DialogState | null {
+export function generateDialogState(path: string, method: string, key: string, currentPage: string, showReadOnly: boolean = false ): DialogState | null {
   const dialogType = DIALOG_TYPE[key]
+  const isShowReadOnly = PAGE_READONLY[currentPage] || showReadOnly
   if (!dialogType) return null
   const schema = getSchemaByPath(path, method)
   const dialogState: DialogState = {}
   dialogState.title = BUTTON_LABEL[key]
   dialogState.visible = false
   dialogState.data = {}
-  const btn = generateButton(key, path, method, '', true)
+  const btn = generateButton(key, path, method, currentPage, '', true)
   if (!btn) return null
   if (!dialogState.buttons?.length) dialogState.buttons = []
   if (dialogType === 'Password') {
@@ -102,7 +108,7 @@ export function generateDialogState(path: string, method: string, key: string, s
     case 'FormPage':
       dialogState.state = {
         type: 'FormPage',
-        state: generateForm(schema, showReadOnly)
+        state: generateForm(schema, isShowReadOnly)
       }
       break
     case 'Upload':
@@ -150,7 +156,7 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
     } else {
       const target = `dialogs.${key}.state.state.`
       const isResponse = false
-      const { mapping, required } = generateAction(path, method, target, isResponse)
+      const { mapping, required } = getActionMapping(path, method, target, isResponse)
       state.actions![actionName] = [
         {
           name: 'arkfbp/flows/validate'
@@ -184,10 +190,12 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
     let response = {
       [`dialogs.${key}.data`]: '',
     }
-    const target = `dialogs.${key}.state.state.` 
-    const isResponse = true 
-    const { mapping } = generateAction(path, method, target, isResponse)
-    response = Object.assign(response, mapping)
+    if (key !== 'password') {
+      const target = `dialogs.${key}.state.state.` 
+      const isResponse = true
+      const { mapping } = getActionMapping(path, method, target, isResponse)
+      response = Object.assign(response, mapping)
+    }
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate'
@@ -234,7 +242,7 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
     const target = `dialogs.${key}.state.state.` 
     const isResponse = true
     const isEmpty = true
-    const { mapping } = generateAction(path, method, target, isResponse, isEmpty)
+    const { mapping } = getActionMapping(path, method, target, isResponse, isEmpty)
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate'

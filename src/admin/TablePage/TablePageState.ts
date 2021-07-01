@@ -19,8 +19,3 @@ export interface TablePage extends BaseState {
   }
   actions?: { [name: string]: (IFlow | string)[] }
 }
-
-export default interface TablePageState {
-  type?: string // TablePage
-  state?: TablePage
-}

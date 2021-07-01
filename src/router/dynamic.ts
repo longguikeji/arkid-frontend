@@ -1,7 +1,7 @@
 import { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
-import { UserModule } from '@/store/modules/user'
+import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
 import getInitContent from '@/utils/get-init-content'
 import { getApiRoles } from '@/utils/schema'
@@ -125,7 +125,10 @@ function getPageValidity(page: string): boolean {
       pageRoles.push.apply(pageRoles, roles)
     }
   }
-  const currentUserRole = UserModule.role
+  let currentUserRole = UserModule.role
+  if (currentUserRole === UserRole.Platform) {
+    currentUserRole = UserRole.User
+  }
   if (pageRoles.indexOf(currentUserRole) < 0) {
     isValid = false
   }

@@ -138,14 +138,15 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         required: isRequired,
         showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
         autocomplete: 'new-password',
-        disabled: disabled && !schema.readOnly,
         format: schema.format,
         hint: schema.hint,
+        disabled: disabled,
         name: prop
       }
     }
-    if (schema.format === 'uri' && location.pathname === '/tenant') {
-      item.type = 'InputLink'
+    if (prop === 'icon') {
+      item.state.type = 'link'
+      item.state.format = 'icon'
     }
   } else if (schema.type === 'boolean') {
     item = {
@@ -154,17 +155,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       prop: prop,
       state: {
         value: schema.default || false,
-        disabled: disabled && !schema.readOnly
-      }
-    }
-  } else if (schema.type === 'boolean') {
-    item = {
-      type: 'SwitchForm',
-      label: schema.title,
-      prop: prop,
-      state: {
-        value: schema.default || false,
-        disabled: disabled && !schema.readOnly
+        disabled: disabled && !schema.readOnly,
+        default: schema.default || false,
       }
     }
   } else if (schema.type === 'object') {

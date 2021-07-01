@@ -1,0 +1,191 @@
+{
+  "title": "自定义配置授权页面",
+  "visible": false,
+  "data": {},
+  "state": {
+    "type": "FormPage",
+    "state": {
+      "title": "是否使用模板",
+      "select": {
+        "value": "first",
+        "options": [
+          {
+            "value": "first",
+            "label": "使用模板"
+          },
+          {
+            "value": "no",
+            "label": "不使用模板"
+          }
+        ]
+      },
+      "forms": {
+        "first": {
+          "items": {
+            "icon": {
+              "type": "Input",
+              "label": "图标",
+              "prop": "icon",
+              "state": {
+                "value": "",
+                "placeholder": "请输入或上传图标",
+                "type": "link",
+                "name": "icon",
+                "format": "icon"
+              }
+            },
+            "title": {
+              "type": "Input",
+              "label": "标题",
+              "prop": "title",
+              "state": {
+                "value": "",
+                "placeholder": "请输入标题",
+                "name": "title"
+              }
+            },
+            "info": {
+              "type": "Rich",
+              "label": "授权信息",
+              "prop": "info",
+              "state": {
+                "value": "",
+                "isDisabledUploadImage": true
+              }
+            },
+            "agree": {
+              "type": "FormPage",
+              "label": "确认按钮",
+              "prop": "agree",
+              "state": {
+                "form": {
+                  "items": {
+                    "text": {
+                      "type": "Input",
+                      "label": "文本",
+                      "prop": "text",
+                      "state": {
+                        "placeholder": "请输入确认按钮文本",
+                        "value": "",
+                        "name": "text"
+                      }
+                    },
+                    "tcolor": {
+                      "type": "ColorPicker",
+                      "label": "文本颜色",
+                      "prop": "tcolor",
+                      "state": {
+                        "value": ""
+                      }
+                    },
+                    "bcolor": {
+                      "type": "ColorPicker",
+                      "label": "按钮颜色",
+                      "prop": "tcolor",
+                      "state": {
+                        "value": ""
+                      }
+                    },
+                    "width": {
+                      "type": "InputNumber",
+                      "label": "长度",
+                      "prop": "width",
+                      "state": {
+                        "value": 0
+                      }
+                    },
+                    "height": {
+                      "type": "InputNumber",
+                      "label": "宽度",
+                      "prop": "height",
+                      "state": {
+                        "value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "cancel": {
+              "type": "FormPage",
+              "label": "取消按钮",
+              "prop": "cancel",
+              "state": {
+                "form": {
+                  "items": {
+                    "text": {
+                      "type": "Input",
+                      "label": "文本",
+                      "prop": "text",
+                      "state": {
+                        "placeholder": "请输入取消按钮文本",
+                        "value": "",
+                        "name": "text"
+                      }
+                    },
+                    "tcolor": {
+                      "type": "ColorPicker",
+                      "label": "文本颜色",
+                      "prop": "tcolor",
+                      "state": {
+                        "value": ""
+                      }
+                    },
+                    "bcolor": {
+                      "type": "ColorPicker",
+                      "label": "按钮颜色",
+                      "prop": "tcolor",
+                      "state": {
+                        "value": ""
+                      }
+                    },
+                    "width": {
+                      "type": "InputNumber",
+                      "label": "长度",
+                      "prop": "width",
+                      "state": {
+                        "value": 0
+                      }
+                    },
+                    "height": {
+                      "type": "InputNumber",
+                      "label": "宽度",
+                      "prop": "height",
+                      "state": {
+                        "value": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "no": {
+          "items": {
+            "html": {
+              "type": "Input",
+              "label": "自定义HTML",
+              "prop": "html",
+              "state": {
+                "value": "",
+                "placeholder": "请输入完整的HTML文件信息",
+                "type": "textarea",
+                "autosize": {
+                  "minRows": 20
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "buttons": [
+    {
+      "label": "保存",
+      "type": "primary",
+      "action": "saveTemplate"
+    }
+  ]
+}

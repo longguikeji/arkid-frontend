@@ -12,11 +12,11 @@ import whetherImportListDialog from '@/utils/list-dialog'
 export class StateNode extends FunctionNode {
 
   async run() {
-    const { initContent, state } = this.inputs
+    const { initContent, state, currentPage } = this.inputs
     const initPath = initContent.init?.path
     const initMethod = initContent.init?.method
     this.initPage(state, initPath, initMethod)
-    this.initOperation(state, initContent)
+    this.initOperation(state, initContent, currentPage)
     return this.inputs
   }
 
@@ -38,18 +38,18 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initOperation(pageState: BasePage, initContent: ITagPage) {
+  initOperation(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const state = pageState.state
     if (!state.dialogs) state.dialogs = {}
     if (initContent.page) {
-      this.initPageBtnState(pageState, initContent)
+      this.initPageBtnState(pageState, initContent, currentPage)
     }
     if (initContent.item) {
-      this.initItemBtnState(pageState, initContent)
+      this.initItemBtnState(pageState, initContent, currentPage)
     }
   }
 
-  initPageBtnState(pageState: BasePage, initContent: ITagPage) {
+  initPageBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const { state, type } = pageState
     const page = initContent.page
     const pagekeys = Object.keys(page!)
@@ -57,12 +57,12 @@ export class StateNode extends FunctionNode {
       const key = pagekeys[i]
       const action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
       const { path, method } = action
-      this.initDialogState(state, path, method, key)
-      this.initCardButtons(state, key, type, path, method)
+      this.initDialogState(state, path, method, key, currentPage)
+      this.initCardButtons(state, key, type, path, method, currentPage)
     }
   }
 
-  initItemBtnState(pageState: BasePage, initContent: ITagPage) {
+  initItemBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const { state, type } = pageState
     const items = initContent.item
     const itemkeys = Object.keys(items!)
@@ -71,18 +71,18 @@ export class StateNode extends FunctionNode {
       if (key === 'children') break
       const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
       const { path, method } = action
-      this.initDialogState(state, path, method, key)
+      this.initDialogState(state, path, method, key, currentPage)
       if (key === 'sort') {
         this.initSortButtons(state, action)
       } else {
-        this.initItemButtons(state, key, type, path, method)
+        this.initItemButtons(state, key, type, path, method, currentPage)
       }
     }
   }
 
-  initDialogState(state: IPage, path: string, method: string, key: string) {
+  initDialogState(state: IPage, path: string, method: string, key: string, currentPage: string) {
     if (!path || !method) return
-    const dialogState = generateDialogState(path, method, key) // showReadOnly
+    const dialogState = generateDialogState(path, method, key, currentPage) // showReadOnly
     if (dialogState) {
       state.dialogs![key] = dialogState
       const importListDialog = whetherImportListDialog(dialogState.state.state)
@@ -128,15 +128,15 @@ export class StateNode extends FunctionNode {
   }
 
   // type => page type( TablePage, FormPage, TreePage )
-  initCardButtons(state: IPage, key: string, type: string, path: string, method: string) {
-    const btn = generateButton(key, path, method, type)
+  initCardButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
+    const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
     state.card?.buttons!.push(btn)
   }
 
   // type => page type( TablePage, FormPage, TreePage )
-  initItemButtons(state: IPage, key: string, type: string, path: string, method: string) {
-    const btn = generateButton(key, path, method, type)
+  initItemButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
+    const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
     if (type === 'TablePage') {
       this.initTableItemButtons(state, btn)
