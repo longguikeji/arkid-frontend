@@ -1,5 +1,5 @@
 import OpenAPI, { ISchema } from '@/config/openapi'
-import { getSchemaByPath } from '@/utils/schema'
+import { getSchemaByPath, getInitContent } from '@/utils/schema'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
@@ -8,6 +8,7 @@ import { generateDialogState, generateButton } from '@/utils/dialog'
 import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
+import { runFlowByFile } from '@/arkfbp/index'
 
 export class StateNode extends FunctionNode {
 

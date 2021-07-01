@@ -1,4 +1,4 @@
-import { ExportXlsxFileNode } from '@/nodes/exportXlsxFileNode'
+import { ExportXlsxFileNode } from '@/arkfbp/nodes/exportXlsxFileNode'
 export class Export extends ExportXlsxFileNode {
   async run() {
     this.url = this.inputs.url

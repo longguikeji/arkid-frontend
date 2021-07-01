@@ -54,7 +54,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import InputState from './InputState'
 import BaseVue from '@/admin/base/BaseVue'
 import { validate } from '@/utils/rules'
-import { preventPaste } from '@/utils/event'
 import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
@@ -71,10 +70,6 @@ export default class extends Mixins(BaseVue) {
   onBlur() {
     const { name, value, format, hint, required } = this.state
     this.hint = validate(value, name, format, hint, required)
-  }
-
-  onPaste(event: Event) {
-    preventPaste(event, this.state.name)
   }
 
   async upload(data: any) {

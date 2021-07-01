@@ -32,7 +32,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
-import getInitContent from '@/utils/get-init-content'
+import { getInitContent } from '@/utils/schema'
 import BaseVue from '@/admin/base/BaseVue'
 import { isArray } from '@/utils/common'
 

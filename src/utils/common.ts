@@ -51,3 +51,17 @@ export function isEmptyObject(obj: Object): boolean {
   const keys = Object.keys(obj)
   return keys.length === 0
 }
+
+// 阻止复制操作
+export function preventPaste(e: Event, name: string) {
+  if (name.includes('password')) {
+    e.preventDefault()
+    return false
+  }
+}
+
+export function processUUId(uuid: string) {
+  if (!uuid || typeof uuid !== 'string') return
+  uuid = uuid.replace(/-/g, '')
+  return uuid
+}

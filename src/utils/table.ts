@@ -1,19 +1,4 @@
-import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import  OpenAPI, { ISchema } from '@/config/openapi'
-
-export function generateTableColumns(schema: ISchema, isReadOnly?: boolean, isWriteOnly?: boolean): TableColumnState[] {
-  const columns: TableColumnState[] = []
-  for (const prop in schema.properties) {
-    const iprop = schema.properties[prop]
-    if (isReadOnly && iprop.readOnly) continue
-    const columnState: TableColumnState = {
-      label: iprop.title,
-      prop: prop
-    }
-    columns.push(columnState)
-  }
-  return columns
-}
 
 export function getFetchAttrs(content: { [contentType: string]: {schema: ISchema} } | undefined): FetchTableAttrs {
   if (!content) return {}
