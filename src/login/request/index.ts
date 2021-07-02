@@ -20,6 +20,7 @@ const http = async (url: string, method: Method, params: Object = {}) => {
     url: url,
     method: method,
   }
+  method = method.toLowerCase() as Method
   if ((['get', 'options'].indexOf(method) > -1)) {
     options['params'] = params
   } else {

@@ -161,6 +161,8 @@ export default class LoginComponent extends Vue {
           user_id: LoginStore.ThirdUserID,
           token: LoginStore.token
         }
+        url = LoginStore.BindUrl
+        method = 'post'
         await http(url, method as Method, bindData)
         LoginStore.BindUrl = ''
         LoginStore.ThirdUserID = ''
