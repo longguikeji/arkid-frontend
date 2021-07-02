@@ -86,30 +86,21 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 }
 
 // 对Mapping进行一次二次处理
-export function stateMappingProxy(state: any, mapping: any) {
-  Object.keys(mapping).forEach(key => {
-    const m = mapping[key]
-    if (typeof m === 'object') {
-      if (m.value) {
-        let selectItemsObject = {}
-        const selectValMapping = m.value
-        const val = getStateByStringConfig(state, selectValMapping)
-        selectItemsObject = m[val]
-        selectItemsObject[key] = selectValMapping
-        mapping[key] = undefined
-        Object.assign(mapping, selectItemsObject)
-      } else if (m.key && m.data) {
-        const data = getStateByStringConfig(state, m.data)
-        mapping[key] = []
-        data.forEach(d => {
-          if (d[m.key]) {
-            mapping[key].push(d[m.key])
-          }
-        })
-      }
+export function stateMappingProxy(state: any, mappings: any) {
+  let newMapping = {}
+  const keys = Object.keys(mappings)
+  for (const key of keys) {
+    const mapping = mappings[key]
+    const mappingType = typeof mapping
+    if (mappingType === 'string') {
+      newMapping[key] = mapping
+    } else if (mappingType === 'object' && mapping.value) {
+      const valueMapping = mapping.value
+      const selectValue = getStateByStringConfig(state, valueMapping)
+      newMapping = Object.assign(newMapping, { [key]: valueMapping }, { ...mapping[selectValue] })
     }
-  })
-  return mapping
+  }
+  return newMapping
 }
 
 // 对配置项中的 request 或者 response 进行配置解析

@@ -16,7 +16,6 @@
       :autosize="state.autosize"
       :autocomplete="state.autocomplete"
       @blur="onBlur"
-      @paste.native.capture="onPaste"
     >
       <template
         v-if="state.type === 'link'"
