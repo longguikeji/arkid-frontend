@@ -1,12 +1,25 @@
 import axios, { Method } from 'axios'
+import LoginStore from '../store/login'
 
-axios.defaults.withCredentials = true
+const request = axios.create({
+  withCredentials: true,
+  validateStatus: (status) => {
+    return /^(2|3)\d{2}$/.test(String(status))
+  }
+})
 
-axios.defaults.validateStatus = (status) => {
-  return /^(2|3)\d{2}$/.test(String(status))
-}
+request.interceptors.request.use(
+  (config) => {
+    const token = LoginStore.token
+    token && (config.headers.Authorization = `Token ${token}`)
+    return config
+  },
+  (err) => {
+    return Promise.reject(err)
+  }
+)
 
-axios.interceptors.response.use(
+request.interceptors.response.use(
   (response) => {
     return response
   },
@@ -15,18 +28,4 @@ axios.interceptors.response.use(
   }
 )
 
-const http = async (url: string, method: Method, params: Object = {}) => {
-  let options = {
-    url: url,
-    method: method,
-  }
-  method = method.toLowerCase() as Method
-  if ((['get', 'options'].indexOf(method) > -1)) {
-    options['params'] = params
-  } else {
-    options['data'] = params
-  }
-  return await axios(options)
-}
-
-export default http
+export default request

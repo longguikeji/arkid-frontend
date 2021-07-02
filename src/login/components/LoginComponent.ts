@@ -4,9 +4,8 @@ import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_COMPLEXITY } from '../util/rules'
-import http from '../request'
+import request from '../request'
 import { error } from '@/constants/error'
-import { Method } from 'axios'
 
 @Component({
   name: 'LoginComponent',
@@ -110,6 +109,12 @@ export default class LoginComponent extends Vue {
     return getRegexRule(hint, regex)
   }
 
+  async http(url: string, method: string, data?: any) {
+    method = method.toLowerCase()
+    const response = await request[method](url, data)
+    return response
+  }
+
   async btnClickHandler(btn:ButtonConfig) {
     if (btn.http || btn.delay) this.btnHttp(btn)
     if (btn.gopage) this.togglePage(btn)
@@ -150,20 +155,19 @@ export default class LoginComponent extends Vue {
         if (key === 'code_filename') params[key] = LoginStore.CodeFileName
       }
     }
-    const response = await http(url, method as Method, params)
+    const response = await this.http(url, method, params)
     const data = response.data
     if (data.error === '0' && data.data.token) {
       // set token
       LoginStore.token = data.data.token
       // 绑定用户与第三方账号
       if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
-        const bindData = {
-          user_id: LoginStore.ThirdUserID,
-          token: LoginStore.token
+        const parmas = {
+          user_id: LoginStore.ThirdUserID
         }
         url = LoginStore.BindUrl
         method = 'post'
-        await http(url, method as Method, bindData)
+        await this.http(url, method, parmas)
         LoginStore.BindUrl = ''
         LoginStore.ThirdUserID = ''
       }
@@ -232,7 +236,7 @@ export default class LoginComponent extends Vue {
   async getGraphicCode() {
     const url = '/api/v1/authcode/generate'
     const method = 'get'
-    const response = await http(url, method as Method)
+    const response = await this.http(url, method)
     const data = response.data
     if (!data.error) {
       const { key, base64 } = data
