@@ -39,6 +39,7 @@ import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
+import getUrl from '@/utils/url'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -112,9 +113,7 @@ export default class extends Mixins(BaseVue) {
   showAppPage(data: any) {
     if (data.url && data.uuid) {
       let url = data.url
-      if (!/^(http|https).*$/.test(url)) {
-        url = GlobalValueModule.originUrl + url + `&spauthn=${this.token}`
-      }
+      url = getUrl(url)
       window.open(url, '_blank')
     } else {
       this.$message({

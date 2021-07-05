@@ -27,6 +27,8 @@ export default function getUrl(currentUrl: string, data: any = {}, page: string 
       case 'uuid':
       case 'complexity_uuid':
         param = data?.uuid
+      case 'token':
+        param = getToken()
     }
     url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
   }
