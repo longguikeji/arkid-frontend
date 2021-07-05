@@ -1,41 +1,32 @@
 <template>
-  <div class="dashboard-page">
-    <iframe
-      v-if="app && app.url"
-      id="desktopApp"
-      ref="singleAppWindow"
-      class="single-app-page"
-      :src="app.url"
-    />
-    <grid-layout
-      v-else
-      :layout.sync="layout"
-      :col-num="8"
-      :is-draggable="true"
-      :is-resizable="true"
-      :is-mirrored="false"
-      :responsive="true"
-      :vertical-compact="true"
-      :margin="[32, 32]"
-      :use-css-transforms="true"
+  <grid-layout
+    class="dashboard-page"
+    :layout.sync="layout"
+    :col-num="8"
+    :is-draggable="true"
+    :is-resizable="true"
+    :is-mirrored="false"
+    :responsive="true"
+    :vertical-compact="true"
+    :margin="[32, 32]"
+    :use-css-transforms="true"
+  >
+    <grid-item
+      v-for="item in layout"
+      :key="item.i"
+      :x="item.x"
+      :y="item.y"
+      :w="item.w"
+      :h="item.h"
+      :i="item.i"
+      @resized="resizedHandler"
     >
-      <grid-item
-        v-for="item in layout"
-        :key="item.i"
-        :x="item.x"
-        :y="item.y"
-        :w="item.w"
-        :h="item.h"
-        :i="item.i"
-        @resized="resizedHandler"
-      >
-        <DashboardItem
-          :path="getChildPath('items[' + item.i + ']')"
-          @appClick="showAppPage"
-        />
-      </grid-item>
-    </grid-layout>
-  </div>
+      <DashboardItem
+        :path="getChildPath('items[' + item.i + ']')"
+        @appClick="showAppPage"
+      />
+    </grid-item>
+  </grid-layout>
 </template>
 
 <script lang="ts">
@@ -88,15 +79,6 @@ export default class extends Mixins(BaseVue) {
     this.updateDesktopPage()
   }
 
-  @Watch('app')
-  onAppChange() {
-    const _this = this
-    window.onload = function() {
-      const el: any = document.getElementById('desktopApp')
-      el.contentWindow.postMessage({ token: _this.token }, 'http://b.com/iframepage.html')
-    }
-  }
-
   @Watch('$route')
   onCurrentAppChange() {
     this.updateDesktopPage()
@@ -128,13 +110,7 @@ export default class extends Mixins(BaseVue) {
 
   showAppPage(data: any) {
     if (data.url && data.uuid) {
-      this.$router.push({
-        path: '/',
-        query: {
-          ...this.$route.query,
-          app: data.uuid
-        }
-      })
+      window.open(data.url, '_blank')
     } else {
       this.$message({
         message: '该应用未设置调转路径或缺少标识信息',
