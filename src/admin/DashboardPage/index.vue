@@ -37,6 +37,7 @@ import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
+import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
@@ -55,16 +56,16 @@ export default class extends Mixins(BaseVue) {
     return this.$state as DashboardPage
   }
 
-  get token() {
-    return getToken()
-  }
-
   get items(): DashboardItemState[] | undefined {
     return this.state.items
   }
 
   get app(): IDesktopSingleApp | null {
     return DesktopModule.desktopCurrentApp
+  }
+
+  get token() {
+    return getToken()
   }
 
   @Watch('items', { immediate: true })
@@ -110,7 +111,11 @@ export default class extends Mixins(BaseVue) {
 
   showAppPage(data: any) {
     if (data.url && data.uuid) {
-      window.open(data.url, '_blank')
+      let url = data.url
+      if (!/^(http|https).*$/.test(url)) {
+        url = GlobalValueModule.originUrl + url + `&spauthn=${this.token}`
+      }
+      window.open(url, '_blank')
     } else {
       this.$message({
         message: '该应用未设置调转路径或缺少标识信息',

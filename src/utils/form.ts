@@ -58,7 +58,16 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
-  if (schema.page) {
+  if (schema.format === 'download_url') {
+    item = {
+      type: 'Link',
+      label: schema.title,
+      prop: prop,
+      state: {
+        value: schema.default
+      }
+    }
+  } else if (schema.page) {
     item = {
       type: 'InputList',
       label: schema.title,
