@@ -6,7 +6,7 @@ export class DeleteTenant extends FunctionNode {
     const deleteAction = state.state.actions.delete
     deleteAction.pop()
     deleteAction.push({
-      name: 'flows/user/logout'
+      name: 'flows/common/logout'
     })
   }
 }

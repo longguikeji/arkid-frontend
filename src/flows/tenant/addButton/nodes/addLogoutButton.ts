@@ -14,7 +14,7 @@ export class AddLoyoutButton extends FunctionNode {
 
     tempState.actions!['logout'] = [
       {
-        name: 'flows/user/logout'
+        name: 'flows/common/logout'
       }
     ]
 

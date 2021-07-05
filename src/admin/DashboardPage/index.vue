@@ -2,6 +2,7 @@
   <div class="dashboard-page">
     <iframe
       v-if="app && app.url"
+      id="desktopApp"
       ref="singleAppWindow"
       class="single-app-page"
       :src="app.url"
@@ -45,6 +46,7 @@ import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
+import { getToken } from '@/utils/auth'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -60,6 +62,10 @@ export default class extends Mixins(BaseVue) {
 
   get state(): DashboardPage {
     return this.$state as DashboardPage
+  }
+
+  get token() {
+    return getToken()
   }
 
   get items(): DashboardItemState[] | undefined {
