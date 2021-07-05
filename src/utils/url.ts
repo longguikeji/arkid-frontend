@@ -27,6 +27,7 @@ export default function getUrl(currentUrl: string, data: any = {}, page: string 
       case 'uuid':
       case 'complexity_uuid':
         param = data?.uuid
+        break
       case 'token':
         param = getToken()
     }

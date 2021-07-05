@@ -64,7 +64,8 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
       label: schema.title,
       prop: prop,
       state: {
-        value: schema.default
+        value: schema.default,
+        displayContent: 'link'
       }
     }
   } else if (schema.page) {
