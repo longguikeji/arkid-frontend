@@ -88,6 +88,15 @@ export default class extends Mixins(BaseVue) {
     this.updateDesktopPage()
   }
 
+  @Watch('app')
+  onAppChange() {
+    const _this = this
+    window.onload = function() {
+      const el: any = document.getElementById('desktopApp')
+      el.contentWindow.postMessage({ token: _this.token }, 'http://b.com/iframepage.html')
+    }
+  }
+
   @Watch('$route')
   onCurrentAppChange() {
     this.updateDesktopPage()
