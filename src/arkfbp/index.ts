@@ -92,12 +92,12 @@ export function stateMappingProxy(state: any, mappings: any) {
   for (const key of keys) {
     const mapping = mappings[key]
     const mappingType = typeof mapping
-    if (mappingType === 'string') {
-      newMapping[key] = mapping
-    } else if (mappingType === 'object' && mapping.value) {
+    if (mappingType === 'object' && mapping.value) {
       const valueMapping = mapping.value
       const selectValue = getStateByStringConfig(state, valueMapping)
       newMapping = Object.assign(newMapping, { [key]: valueMapping }, { ...mapping[selectValue] })
+    } else {
+      newMapping[key] = mapping
     }
   }
   return newMapping
