@@ -40,7 +40,7 @@ export function getPasswordRule() {
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
 const getDynamicRule = (name?: string, format?: string, hint?: string, required?: boolean) => {
-  // if (!format) format = 'other' // 先注释掉检查工具，以便arkid-backend调试使用
+  if (!format) format = 'other' // 先注释掉检查工具，以便arkid-backend调试使用
   if (name === 'data_path') {
     format = 'path'
     hint =RULE_HINT.path
