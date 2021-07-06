@@ -6,6 +6,7 @@ export class Confirm extends FunctionNode {
     const tempState = this.inputs.client
     const data = tempState.dialogs?.selected?.state?.state?.list?.data
     const params = this.inputs.params
+
     const multi = params.multi
     const path = this.inputs.path
     const com = this.inputs.com

@@ -3,8 +3,7 @@ import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
-import getInitContent from '@/utils/get-init-content'
-import { getApiRoles } from '@/utils/schema'
+import { getApiRoles, getInitContent } from '@/utils/schema'
 import { isArray } from '@/utils/common'
 
 interface RouteMeta {

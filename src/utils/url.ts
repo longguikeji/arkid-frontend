@@ -5,6 +5,8 @@
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
+import { getToken } from '@/utils/auth'
+import getBaseUrl from '@/utils/get-base-url'
 
 export default function getUrl(currentUrl: string, data: any = {}, page: string = '') {
   let url = currentUrl
@@ -25,6 +27,9 @@ export default function getUrl(currentUrl: string, data: any = {}, page: string 
       case 'uuid':
       case 'complexity_uuid':
         param = data?.uuid
+        break
+      case 'token':
+        param = getToken()
     }
     url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
   }
@@ -49,4 +54,23 @@ export function getSlug() {
     slug = slug.substring(0, slug.length - 1)
   }
   return slug
+}
+
+export function addSlugToUrl(com?: any) {
+  const slug = GlobalValueModule.slug
+  const oldSlug = getSlug()
+  if (!slug || slug === oldSlug) {
+    if (com) {
+      com.$message({
+        message: !slug ? '短连接不存在' : '当前短连接与切换短连接相同',
+        type: 'warning',
+        showClose: true
+      })
+    }
+    return
+  }
+  const host = GlobalValueModule.originUrl
+  const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
+  const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
+  window.location.replace(url)
 }

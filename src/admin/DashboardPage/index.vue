@@ -1,40 +1,32 @@
 <template>
-  <div class="dashboard-page">
-    <iframe
-      v-if="app && app.url"
-      ref="singleAppWindow"
-      class="single-app-page"
-      :src="app.url"
-    />
-    <grid-layout
-      v-else
-      :layout.sync="layout"
-      :col-num="8"
-      :is-draggable="true"
-      :is-resizable="true"
-      :is-mirrored="false"
-      :responsive="true"
-      :vertical-compact="true"
-      :margin="[32, 32]"
-      :use-css-transforms="true"
+  <grid-layout
+    class="dashboard-page"
+    :layout.sync="layout"
+    :col-num="8"
+    :is-draggable="true"
+    :is-resizable="true"
+    :is-mirrored="false"
+    :responsive="true"
+    :vertical-compact="true"
+    :margin="[32, 32]"
+    :use-css-transforms="true"
+  >
+    <grid-item
+      v-for="item in layout"
+      :key="item.i"
+      :x="item.x"
+      :y="item.y"
+      :w="item.w"
+      :h="item.h"
+      :i="item.i"
+      @resized="resizedHandler"
     >
-      <grid-item
-        v-for="item in layout"
-        :key="item.i"
-        :x="item.x"
-        :y="item.y"
-        :w="item.w"
-        :h="item.h"
-        :i="item.i"
-        @resized="resizedHandler"
-      >
-        <DashboardItem
-          :path="getChildPath('items[' + item.i + ']')"
-          @appClick="showAppPage"
-        />
-      </grid-item>
-    </grid-layout>
-  </div>
+      <DashboardItem
+        :path="getChildPath('items[' + item.i + ']')"
+        @appClick="showAppPage"
+      />
+    </grid-item>
+  </grid-layout>
 </template>
 
 <script lang="ts">
@@ -45,6 +37,9 @@ import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
+import { GlobalValueModule } from '@/store/modules/global-value'
+import { getToken } from '@/utils/auth'
+import getUrl from '@/utils/url'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -68,6 +63,10 @@ export default class extends Mixins(BaseVue) {
 
   get app(): IDesktopSingleApp | null {
     return DesktopModule.desktopCurrentApp
+  }
+
+  get token() {
+    return getToken()
   }
 
   @Watch('items', { immediate: true })
@@ -113,13 +112,9 @@ export default class extends Mixins(BaseVue) {
 
   showAppPage(data: any) {
     if (data.url && data.uuid) {
-      this.$router.push({
-        path: '/',
-        query: {
-          ...this.$route.query,
-          app: data.uuid
-        }
-      })
+      let url = data.url
+      url = getUrl(url)
+      window.open(url, '_blank')
     } else {
       this.$message({
         message: '该应用未设置调转路径或缺少标识信息',
