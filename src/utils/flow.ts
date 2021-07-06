@@ -26,13 +26,14 @@ export function proxyClientServer(clientServer: any, data?: any) {
 
 export function isLackRequiredParams(params: any, required: any): boolean {
   let lackRequiredParams = false
-  for (const r of required) {
-    if (isArray(r)) {
-      const childParams = params[r]
-      lackRequiredParams = isLackRequiredParams(childParams, r)
-      if (lackRequiredParams) break
-    } else {
-      if (params[r] === undefined) {
+  for (let i = 0, len = required.length; i < len; i++) {
+    if (lackRequiredParams) break
+    const r = required[i]
+    let rs = r.split('.')
+    let data = params
+    for (let j = 0, l = rs.length; j < l; j++) {
+      data = data[rs[j]]
+      if (data === undefined || data === '') {
         lackRequiredParams = true
         break
       }

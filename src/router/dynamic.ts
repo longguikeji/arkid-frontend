@@ -20,7 +20,8 @@ export function getDynamicRoutes() {
   const oAPI: ISpec | undefined = OpenAPI.instance.config
   if (!oAPI?.info?.routers) return []
   const openAPIRoutes = oAPI.info.routers
-  const routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
+  let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
+  routes = filterRoutes(routes)
   return routes
 }
 
@@ -132,4 +133,20 @@ function getPageValidity(page: string): boolean {
     isValid = false
   }
   return isValid
+}
+
+// extra function - only staged code
+function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
+  const role = UserModule.role
+  let roleRoutes = routes
+  if (role === UserRole.User) {
+    roleRoutes = routes.filter((route) => {
+      return route.path === '/book' || route.path === '/mine'
+    })
+  } else if (role === UserRole.Tenant) {
+    roleRoutes = routes.filter((route) => {
+      return route.path !== '/system'
+    })
+  }
+  return roleRoutes
 }
