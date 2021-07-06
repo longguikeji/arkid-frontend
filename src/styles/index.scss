@@ -160,3 +160,8 @@ aside {
   top: 50%;
   transform: translateY(-50%);
 }
+
+textarea {
+  visibility: visible !important;
+  z-index: 1 !important;
+}
