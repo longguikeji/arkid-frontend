@@ -65,3 +65,13 @@ export function processUUId(uuid: string) {
   uuid = uuid.replace(/-/g, '')
   return uuid
 }
+
+export function underlineConvertUpperCamel(value: string) {
+  if (value.indexOf('_') < 0) return value
+  let valueSplit = value.split('_')
+  for (let i = 0, l = valueSplit.length; i < l; i++) {
+    let vs = valueSplit[i]
+    valueSplit[i] = vs[0].toUpperCase() + vs.substring(1)
+  }
+  return valueSplit.join('')
+}

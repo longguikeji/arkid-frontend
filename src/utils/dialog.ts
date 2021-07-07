@@ -14,7 +14,8 @@ const BUTTON_LABEL = {
   update: '编辑',
   delete: '删除',
   retrieve: '查看',
-  password: '修改密码'
+  password: '修改密码',
+  history: '历史记录'
 }
 
 const BUTTON_TYPE = {
@@ -24,7 +25,8 @@ const BUTTON_TYPE = {
   update: 'primary',
   delete: 'danger',
   retrieve: 'info',
-  password: 'primary'
+  password: 'primary',
+  history: 'primary'
 }
 
 const DIALOG_TYPE = {
@@ -42,7 +44,8 @@ const PAGE_ACTION_NAME = {
   update: 'openUpdateDialog',
   delete: 'delete',
   retrieve: 'openRetrieveDialog',
-  password: 'openPasswordDialog'
+  password: 'openPasswordDialog',
+  history: 'openHistoryDialog'
 }
 
 const PAGE_ACTION_FLOW = {
@@ -186,7 +189,17 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
 export function addItemAction(state: IPage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
-  if (flowName) {
+  const openDialogAction = {
+    name: 'arkfbp/flows/assign',
+    response: {
+      [`dialogs.${key}.visible`]: true
+    }
+  }
+  if (key === 'history') {
+    state.actions![actionName] = [
+      openDialogAction
+    ]
+  } else if (flowName) {
     let response = {
       [`dialogs.${key}.data`]: '',
     }
@@ -200,12 +213,7 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
       {
         name: 'arkfbp/flows/cancelValidate'
       },
-      {
-        name: 'arkfbp/flows/assign',
-        response: {
-          [`dialogs.${key}.visible`]: true
-        }
-      }
+      openDialogAction
     ]
     if (method.toUpperCase() === 'GET') {
       state.actions![actionName].unshift({
