@@ -26,6 +26,7 @@ export default function getUrl(currentUrl: string, data: any = {}, page: string 
       case 'id':
       case 'uuid':
       case 'complexity_uuid':
+      case 'parent_lookup_webhook':
         param = data?.uuid
         break
       case 'token':
