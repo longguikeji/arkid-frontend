@@ -104,7 +104,7 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
 function getPageValidity(page: string): boolean {
   let isValid = true
   const initContent = getInitContent(page)
-  if (!initContent) {
+  if (!initContent || typeof initContent === 'string') {
     return true
   }
   let pageRoles: string[] = []
