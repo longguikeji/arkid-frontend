@@ -14,21 +14,18 @@ export class StateNode extends FunctionNode {
 
   async run() {
     const { initContent, state, currentPage } = this.inputs
-    const initPath = initContent.init?.path
-    const initMethod = initContent.init?.method
-    this.initPage(state, initPath, initMethod)
+    this.initPageMainState(state, initContent.init)
     await this.initOperation(state, initContent, currentPage)
     return this.inputs
   }
 
-  initPage(pageState: BasePage, path: string, method: string) {
+  initPageMainState(pageState: BasePage, initAction: ITagPageAction) {
+    const { path, method } = initAction
+    if (!path || !method) return
     const operation = OpenAPI.instance.getOperation(path, method)
-    if (!operation) return
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
-    // base page has card element
     state.card!.title = operation.summary || ''
-    // diff type page run diff init function
     switch (type) {
       case 'TablePage':
         this.initTable(state, schema)
@@ -210,10 +207,10 @@ export class StateNode extends FunctionNode {
   }
 
   async initAppointedPage(state: any, appointedPage: string, key: string) {
-    const initContent = getInitContent(appointedPage) as ITagPage
-    const path = initContent.init!.path
-    const method = initContent.init!.method
-    this.initItemButtons(state, key, initContent.type, path, method, appointedPage)
+    const initContent = getInitContent(appointedPage)
+    if (!initContent) return
+    const { path, method } = (initContent as ITagPage).init!
+    this.initItemButtons(state, key, (initContent as ITagPage).type, path, method, appointedPage)
     addItemAction(state, path, method, key)
     await runFlowByFile('flows/basePage', {
       initContent: initContent,

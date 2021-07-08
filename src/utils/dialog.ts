@@ -15,7 +15,10 @@ const BUTTON_LABEL = {
   delete: '删除',
   retrieve: '查看',
   password: '修改密码',
-  history: '历史记录'
+  history: '历史记录',
+  provisioning: '同步配置',
+  mapping: '配置映射',
+  profile: '配置文件',
 }
 
 const BUTTON_TYPE = {
@@ -26,7 +29,10 @@ const BUTTON_TYPE = {
   delete: 'danger',
   retrieve: 'info',
   password: 'primary',
-  history: 'primary'
+  history: 'primary',
+  provisioning: 'primary',
+  mapping: 'primary',
+  profile: 'info',
 }
 
 const DIALOG_TYPE = {
@@ -45,7 +51,10 @@ const PAGE_ACTION_NAME = {
   delete: 'delete',
   retrieve: 'openRetrieveDialog',
   password: 'openPasswordDialog',
-  history: 'openHistoryDialog'
+  history: 'openHistoryDialog',
+  provisioning: 'openProvisioningDialog',
+  mapping: 'openMappingDialog',
+  profile: 'openProfileDialog'
 }
 
 const PAGE_ACTION_FLOW = {
@@ -54,7 +63,11 @@ const PAGE_ACTION_FLOW = {
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
   retrieve: 'arkfbp/flows/fetch',
-  password: 'arkfbp/flows/fetch'
+  password: 'arkfbp/flows/fetch',
+  history: 'arkfbp/flows/assign',
+  provisioning: 'arkfbp/flows/assign',
+  mapping: 'arkfbp/flows/assign',
+  profile: 'arkfbp/flows/assign'
 }
 
 const DIALOG_ACTION_NAME = {
@@ -78,9 +91,10 @@ const PAGE_READONLY = {
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
 export function generateButton(key: string, path: string, method: string, currentPage: string, pageType?: string, isDialog?: boolean): ButtonState | null {
-  const apiRoles = getApiRoles(path, method)
-  const userRole = UserModule.role
-  if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
+  // 先注释角色接口的判断情形，先进行功能的测试与调试
+  // const apiRoles = getApiRoles(path, method)
+  // const userRole = UserModule.role
+  // if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
   const btn: ButtonState = {
     label: BUTTON_LABEL[key],
     action: isDialog ? DIALOG_ACTION_NAME[key] : PAGE_ACTION_NAME[key],
@@ -189,17 +203,7 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
 export function addItemAction(state: IPage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
-  const openDialogAction = {
-    name: 'arkfbp/flows/assign',
-    response: {
-      [`dialogs.${key}.visible`]: true
-    }
-  }
-  if (key === 'history') {
-    state.actions![actionName] = [
-      openDialogAction
-    ]
-  } else if (flowName) {
+  if (flowName) {
     let response = {
       [`dialogs.${key}.data`]: '',
     }
@@ -213,7 +217,12 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
       {
         name: 'arkfbp/flows/cancelValidate'
       },
-      openDialogAction
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          [`dialogs.${key}.visible`]: true
+        }
+      }
     ]
     if (method.toUpperCase() === 'GET') {
       state.actions![actionName].unshift({
