@@ -40,7 +40,11 @@ const DIALOG_TYPE = {
   import: 'Upload',
   update: 'FormPage',
   retrieve: 'FormPage',
-  password: 'Password'
+  password: 'Password',
+  history: 'TablePage',
+  provisioning: 'TablePage',
+  mapping: 'TablePage',
+  profile: 'TablePage'
 }
 
 const PAGE_ACTION_NAME = {
@@ -203,11 +207,15 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
 export function addItemAction(state: IPage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
+  const type = DIALOG_TYPE[key]
+  let response = {}
+  if (type === 'TablePage') {
+    response[`dialogs.${key}.state.state.data`] = ''
+  } else {
+    response[`dialogs.${key}.data`] = ''
+  }
   if (flowName) {
-    let response = {
-      [`dialogs.${key}.data`]: '',
-    }
-    if (key !== 'password') {
+    if (key !== 'password' && type !== 'TablePage') {
       const target = `dialogs.${key}.state.state.` 
       const isResponse = true
       const { mapping } = getActionMapping(path, method, target, isResponse)
