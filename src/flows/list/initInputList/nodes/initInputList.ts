@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import getInitContent from '@/utils/get-init-content'
+import { getInitContent } from '@/utils/schema'
 import { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'

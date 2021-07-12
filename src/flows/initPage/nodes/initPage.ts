@@ -69,6 +69,9 @@ export class InitPage extends FunctionNode {
         break
       case 'tenant_config':
         curstomPageFlow = 'flows/tenant/deleteTenant'
+        break
+      case 'extension':
+        curstomPageFlow = 'flows/extension/addAction'
     }
     if (curstomPageFlow !== '') {
       await runFlowByFile(curstomPageFlow, {

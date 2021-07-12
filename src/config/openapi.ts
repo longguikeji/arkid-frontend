@@ -93,7 +93,7 @@ export interface ITag {
   name: string
   description?: string
   externalDocs?: IExternalDocs
-  page?: ITagPage
+  page?: ITagPage | ITagPage[]
 }
 
 // export interface IExample {}

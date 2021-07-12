@@ -3,7 +3,7 @@ import OpenAPI from '@/config/openapi'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { GlobalValueModule } from '@/store/modules/global-value'
-import processUUId from '@/utils/process-uuid'
+import { processUUId } from '@/utils/common'
 
 export class AfterLogin extends AuthApiNode {
 

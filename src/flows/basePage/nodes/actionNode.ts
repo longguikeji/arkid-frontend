@@ -89,17 +89,21 @@ export class ActionNode extends FunctionNode {
 
   initPageOperationAction(pageState: BasePage, initContent: ITagPage) {
     const { state } = pageState
-    if (initContent.page) {
-      Object.keys(initContent.page).forEach(key => {
-        let action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
+    const { page, item } = initContent
+    if (page) {
+      for (const key in page) {
+        const gItem = page[key]
+        let action = (gItem as ITagInitUpdateAction).read || gItem
         addCardAction(state, action.path, action.method, key)
-        action = (initContent.page![key] as ITagInitUpdateAction).write || initContent.page![key]
+        action = (gItem as ITagInitUpdateAction).write || gItem
         addDialogAction(state, action.path, action.method, key)
-      })
+      }
     }
-    if (initContent.item) {
-      Object.keys(initContent.item).forEach(key => {
-        let action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+    if (item) {
+      for (const key in item) {
+        const pItem = item[key]
+        if (typeof pItem === 'string') continue
+        let action = (pItem as ITagInitUpdateAction).read || pItem
         switch (key) {
           case 'sort':
             addSortAction(state, action)
@@ -109,10 +113,10 @@ export class ActionNode extends FunctionNode {
             break
           default:
             addItemAction(state, action.path, action.method, key)
-            action = (initContent.item![key] as ITagInitUpdateAction).write || initContent.item![key]
+            action = (pItem as ITagInitUpdateAction).write || pItem
             addDialogAction(state, action.path, action.method, key)
         }
-      })
+      }
     }
   }
 

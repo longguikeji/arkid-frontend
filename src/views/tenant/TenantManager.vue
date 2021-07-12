@@ -19,7 +19,7 @@ import TablePage from '@/admin/TablePage/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI, { ITagPage } from '@/config/openapi'
-import getInitContent from '@/utils/get-init-content'
+import { getInitContent } from '@/utils/schema'
 import { UserRole, UserModule } from '@/store/modules/user'
 
 @Component({

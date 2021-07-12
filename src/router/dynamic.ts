@@ -3,8 +3,7 @@ import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
-import getInitContent from '@/utils/get-init-content'
-import { getApiRoles } from '@/utils/schema'
+import { getApiRoles, getInitContent } from '@/utils/schema'
 import { isArray } from '@/utils/common'
 
 interface RouteMeta {
@@ -21,7 +20,8 @@ export function getDynamicRoutes() {
   const oAPI: ISpec | undefined = OpenAPI.instance.config
   if (!oAPI?.info?.routers) return []
   const openAPIRoutes = oAPI.info.routers
-  const routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
+  let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
+  routes = filterRoutes(routes)
   return routes
 }
 
@@ -104,7 +104,7 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
 function getPageValidity(page: string): boolean {
   let isValid = true
   const initContent = getInitContent(page)
-  if (!initContent) {
+  if (!initContent || typeof initContent === 'string') {
     return true
   }
   let pageRoles: string[] = []
@@ -133,4 +133,20 @@ function getPageValidity(page: string): boolean {
     isValid = false
   }
   return isValid
+}
+
+// extra function - only staged code
+function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
+  const role = UserModule.role
+  let roleRoutes = routes
+  if (role === UserRole.User) {
+    roleRoutes = routes.filter((route) => {
+      return route.path === '/book' || route.path === '/mine'
+    })
+  } else if (role === UserRole.Tenant) {
+    roleRoutes = routes.filter((route) => {
+      return route.path !== '/system'
+    })
+  }
+  return roleRoutes
 }

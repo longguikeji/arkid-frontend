@@ -23,7 +23,7 @@ const RULE_REGEXP = {
     '^(?!mailto:)(?:(?:http|https|ftp)://|//)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$',
     'i',
     ),
-  other: /[<>"'()&/ ]/gi,
+  other: /[<>"'()&/ ]/gi, // <>"'()&/ 可以增加字符的控制，目前包含 小括号 尖括号 单引号 双引号 &符 /斜线符 空格
   path: /^(?!.\/|..\/).*/
 }
 
@@ -40,7 +40,7 @@ export function getPasswordRule() {
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新
 const getDynamicRule = (name?: string, format?: string, hint?: string, required?: boolean) => {
-  if (!format) format = 'other'
+  // if (!format) format = 'other' // 先注释掉检查工具，以便arkid-backend调试使用
   if (name === 'data_path') {
     format = 'path'
     hint =RULE_HINT.path
@@ -61,7 +61,7 @@ const getDynamicRule = (name?: string, format?: string, hint?: string, required?
       hint = regular.hint
       break
   }
-  const rule = { pattern: RULE_REGEXP[format] || pattern, message: hint, isAnti, required }
+  const rule = { pattern: format ? RULE_REGEXP[format] : pattern, message: hint, isAnti, required }
   return rule
 }
 

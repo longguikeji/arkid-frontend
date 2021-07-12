@@ -31,7 +31,7 @@ export default class Login extends Vue {
     await this.getLoginPage()
   }
 
-  @Watch('$route.query.tenant')
+  @Watch('$route')
   tenantChange() {
     this.getLoginPage()
   }

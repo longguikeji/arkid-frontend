@@ -1,4 +1,4 @@
-import OpenAPI, { ISchema } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPage } from '@/config/openapi'
 
 export function getSchemaByContent(content: { [requestBodyType: string]: {schema:ISchema}}):ISchema {
   let type = ''
@@ -52,4 +52,13 @@ export function getApiRoles(path: string, method: string): string[] {
     return operation.roles
   }
   return []
+}
+
+export function getInitContent(page: string): ITagPage | Array<ITagPage> | undefined {
+  const tags = OpenAPI.instance.getAllTags()
+  for (let i = 0, l = tags.length; i < l; i++) {
+    if (tags[i].name === page) {
+      return tags[i].page
+    }
+  }
 }

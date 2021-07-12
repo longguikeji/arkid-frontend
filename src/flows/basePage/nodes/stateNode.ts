@@ -1,33 +1,31 @@
-import OpenAPI, { ISchema } from '@/config/openapi'
-import { getSchemaByPath } from '@/utils/schema'
+import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { getSchemaByPath, getInitContent } from '@/utils/schema'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
-import { generateDialogState, generateButton } from '@/utils/dialog'
-import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { generateDialogState, generateButton, addItemAction } from '@/utils/dialog'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
+import { runFlowByFile } from '@/arkfbp/index'
+import { underlineConvertUpperCamel } from '@/utils/common'
 
 export class StateNode extends FunctionNode {
 
   async run() {
     const { initContent, state, currentPage } = this.inputs
-    const initPath = initContent.init?.path
-    const initMethod = initContent.init?.method
-    this.initPage(state, initPath, initMethod)
-    this.initOperation(state, initContent, currentPage)
+    this.initPageMainState(state, initContent.init)
+    await this.initOperation(state, initContent, currentPage)
     return this.inputs
   }
 
-  initPage(pageState: BasePage, path: string, method: string) {
+  initPageMainState(pageState: BasePage, initAction: ITagPageAction) {
+    const { path, method } = initAction
+    if (!path || !method) return
     const operation = OpenAPI.instance.getOperation(path, method)
-    if (!operation) return
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
-    // base page has card element
     state.card!.title = operation.summary || ''
-    // diff type page run diff init function
     switch (type) {
       case 'TablePage':
         this.initTable(state, schema)
@@ -38,14 +36,14 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initOperation(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+  async initOperation(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const state = pageState.state
     if (!state.dialogs) state.dialogs = {}
     if (initContent.page) {
       this.initPageBtnState(pageState, initContent, currentPage)
     }
     if (initContent.item) {
-      this.initItemBtnState(pageState, initContent, currentPage)
+      await this.initItemBtnState(pageState, initContent, currentPage)
     }
   }
 
@@ -62,20 +60,24 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initItemBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+  async initItemBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const { state, type } = pageState
     const items = initContent.item
     const itemkeys = Object.keys(items!)
     for (let i = 0, len = itemkeys.length; i < len; i++) {
       const key = itemkeys[i]
       if (key === 'children') break
-      const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
-      const { path, method } = action
-      this.initDialogState(state, path, method, key, currentPage)
-      if (key === 'sort') {
-        this.initSortButtons(state, action)
+      const item = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+      if (typeof item === 'string') {
+        await this.initAppointedPage(state, item, key)
       } else {
-        this.initItemButtons(state, key, type, path, method, currentPage)
+        const { path, method } = item
+        this.initDialogState(state, path, method, key, currentPage)
+        if (key === 'sort') {
+          this.initSortButtons(state, item)
+        } else {
+          this.initItemButtons(state, key, type, path, method, currentPage)
+        }
       }
     }
   }
@@ -138,6 +140,7 @@ export class StateNode extends FunctionNode {
   initItemButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
     const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
+    type = underlineConvertUpperCamel(type)
     if (type === 'TablePage') {
       this.initTableItemButtons(state, btn)
     } else if (type === 'TreePage') {
@@ -201,6 +204,24 @@ export class StateNode extends FunctionNode {
       }
     })
     state.table?.columns?.push(columnSort)
+  }
+
+  async initAppointedPage(state: any, appointedPage: string, key: string) {
+    const initContent = getInitContent(appointedPage)
+    if (!initContent) return
+    const { path, method } = (initContent as ITagPage).init!
+    this.initItemButtons(state, key, (initContent as ITagPage).type, path, method, appointedPage)
+    addItemAction(state, path, method, key)
+    await runFlowByFile('flows/basePage', {
+      initContent: initContent,
+      currentPage: appointedPage
+    }).then((data) => {
+      state.dialogs![key] = {
+        state: data.state,
+        title: '',
+        visible: false
+      }
+    })
   }
 
 }

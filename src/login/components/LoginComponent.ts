@@ -162,11 +162,12 @@ export default class LoginComponent extends Vue {
       LoginStore.token = data.data.token
       // 绑定用户与第三方账号
       if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
-        let data = 'user_id=' + LoginStore.ThirdUserID
-        if (LoginStore.hasToken()) {
-          data += '&token=' + LoginStore.token
+        const parmas = {
+          user_id: LoginStore.ThirdUserID
         }
-        await this.http(url, method, data)
+        url = LoginStore.BindUrl
+        method = 'post'
+        await this.http(url, method, parmas)
         LoginStore.BindUrl = ''
         LoginStore.ThirdUserID = ''
       }

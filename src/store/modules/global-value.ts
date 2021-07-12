@@ -12,12 +12,8 @@ export interface IGlobalValueState {
   slug: string
   closePageAutoLogout: boolean
   uploadFileFormat: string[]
+  needCompleteProfileAfterRegister: boolean
   passwordComplexity: IValidatorStrategy
-}
-
-interface IGlobalConfig {
-  upload_file_format: string[]
-  close_page_auto_logout: boolean
 }
 
 @Module({ dynamic: true, store, name: 'global' })
@@ -26,6 +22,7 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   public slug: string = ''
   public closePageAutoLogout: boolean = false
   public uploadFileFormat: string[] = []
+  public needCompleteProfileAfterRegister: boolean = false
   public passwordComplexity: IValidatorStrategy = {
     regex: DEFAULT_PASSWORD_COMPLEXITY.regex,
     hint: DEFAULT_PASSWORD_COMPLEXITY.hint
@@ -42,9 +39,10 @@ class GlobalValue extends VuexModule implements IGlobalValueState {
   }
 
   @Mutation
-  setGlobalConfig(data: IGlobalConfig) {
+  setGlobalConfig(data) {
     this.closePageAutoLogout = data.close_page_auto_logout || false
     this.uploadFileFormat = data.upload_file_format || []
+    this.needCompleteProfileAfterRegister = data.need_complete_profile_after_register || false
   }
 
   @Mutation

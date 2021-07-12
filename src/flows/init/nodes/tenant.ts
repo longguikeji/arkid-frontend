@@ -3,7 +3,7 @@ import { TenantModule } from '@/store/modules/tenant'
 import { getSlug } from '@/utils/url'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import getBaseUrl from '@/utils/get-base-url'
-import processUUId from '@/utils/process-uuid'
+import { processUUId } from '@/utils/common'
 import { getUrlParamByName } from '@/utils/url'
 
 export class Tenant extends APINode {

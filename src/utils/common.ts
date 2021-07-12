@@ -51,3 +51,27 @@ export function isEmptyObject(obj: Object): boolean {
   const keys = Object.keys(obj)
   return keys.length === 0
 }
+
+// 阻止复制操作
+export function preventPaste(e: Event, name: string) {
+  if (name.includes('password')) {
+    e.preventDefault()
+    return false
+  }
+}
+
+export function processUUId(uuid: string) {
+  if (!uuid || typeof uuid !== 'string') return
+  uuid = uuid.replace(/-/g, '')
+  return uuid
+}
+
+export function underlineConvertUpperCamel(value: string) {
+  if (value.indexOf('_') < 0) return value
+  let valueSplit = value.split('_')
+  for (let i = 0, l = valueSplit.length; i < l; i++) {
+    let vs = valueSplit[i]
+    valueSplit[i] = vs[0].toUpperCase() + vs.substring(1)
+  }
+  return valueSplit.join('')
+}

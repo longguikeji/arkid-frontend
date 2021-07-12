@@ -14,6 +14,7 @@ export interface IFlow {
   target?: string // 配置jump时跳转的目标页面
   path?: string // 用于组件之间的指向
   required?: any // 用于验证
+  data?: any
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -61,7 +62,8 @@ export async function runFlow (com: any, state: any, flow: IFlow) {
     target: args.target,
     path: args.path,
     com: com,
-    required: args.required
+    required: args.required,
+    data: data
   }
   // 对 request 请求参数进行解析处理
   if (args.request && !isEmptyObject(args.request)) {
@@ -86,30 +88,21 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 }
 
 // 对Mapping进行一次二次处理
-export function stateMappingProxy(state: any, mapping: any) {
-  Object.keys(mapping).forEach(key => {
-    const m = mapping[key]
-    if (typeof m === 'object') {
-      if (m.value) {
-        let selectItemsObject = {}
-        const selectValMapping = m.value
-        const val = getStateByStringConfig(state, selectValMapping)
-        selectItemsObject = m[val]
-        selectItemsObject[key] = selectValMapping
-        mapping[key] = undefined
-        Object.assign(mapping, selectItemsObject)
-      } else if (m.key && m.data) {
-        const data = getStateByStringConfig(state, m.data)
-        mapping[key] = []
-        data.forEach(d => {
-          if (d[m.key]) {
-            mapping[key].push(d[m.key])
-          }
-        })
-      }
+export function stateMappingProxy(state: any, mappings: any) {
+  let newMapping = {}
+  const keys = Object.keys(mappings)
+  for (const key of keys) {
+    const mapping = mappings[key]
+    const mappingType = typeof mapping
+    if (mappingType === 'object' && mapping.value) {
+      const valueMapping = mapping.value
+      const selectValue = getStateByStringConfig(state, valueMapping)
+      newMapping = Object.assign(newMapping, { [key]: valueMapping }, { ...mapping[selectValue] })
+    } else {
+      newMapping[key] = mapping
     }
-  })
-  return mapping
+  }
+  return newMapping
 }
 
 // 对配置项中的 request 或者 response 进行配置解析

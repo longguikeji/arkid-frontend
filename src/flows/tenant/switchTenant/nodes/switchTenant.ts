@@ -2,8 +2,7 @@ import { Jump } from '@/arkfbp/flows/jump/nodes/jump'
 import { TenantModule } from '@/store/modules/tenant'
 import { TablePage } from '@/admin/TablePage/TablePageState'
 import { GlobalValueModule } from '@/store/modules/global-value'
-import { getToken } from '@/utils/auth'
-import getBaseUrl from '@/utils/get-base-url'
+import { addSlugToUrl } from '@/utils/url'
 
 export class SwitchTenant extends Jump {
   async run() {
@@ -14,10 +13,7 @@ export class SwitchTenant extends Jump {
     const slug = data.slug
     if (slug) {
       GlobalValueModule.setSlug(slug)
-      const host = GlobalValueModule.originUrl
-      const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
-      const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
-      window.location.replace(url)
+      addSlugToUrl(this.inputs.com)
     } else {
       target = {
         path: '/',
