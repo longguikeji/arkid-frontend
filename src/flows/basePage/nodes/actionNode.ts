@@ -1,9 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
+import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { ISchema } from '@/config/openapi'
 import { getContent } from '@/utils/schema'
 import { getFetchAttrs } from '@/utils/table'
 import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
-import { BasePage, IPage } from './pageNode'
+import { IBasePage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import { getActionMapping } from '@/utils/generate-action'
 import { getImportBtnMapping } from '@/utils/button'
@@ -11,13 +12,14 @@ import { getImportBtnMapping } from '@/utils/button'
 export class ActionNode extends FunctionNode {
   
   async run() {
-    const { state, initContent } = this.inputs
+    const { currentPage, initContent } = this.inputs
+    const state = this.$state.fetch().state as AdminComponentState
     this.initPageFetchAction(state, initContent.init?.path, initContent.init?.method)
     this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(pageState: BasePage, path: string, method: string) {
+  initPageFetchAction(pageState: AdminComponentState, path: string, method: string) {
     const content = getContent(path, method)
     const { type, state } = pageState
     if (type === 'TablePage') {
@@ -31,7 +33,7 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  initTablePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTablePageFetchAction(state: IBasePage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
     const attrs = getFetchAttrs(content)
     const response = {},
           request = {}
@@ -54,14 +56,14 @@ export class ActionNode extends FunctionNode {
     this.initFetchAction(state, path, method, response, request)
   }
 
-  initFormPageFetchAction(state: IPage, path: string, method: string) {
+  initFormPageFetchAction(state: IBasePage, path: string, method: string) {
     const isResponse = true
     const target = ''
     const { mapping } = getActionMapping(path, method, target, isResponse)
     this.initFetchAction(state, path, method, mapping)
   }
 
-  initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTreePageFetchAction(state: IBasePage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
     const attrs = getFetchAttrs(content)
     const response = {}
     response['tree.data'] = attrs.data
@@ -72,7 +74,7 @@ export class ActionNode extends FunctionNode {
     this.initFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }
 
-  initFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+  initFetchAction(state: IBasePage, path: string, method: string, response?: any, request?: any, flowName?: string) {
     state.created = 'created'
     if (!state.actions) state.actions = {}
     state.actions!.created.push('fetch')
@@ -87,7 +89,7 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(pageState: BasePage, initContent: ITagPage) {
+  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage) {
     const { state } = pageState
     const { page, item } = initContent
     if (page) {

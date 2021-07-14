@@ -1,7 +1,7 @@
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { getSchemaByPath, getApiRoles } from '@/utils/schema'
 import generateForm from '@/utils/form'
-import { IPage} from '@/flows/basePage/nodes/pageNode'
+import { IBasePage } from '@/flows/basePage/nodes/pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import { ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
@@ -152,7 +152,7 @@ export function generateDialogState(path: string, method: string, key: string, c
   return dialogState
 }
 
-export function addDialogAction(state: IPage, path: string, method: string, key: string) {
+export function addDialogAction(state: IBasePage, path: string, method: string, key: string) {
   const actionName = DIALOG_ACTION_NAME[key]
   const flowName = DIALOG_ACTION_FLOW[key]
   if (actionName) {
@@ -204,7 +204,7 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
   }
 }
 
-export function addItemAction(state: IPage, path: string, method: string, key: string) {
+export function addItemAction(state: IBasePage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
   const type = DIALOG_TYPE[key]
@@ -252,7 +252,7 @@ export function addItemAction(state: IPage, path: string, method: string, key: s
   }
 }
 
-export function addCardAction(state: IPage, path: string, method: string, key: string) {
+export function addCardAction(state: IBasePage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
   if (key === 'export') {
@@ -283,7 +283,7 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
   }
 }
 
-export function addSortAction(state: IPage, action: ITagInitUpdateAction | ITagPageAction) {
+export function addSortAction(state: IBasePage, action: ITagInitUpdateAction | ITagPageAction) {
   if (!action) return
   Object.keys(action).forEach((sortName) => {
     const url = action[sortName].path
@@ -308,7 +308,7 @@ export function addSortAction(state: IPage, action: ITagInitUpdateAction | ITagP
   })
 }
 
-export function addChildrenAction(state: IPage, path: string, method: string) {
+export function addChildrenAction(state: IBasePage, path: string, method: string) {
   state.tree!.action = 'fetchTreeNode'
   state.actions!.fetchTreeNode = [
     {

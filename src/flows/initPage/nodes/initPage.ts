@@ -1,31 +1,31 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import { ITagPage } from '@/config/openapi'
+import OpenAPI, { ITagPage } from '@/config/openapi'
 import { isArray } from '@/utils/common'
 
 export class InitPage extends FunctionNode {
   async run() {
-    const initContent = this.inputs.initContent
     const currentPage = this.inputs.currentPage
-    const isMultiPage = isArray(initContent)
-    let state
+    const info = OpenAPI.instance.getOnePageTagInfo(currentPage)
+    if (!info) return
+    const { page, description } = info
+    if (!page) return
+    const isMultiPage = isArray(page)
+    let state: any = null
     if (isMultiPage) {
       state = []
-      for (let i = 0; i < initContent.length; i++) {
-        const pageState = await this.initPage(initContent[i], currentPage)
+      for (let i = 0, len = (page as ITagPage[]).length; i < len; i++) {
+        const pageState = await this.initPage(page[i], currentPage, description)
         state.push(pageState)
       }
     } else {
-      state = await this.initPage(initContent, currentPage)
+      state = await this.initPage(page as ITagPage, currentPage, description)
     }
-    await this.runCustomPageFlow(state, initContent, currentPage)
-    return {
-      state: state
-    }
+    await this.runCustomPageFlow(state, currentPage)
+    return state
   }
 
-  async initPage(initContent: ITagPage, currentPage: string) {
-    let state
+  async initPage(initContent: ITagPage, currentPage: string, description?: string) {
     let initFileName = ''
     switch (initContent.type) {
       case 'table_page':
@@ -37,16 +37,14 @@ export class InitPage extends FunctionNode {
         initFileName = 'flows/dashboardPage/init'
         break
     }
-    await runFlowByFile(initFileName, {
+    return await runFlowByFile(initFileName, {
       initContent,
-      currentPage
-    }).then(async (data) => {
-      state = data.state
+      currentPage,
+      description
     })
-    return state
   }
 
-  async runCustomPageFlow(state: any, initContent: ITagPage, currentPage: string) {
+  async runCustomPageFlow(state: any, currentPage: string) {
     let curstomPageFlow: string = ''
     switch (currentPage) {
       case 'app_list':
@@ -74,10 +72,7 @@ export class InitPage extends FunctionNode {
         curstomPageFlow = 'flows/extension/addAction'
     }
     if (curstomPageFlow !== '') {
-      await runFlowByFile(curstomPageFlow, {
-        state,
-        initContent
-      })
+      await runFlowByFile(curstomPageFlow, { state })
     }
   }
 }

@@ -3,7 +3,7 @@ import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
-import { getApiRoles, getInitContent } from '@/utils/schema'
+import { getApiRoles } from '@/utils/schema'
 import { isArray } from '@/utils/common'
 
 interface RouteMeta {
@@ -103,7 +103,8 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
 
 function getPageValidity(page: string): boolean {
   let isValid = true
-  const initContent = getInitContent(page)
+  const info = OpenAPI.instance.getOnePageTagInfo(page)
+  const initContent = info?.page
   if (!initContent || typeof initContent === 'string') {
     return true
   }

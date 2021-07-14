@@ -29,11 +29,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { AdminModule } from '@/store/modules/admin'
-import { runFlowByFile } from '@/arkfbp/index'
-import OpenAPI, { ITagPage } from '@/config/openapi'
-import { getInitContent } from '@/utils/schema'
 import BaseVue from '@/admin/base/BaseVue'
+import { runFlowByFile } from '@/arkfbp/index'
+import { AdminModule } from '@/store/modules/admin'
 import { isArray } from '@/utils/common'
 
 @Component({
@@ -57,19 +55,12 @@ export default class extends Vue {
 
   async created() {
     const currentPage = this.currentPage
-    const initContent: ITagPage | Array<ITagPage> | undefined = getInitContent(currentPage)
-    if (initContent) {
-      let state
-      // execute init page flow file
-      await runFlowByFile('flows/initPage', {
-        initContent: initContent,
-        currentPage: currentPage
-      }).then(data => {
-        state = data.state
-      })
-      await AdminModule.setAdmin(state)
+    await runFlowByFile('flows/initPage', { currentPage }).then(async(result) => {
+      await AdminModule.setAdmin(result)
       this.initCompleted = true
-    }
+    }).catch(error => {
+      console.log(error)
+    })
   }
 
   async destroyed() {

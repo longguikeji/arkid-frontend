@@ -1,6 +1,6 @@
-import { IPage } from '@/flows/basePage/nodes/pageNode'
+import { IBasePage } from '@/flows/basePage/nodes/pageNode'
 
-export function getImportBtnMapping(state: IPage): string {
+export function getImportBtnMapping(state: IBasePage): string {
   let importMapping  = ''
   const btns = state.card?.buttons
   if (btns) {
