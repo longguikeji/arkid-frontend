@@ -2,7 +2,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ISchema } from '@/config/openapi'
 import { getContent } from '@/utils/schema'
 import { getFetchAttrs } from '@/utils/table'
-import { ITagPage, ITagInitUpdateAction } from '@/config/openapi'
+import { ITagPage, ITagUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import { getActionMapping } from '@/utils/generate-action'
@@ -91,9 +91,9 @@ export class ActionNode extends FunctionNode {
     const { state } = pageState
     if (initContent.page) {
       Object.keys(initContent.page).forEach(key => {
-        let action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
+        let action = (initContent.page![key] as ITagUpdateAction).read || initContent.page![key]
         addCardAction(state, action.path, action.method, key)
-        action = (initContent.page![key] as ITagInitUpdateAction).write || initContent.page![key]
+        action = (initContent.page![key] as ITagUpdateAction).write || initContent.page![key]
         addDialogAction(state, action.path, action.method, key)
       })
     }
@@ -101,7 +101,7 @@ export class ActionNode extends FunctionNode {
       Object.keys(initContent.item).forEach(key => {
         const item = initContent.item![key]
         if (typeof item !== 'string') {
-          let action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+          let action = (initContent.item![key] as ITagUpdateAction).read || initContent.item![key]
           switch (key) {
             case 'sort':
               addSortAction(state, action)
@@ -111,7 +111,7 @@ export class ActionNode extends FunctionNode {
               break
             default:
               addItemAction(state, action.path, action.method, key)
-              action = (initContent.item![key] as ITagInitUpdateAction).write || initContent.item![key]
+              action = (initContent.item![key] as ITagUpdateAction).write || initContent.item![key]
               addDialogAction(state, action.path, action.method, key)
           }
         }

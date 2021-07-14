@@ -4,7 +4,7 @@ import generateForm from '@/utils/form'
 import { IPage} from '@/flows/basePage/nodes/pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import { ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { ITagPageAction, ITagUpdateAction } from '@/config/openapi'
 import { UserModule, UserRole } from '@/store/modules/user'
 
 const BUTTON_LABEL = {
@@ -282,7 +282,7 @@ export function addCardAction(state: IPage, path: string, method: string, key: s
   }
 }
 
-export function addSortAction(state: IPage, action: ITagInitUpdateAction | ITagPageAction) {
+export function addSortAction(state: IPage, action: ITagUpdateAction | ITagPageAction) {
   if (!action) return
   Object.keys(action).forEach((sortName) => {
     const url = action[sortName].path

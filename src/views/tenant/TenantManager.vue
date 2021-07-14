@@ -37,6 +37,10 @@ export default class extends Vue {
     return TenantModule.tenantState
   }
 
+  private get currentPage() {
+    return this.$route.meta.page
+  }
+
   goHome() {
     this.$router.push('/')
   }
@@ -45,20 +49,13 @@ export default class extends Vue {
     this.isShow = true
     // 执行查看 TenantModule.currentTenant 当前的内容，如果不存在uuid，则设置isShowClose为false
     const tenantUUId = TenantModule.currentTenant.uuid
-    if (tenantUUId) {
-      this.isShowClose = true
-    }
-    const currentPage = this.$route.meta.page
-    const initContent = getInitContent(currentPage) as ITagPage
-    if (!initContent) {
-      throw Error('This Page is not initContent Source, Please Check OpenAPI')
-    }
+    if (tenantUUId) this.isShowClose = true
+    const currentPage = this.currentPage
     await runFlowByFile('flows/basePage', {
-      initContent,
       currentPage
-    }).then(async(data) => {
+    }).then(async(state) => {
       await runFlowByFile('flows/tenant/addButton', {
-        tempState: data.state,
+        tempState: state,
         com: this
       }).then((data) => {
         TenantModule.changeState(data.state)

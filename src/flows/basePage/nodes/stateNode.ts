@@ -5,7 +5,7 @@ import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
 import { generateDialogState, generateButton, addItemAction } from '@/utils/dialog'
-import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
+import { ITagPage, ITagPageAction, ITagUpdateAction } from '@/config/openapi'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { runFlowByFile } from '@/arkfbp/index'
@@ -13,21 +13,19 @@ import { runFlowByFile } from '@/arkfbp/index'
 export class StateNode extends FunctionNode {
 
   async run() {
-    const { initContent, state, currentPage } = this.inputs
+    const { initContent, state, currentPage, description } = this.inputs
     const initPath = initContent.init?.path
     const initMethod = initContent.init?.method
-    this.initPage(state, initPath, initMethod)
+    this.initPage(state, initPath, initMethod, description)
     await this.initOperation(state, initContent, currentPage)
     return this.inputs
   }
 
-  initPage(pageState: BasePage, path: string, method: string) {
-    const operation = OpenAPI.instance.getOperation(path, method)
-    if (!operation) return
+  initPage(pageState: BasePage, path: string, method: string, description?: string) {
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
     // base page has card element
-    state.card!.title = operation.summary || ''
+    state.card!.title = description || ''
     // diff type page run diff init function
     switch (type) {
       case 'TablePage':
@@ -56,7 +54,7 @@ export class StateNode extends FunctionNode {
     const pagekeys = Object.keys(page!)
     for (let i = 0, len = pagekeys.length; i < len; i++) {
       const key = pagekeys[i]
-      const action = (initContent.page![key] as ITagInitUpdateAction).read || initContent.page![key]
+      const action = (initContent.page![key] as ITagUpdateAction).read || initContent.page![key]
       const { path, method } = action
       this.initDialogState(state, path, method, key, currentPage)
       this.initCardButtons(state, key, type, path, method, currentPage)
@@ -75,7 +73,7 @@ export class StateNode extends FunctionNode {
       if (typeof item === 'string') {
         await this.initAppointedPage(state, type, item, key, currentPage)
       } else {
-        const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+        const action = (initContent.item![key] as ITagUpdateAction).read || initContent.item![key]
         const { path, method } = action
         this.initDialogState(state, path, method, key, currentPage)
         if (key === 'sort') {
@@ -186,7 +184,7 @@ export class StateNode extends FunctionNode {
     state.tree!.slot.buttons.state.push(btn)
   }
 
-  initSortButtons(state: IPage, action: ITagInitUpdateAction | ITagPageAction) {
+  initSortButtons(state: IPage, action: ITagUpdateAction | ITagPageAction) {
     const columnSort = {
       prop: 'sort',
       label: '排序',

@@ -34,16 +34,10 @@ export default class OpenAPI {
     return this.config?.tags || []
   }
 
-  public getOneTagInfo(name: string) {
-    let tagInfo: any = null
-    if (this.config?.tags) {
-      this.config?.tags.forEach(tag => {
-        if (tag.name === name) {
-          tagInfo = tag
-        }
-      })
-    }
-    return tagInfo
+  public getOnePageTagInfo(name: string): ITag | undefined {
+    const tags = this.config?.tags as ITag[]
+    if (!tags?.length) return undefined
+    return tags.find(tag => tag.name === name)
   }
 }
 
@@ -81,11 +75,11 @@ export interface ITagPageAction {
 export interface ITagPage {
   type: string
   init?: ITagPageAction
-  page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
-  item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
+  page?: { [key: string]: ITagPageAction | ITagUpdateAction | string }
+  item?: { [key: string]: ITagPageAction | ITagUpdateAction | string }
 }
 
-export interface ITagInitUpdateAction {
+export interface ITagUpdateAction {
   [ name: string ]: ITagPageAction
 }
 
@@ -93,7 +87,7 @@ export interface ITag {
   name: string
   description?: string
   externalDocs?: IExternalDocs
-  page?: ITagPage
+  page?: ITagPage | ITagPage[]
 }
 
 // export interface IExample {}
