@@ -1,5 +1,5 @@
 import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagUpdateAction, ITagPageOperation } from '@/config/openapi'
-import { getSchemaByPath, getInitContent } from '@/utils/schema'
+import { getSchemaByPath } from '@/utils/schema'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
@@ -197,7 +197,9 @@ export class StateNode extends FunctionNode {
   }
 
   async initAppointedPage(state: IPage, type: string, page: string, key: string) {
-    const initContent = getInitContent(page)
+    const pageTagInfo = OpenAPI.instance.getOnePageTagInfo(page)
+    if (!pageTagInfo) return null
+    const { page: initContent, description } = pageTagInfo
     if (!initContent) return null
     const initAction = (initContent! as ITagPage).init
     const { path, method } = initAction as ITagPageAction
@@ -208,6 +210,7 @@ export class StateNode extends FunctionNode {
     const res = await runFlowByFile('flows/basePage', {
       currentPage: page,
       initContent,
+      description
     })
     state.dialogs![key] = {
       state: res.state,

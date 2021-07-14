@@ -1,6 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { getInitContent } from '@/utils/schema'
-import { ITagPage } from '@/config/openapi'
+import OpenAPI, { ITagPage } from '@/config/openapi'
 import { runFlowByFile } from '@/arkfbp/index'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 
@@ -8,10 +7,12 @@ export class InitInputList extends FunctionNode {
   async run() {
     const state = this.inputs.client
     const params = this.inputs.com.state.data
+    const page = params.page
     // 通过page字段信息获取list的初始化资源  --  初始化List的左侧内容
-    let initContent = getInitContent(params.page) as ITagPage
-    if (params.page === 'group') {
-      initContent = initContent[0]
+    const pageTagInfo = OpenAPI.instance.getOnePageTagInfo(page)
+    let initContent = pageTagInfo!.page
+    if (page === 'group') {
+      initContent = (initContent as ITagPage[])[0]
     }
     await runFlowByFile('flows/basePage', {
       initContent: initContent

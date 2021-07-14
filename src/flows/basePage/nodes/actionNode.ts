@@ -1,43 +1,43 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { ISchema } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPageAction } from '@/config/openapi'
 import { getContent } from '@/utils/schema'
-import { getFetchAttrs } from '@/utils/table'
 import { ITagPage, ITagUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import { getActionMapping } from '@/utils/generate-action'
-import { getImportBtnMapping } from '@/utils/button'
 
 export class ActionNode extends FunctionNode {
   
   async run() {
     const { state, initContent } = this.inputs
-    this.initPageFetchAction(state, initContent.init?.path, initContent.init?.method)
+    this.initPageFetchAction(state, initContent.init)
     this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(pageState: BasePage, path: string, method: string) {
+  initPageFetchAction(pageState: BasePage, initAction: ITagPageAction) {
+    const { path, method } = initAction
     const content = getContent(path, method)
     const { type, state } = pageState
-    if (type === 'TablePage') {
-      this.initTablePageFetchAction(state, path, method, content)
-    } 
-    if (type === 'FormPage'){
-      this.initFormPageFetchAction(state, path, method)
-    }
-    if (type === 'TreePage'){
-      this.initTreePageFetchAction(state, path, method, content)
+    switch (type) {
+      case 'TablePage':
+        this.initTablePageFetchAction(state, path, method, content)
+        break
+      case 'FormPage':
+        this.initFormPageFetchAction(state, path, method)
+        break
+      case 'TreePage':
+        this.initTreePageFetchAction(state, path, method, content)
     }
   }
 
   initTablePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
-    const attrs = getFetchAttrs(content)
+    const props = this.getFetchActionPropsBySchema(path, method)
     const response = {},
           request = {}
-    response['table.data'] = attrs.data
-    if (attrs.pagination) {
-      response['pagination.total'] = attrs.pagination
+    response['table.data'] = props.data
+    if (props.pagination) {
+      response['pagination.total'] = props.pagination
       request['page'] = 'pagination.currentPage'
       request['page_size'] = 'pagination.pageSize'
       state.pagination = {
@@ -47,32 +47,26 @@ export class ActionNode extends FunctionNode {
         action: 'fetch'
       }
     }
-    const importMapping = getImportBtnMapping(state)
-    if (importMapping !== '') {
-      response[importMapping] = `${attrs.data}.length`
-    }
-    this.initFetchAction(state, path, method, response, request)
+    this.setImportButtonDisabledProp(state, response, props.data)
+    this.addFetchAction(state, path, method, response, request)
   }
 
   initFormPageFetchAction(state: IPage, path: string, method: string) {
     const isResponse = true
     const target = ''
     const { mapping } = getActionMapping(path, method, target, isResponse)
-    this.initFetchAction(state, path, method, mapping)
+    this.addFetchAction(state, path, method, mapping)
   }
 
   initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
-    const attrs = getFetchAttrs(content)
+    const props = this.getFetchActionPropsBySchema(path, method)
     const response = {}
-    response['tree.data'] = attrs.data
-    const importMapping = getImportBtnMapping(state)
-    if (importMapping !== '') {
-      response[importMapping] = `${attrs.data}.length`
-    }
-    this.initFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
+    response['tree.data'] = props.data
+    this.setImportButtonDisabledProp(state, response, props.data)
+    this.addFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }
 
-  initFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+  addFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
     state.created = 'created'
     if (!state.actions) state.actions = {}
     state.actions!.created.push('fetch')
@@ -119,4 +113,32 @@ export class ActionNode extends FunctionNode {
     }
   }
 
+  getFetchActionPropsBySchema(path: string, method: string) {
+    const content = getContent(path, method)
+    const type = Object.keys(content)[0]
+    const responseSchema = content[type].schema
+    let ref = responseSchema.$ref as string
+    if (responseSchema.items) { ref = (responseSchema.items as ISchema).$ref as string }
+    const res = OpenAPI.instance.getSchemaByRef(ref)
+    const props = { data: '', pagination: '' }
+    if (res.properties) {
+      const properties = res.properties
+      props.pagination = properties.count ? 'count' : ''
+      props.data = properties.results ? 'results' : props.data ? 'data' : ''
+    }
+    return props
+  }
+
+  setImportButtonDisabledProp(state: IPage, response: Object, refer: string) {
+    const btns = state.card?.buttons
+    if (btns) {
+      for (let i = 0, len = btns.length; i < len; i++) {
+        const btn = btns[i]
+        if (btn.label === '导出' || btn.label === 'export') {
+          response[`card.buttons[${i}].disabled`] = refer ? `${refer}.length` : 'length'
+          break
+        }
+      }
+    }
+  }
 }

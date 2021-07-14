@@ -29,10 +29,6 @@ export default class OpenAPI {
       throw Error("can't find schema in components by ref: " + ref)
     }
   }
-  
-  public getAllTags() {
-    return this.config?.tags || []
-  }
 
   public getOnePageTagInfo(name: string): ITag | undefined {
     const tags = this.config?.tags as ITag[]
