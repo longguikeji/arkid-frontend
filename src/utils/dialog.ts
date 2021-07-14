@@ -14,7 +14,11 @@ const BUTTON_LABEL = {
   update: '编辑',
   delete: '删除',
   retrieve: '查看',
-  password: '修改密码'
+  password: '修改密码',
+  history: '历史记录',
+  provisioning: '同步配置',
+  mapping: '配置映射',
+  profile: '配置文件',
 }
 
 const BUTTON_TYPE = {
@@ -24,7 +28,11 @@ const BUTTON_TYPE = {
   update: 'primary',
   delete: 'danger',
   retrieve: 'info',
-  password: 'primary'
+  password: 'primary',
+  history: 'primary',
+  provisioning: 'primary',
+  mapping: 'primary',
+  profile: 'info',
 }
 
 const DIALOG_TYPE = {
@@ -32,7 +40,11 @@ const DIALOG_TYPE = {
   import: 'Upload',
   update: 'FormPage',
   retrieve: 'FormPage',
-  password: 'Password'
+  password: 'Password',
+  history: 'TablePage',
+  provisioning: 'TablePage',
+  mapping: 'TablePage',
+  profile: 'TablePage'
 }
 
 const PAGE_ACTION_NAME = {
@@ -42,7 +54,11 @@ const PAGE_ACTION_NAME = {
   update: 'openUpdateDialog',
   delete: 'delete',
   retrieve: 'openRetrieveDialog',
-  password: 'openPasswordDialog'
+  password: 'openPasswordDialog',
+  history: 'openHistoryDialog',
+  provisioning: 'openProvisioningDialog',
+  mapping: 'openMappingDialog',
+  profile: 'openProfileDialog'
 }
 
 const PAGE_ACTION_FLOW = {
@@ -51,7 +67,11 @@ const PAGE_ACTION_FLOW = {
   export: 'arkfbp/flows/export',
   update: 'arkfbp/flows/fetch',
   retrieve: 'arkfbp/flows/fetch',
-  password: 'arkfbp/flows/fetch'
+  password: 'arkfbp/flows/fetch',
+  history: 'arkfbp/flows/assign',
+  provisioning: 'arkfbp/flows/assign',
+  mapping: 'arkfbp/flows/assign',
+  profile: 'arkfbp/flows/assign'
 }
 
 const DIALOG_ACTION_NAME = {
@@ -75,9 +95,9 @@ const PAGE_READONLY = {
 
 // key 主要读取btn按钮的label和style, pageType会影响btn按钮的type的是text或其他
 export function generateButton(key: string, path: string, method: string, currentPage: string, pageType?: string, isDialog?: boolean): ButtonState | null {
-  const apiRoles = getApiRoles(path, method)
-  const userRole = UserModule.role
-  if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
+  // const apiRoles = getApiRoles(path, method)
+  // const userRole = UserModule.role
+  // if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
   const btn: ButtonState = {
     label: BUTTON_LABEL[key],
     action: isDialog ? DIALOG_ACTION_NAME[key] : PAGE_ACTION_NAME[key],
@@ -186,11 +206,15 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
 export function addItemAction(state: IPage, path: string, method: string, key: string) {
   const actionName = PAGE_ACTION_NAME[key]
   const flowName = PAGE_ACTION_FLOW[key]
+  const type = DIALOG_TYPE[key]
+  let response = {}
+  if (type === 'TablePage') {
+    response[`dialogs.${key}.state.state.data`] = ''
+  } else {
+    response[`dialogs.${key}.data`] = ''
+  }
   if (flowName) {
-    let response = {
-      [`dialogs.${key}.data`]: '',
-    }
-    if (key !== 'password') {
+    if (key !== 'password' && type !== 'TablePage') {
       const target = `dialogs.${key}.state.state.` 
       const isResponse = true
       const { mapping } = getActionMapping(path, method, target, isResponse)

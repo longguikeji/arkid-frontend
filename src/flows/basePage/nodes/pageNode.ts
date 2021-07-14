@@ -31,6 +31,7 @@ export interface IPage extends BaseState {
   bottomButtons?: Array<ButtonState>
   actions?: IPageActions
   pagination?: PaginationState
+  data?: any
   list?: {
     header?: CardState
     data?: Array<ListItemState>
@@ -121,6 +122,7 @@ export class Page {
     action: ''
   }
   list = undefined
+  data = undefined
   pagination: PaginationState = {
     currentPage: 1,
     pageSize: 10,

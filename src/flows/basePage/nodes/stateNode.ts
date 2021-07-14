@@ -4,7 +4,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
-import { generateDialogState, generateButton } from '@/utils/dialog'
+import { generateDialogState, generateButton, addItemAction } from '@/utils/dialog'
 import { ITagPage, ITagPageAction, ITagInitUpdateAction } from '@/config/openapi'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
@@ -17,7 +17,7 @@ export class StateNode extends FunctionNode {
     const initPath = initContent.init?.path
     const initMethod = initContent.init?.method
     this.initPage(state, initPath, initMethod)
-    this.initOperation(state, initContent, currentPage)
+    await this.initOperation(state, initContent, currentPage)
     return this.inputs
   }
 
@@ -39,14 +39,14 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initOperation(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+  async initOperation(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const state = pageState.state
     if (!state.dialogs) state.dialogs = {}
     if (initContent.page) {
       this.initPageBtnState(pageState, initContent, currentPage)
     }
     if (initContent.item) {
-      this.initItemBtnState(pageState, initContent, currentPage)
+      await this.initItemBtnState(pageState, initContent, currentPage)
     }
   }
 
@@ -63,20 +63,26 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initItemBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+  async initItemBtnState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
     const { state, type } = pageState
     const items = initContent.item
-    const itemkeys = Object.keys(items!)
+    if (!items) return
+    const itemkeys = Object.keys(items)
     for (let i = 0, len = itemkeys.length; i < len; i++) {
       const key = itemkeys[i]
       if (key === 'children') break
-      const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
-      const { path, method } = action
-      this.initDialogState(state, path, method, key, currentPage)
-      if (key === 'sort') {
-        this.initSortButtons(state, action)
+      const item = items![key]
+      if (typeof item === 'string') {
+        await this.initAppointedPage(state, type, item, key, currentPage)
       } else {
-        this.initItemButtons(state, key, type, path, method, currentPage)
+        const action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+        const { path, method } = action
+        this.initDialogState(state, path, method, key, currentPage)
+        if (key === 'sort') {
+          this.initSortButtons(state, action)
+        } else {
+          this.initItemButtons(state, key, type, path, method, currentPage)
+        }
       }
     }
   }
@@ -202,6 +208,26 @@ export class StateNode extends FunctionNode {
       }
     })
     state.table?.columns?.push(columnSort)
+  }
+
+  async initAppointedPage(state: IPage, type: string, page: string, key: string, currentPage: string) {
+    const initContent = getInitContent(page)
+    if (!initContent) return null
+    const initAction = (initContent! as ITagPage).init
+    const { path, method } = initAction as ITagPageAction
+    const btn = generateButton(key, path, method, page, type)
+    if (!btn) return null
+    this.initItemButtons(state, key, type, path, method, page)
+    addItemAction(state, path, method, key)
+    const res = await runFlowByFile('flows/basePage', {
+      page,
+      initContent
+    })
+    state.dialogs![key] = {
+      state: res.state,
+      title: '',
+      visible: false
+    }
   }
 
 }

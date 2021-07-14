@@ -99,18 +99,21 @@ export class ActionNode extends FunctionNode {
     }
     if (initContent.item) {
       Object.keys(initContent.item).forEach(key => {
-        let action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
-        switch (key) {
-          case 'sort':
-            addSortAction(state, action)
-            break
-          case 'children':
-            addChildrenAction(state, action.path, action.method)
-            break
-          default:
-            addItemAction(state, action.path, action.method, key)
-            action = (initContent.item![key] as ITagInitUpdateAction).write || initContent.item![key]
-            addDialogAction(state, action.path, action.method, key)
+        const item = initContent.item![key]
+        if (typeof item !== 'string') {
+          let action = (initContent.item![key] as ITagInitUpdateAction).read || initContent.item![key]
+          switch (key) {
+            case 'sort':
+              addSortAction(state, action)
+              break
+            case 'children':
+              addChildrenAction(state, action.path, action.method)
+              break
+            default:
+              addItemAction(state, action.path, action.method, key)
+              action = (initContent.item![key] as ITagInitUpdateAction).write || initContent.item![key]
+              addDialogAction(state, action.path, action.method, key)
+          }
         }
       })
     }

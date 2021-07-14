@@ -8,7 +8,7 @@ export class ClientResponseNode extends FunctionNode {
     // clientServer 代表需要进行响应的数据映射关系
     // data 代表刚刚请求的返回的数据内容 -- 只有fetch时才存在
     if (!this.$state.fetch().inputs) { return null }
-    let { client, clientServer } = this.$state.fetch().inputs
+    let { client, clientServer, data: clientDepData } = this.$state.fetch().inputs
     let data = this.inputs
     clientServer = proxyClientServer(clientServer, data)
     if (!clientServer || !client) {
@@ -51,7 +51,11 @@ export class ClientResponseNode extends FunctionNode {
         }
         tempC[lastKey] = lastKey === 'disabled' ? !value : value
       } else {
-        tempC[lastKey] = clientServer[key]
+        if (lastKey === 'data') {
+          tempC[lastKey] = clientDepData
+        } else {
+          tempC[lastKey] = clientServer[key]
+        }
       }
     }
   }
