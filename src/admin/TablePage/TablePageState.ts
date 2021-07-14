@@ -11,6 +11,7 @@ export interface TablePage extends BaseState {
   filter?: FormState
   table?: TableState
   pagination?: PaginationState
+  data?: any
   card?: CardState
   dialogs?: { [name:string]: DialogState }
   list?: {

@@ -72,15 +72,20 @@ export interface ITagPageAction {
   method: string
 }
 
+export interface ITagUpdateAction {
+  read: ITagPageAction
+  write: ITagPageAction
+}
+
+export interface ITagPageOperation {
+  [key: string]: ITagPageAction | ITagUpdateAction | string 
+}
+
 export interface ITagPage {
   type: string
   init?: ITagPageAction
-  page?: { [key: string]: ITagPageAction | ITagUpdateAction | string }
-  item?: { [key: string]: ITagPageAction | ITagUpdateAction | string }
-}
-
-export interface ITagUpdateAction {
-  [ name: string ]: ITagPageAction
+  page?: ITagPageOperation
+  item?: ITagPageOperation
 }
 
 export interface ITag {

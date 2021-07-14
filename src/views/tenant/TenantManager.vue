@@ -14,22 +14,16 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import TablePage from '@/admin/TablePage/index.vue'
+import { Component, Prop } from 'vue-property-decorator'
 import { TenantModule } from '@/store/modules/tenant'
 import { runFlowByFile } from '@/arkfbp/index'
-import OpenAPI, { ITagPage } from '@/config/openapi'
-import { getInitContent } from '@/utils/schema'
 import { UserRole, UserModule } from '@/store/modules/user'
 
 @Component({
-  name: 'TenantManager',
-  components: {
-    TablePage
-  }
+  name: 'TenantManager'
 })
 export default class extends Vue {
-  isShow = true
+  isShow = false
   initCompleted = false
   isShowClose = false
 
@@ -47,11 +41,10 @@ export default class extends Vue {
 
   async created() {
     this.isShow = true
-    // 执行查看 TenantModule.currentTenant 当前的内容，如果不存在uuid，则设置isShowClose为false
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
     const currentPage = this.currentPage
-    await runFlowByFile('flows/basePage', {
+    await runFlowByFile('flows/initPage', {
       currentPage
     }).then(async(state) => {
       await runFlowByFile('flows/tenant/addButton', {

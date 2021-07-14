@@ -71,7 +71,7 @@ export class StateNode extends FunctionNode {
       if (key === 'children') break
       const item = items![key]
       if (typeof item === 'string') {
-        await this.initAppointedPage(state, type, item, key, currentPage)
+        await this.initAppointedPage(state, type, item, key)
       } else {
         const action = (initContent.item![key] as ITagUpdateAction).read || initContent.item![key]
         const { path, method } = action
@@ -136,7 +136,11 @@ export class StateNode extends FunctionNode {
   initCardButtons(state: IPage, key: string, type: string, path: string, method: string, currentPage: string) {
     const btn = generateButton(key, path, method, currentPage, type)
     if (!btn) return
-    state.card?.buttons!.push(btn)
+    if (type === 'FormPage') {
+      state.bottomButtons!.push(btn)
+    } else {
+      state.card?.buttons!.push(btn)
+    } 
   }
 
   // type => page type( TablePage, FormPage, TreePage )
@@ -208,7 +212,7 @@ export class StateNode extends FunctionNode {
     state.table?.columns?.push(columnSort)
   }
 
-  async initAppointedPage(state: IPage, type: string, page: string, key: string, currentPage: string) {
+  async initAppointedPage(state: IPage, type: string, page: string, key: string) {
     const initContent = getInitContent(page)
     if (!initContent) return null
     const initAction = (initContent! as ITagPage).init
@@ -218,7 +222,7 @@ export class StateNode extends FunctionNode {
     this.initItemButtons(state, key, type, path, method, page)
     addItemAction(state, path, method, key)
     const res = await runFlowByFile('flows/basePage', {
-      page,
+      currentPage: page,
       initContent
     })
     state.dialogs![key] = {

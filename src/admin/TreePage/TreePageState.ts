@@ -6,7 +6,8 @@ import ListItemState from '@/admin/common/data/List/ListState'
 import { IFlow } from '@/arkfbp'
 
 export interface TreePage extends BaseState {
-  card?: CardState,
+  card?: CardState
+  data?: any
   tree?: TreeState
   dialogs?: { [dialogName: string]: DialogState }
   list?: {
