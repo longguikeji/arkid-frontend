@@ -29,21 +29,11 @@ export default class OpenAPI {
       throw Error("can't find schema in components by ref: " + ref)
     }
   }
-  
-  public getAllTags() {
-    return this.config?.tags || []
-  }
 
-  public getOneTagInfo(name: string) {
-    let tagInfo: any = null
-    if (this.config?.tags) {
-      this.config?.tags.forEach(tag => {
-        if (tag.name === name) {
-          tagInfo = tag
-        }
-      })
-    }
-    return tagInfo
+  public getOnePageTagInfo(name: string): ITag | undefined {
+    const tags = this.config?.tags as ITag[]
+    if (!tags?.length) return undefined
+    return tags.find(tag => tag.name === name)
   }
 }
 
@@ -78,22 +68,27 @@ export interface ITagPageAction {
   method: string
 }
 
+export interface ITagUpdateAction {
+  read: ITagPageAction
+  write: ITagPageAction
+}
+
+export interface ITagPageOperation {
+  [key: string]: ITagPageAction | ITagUpdateAction | string 
+}
+
 export interface ITagPage {
   type: string
   init?: ITagPageAction
-  page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
-  item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
-}
-
-export interface ITagInitUpdateAction {
-  [ name: string ]: ITagPageAction
+  page?: ITagPageOperation
+  item?: ITagPageOperation
 }
 
 export interface ITag {
   name: string
   description?: string
   externalDocs?: IExternalDocs
-  page?: ITagPage
+  page?: ITagPage | ITagPage[]
 }
 
 // export interface IExample {}

@@ -6,9 +6,17 @@ export class Upload extends AuthApiNode {
   async run() {
     const com = this.inputs.com
     const state = getDataByPath(com.$store.state, com.path)
-    if (state.file) {
+    const fileData = this.inputs.data
+    const file = fileData.file
+    if (state.format === 'upload_file') {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (e: any) => {
+        com.state.value = e.target.result
+      }
+    } else if (state.format === 'upload_url') {
       let formData = new FormData();
-      formData.append("file", state.file);
+      formData.append("file", file)
       this.$state.commit((state) => {
         state.headers = {
           'Content-Type': 'multipart/form-data'

@@ -154,9 +154,9 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
         name: prop
       }
     }
-    if (prop === 'icon') {
+    if (schema.format === 'upload_url' || schema.format === 'upload_file') {
       item.state.type = 'link'
-      item.state.format = 'icon'
+      item.state.format = schema.format
     }
   } else if (schema.type === 'boolean') {
     item = {

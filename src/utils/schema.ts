@@ -30,10 +30,7 @@ export function getSchemaByContent(content: { [requestBodyType: string]: {schema
 
 
 export function getSchemaByPath(path: string, method: string): ISchema {
-  const operation = OpenAPI.instance.getOperation(path, method)
-  if (!operation) { throw new Error('not exist operation in OpenAPI') }
-  const responseOrRequest = method.toLowerCase() === 'get' ? true : false
-  const content = responseOrRequest ? operation.responses[200].content : operation.requestBody.content
+  const content = getContent(path, method)
   const schema = getSchemaByContent(content)
   return schema
 }
@@ -52,13 +49,4 @@ export function getApiRoles(path: string, method: string): string[] {
     return operation.roles
   }
   return []
-}
-
-export function getInitContent(page: string): ITagPage | Array<ITagPage> | undefined {
-  const tags = OpenAPI.instance.getAllTags()
-  for (let i = 0, l = tags.length; i < l; i++) {
-    if (tags[i].name === page) {
-      return tags[i].page
-    }
-  }
 }

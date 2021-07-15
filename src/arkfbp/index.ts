@@ -14,6 +14,7 @@ export interface IFlow {
   target?: string // 配置jump时跳转的目标页面
   path?: string // 用于组件之间的指向
   required?: any // 用于验证
+  data?: any
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -61,7 +62,8 @@ export async function runFlow (com: any, state: any, flow: IFlow) {
     target: args.target,
     path: args.path,
     com: com,
-    required: args.required
+    required: args.required,
+    data: data
   }
   // 对 request 请求参数进行解析处理
   if (args.request && !isEmptyObject(args.request)) {

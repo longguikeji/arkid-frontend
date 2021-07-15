@@ -11,6 +11,7 @@ export interface FormPage extends CardState {
   card?: CardState
   select?: SelectState
   forms?: {[value:string]: FormState}
-  bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
+  bottomButtons?: Array<ButtonState>
   actions?: { [name: string]: (IFlow | string)[] }
+  data?: any
 }
