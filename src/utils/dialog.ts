@@ -326,3 +326,7 @@ export function isFillOldPassword(path: string, method: string): boolean {
   }
   return isFill
 }
+
+export function addGlobalAction() {
+  
+}

@@ -1,24 +1,38 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPageAction } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPageAction, ITagPageOperation } from '@/config/openapi'
 import { getContent } from '@/utils/schema'
 import { ITagPage, ITagUpdateAction } from '@/config/openapi'
 import { BasePage, IPage } from './pageNode'
 import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
 import { getActionMapping } from '@/utils/generate-action'
 
+const GLOBAL_ACTION_FLOW = {
+  create: 'arkfbp/flows/assign',
+  import: 'arkfbp/flows/assign',
+  export: 'arkfbp/flows/export',
+  password: 'arkfbp/flows/fetch'
+}
+
+const GLOBAL_ACTION_NAME = {
+  create: 'openCreateDialog',
+  import: 'openImportDialog',
+  export: 'export',
+  password: 'password'
+}
+
 export class ActionNode extends FunctionNode {
   
   async run() {
-    const { state, initContent } = this.inputs
-    this.initPageFetchAction(state, initContent.init)
-    this.initPageOperationAction(state, initContent)
+    const { state: pageState, initContent } = this.inputs
+    const { state, type } = pageState
+    this.initPageFetchAction(state, type, initContent.init)
+    this.initPageOperationAction(state, type, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(pageState: BasePage, initAction: ITagPageAction) {
+  initPageFetchAction(state: IPage, type: string, initAction: ITagPageAction) {
     const { path, method } = initAction
     const content = getContent(path, method)
-    const { type, state } = pageState
     switch (type) {
       case 'TablePage':
         this.initTablePageFetchAction(state, path, method, content)
@@ -81,8 +95,14 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(pageState: BasePage, initContent: ITagPage) {
-    const { state } = pageState
+  initPageOperationAction(state: IPage, type: string, initContent: ITagPage) {
+    // const { page, item } = initContent
+    // if (page) {
+    //   this.initGlobalOperationAction(state, type, page)
+    // }
+    // if (item) {
+    //   this.initLocalOperationAction(state, type, item)
+    // }
     if (initContent.page) {
       Object.keys(initContent.page).forEach(key => {
         let action = (initContent.page![key] as ITagUpdateAction).read || initContent.page![key]
@@ -112,6 +132,36 @@ export class ActionNode extends FunctionNode {
       })
     }
   }
+
+  // initGlobalOperationAction(state: IPage, type: string, operations: ITagPageOperation) {
+  //   for (const key in operations) {
+  //     const operation = operations[key]
+  //     const { path, method } = operation as ITagPageAction
+  //     this.addGlobalAction()
+  //     this.addDialogAction()
+  //     debugger
+  //   }
+  // }
+
+  // initLocalOperationAction(state: IPage, type: string, operations: ITagPageOperation) {
+
+  // }
+
+  // addGlobalAction() {
+
+  // }
+
+  // addLocalAction() {
+
+  // }
+
+  // addDialogAction() {
+
+  // }
+
+  // addSortAction() {
+
+  // }
 
   getFetchActionPropsBySchema(path: string, method: string) {
     const content = getContent(path, method)
