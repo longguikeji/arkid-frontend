@@ -65,8 +65,8 @@ export function addSlugToUrl(com?: any) {
   if (!slug || slug === oldSlug) {
     if (com) {
       com.$message({
-        message: !slug ? '短连接不存在' : '当前短连接与切换短连接相同',
-        type: 'warning',
+        message: !slug ? '短连接不存在' : '当前短连接标识与切换短连接标识相同',
+        type: 'info',
         showClose: true
       })
     }

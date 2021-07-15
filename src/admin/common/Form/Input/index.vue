@@ -67,8 +67,8 @@ export default class extends Mixins(BaseVue) {
   }
 
   onBlur() {
-    const { name, value, format, hint, required } = this.state
-    this.hint = validate(value, name, format, hint, required)
+    const { name, value, format, hint, required, pattern } = this.state
+    this.hint = validate(value, name, format, hint, required, pattern)
   }
 
   async upload(data: any) {

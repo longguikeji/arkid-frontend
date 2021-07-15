@@ -2,23 +2,9 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import OpenAPI, { ISchema, ITagPageAction, ITagPageOperation } from '@/config/openapi'
 import { getContent } from '@/utils/schema'
 import { ITagPage, ITagUpdateAction } from '@/config/openapi'
-import { BasePage, IPage } from './pageNode'
-import { addDialogAction, addItemAction, addCardAction, addChildrenAction, addSortAction } from '@/utils/dialog'
+import { IPage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
-
-const GLOBAL_ACTION_FLOW = {
-  create: 'arkfbp/flows/assign',
-  import: 'arkfbp/flows/assign',
-  export: 'arkfbp/flows/export',
-  password: 'arkfbp/flows/fetch'
-}
-
-const GLOBAL_ACTION_NAME = {
-  create: 'openCreateDialog',
-  import: 'openImportDialog',
-  export: 'export',
-  password: 'password'
-}
+import { addGlobalExportAction, addGlobalPasswordAction, addDeleteAction, addOtherGlobalAction, addDialogAction, addLocalSortAction, addLocalChildrenAction, addOtherLocalAction } from '@/utils/state-action'
 
 export class ActionNode extends FunctionNode {
   
@@ -30,22 +16,21 @@ export class ActionNode extends FunctionNode {
     return this.inputs
   }
 
-  initPageFetchAction(state: IPage, type: string, initAction: ITagPageAction) {
+  initPageFetchAction(state: IPage, pageType: string, initAction: ITagPageAction) {
     const { path, method } = initAction
-    const content = getContent(path, method)
-    switch (type) {
+    switch (pageType) {
       case 'TablePage':
-        this.initTablePageFetchAction(state, path, method, content)
+        this.initTablePageFetchAction(state, path, method)
         break
       case 'FormPage':
         this.initFormPageFetchAction(state, path, method)
         break
       case 'TreePage':
-        this.initTreePageFetchAction(state, path, method, content)
+        this.initTreePageFetchAction(state, path, method)
     }
   }
 
-  initTablePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTablePageFetchAction(state: IPage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {},
           request = {}
@@ -72,7 +57,7 @@ export class ActionNode extends FunctionNode {
     this.addFetchAction(state, path, method, mapping)
   }
 
-  initTreePageFetchAction(state: IPage, path: string, method: string, content: { [contentType: string]: {schema: ISchema} }) {
+  initTreePageFetchAction(state: IPage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {}
     response['tree.data'] = props.data
@@ -95,73 +80,66 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(state: IPage, type: string, initContent: ITagPage) {
-    // const { page, item } = initContent
-    // if (page) {
-    //   this.initGlobalOperationAction(state, type, page)
-    // }
-    // if (item) {
-    //   this.initLocalOperationAction(state, type, item)
-    // }
-    if (initContent.page) {
-      Object.keys(initContent.page).forEach(key => {
-        let action = (initContent.page![key] as ITagUpdateAction).read || initContent.page![key]
-        addCardAction(state, action.path, action.method, key)
-        action = (initContent.page![key] as ITagUpdateAction).write || initContent.page![key]
-        addDialogAction(state, action.path, action.method, key)
-      })
+  initPageOperationAction(state: IPage, pageType: string, initContent: ITagPage) {
+    const { page, item } = initContent
+    if (page) {
+      this.initGlobalOperationAction(state, page, pageType)
     }
-    if (initContent.item) {
-      Object.keys(initContent.item).forEach(key => {
-        const item = initContent.item![key]
-        if (typeof item !== 'string') {
-          let action = (initContent.item![key] as ITagUpdateAction).read || initContent.item![key]
-          switch (key) {
-            case 'sort':
-              addSortAction(state, action)
-              break
-            case 'children':
-              addChildrenAction(state, action.path, action.method)
-              break
-            default:
-              addItemAction(state, action.path, action.method, key)
-              action = (initContent.item![key] as ITagUpdateAction).write || initContent.item![key]
-              addDialogAction(state, action.path, action.method, key)
-          }
-        }
-      })
+    if (item) {
+      this.initLocalOperationAction(state, item)
     }
   }
 
-  // initGlobalOperationAction(state: IPage, type: string, operations: ITagPageOperation) {
-  //   for (const key in operations) {
-  //     const operation = operations[key]
-  //     const { path, method } = operation as ITagPageAction
-  //     this.addGlobalAction()
-  //     this.addDialogAction()
-  //     debugger
-  //   }
-  // }
+  initGlobalOperationAction(state: IPage, operations: ITagPageOperation, pageType: string) {
+    for (const key in operations) {
+      const operation = operations[key]
+      if (typeof operation !== 'string') {
+        let action = (operation as ITagUpdateAction).read || operation
+        const { path, method } = action
+        switch (key) {
+          case 'export':
+            addGlobalExportAction(state, path, method, key)
+            break
+          case 'password':
+            addGlobalPasswordAction(state, key)
+            break
+          case 'delete':
+            addDeleteAction(state, path, method, key)
+            break
+          default:
+            addOtherGlobalAction(state, path, method, key, pageType)
+        }
+        action = (operation as ITagUpdateAction).write || operation
+        addDialogAction(state, action.path, action.method, key)
+      }
+    }
+  }
 
-  // initLocalOperationAction(state: IPage, type: string, operations: ITagPageOperation) {
-
-  // }
-
-  // addGlobalAction() {
-
-  // }
-
-  // addLocalAction() {
-
-  // }
-
-  // addDialogAction() {
-
-  // }
-
-  // addSortAction() {
-
-  // }
+  initLocalOperationAction(state: IPage, operations: ITagPageOperation) {
+    for (const key in operations) {
+      const operation = operations[key]
+      if (typeof operation !== 'string') {
+        let action = (operation as ITagUpdateAction).read || operation
+        const { path, method } = action
+        switch (key) {
+          case 'sort':
+            addLocalSortAction(state, operation as ITagUpdateAction)
+            break
+          case 'children':
+            addLocalChildrenAction(state, path, method)
+            break
+          case 'delete':
+          case 'retry':
+            addDeleteAction(state, path, method, key)
+            break
+          default:
+            addOtherLocalAction(state, path, method, key)
+            action = (operation as ITagUpdateAction).write || operation
+            addDialogAction(state, action.path, action.method, key)
+        }
+      }
+    }
+  }
 
   getFetchActionPropsBySchema(path: string, method: string) {
     const content = getContent(path, method)
@@ -174,7 +152,7 @@ export class ActionNode extends FunctionNode {
     if (res.properties) {
       const properties = res.properties
       props.pagination = properties.count ? 'count' : ''
-      props.data = properties.results ? 'results' : props.data ? 'data' : ''
+      props.data = properties.results ? 'results' : properties.data ? 'data' : ''
     }
     return props
   }

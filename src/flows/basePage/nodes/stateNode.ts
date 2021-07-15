@@ -4,10 +4,11 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
-import { generateDialogState, generateButton, addItemAction } from '@/utils/dialog'
+import { generateDialogState, generateButton, addOtherLocalAction } from '@/utils/state-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { runFlowByFile } from '@/arkfbp/index'
+import { UserModule, UserRole } from '@/store/modules/user'
 
 export class StateNode extends FunctionNode {
 
@@ -79,7 +80,7 @@ export class StateNode extends FunctionNode {
   initDialogState(state: IPage, path: string, method: string, key: string, currentPage: string) {
     if (!path || !method) return
     if (!state.dialogs) state.dialogs = {}
-    const dialogState = generateDialogState(path, method, key, currentPage) // showReadOnly
+    const dialogState = generateDialogState(path, method, key, currentPage)
     if (dialogState) {
       state.dialogs![key] = dialogState
       const importListDialog = whetherImportListDialog(dialogState.state.state)
@@ -110,8 +111,7 @@ export class StateNode extends FunctionNode {
   }
 
   initFormMainState(state: IPage, schema: ISchema) {
-    const showReadOnly = true, showWriteOnly = true
-    const disabled = true
+    const showReadOnly = false, showWriteOnly = false, disabled = true
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
     if (form) {
       if (!state.form) {
@@ -206,7 +206,7 @@ export class StateNode extends FunctionNode {
     const btn = generateButton(key, path, method, page, type)
     if (!btn) return null
     this.addLocalButton(state, type, btn)
-    addItemAction(state, path, method, key)
+    addOtherLocalAction(state, path, method, key)
     const res = await runFlowByFile('flows/basePage', {
       currentPage: page,
       initContent,
@@ -218,5 +218,4 @@ export class StateNode extends FunctionNode {
       visible: false
     }
   }
-
 }
