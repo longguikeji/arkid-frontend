@@ -8,8 +8,7 @@ import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 import getBaseUrl from '@/utils/get-base-url'
 
-export default function getUrl(currentUrl: string, data: any = {}, page: string = '') {
-  let url = currentUrl
+export default function getUrl(url: string, data: any = {}, page: string = '') {
   if (url.indexOf('{') !== -1) {
     let property = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
     if (page === 'tenant_config') property = 'tenant_uuid'

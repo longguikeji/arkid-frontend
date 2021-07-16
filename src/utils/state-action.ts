@@ -114,7 +114,7 @@ export function generateDialogState(path: string, method: string, key: string, c
   const dialogType = DIALOG_TYPE[key]
   if (!dialogType) return null
   const showReadOnly = PAGE_READONLY_TRUE[currentPage] || false
-  const showWriteOnly = false, disabled = key === 'retrieve' ? true : false
+  const showWriteOnly = true, disabled = key === 'retrieve' ? true : false
   const schema = getSchemaByPath(path, method)
   const dialogState: DialogState = {}
   dialogState.title = BUTTON_LABEL[key]
