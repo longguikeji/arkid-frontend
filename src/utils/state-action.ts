@@ -1,10 +1,10 @@
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { getSchemaByPath, getApiRoles, getContent } from '@/utils/schema'
 import generateForm from '@/utils/form'
-import { IPage} from '@/flows/basePage/nodes/pageNode'
+import { BasePage } from '@/flows/basePage/nodes/pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import OpenAPI, { ITagPageAction, ITagUpdateAction, ISchema } from '@/config/openapi'
+import OpenAPI, { ITagPageAction, ISchema, ITagPageMultiAction } from '@/config/openapi'
 import { UserModule, UserRole } from '@/store/modules/user'
 
 const BUTTON_LABEL = {
@@ -96,7 +96,7 @@ const getButtonType = (key: string, pageType: string) => {
   }
 }
 
-export function generateButton(key: string, path: string, method: string, currentPage: string, pageType: string, isDialog?: boolean): ButtonState | null {
+export function generateButton(key: string, currentPage: string, pageType: string, isDialog?: boolean): ButtonState | null {
   // const apiRoles = getApiRoles(path, method)
   // const userRole = UserModule.role
   // if (!apiRoles.includes(userRole) && userRole !== UserRole.Platform && currentPage !== 'tenant') return null
@@ -121,7 +121,7 @@ export function generateDialogState(path: string, method: string, key: string, c
   dialogState.visible = false
   dialogState.data = {}
   if (dialogType !== 'Password' && key !== 'retrieve') {
-    const btn = generateButton(key, path, method, currentPage, '', true)
+    const btn = generateButton(key, currentPage, '', true)
     if (!btn) return null
     if (!dialogState.buttons?.length) dialogState.buttons = []
     dialogState.buttons.push(btn)
@@ -155,7 +155,7 @@ export function generateDialogState(path: string, method: string, key: string, c
   return dialogState
 }
 
-export function addGlobalExportAction(state: IPage, path: string, method: string, key: string) {
+export function addGlobalExportAction(state: BasePage, path: string, method: string, key: string) {
   const actionName = BUTTON_ACTION_NAME[key], flowName = BUTTON_ACTION_FLOW[key]
   state.actions![actionName] = [
     {
@@ -166,7 +166,7 @@ export function addGlobalExportAction(state: IPage, path: string, method: string
   ]
 }
 
-export function addGlobalPasswordAction(state: IPage, key: string) {
+export function addGlobalPasswordAction(state: BasePage, key: string) {
   const actionName = BUTTON_ACTION_NAME[key], flowName = BUTTON_ACTION_FLOW[key]
   state.actions![actionName] = [
     {
@@ -178,7 +178,7 @@ export function addGlobalPasswordAction(state: IPage, key: string) {
   ]
 }
 
-export function addDeleteAction(state: IPage, path: string, method: string, key: string) {
+export function addDeleteAction(state: BasePage, path: string, method: string, key: string) {
   const actionName = BUTTON_ACTION_NAME[key], flowName = BUTTON_ACTION_FLOW[key]
   state.actions![actionName] = [
     {
@@ -190,7 +190,7 @@ export function addDeleteAction(state: IPage, path: string, method: string, key:
   if (method !== 'get') state.actions![actionName].push('fetch')
 }
 
-export function addOtherGlobalAction(state: IPage, path: string, method: string, key: string, pageType: string) {
+export function addOtherGlobalAction(state: BasePage, path: string, method: string, key: string, pageType: string) {
   const actionName = BUTTON_ACTION_NAME[key], flowName = BUTTON_ACTION_FLOW[key]
   const targetPrefix = `dialogs.${key}.state.state.`,
         isResponse = true,
@@ -217,7 +217,7 @@ export function addOtherGlobalAction(state: IPage, path: string, method: string,
   ]
 }
 
-export function addDialogAction(state: IPage, path: string, method: string, key: string) {
+export function addDialogAction(state: BasePage, path: string, method: string, key: string) {
   const actionName = DIALOG_ACTION_NAME[key], flowName = DIALOG_ACTION_FLOW[key]
   if (!actionName || !flowName) return
   switch (key) {
@@ -229,7 +229,7 @@ export function addDialogAction(state: IPage, path: string, method: string, key:
   }
 }
 
-export function addImportDialogAction(state: IPage, path: string, method: string, actionName: string, flowName: string) {
+export function addImportDialogAction(state: BasePage, path: string, method: string, actionName: string, flowName: string) {
   state.actions![actionName] = [
     {
       name: flowName,
@@ -249,7 +249,7 @@ export function addImportDialogAction(state: IPage, path: string, method: string
   ]
 }
 
-export function addOtherDialogAction(state: IPage, path: string, method: string, actionName: string, flowName: string, key: string) {
+export function addOtherDialogAction(state: BasePage, path: string, method: string, actionName: string, flowName: string, key: string) {
   const targetPrefix = `dialogs.${key}.state.state.`,
         isResponse = false
   const { mapping, required } = getActionMapping(path, method, targetPrefix, isResponse)
@@ -277,7 +277,7 @@ export function addOtherDialogAction(state: IPage, path: string, method: string,
   ]
 }
 
-export function addLocalSortAction(state: IPage, action: ITagUpdateAction) {
+export function addLocalSortAction(state: BasePage, action: ITagPageMultiAction) {
   Object.keys(action).forEach((sortName) => {
     const url = action[sortName].path
     const method = action[sortName].method
@@ -299,7 +299,7 @@ export function addLocalSortAction(state: IPage, action: ITagUpdateAction) {
   })
 }
 
-export function addLocalChildrenAction(state: IPage, path: string, method: string) {
+export function addLocalChildrenAction(state: BasePage, path: string, method: string) {
   state.tree!.action = 'fetchTreeNode'
   state.actions!.fetchTreeNode = [
     {
@@ -310,7 +310,7 @@ export function addLocalChildrenAction(state: IPage, path: string, method: strin
   ]
 }
 
-export function addOtherLocalAction(state: IPage, path: string, method: string, key: string) {
+export function addOtherLocalAction(state: BasePage, path: string, method: string, key: string) {
   const actionName = BUTTON_ACTION_NAME[key]
   const flowName = BUTTON_ACTION_FLOW[key]
   const type = DIALOG_TYPE[key]

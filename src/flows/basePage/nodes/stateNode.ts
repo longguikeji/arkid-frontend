@@ -1,17 +1,17 @@
-import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagUpdateAction, ITagPageOperation } from '@/config/openapi'
-import { getSchemaByPath } from '@/utils/schema'
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { BasePage, IPage } from '@/flows/basePage//nodes/pageNode'
+import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageOperation, ITagPageMultiAction } from '@/config/openapi'
+import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+import { getSchemaByPath } from '@/utils/schema'
+import { BasePage } from '@/flows/basePage/nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
-import { generateDialogState, generateButton, addOtherLocalAction } from '@/utils/state-action'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { runFlowByFile } from '@/arkfbp/index'
-import { UserModule, UserRole } from '@/store/modules/user'
+import { BUTTON_LABEL } from '@/constants/button.ts'
+import { firstToUpperCase } from '@/utils/common'
 
 export class StateNode extends FunctionNode {
-
   async run() {
     const { initContent, state, currentPage, description } = this.inputs
     this.initPageMainState(state, initContent.init, description)
@@ -19,7 +19,7 @@ export class StateNode extends FunctionNode {
     return this.inputs
   }
 
-  initPageMainState(pageState: BasePage, operation: ITagPageAction, description?: string) {
+  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, description?: string) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
@@ -34,72 +34,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initPageOperationState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
-    const { page, item } = initContent
-    if (page) {
-      this.initGlobalOperationState(pageState, page, currentPage)
-    }
-    if (item) {
-      await this.initLocalOperationState(pageState, item, currentPage)
-    }
-  }
-
-  initGlobalOperationState(pageState: BasePage, operations: ITagPageOperation, currentPage: string) {
-    const { state, type } = pageState
-    for (const key in operations) {
-      const operation = operations[key]
-      const { path, method } = (operation as ITagUpdateAction).read || operation
-      const btn = generateButton(key, path, method, currentPage, type)
-      if (!btn) continue
-      this.addGlobalButton(state, type, btn)
-      this.initDialogState(state, path, method, key, currentPage)
-    }
-  }
-
-  async initLocalOperationState(pageState: BasePage, operations: ITagPageOperation, currentPage: string) {
-    const { state, type } = pageState
-    for (const key in operations) {
-      if (key === 'children') continue
-      const operation = operations[key]
-      if (typeof operation === 'string') {
-        await this.initAppointedPage(state, type, operation, key)
-      } else {
-        const { path, method } = (operation as ITagUpdateAction).read || operation
-        if (key === 'sort') {
-          this.addSortButton(state, operation)
-        } else {
-          const btn = generateButton(key, path, method, currentPage, type)
-          if (!btn) continue
-          this.addLocalButton(state, type, btn)
-        }
-        this.initDialogState(state, path, method, key, currentPage)
-      }
-    }
-  }
-
-  initDialogState(state: IPage, path: string, method: string, key: string, currentPage: string) {
-    if (!path || !method) return
-    if (!state.dialogs) state.dialogs = {}
-    const dialogState = generateDialogState(path, method, key, currentPage)
-    if (dialogState) {
-      state.dialogs![key] = dialogState
-      const importListDialog = whetherImportListDialog(dialogState.state.state)
-      if (importListDialog) {
-        state.dialogs![key].state.state.dialogs = {
-          selected: importListDialog
-        }
-        state.dialogs![key].state.state.actions = {
-          initInputList: [
-            {
-              name: 'flows/list/initInputList'
-            }
-          ]
-        }
-      }  
-    }
-  }
-
-  initTableMainState(state: IPage, schema: ISchema) {
+  initTableMainState(state: BasePage, schema: ISchema) {
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const columnState: TableColumnState = {
@@ -110,9 +45,10 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initFormMainState(state: IPage, schema: ISchema) {
-    const showReadOnly = false, showWriteOnly = false, disabled = true
+  initFormMainState(state: BasePage, schema: ISchema) {
+    const showReadOnly = true, showWriteOnly = true, disabled = false // to set according to the current page
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
+    // to fix when you fix the form page component
     if (form) {
       if (!state.form) {
         state.form = { items: {}, inline: false }
@@ -124,7 +60,52 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  addGlobalButton(state: IPage, type: string, button: ButtonState) {
+  async initPageOperationState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+    const { page, item } = initContent
+    if (page) await this.initGlobalOperationState(pageState, page, currentPage)
+    if (item) await this.initLocalOperationState(pageState, item, currentPage)
+  }
+
+  async initGlobalOperationState(pageState: AdminComponentState, operations: ITagPageOperation, currentPage: string) {
+    const { state, type } = pageState
+    for (const key in operations) {
+      const operation = operations[key]
+      let button: ButtonState | null = null
+      if ((operation as ITagPageMapping).tag) {
+        const tag = (operation as ITagPageMapping).tag
+        await this.initAppointedPage(state, tag, key)
+        button = this.generateButtonState(key, tag, type, true)
+      } else {
+        button = this.generateButtonState(key, currentPage, type, false)
+      }
+      if (!button) return
+      this.addGlobalButton(state, type as string, button)
+    }
+  }
+
+  async initLocalOperationState(pageState: AdminComponentState, operations: ITagPageOperation, currentPage: string) {
+    const { state, type } = pageState
+    for (const key in operations) {
+      if (key === 'children') continue
+      const operation = operations[key]
+      if (key === 'sort') {
+        this.addSortButton(state, operation as ITagPageMultiAction)
+      } else {
+        let button: ButtonState | null = null
+        if ((operation as ITagPageMapping).tag) {
+          const tag = (operation as ITagPageMapping).tag
+          await this.initAppointedPage(state, tag, key)
+          button = this.generateButtonState(key, tag, type, true)
+        } else {
+          button = this.generateButtonState(key , currentPage, type, false)
+        }
+        if (!button) return
+        this.addLocalButton(state, type as string, button)
+      }
+    }
+  }
+
+  addGlobalButton(state: BasePage, type: string, button: ButtonState) {
     if (type === 'FormPage') {
       state.bottomButtons?.push(button)
     } else {
@@ -132,7 +113,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  addLocalButton(state: IPage, type: string, button: ButtonState) {
+  addLocalButton(state: BasePage, type: string, button: ButtonState) {
     if (type === 'TablePage') {
       this.addTableLocalButton(state, button)
     } else if (type === 'TreePage') {
@@ -140,7 +121,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  addSortButton(state: IPage, operation: ITagUpdateAction | ITagPageAction) {
+  addSortButton(state: BasePage, operation: ITagPageMultiAction) {
     const columnSort = {
       prop: 'sort',
       label: '排序',
@@ -164,7 +145,7 @@ export class StateNode extends FunctionNode {
     state.table?.columns?.push(columnSort)
   }
 
-  addTableLocalButton(state: IPage, button: ButtonState) {
+  addTableLocalButton(state: BasePage, button: ButtonState) {
     const columns = state.table!.columns
     const len = columns?.length as number
     if (columns![len - 1].prop !== 'actions') {
@@ -184,7 +165,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  addTreeLocalButton(state: IPage, button: ButtonState) {
+  addTreeLocalButton(state: BasePage, button: ButtonState) {
     if (!state.tree?.slot) {
       state.tree!.slot = {
         buttons: {
@@ -196,26 +177,23 @@ export class StateNode extends FunctionNode {
     state.tree!.slot.buttons.state.push(button)
   }
 
-  async initAppointedPage(state: IPage, type: string, page: string, key: string) {
-    const pageTagInfo = OpenAPI.instance.getOnePageTagInfo(page)
-    if (!pageTagInfo) return null
-    const { page: initContent, description } = pageTagInfo
-    if (!initContent) return null
-    const initAction = (initContent! as ITagPage).init
-    const { path, method } = initAction as ITagPageAction
-    const btn = generateButton(key, path, method, page, type)
-    if (!btn) return null
-    this.addLocalButton(state, type, btn)
-    addOtherLocalAction(state, path, method, key)
-    const res = await runFlowByFile('flows/basePage', {
-      currentPage: page,
-      initContent,
-      description
-    })
+  // to get new page state
+  async initAppointedPage(state: BasePage, currentPage: string, key: string) {
+    const res = await runFlowByFile('flows/initPage', { currentPage })
     state.dialogs![key] = {
-      state: res.state,
-      title: '',
-      visible: false
+      visible: false,
+      state: res
     }
   }
+
+  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean): ButtonState | null {
+    return {
+      label: BUTTON_LABEL[key],
+      action: isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key,
+      type: pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' ),
+      disabled: key === 'export' ? true : false,
+      hint: currentPage === 'tenant_config' ? '删除后将彻底无法恢复' : undefined
+    }
+  }
+
 }

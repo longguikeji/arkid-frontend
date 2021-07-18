@@ -1,6 +1,6 @@
 <template>
   <Card
-    :path="getChildPath('')"
+    :path="getChildPath('card')"
     class="form-page"
   >
     <Select

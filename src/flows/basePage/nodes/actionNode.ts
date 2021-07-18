@@ -1,24 +1,23 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPageAction, ITagPageOperation } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPage, ITagPageOperation, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
+import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { getContent } from '@/utils/schema'
-import { ITagPage, ITagUpdateAction } from '@/config/openapi'
-import { IPage } from './pageNode'
+import { BasePage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
-import { addGlobalExportAction, addGlobalPasswordAction, addDeleteAction, addOtherGlobalAction, addDialogAction, addLocalSortAction, addLocalChildrenAction, addOtherLocalAction } from '@/utils/state-action'
+import { firstToUpperCase } from '@/utils/common'
 
 export class ActionNode extends FunctionNode {
-  
   async run() {
-    const { state: pageState, initContent } = this.inputs
-    const { state, type } = pageState
-    this.initPageFetchAction(state, type, initContent.init)
-    this.initPageOperationAction(state, type, initContent)
+    const { state, initContent } = this.inputs
+    this.initPageFetchAction(state, initContent.init)
+    this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(state: IPage, pageType: string, initAction: ITagPageAction) {
+  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
     const { path, method } = initAction
-    switch (pageType) {
+    const { state, type } = pageState
+    switch (type) {
       case 'TablePage':
         this.initTablePageFetchAction(state, path, method)
         break
@@ -30,7 +29,7 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  initTablePageFetchAction(state: IPage, path: string, method: string) {
+  initTablePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {},
           request = {}
@@ -50,14 +49,14 @@ export class ActionNode extends FunctionNode {
     this.addFetchAction(state, path, method, response, request)
   }
 
-  initFormPageFetchAction(state: IPage, path: string, method: string) {
+  initFormPageFetchAction(state: BasePage, path: string, method: string) {
     const isResponse = true
     const target = ''
     const { mapping } = getActionMapping(path, method, target, isResponse)
     this.addFetchAction(state, path, method, mapping)
   }
 
-  initTreePageFetchAction(state: IPage, path: string, method: string) {
+  initTreePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {}
     response['tree.data'] = props.data
@@ -65,11 +64,8 @@ export class ActionNode extends FunctionNode {
     this.addFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }
 
-  addFetchAction(state: IPage, path: string, method: string, response?: any, request?: any, flowName?: string) {
-    state.created = 'created'
-    if (!state.actions) state.actions = {}
-    state.actions!.created.push('fetch')
-    state.actions.fetch = [
+  addFetchAction(state: BasePage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+    state.actions!.fetch = [
       {
         name: flowName ? flowName : 'arkfbp/flows/fetch',
         url: path,
@@ -80,65 +76,132 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(state: IPage, pageType: string, initContent: ITagPage) {
+  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage) {
     const { page, item } = initContent
     if (page) {
-      this.initGlobalOperationAction(state, page, pageType)
+      this.initGlobalOperationAction(pageState, page)
     }
     if (item) {
-      this.initLocalOperationAction(state, item)
+      this.initLocalOperationAction(pageState, item)
     }
   }
 
-  initGlobalOperationAction(state: IPage, operations: ITagPageOperation, pageType: string) {
+  initGlobalOperationAction(pageState: AdminComponentState, operations: ITagPageOperation) {
+    const { state } = pageState
     for (const key in operations) {
       const operation = operations[key]
-      if (typeof operation !== 'string') {
-        let action = (operation as ITagUpdateAction).read || operation
-        const { path, method } = action
+      if ((operation as ITagPageMapping).tag) {
+        this.addOpenPageAction(state, key)
+      } else {
+        const { path, method } = operation as ITagPageAction
         switch (key) {
           case 'export':
-            addGlobalExportAction(state, path, method, key)
-            break
-          case 'password':
-            addGlobalPasswordAction(state, key)
+            this.addGlobalExportAction(state, path, method)
             break
           case 'delete':
-            addDeleteAction(state, path, method, key)
+            this.addDirectAction(state, path, method, key)
             break
           default:
-            addOtherGlobalAction(state, path, method, key, pageType)
+            this.addOpenPageAction(state, key)
         }
-        action = (operation as ITagUpdateAction).write || operation
-        addDialogAction(state, action.path, action.method, key)
       }
     }
   }
 
-  initLocalOperationAction(state: IPage, operations: ITagPageOperation) {
+  initLocalOperationAction(pageState: AdminComponentState, operations: ITagPageOperation) {
+    const { state, type } = pageState
     for (const key in operations) {
       const operation = operations[key]
-      if (typeof operation !== 'string') {
-        let action = (operation as ITagUpdateAction).read || operation
-        const { path, method } = action
+      if ((operation as ITagPageMapping).tag) {
+        this.addOpenPageAction(state, key)
+      } else {
+        const { path, method } = operation as ITagPageAction
         switch (key) {
-          case 'sort':
-            addLocalSortAction(state, operation as ITagUpdateAction)
-            break
           case 'children':
-            addLocalChildrenAction(state, path, method)
+            this.addLocalChildrenAction(state, path, method)
+            break
+          case 'sort':
+            this.addLocalSortAction(state, operation as ITagPageMultiAction)
             break
           case 'delete':
           case 'retry':
-            addDeleteAction(state, path, method, key)
+            this.addDirectAction(state, path, method, key)
             break
           default:
-            addOtherLocalAction(state, path, method, key)
-            action = (operation as ITagUpdateAction).write || operation
-            addDialogAction(state, action.path, action.method, key)
+            this.addOpenPageAction(state, key)
         }
       }
     }
+  }
+
+  addOpenPageAction(state: BasePage, key: string) {
+    const actionName = `open${firstToUpperCase(key)}Dialog`
+    state.actions![actionName] = [
+      {
+        name: 'arkfbp/flows/cancelValidate' 
+      },
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          [`dialogs.${key}.visible`]: true,
+          [`dialogs.${key}.state.state.data`]: ''
+        }
+      }
+    ]
+  }
+
+  addGlobalExportAction(state: BasePage, path: string, method: string) {
+    state.actions!['export'] = [
+      {
+        name: 'arkfbp/flows/export',
+        url: path,
+        method
+      }
+    ]
+  }
+
+  addDirectAction(state: BasePage, path: string, method: string, key: string) {
+    state.actions![key] = [
+      {
+        name: 'arkfbp/flows/update',
+        url: path,
+        method
+      }
+    ]
+    if (method !== 'get') state.actions![key].push('fetch')
+  }
+
+  addLocalChildrenAction(state: BasePage, path: string, method: string) {
+    state.tree!.action = 'fetchTreeNode'
+    state.actions!.fetchTreeNode = [
+      {
+        name: "arkfbp/flows/fetchTreeNode",
+        url: path,
+        method: method
+      }
+    ]
+  }
+
+  addLocalSortAction(state: BasePage, operation: ITagPageMultiAction) {
+    Object.keys(operation).forEach((sortName) => {
+      const url = operation[sortName].path
+      const method = operation[sortName].method
+      const actionName = 'sortBy' + sortName
+      state.actions![actionName] = [
+        {
+          name: 'arkfbp/flows/sort',
+          url: url,
+          method: method,
+          request: sortName === 'batch' ? {
+            idps: {
+              key: 'uuid',
+              data: 'table.data'
+            }
+          } : undefined
+        },
+        'fetch'
+      ]
+    })
   }
 
   getFetchActionPropsBySchema(path: string, method: string) {
@@ -157,7 +220,7 @@ export class ActionNode extends FunctionNode {
     return props
   }
 
-  setImportButtonDisabledProp(state: IPage, response: Object, refer: string) {
+  setImportButtonDisabledProp(state: BasePage, response: Object, refer: string) {
     const btns = state.card?.buttons
     if (btns) {
       for (let i = 0, len = btns.length; i < len; i++) {

@@ -65,3 +65,7 @@ export function processUUId(uuid: string) {
   uuid = uuid.replace(/-/g, '')
   return uuid
 }
+
+export function firstToUpperCase(str: string): string {
+  return str.trim().toLowerCase().replace(str[0], str[0].toUpperCase())
+}

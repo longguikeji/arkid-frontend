@@ -63,28 +63,6 @@ export interface IExternalDocs {
   description?: string
 }
 
-export interface ITagPageAction {
-  path: string
-  method: string
-}
-
-export interface ITagUpdateAction {
-  read: ITagPageAction
-  write: ITagPageAction
-  [key: string]: ITagPageAction
-}
-
-export interface ITagPageOperation {
-  [key: string]: ITagPageAction | ITagUpdateAction | string 
-}
-
-export interface ITagPage {
-  type: string
-  init?: ITagPageAction
-  page?: ITagPageOperation
-  item?: ITagPageOperation
-}
-
 export interface ITag {
   name: string
   description?: string
@@ -92,7 +70,29 @@ export interface ITag {
   page?: ITagPage | ITagPage[]
 }
 
-// export interface IExample {}
+export interface ITagPage {
+  type: string
+  init: ITagPageAction
+  page?: ITagPageOperation
+  item?: ITagPageOperation
+}
+
+export interface ITagPageAction {
+  path: string
+  method: string
+}
+
+export interface ITagPageMultiAction {
+  [key: string]: ITagPageAction
+}
+
+export interface ITagPageMapping {
+  tag: string
+}
+
+export interface ITagPageOperation {
+  [key: string]: ITagPageAction | ITagPageMapping | ITagPageMultiAction
+}
 
 export interface IHeader extends IBaseSchema {
   type: string

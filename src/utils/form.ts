@@ -223,7 +223,10 @@ function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, 
     type: 'FormObjectItem',
     label: schema.title,
     prop: prop,
-    state: itemState
+    state: {
+      ...itemState,
+      isAdd: schema.format === 'custom_dict'
+    }
   }
 }
 

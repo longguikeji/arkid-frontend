@@ -15,11 +15,11 @@ import { FormPage } from '@/admin/FormPage/FormPageState'
 import { TreePage } from '@/admin/TreePage/TreePageState'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 
-export interface IPageActions {
+export interface BasePageActions {
   [name: string]: Array<string | IFlow>
 }
 
-export interface IPage extends BaseState {
+export interface BasePage extends BaseState {
   card?: CardState
   filter?: FormState
   dialogs?: { [name: string]: DialogState }
@@ -29,7 +29,7 @@ export interface IPage extends BaseState {
   forms?: { [value:string]: FormState }
   tree?: TreeState
   bottomButtons?: Array<ButtonState>
-  actions?: IPageActions
+  actions?: BasePageActions
   pagination?: PaginationState
   data?: any
   list?: {
@@ -38,22 +38,10 @@ export interface IPage extends BaseState {
   }
 }
 
-export interface BasePage {
-  type: string,
-  state: IPage
-}
-
 export class Page {
 
-  static createPage(type: string, options?: IPage) {
+  static createPage(type: string) {
     const page = new this()
-    if (options) {
-      Object.keys(options).forEach(key => {
-        if (options[key]) {
-          page[key] = options[key]
-        }
-      })
-    }
     switch (type) {
       case 'TablePage':
         return this.createTablePage(page)
@@ -62,45 +50,51 @@ export class Page {
       case 'TreePage':
         return this.createTreePage(page)
     }
-    return page
   }
 
-  private static createTablePage(page: IPage): TablePage {
-    const tablePage: TablePage = {
+  private static createTablePage(page: BasePage): TablePage {
+    return {
+      created: page.created,
+      destroyed: page.destroyed,
       card: page.card,
       filter: page.filter,
       table: page.table,
       list: page.list,
       dialogs: page.dialogs,
       pagination: page.pagination,
-      actions: page.actions
+      actions: page.actions,
+      data: page.data
     }
-    return tablePage
   }
 
-  private static createTreePage(page: IPage): TreePage {
-    const treePage: TreePage = {
+  private static createTreePage(page: BasePage): TreePage {
+    return {
+      created: page.created,
+      destroyed: page.destroyed,
       card: page.card,
       tree: page.tree,
       list: page.list,
       dialogs: page.dialogs,
-      actions: page.actions
+      actions: page.actions,
+      data: page.data
     }
-    return treePage
   }
 
-  private static createFormPage(page: IPage): FormPage {
-    const formPage: FormPage = {
+  private static createFormPage(page: BasePage): FormPage {
+    return {
+      created: page.created,
+      destroyed: page.destroyed,
       card: page.card,
       form: page.form,
       dialogs: page.dialogs,
       actions: page.actions,
-      bottomButtons: page.bottomButtons
+      bottomButtons: page.bottomButtons,
+      data: page.data
     }
-    return formPage
   }
 
   created: string | Function = 'created'
+  destroyed: string | Function = 'destroyed'
   card: CardState = {
     title: '',
     buttons: []
@@ -131,15 +125,16 @@ export class Page {
   dialogs: { [name: string]: DialogState }  = {}
   bottomButtons: Array<ButtonState> = []
   actions: { [name: string]: Array<string | IFlow> } = {
-    created: []
+    created: [ 'fetch' ],
+    destroyed: [ {
+      name: 'arkfbp/flows/destroyed'
+    } ],
   }
-
 }
 
 export class PageNode extends FunctionNode {
   async run() {
-    let type = this.inputs.initContent.type
-    type = underlinedStrToUpperCamelStr(type)
+    const type = underlinedStrToUpperCamelStr(this.inputs.initContent.type)
     const state =  this.getPageState(type)
     this.inputs.state = state
     return this.inputs
@@ -147,9 +142,8 @@ export class PageNode extends FunctionNode {
 
   getPageState(type: string) {
     return {
-      type: type,
+      type,
       state: Page.createPage(type)
     }
   }
-
 }

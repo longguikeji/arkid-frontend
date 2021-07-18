@@ -18,23 +18,6 @@
     :destory-on-close="state.destoryOnClose"
   >
     <AdminComponent :path="getChildPath('state')" />
-
-    <span
-      v-show="!state.cancelFooter"
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        class="dialog__cancel__button"
-        :size="state.cancelButtonSize || 'small'"
-        @click="state.visible = false"
-      >取 消</el-button>
-      <ButtonArray
-        v-if="state.buttons && state.buttons.length > 0"
-        class="dialog__actions__button"
-        :path="getActionPath()"
-      />
-    </span>
   </el-dialog>
 </template>
 
