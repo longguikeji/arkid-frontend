@@ -20,6 +20,7 @@ export interface BasePageActions {
 }
 
 export interface BasePage extends BaseState {
+  name?: string
   card?: CardState
   filter?: FormState
   dialogs?: { [name: string]: DialogState }
@@ -40,22 +41,22 @@ export interface BasePage extends BaseState {
 
 export class Page {
 
-  static createPage(type: string) {
+  static createPage(type: string, currentPage: string) {
     const page = new this()
     switch (type) {
       case 'TablePage':
-        return this.createTablePage(page)
+        return this.createTablePage(page, currentPage)
       case 'FormPage':
-        return this.createFormPage(page)
+        return this.createFormPage(page, currentPage)
       case 'TreePage':
-        return this.createTreePage(page)
+        return this.createTreePage(page, currentPage)
     }
   }
 
-  private static createTablePage(page: BasePage): TablePage {
+  private static createTablePage(page: BasePage, currentPage: string): TablePage {
     return {
+      name: currentPage,
       created: page.created,
-      destroyed: page.destroyed,
       card: page.card,
       filter: page.filter,
       table: page.table,
@@ -67,10 +68,10 @@ export class Page {
     }
   }
 
-  private static createTreePage(page: BasePage): TreePage {
+  private static createTreePage(page: BasePage, currentPage: string): TreePage {
     return {
+      name: currentPage,
       created: page.created,
-      destroyed: page.destroyed,
       card: page.card,
       tree: page.tree,
       list: page.list,
@@ -80,10 +81,10 @@ export class Page {
     }
   }
 
-  private static createFormPage(page: BasePage): FormPage {
+  private static createFormPage(page: BasePage, currentPage: string): FormPage {
     return {
+      name: currentPage,
       created: page.created,
-      destroyed: page.destroyed,
       card: page.card,
       form: page.form,
       dialogs: page.dialogs,
@@ -94,7 +95,6 @@ export class Page {
   }
 
   created: string | Function = 'created'
-  destroyed: string | Function = 'destroyed'
   card: CardState = {
     title: '',
     buttons: []
@@ -125,25 +125,23 @@ export class Page {
   dialogs: { [name: string]: DialogState }  = {}
   bottomButtons: Array<ButtonState> = []
   actions: { [name: string]: Array<string | IFlow> } = {
-    created: [],
-    destroyed: [ {
-      name: 'arkfbp/flows/destroyed'
-    } ],
+    created: []
   }
 }
 
 export class PageNode extends FunctionNode {
   async run() {
-    const type = underlinedStrToUpperCamelStr(this.inputs.initContent.type)
-    const state =  this.getPageState(type)
+    const { initContent, currentPage } = this.inputs
+    const type = underlinedStrToUpperCamelStr(initContent.type)
+    const state =  this.getPageState(type, currentPage)
     this.inputs.state = state
     return this.inputs
   }
 
-  getPageState(type: string) {
+  getPageState(type: string, currentPage: string) {
     return {
       type,
-      state: Page.createPage(type)
+      state: Page.createPage(type, currentPage)
     }
   }
 }

@@ -20,42 +20,40 @@ export interface IFlow {
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
-export async function runFlowByActionName(com: any, actionName: string, appointedPath?: string) {
-  const path = appointedPath || com.path
+export async function runFlowByActionName(com: any, actionName: string, p?: string) {
+  const path = p || com.path
   const baseState = com.$store.state
   const currentPageState = getCurrentPageState(baseState, path)
-  if (!currentPageState?.actions) {  
-    return
-  }
+  const currentPage = currentPageState.name
+  if (!currentPageState?.actions) return
   const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
   if (currentFlows?.length) {
     FlowModule.startRunFlow()
-    for (let i = 0; i < currentFlows.length; i++) {
+    for (let i = 0, l = currentFlows.length; i < l; i++) {
       if (!FlowModule.run) break
-      if (typeof currentFlows[i] === 'string') {
-        const appointedFlow = currentFlows[i] as string
-        if (appointedFlow.includes('.')) {
-          const appointedActionMapping = appointedFlow.split('.')
-          const appointedActionName = appointedActionMapping[appointedActionMapping.length - 1]
-          await runFlowByActionName(com, appointedActionName, appointedFlow)
-        } else {
-          await runFlowByActionName(com, appointedFlow)
-        }
+      const flow = currentFlows[i]
+      if (typeof flow === 'string') {
+        await runFlowByActionName(com, flow)
       } else {
-        await runFlow(com, currentPageState, currentFlows[i] as IFlow)
+        await runFlow(com, currentPageState, flow as IFlow, currentPage)
       }
     }
   }
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-export async function runFlow (com: any, state: any, flow: IFlow) {
+export async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data
-  const currentPage = com.$route.meta?.page
+  let url, method
+  if (args.url) {
+    url = getUrl(args.url, data, currentPage)
+    FlowModule.addUrl({ url: args.url, value: url })
+    method = args.method?.toUpperCase()
+  }
   const inputs = {
-    url: args.url ? getUrl(args.url, data, currentPage) : '',
-    method: args.method?.toUpperCase(),
+    url,
+    method,
     params: {},
     client: state,
     clientServer: args.response,

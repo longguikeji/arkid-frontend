@@ -1,21 +1,20 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPage, ITagPageOperation, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { getContent } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import { firstToUpperCase } from '@/utils/common'
-import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 
 export class ActionNode extends FunctionNode {
   async run() {
-    const { state, initContent, options } = this.inputs
+    const { state, initContent } = this.inputs
     this.initPageFetchAction(state, initContent.init)
     this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction, options?: BasePageOptions) {
+  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
     const { path, method } = initAction
     if (method !== 'get') return
     const { state, type } = pageState
@@ -52,9 +51,7 @@ export class ActionNode extends FunctionNode {
   }
 
   initFormPageFetchAction(state: BasePage, path: string, method: string) {
-    const isResponse = true
-    const target = ''
-    const { mapping } = getActionMapping(path, method, target, isResponse)
+    const { mapping } = getActionMapping(path, method)
     this.addFetchAction(state, path, method, mapping)
   }
 
@@ -81,16 +78,8 @@ export class ActionNode extends FunctionNode {
 
   initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage) {
     const { page, item } = initContent
-    if (page) {
-      this.initGlobalOperationAction(pageState, page)
-    }
-    if (item) {
-      this.initLocalOperationAction(pageState, item)
-    }
-  }
-
-  initGlobalOperationAction(pageState: AdminComponentState, operations: ITagPageOperation) {
-    const { state } = pageState
+    const state = pageState.state
+    const operations = Object.assign({}, page, item)
     for (const key in operations) {
       const operation = operations[key]
       if ((operation as ITagPageMapping).tag) {
@@ -101,37 +90,17 @@ export class ActionNode extends FunctionNode {
           case 'export':
             this.addGlobalExportAction(state, path, method)
             break
-          case 'delete':
-            this.addDirectAction(state, path, method, key)
-            break
-          default:
+          case 'import':
             this.addOpenPageAction(state, key)
-        }
-      }
-    }
-  }
-
-  initLocalOperationAction(pageState: AdminComponentState, operations: ITagPageOperation) {
-    const { state, type } = pageState
-    for (const key in operations) {
-      const operation = operations[key]
-      if ((operation as ITagPageMapping).tag) {
-        this.addOpenPageAction(state, key)
-      } else {
-        const { path, method } = operation as ITagPageAction
-        switch (key) {
+            break
           case 'children':
             this.addLocalChildrenAction(state, path, method)
             break
           case 'sort':
             this.addLocalSortAction(state, operation as ITagPageMultiAction)
             break
-          case 'delete':
-          case 'retry':
-            this.addDirectAction(state, path, method, key)
-            break
           default:
-            this.addOpenPageAction(state, key)
+            this.addDirectAction(state, path, method, key)
         }
       }
     }
@@ -164,14 +133,30 @@ export class ActionNode extends FunctionNode {
   }
 
   addDirectAction(state: BasePage, path: string, method: string, key: string) {
-    state.actions![key] = [
-      {
-        name: 'arkfbp/flows/update',
-        url: path,
-        method
-      }
-    ]
-    if (method !== 'get') state.actions![key].push('fetch')
+    if (method !== 'delete' && method !== 'get') {
+      const { required, mapping } = getActionMapping(path, method)
+      state.actions![key] = [
+        {
+          name: 'arkfbp/flows/validate'
+        },
+        {
+          name: 'arkfbp/flows/update',
+          url: path,
+          method,
+          request: mapping,
+          required
+        }
+      ]
+    } else {
+      state.actions![key] = [
+        {
+          name: 'arkfbp/flows/update',
+          url: path,
+          method
+        }
+      ]
+      if (method === 'delete') state.actions![key].push('fetch')
+    }
   }
 
   addLocalChildrenAction(state: BasePage, path: string, method: string) {

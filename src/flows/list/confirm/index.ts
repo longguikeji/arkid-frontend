@@ -3,6 +3,7 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { Confirm } from './nodes/confirm'
+import { CloseNode } from '@/arkfbp/nodes/closeNode'
 
 export class Main extends Flow {
   createNodes() {
@@ -13,6 +14,10 @@ export class Main extends Flow {
     }, {
       cls: Confirm,
       id: 'confirm',
+      next: 'close'
+    }, {
+      cls: CloseNode,
+      id: 'close',
       next: 'stop'
     }, {
       cls: StopNode,

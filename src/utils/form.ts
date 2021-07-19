@@ -105,12 +105,8 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
       disabled: disabled && !schema.readOnly,
       options: [],
       action: 'initInputList',
-      data: {
-        page: schema.page,
-        field: schema.field,
-        title: schema.title,
-        multi: schema.type === 'array',
-      }
+      page: schema.page,
+      field: schema.field
     }
   }
 }

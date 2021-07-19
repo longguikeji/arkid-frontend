@@ -39,6 +39,10 @@ export default class extends Vue {
     return sp
   }
 
+  getAnyStateByPath(path: string) {
+    return getDataByPath(this.$store.state, path)
+  }
+
   created() {
     this.runAction(this.state.created)
   }
@@ -67,12 +71,12 @@ export default class extends Vue {
     this.runAction(this.state.destroyed)
   }
 
-  async runAction(action?: string | Function) {
+  async runAction(action?: string | Function, path?: string) {
     if (action) {
       if (action instanceof Function) {
         action()
       } else {
-        await runFlowByActionName(this, action)
+        await runFlowByActionName(this, action, path)
       }
     }
   }

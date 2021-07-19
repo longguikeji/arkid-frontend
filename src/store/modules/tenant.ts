@@ -17,9 +17,7 @@ interface ITenant {
 
 @Module({ dynamic: true, store, name: 'tenant' })
 class Tenant extends VuexModule implements ITenantState {
-  tenantState: AdminComponentState = {
-    type: 'TablePage'
-  }
+  tenantState: AdminComponentState = {}
   currentTenant: ITenant = {}
 
   @Mutation

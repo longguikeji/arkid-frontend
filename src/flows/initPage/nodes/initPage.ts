@@ -28,9 +28,9 @@ export class InitPage extends FunctionNode {
       const isMultiPage = isArray(initContent)
       if (isMultiPage) {
         state = []
-        const len = (initContent as ITagPage[]).length
+        const len = (initContent as string[]).length
         for (let i = 0; i < len; i++) {
-          const pageState = await this.initPage((initContent as ITagPage[])[i], currentPage, options)
+          const pageState = await runFlowByFile('flows/initPage', { currentPage: initContent[i] })
           state.push(pageState)
         }
       } else {
@@ -67,7 +67,7 @@ export class InitPage extends FunctionNode {
       case 'app_list':
         curstomPageFlow = 'flows/appManager/authPageBtn'
         break
-      case 'group':
+      case 'gmanager':
         curstomPageFlow = 'flows/group/changeFetch'
         break
       case 'maketplace':

@@ -44,6 +44,6 @@ export class Update extends AuthApiNode {
       })
     }
 
-    return outputs
+    return this.inputs
   }
 }

@@ -1,15 +1,15 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageOperation, ITagPageMultiAction } from '@/config/openapi'
+import { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageOperation, ITagPageMultiAction } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { getSchemaByPath } from '@/utils/schema'
 import { BasePage } from '@/flows/basePage/nodes/pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import whetherImportListDialog from '@/utils/list-dialog'
 import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+import FormState from '@/admin/common/Form/FormState'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -66,10 +66,9 @@ export class StateNode extends FunctionNode {
           disabled = options?.disabled === false ? false : true
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
     if (form) {
-      if (!state.form) {
-        state.form = { items: {}, inline: false }
-      }
+      if (!state.form) state.form = { items: {}, inline: false }
       state.form.items = form.items
+      this.initInputListDialog(state, form)
     } else if (forms) {
       state.forms = forms
       state.select = select
@@ -212,4 +211,39 @@ export class StateNode extends FunctionNode {
     }
   }
 
+  initInputListDialog(state: BasePage, form: FormState) {
+    const items = form.items
+    for (const prop in items) {
+      const item = items[prop]
+      if (item.type === 'InputList') {
+        state.dialogs!.inputList = {
+          visible: false,
+          state: {
+            state: {
+              list: {
+                header: {
+                  title: '已选数据列表',
+                  buttons: [
+                    {
+                      label: '确认',
+                      type: 'primary',
+                      action: 'confirm'
+                    }
+                  ]
+                },
+                data: []
+              }
+            },
+            type: ''
+          }
+        }
+        state.actions!.initInputList = [
+          {
+            name: 'flows/list/initInputList'
+          }
+        ]
+        break
+      }
+    }
+  }
 }
