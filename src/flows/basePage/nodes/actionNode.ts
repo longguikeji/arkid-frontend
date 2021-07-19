@@ -16,6 +16,7 @@ export class ActionNode extends FunctionNode {
 
   initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
     const { path, method } = initAction
+    if (method !== 'get') return
     const { state, type } = pageState
     switch (type) {
       case 'TablePage':
@@ -65,6 +66,7 @@ export class ActionNode extends FunctionNode {
   }
 
   addFetchAction(state: BasePage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+    state.actions!.created.push('fetch')
     state.actions!.fetch = [
       {
         name: flowName ? flowName : 'arkfbp/flows/fetch',

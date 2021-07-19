@@ -125,7 +125,7 @@ export class Page {
   dialogs: { [name: string]: DialogState }  = {}
   bottomButtons: Array<ButtonState> = []
   actions: { [name: string]: Array<string | IFlow> } = {
-    created: [ 'fetch' ],
+    created: [],
     destroyed: [ {
       name: 'arkfbp/flows/destroyed'
     } ],

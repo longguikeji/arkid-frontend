@@ -73,6 +73,9 @@ export default class extends Mixins(BaseVue) {
 }
 ::v-deep .tui-editor-defaultUI { width: 1000px;}
 .form__page__buttons {
-  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 20px;
 }
 </style>
