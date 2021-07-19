@@ -8,28 +8,43 @@ import generateForm from '@/utils/form'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import whetherImportListDialog from '@/utils/list-dialog'
 import { runFlowByFile } from '@/arkfbp/index'
-import { BUTTON_LABEL } from '@/constants/button.ts'
 import { firstToUpperCase } from '@/utils/common'
+import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+
+const BUTTON_LABEL = {
+  create: '创建',
+  import: '导入',
+  export: '导出',
+  update: '编辑',
+  delete: '删除',
+  retrieve: '查看',
+  password: '修改密码',
+  history: '历史记录',
+  provisioning: '同步配置',
+  mapping: '配置映射',
+  profile: '配置概述',
+  retry: '重发'
+}
 
 export class StateNode extends FunctionNode {
   async run() {
-    const { initContent, state, currentPage, description } = this.inputs
-    this.initPageMainState(state, initContent.init, description)
+    const { initContent, state, currentPage, options } = this.inputs
+    this.initPageMainState(state, initContent.init, options)
     await this.initPageOperationState(state, initContent, currentPage)
     return this.inputs
   }
 
-  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, description?: string) {
+  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
-    state.card!.title = description || ''
+    state.card!.title = options?.description || ''
     switch (type) {
       case 'TablePage':
         this.initTableMainState(state, schema)
         break
       case 'FormPage':
-        this.initFormMainState(state, schema)
+        this.initFormMainState(state, schema, options)
         break
     }
   }
@@ -45,10 +60,11 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initFormMainState(state: BasePage, schema: ISchema) {
-    const showReadOnly = true, showWriteOnly = true, disabled = false // to set according to the current page
+  initFormMainState(state: BasePage, schema: ISchema, options?: BasePageOptions) {
+    const showReadOnly = options?.showReadOnly === false ? false : true,
+          showWriteOnly = options?.showWriteOnly === false ? false : true,
+          disabled = options?.disabled === false ? false : true
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
-    // to fix when you fix the form page component
     if (form) {
       if (!state.form) {
         state.form = { items: {}, inline: false }

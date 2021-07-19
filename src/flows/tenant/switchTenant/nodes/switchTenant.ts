@@ -6,14 +6,14 @@ import { addSlugToUrl } from '@/utils/url'
 
 export class SwitchTenant extends Jump {
   async run() {
-    const tenantState: TablePage = this.inputs.client
-    const data: any = tenantState.dialogs?.switch.data
-    TenantModule.changeCurrentTenant(data)
+    const state: TablePage = this.inputs.client
+    TenantModule.changeCurrentTenant(state.data)
     let target
-    const slug = data.slug
+    const slug = state.data.slug
     if (slug) {
       GlobalValueModule.setSlug(slug)
       addSlugToUrl(this.inputs.com)
+      target = '/'
     } else {
       target = {
         path: '/',

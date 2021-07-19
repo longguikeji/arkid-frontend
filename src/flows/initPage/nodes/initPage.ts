@@ -4,6 +4,16 @@ import { ITagPage } from '@/config/openapi'
 import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
+const PAGE_SHOW_READONLY = [ 'profile', 'app_list_update', 'external_idp_update' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'lr_config' ]
+
+export interface BasePageOptions {
+  description?: string
+  showReadOnly?: boolean
+  showWriteOnly?: boolean
+  disabled?: boolean
+}
+
 export class InitPage extends FunctionNode {
   async run() {
     const currentPage = this.inputs.currentPage
@@ -12,23 +22,26 @@ export class InitPage extends FunctionNode {
       const { page: initContent, description } = pageTagInfo
       if (!initContent) return null
       let state: any = null
+      let options: BasePageOptions = { description, showReadOnly: false, disabled: false }
+      if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
+      if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
       const isMultiPage = isArray(initContent)
       if (isMultiPage) {
         state = []
         const len = (initContent as ITagPage[]).length
         for (let i = 0; i < len; i++) {
-          const pageState = await this.initPage((initContent as ITagPage[])[i], currentPage, description)
+          const pageState = await this.initPage((initContent as ITagPage[])[i], currentPage, options)
           state.push(pageState)
         }
       } else {
-        state = await this.initPage((initContent as ITagPage), currentPage, description)
+        state = await this.initPage((initContent as ITagPage), currentPage, options)
       }
       await this.runCustomPageFlow(state, currentPage)
       return state
     }
   }
 
-  async initPage(initContent: ITagPage, currentPage: string, description?: string) {
+  async initPage(initContent: ITagPage, currentPage: string, options?: BasePageOptions) {
     let initFileName = ''
     switch (initContent.type) {
       case 'table_page':
@@ -43,7 +56,7 @@ export class InitPage extends FunctionNode {
     const res = await runFlowByFile(initFileName, {
       initContent,
       currentPage,
-      description
+      options
     })
     return res.state
   }

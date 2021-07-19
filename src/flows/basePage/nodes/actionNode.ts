@@ -5,16 +5,17 @@ import { getContent } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import { firstToUpperCase } from '@/utils/common'
+import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 
 export class ActionNode extends FunctionNode {
   async run() {
-    const { state, initContent } = this.inputs
+    const { state, initContent, options } = this.inputs
     this.initPageFetchAction(state, initContent.init)
     this.initPageOperationAction(state, initContent)
     return this.inputs
   }
 
-  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
+  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction, options?: BasePageOptions) {
     const { path, method } = initAction
     if (method !== 'get') return
     const { state, type } = pageState
