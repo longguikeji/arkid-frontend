@@ -3,7 +3,6 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { Update } from './nodes/update'
-import { CloseNode } from '@/arkfbp/nodes/closeNode'
 
 export class Main extends Flow {
   createNodes() {
@@ -15,10 +14,6 @@ export class Main extends Flow {
       cls: Update,
       id: 'update',
       next: 'close'
-    }, {
-      cls: CloseNode,
-      id: 'close',
-      next: 'stop'
     }, {
       cls: StopNode,
       id: 'stop',

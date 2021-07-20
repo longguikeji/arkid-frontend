@@ -48,10 +48,10 @@ export default class extends Vue {
       currentPage
     }).then(async(state) => {
       await runFlowByFile('flows/tenant/addButton', {
-        tempState: state,
+        state,
         com: this
-      }).then((data) => {
-        TenantModule.changeState(data.state)
+      }).then(res => {
+        TenantModule.changeState(res)
         this.initCompleted = true
       })
     })

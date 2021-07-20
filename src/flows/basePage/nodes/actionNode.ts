@@ -5,12 +5,13 @@ import { getContent } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
 import { firstToUpperCase } from '@/utils/common'
+import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 
 export class ActionNode extends FunctionNode {
   async run() {
-    const { state, initContent } = this.inputs
+    const { state, initContent, options } = this.inputs
     this.initPageFetchAction(state, initContent.init)
-    this.initPageOperationAction(state, initContent)
+    this.initPageOperationAction(state, initContent, options)
     return this.inputs
   }
 
@@ -76,39 +77,42 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage) {
+  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage, options?: BasePageOptions) {
     const { page, item } = initContent
     const state = pageState.state
     const operations = Object.assign({}, page, item)
     for (const key in operations) {
       const operation = operations[key]
       if ((operation as ITagPageMapping).tag) {
-        this.addOpenPageAction(state, key)
+        this.addOpenAndClosePageAction(state, key)
       } else {
         const { path, method } = operation as ITagPageAction
         switch (key) {
           case 'export':
-            this.addGlobalExportAction(state, path, method)
+            this.addExportAction(state, path, method)
             break
           case 'import':
-            this.addOpenPageAction(state, key)
+          case 'password':
+            this.addOpenAndClosePageAction(state, key)
             break
           case 'children':
-            this.addLocalChildrenAction(state, path, method)
+            this.addChildrenAction(state, path, method)
             break
           case 'sort':
-            this.addLocalSortAction(state, operation as ITagPageMultiAction)
+            this.addSortAction(state, operation as ITagPageMultiAction)
             break
           default:
-            this.addDirectAction(state, path, method, key)
+            this.addDirectAction(state, path, method, key, options)
         }
       }
     }
   }
 
-  addOpenPageAction(state: BasePage, key: string) {
-    const actionName = `open${firstToUpperCase(key)}Dialog`
-    state.actions![actionName] = [
+  addOpenAndClosePageAction(state: BasePage, key: string) {
+    const actionKeyMark = firstToUpperCase(key)
+    const openActionName = `open${actionKeyMark}Dialog`
+    const closeActionName = `close${actionKeyMark}Dialog`
+    state.actions![openActionName] = [
       {
         name: 'arkfbp/flows/cancelValidate' 
       },
@@ -120,9 +124,17 @@ export class ActionNode extends FunctionNode {
         }
       }
     ]
+    state.actions![closeActionName] = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          [`dialogs.${key}.visible`]: false
+        }
+      }
+    ]
   }
 
-  addGlobalExportAction(state: BasePage, path: string, method: string) {
+  addExportAction(state: BasePage, path: string, method: string) {
     state.actions!['export'] = [
       {
         name: 'arkfbp/flows/export',
@@ -132,7 +144,7 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addDirectAction(state: BasePage, path: string, method: string, key: string) {
+  addDirectAction(state: BasePage, path: string, method: string, key: string, options?: BasePageOptions) {
     if (method !== 'delete' && method !== 'get') {
       const { required, mapping } = getActionMapping(path, method)
       state.actions![key] = [
@@ -147,6 +159,8 @@ export class ActionNode extends FunctionNode {
           required
         }
       ]
+      const parent = options?.parent
+      if (parent) Array.prototype.push.apply(state.actions![key], [`${parent}.close${firstToUpperCase(key)}Dialog`, `${parent}.fetch`])
     } else {
       state.actions![key] = [
         {
@@ -159,7 +173,7 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  addLocalChildrenAction(state: BasePage, path: string, method: string) {
+  addChildrenAction(state: BasePage, path: string, method: string) {
     state.tree!.action = 'fetchTreeNode'
     state.actions!.fetchTreeNode = [
       {
@@ -170,7 +184,7 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addLocalSortAction(state: BasePage, operation: ITagPageMultiAction) {
+  addSortAction(state: BasePage, operation: ITagPageMultiAction) {
     Object.keys(operation).forEach((sortName) => {
       const url = operation[sortName].path
       const method = operation[sortName].method

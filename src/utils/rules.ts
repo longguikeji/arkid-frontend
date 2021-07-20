@@ -75,7 +75,7 @@ const getDynamicRule = (name?: string, format?: string, hint?: string, required?
 export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean, p?: string): string {
   let { message, pattern, isAnti } = getDynamicRule(name, format, hint, required)
   if (p) pattern = new RegExp(p)
-  if (value) {
+  if (value && pattern) {
     if (name === 'regular') {
       message = regexValidator(value)
     } else {

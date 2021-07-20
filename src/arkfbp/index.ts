@@ -1,9 +1,8 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
-import { getCurrentPageState } from '@/utils/get-page-state'
 import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
-import { isEmptyObject } from '@/utils/common'
+import { isEmptyObject, getOneCharacterIndexsInString } from '@/utils/common'
 
 export interface IFlow {
   name: string
@@ -20,14 +19,12 @@ export interface IFlow {
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
-export async function runFlowByActionName(com: any, actionName: string, p?: string) {
-  const path = p || com.path
-  const baseState = com.$store.state
-  const currentPageState = getCurrentPageState(baseState, path)
-  const currentPage = currentPageState.name
-  const parent = currentPageState.parent
-  if (!currentPageState?.actions) return
-  const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
+export async function runFlowByActionName(com: any, actionName: string, page?: string, path?: string) {
+  const currentPageState = getCurrentPageState(com, page, path) || com.state
+  if (!currentPageState) return
+  const { name: currentPage, parent, actions } = currentPageState
+  if (!actions) return
+  const currentFlows: (IFlow | string)[] = actions[actionName]
   if (currentFlows?.length) {
     FlowModule.startRunFlow()
     for (let i = 0, l = currentFlows.length; i < l; i++) {
@@ -35,11 +32,17 @@ export async function runFlowByActionName(com: any, actionName: string, p?: stri
       const flow = currentFlows[i]
       if (typeof flow === 'string') {
         if (flow.includes('.')) {
-          const appointedActionMapping = flow.split('.')
-          const appointedActionName = appointedActionMapping[appointedActionMapping.length - 1]
-          await runFlowByActionName(com, appointedActionName, flow)
+          const fs = flow.split('.')
+          if (fs.length === 2) {
+            const appointedPage = fs[0]
+            const appointedPageActionName = fs[1]
+            await runFlowByActionName(com, appointedPageActionName, appointedPage)
+          } else {
+            const appointedActionName = fs[fs.length - 1]
+            await runFlowByActionName(com, appointedActionName, undefined, flow)
+          }
         } else {
-          await runFlowByActionName(com, flow, p)
+          await runFlowByActionName(com, flow)
         }
       } else {
         await runFlow(com, currentPageState, flow as IFlow, currentPage, parent)
@@ -49,18 +52,18 @@ export async function runFlowByActionName(com: any, actionName: string, p?: stri
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-export async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, parent?: string) {
+async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, parent?: string) {
   const { name: filePath, ...args } = flow
   const data = com.state?.selectedData || com.state?.data || state?.data
   let url = args.url, method
   if (url) {
+    url = getUrl(url, data, currentPage)
     const urls = FlowModule.urls
     const page = currentPage || parent
-    if (page && urls[page]) {
+    if (url.indexOf('{') !== -1 && page && urls[page]) {
       const key = Object.keys(urls[page])[0]
       url = url.replace(key, urls[page][key])
     }
-    url = getUrl(url, data, currentPage)
     FlowModule.addUrl({ page: currentPage, url: args.url, value: url })
     method = args.method?.toUpperCase()
   }
@@ -99,7 +102,7 @@ export async function runFlowByFile(flowPath: string, inputs: any) {
 }
 
 // 对Mapping进行一次二次处理
-export function stateMappingProxy(state: any, mappings: any) {
+function stateMappingProxy(state: any, mappings: any) {
   let newMapping = {}
   const keys = Object.keys(mappings)
   for (const key of keys) {
@@ -120,7 +123,7 @@ export function stateMappingProxy(state: any, mappings: any) {
 // 参数说明
 // state: current page state
 // mapping: request or response config
-export function parseStateMapping(state: any, mapping: any) {
+function parseStateMapping(state: any, mapping: any) {
   let params = {}
   Object.keys(mapping).forEach(key => {
     let tempState
@@ -137,7 +140,7 @@ export function parseStateMapping(state: any, mapping: any) {
   return params
 }
 
-export function getStateByStringConfig(state: any, str: string) {
+function getStateByStringConfig(state: any, str: string) {
   let tempState = state
   const strMapping = str.split('.')
   if (strMapping.length) {
@@ -158,4 +161,35 @@ export function getStateByStringConfig(state: any, str: string) {
     })
   }
   return tempState
+}
+
+function getCurrentPageState(com: any, page?: string, p?: string) {
+  let path = p || com.path
+  let pageState
+  const ps = path.split('.')
+  if (ps.length === 3) ps.pop()
+  path = ps.join('.')
+  if (!path) return
+  const indexs = getOneCharacterIndexsInString(path, '.')
+  const pathMappings: string[] = []
+  for (let i = indexs.length - 1; i >= 1; i--) {
+    const pathMapping = path.substring(0, indexs[i])
+    pathMappings.push(pathMapping)
+  }
+  for (let i = 0, l = pathMappings.length; i < l; i++) {
+    const state = com.getAnyStateByPath(pathMappings[i])
+    if (!page) {
+      const isBasePage = state?.type && ( state.type === 'TablePage' || state.type === 'FormPage' || state.type === 'TreePage' || state.type === 'DashboardPage')
+      if (isBasePage) {
+        pageState = state.state
+        break
+      }
+    } else {
+      if (state.name === page) {
+        pageState = state
+        break
+      }
+    }
+  }
+  return pageState
 }

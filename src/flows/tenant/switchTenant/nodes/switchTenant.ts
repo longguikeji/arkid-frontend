@@ -1,7 +1,6 @@
 import { Jump } from '@/arkfbp/flows/jump/nodes/jump'
 import { TenantModule } from '@/store/modules/tenant'
 import { TablePage } from '@/admin/TablePage/TablePageState'
-import { GlobalValueModule } from '@/store/modules/global-value'
 import { addSlugToUrl } from '@/utils/url'
 
 export class SwitchTenant extends Jump {
@@ -11,9 +10,7 @@ export class SwitchTenant extends Jump {
     let target
     const slug = state.data.slug
     if (slug) {
-      GlobalValueModule.setSlug(slug)
-      addSlugToUrl(this.inputs.com)
-      target = '/'
+      addSlugToUrl(this.inputs.com, slug)
     } else {
       target = {
         path: '/',

@@ -71,12 +71,12 @@ export default class extends Vue {
     this.runAction(this.state.destroyed)
   }
 
-  async runAction(action?: string | Function, path?: string) {
+  async runAction(action?: string | Function) {
     if (action) {
       if (action instanceof Function) {
         action()
       } else {
-        await runFlowByActionName(this, action, path)
+        await runFlowByActionName(this, action)
       }
     }
   }

@@ -29,7 +29,7 @@ export interface BasePage extends BaseState {
   select?: SelectState
   forms?: { [value:string]: FormState }
   tree?: TreeState
-  bottomButtons?: Array<ButtonState>
+  buttons?: Array<ButtonState>
   actions?: BasePageActions
   pagination?: PaginationState
   data?: any
@@ -92,7 +92,7 @@ export class Page {
       form: page.form,
       dialogs: page.dialogs,
       actions: page.actions,
-      bottomButtons: page.bottomButtons,
+      buttons: page.buttons,
       data: page.data
     }
   }
@@ -126,7 +126,7 @@ export class Page {
     total: 0,
   }
   dialogs: { [name: string]: DialogState }  = {}
-  bottomButtons: Array<ButtonState> = []
+  buttons: Array<ButtonState> = []
   actions: { [name: string]: Array<string | IFlow> } = {
     created: []
   }

@@ -7,11 +7,12 @@ import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 import getBaseUrl from '@/utils/get-base-url'
+import { FlowModule } from '@/store/modules/flow'
 
-export default function getUrl(url: string, data: any = {}, page: string = '') {
-  if (url.indexOf('{') !== -1) {
-    let property = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
-    if (page === 'tenant_config') property = 'tenant_uuid'
+export default function getUrl(url: string, data?: any, currentPage?: string): string {
+  if (url.lastIndexOf('{') !== -1) {
+    let property = url.slice(url.lastIndexOf('{') + 1, url.lastIndexOf('}'))
+    if (currentPage === 'tenant_config') property = 'tenant_uuid'
     let param
     switch (property) {
       case 'parent_lookup_tenant':
@@ -32,9 +33,9 @@ export default function getUrl(url: string, data: any = {}, page: string = '') {
       case 'token':
         param = getToken()
     }
-    url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
+    url = url.slice(0, url.lastIndexOf('{')) + param + url.slice(url.lastIndexOf('}') + 1)
   }
-  if (url.indexOf('{') !== -1) return getUrl(url, data)
+  if (url.indexOf('{') !== -1) return getUrl(url)
   return url
 }
 
@@ -57,21 +58,19 @@ export function getSlug() {
   return slug
 }
 
-export function addSlugToUrl(com?: any) {
-  const slug = GlobalValueModule.slug
-  const oldSlug = getSlug()
-  if (!slug || slug === oldSlug) {
-    if (com) {
-      com.$message({
-        message: !slug ? '短连接不存在' : '当前短连接标识与切换短连接标识相同',
-        type: 'info',
-        showClose: true
-      })
-    }
-    return
+export function addSlugToUrl(com: any, slug: string) {
+  const beforeSlug = GlobalValueModule.slug
+  if (slug === beforeSlug) {
+    com.$message({
+      message: !slug ? '短连接不存在' : '当前短连接标识与切换短连接标识相同',
+      type: 'info',
+      showClose: true
+    })
+  } else {
+    GlobalValueModule.setSlug(slug)
+    const host = GlobalValueModule.originUrl
+    const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
+    const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
+    window.location.replace(url)
   }
-  const host = GlobalValueModule.originUrl
-  const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
-  const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
-  window.location.replace(url)
 }

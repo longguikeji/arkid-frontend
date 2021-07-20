@@ -11,9 +11,9 @@
       />
     </template>
     <Form :path="formPath" />
-    <template v-if="state.bottomButtons">
+    <template v-if="state.buttons">
       <ButtonArray
-        :path="getChildPath('bottomButtons')"
+        :path="getChildPath('buttons')"
         class="form__page__buttons"
       />
     </template>

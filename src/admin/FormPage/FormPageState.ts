@@ -13,7 +13,7 @@ export interface FormPage extends CardState {
   card?: CardState
   select?: SelectState
   forms?: {[value:string]: FormState}
-  bottomButtons?: Array<ButtonState>
+  buttons?: Array<ButtonState>
   actions?: { [name: string]: (IFlow | string)[] }
   data?: any
 }

@@ -9,14 +9,14 @@ export class InitInputList extends FunctionNode {
     await runFlowByFile('flows/initPage', {
       currentPage
     }).then((res) => {
-      this.initInputListDialog(res, com)
+      this.initInputListDialog(res, com, state.name)
       res.state.list = state.dialogs!.inputList.state.state.list
       state.dialogs!.inputList.state = res
       state.dialogs.inputList.visible = true
     })
   }
   
-  initInputListDialog(pageState: AdminComponentState, com: any) {
+  initInputListDialog(pageState: AdminComponentState, com: any, name: string) {
     const path = com.path
     const { multiple, field } = com.state
     const { state, type } = pageState
@@ -28,7 +28,8 @@ export class InitInputList extends FunctionNode {
           multiple,
           field
         }
-      }
+      },
+      `${name}.closeInputList`
     ]
     state.actions.clicked = [
       {

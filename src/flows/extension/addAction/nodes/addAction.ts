@@ -6,8 +6,8 @@ export class AddAction extends FunctionNode {
     const updateOpenAPI = {
       name: 'flows/common/updateOpenAPI'
     }
-    state.actions.update.push(updateOpenAPI)
     state.actions.delete.push(updateOpenAPI)
-    state.actions.create.push(updateOpenAPI)
+    state.dialogs.update.state.state.actions.update.push(updateOpenAPI)
+    state.dialogs.create.state.state.actions.create.push(updateOpenAPI)
   }
 }

@@ -4,8 +4,8 @@ import { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class AddSwitchTenantButton extends FunctionNode {
   async run() {
-    const state = this.inputs.tempState
-    const tempState = state.state as TablePage
+    const pageState = this.inputs.state
+    const state = pageState.state as TablePage
 
     // add tenant switch button
     const switchTenantAction = {
@@ -22,7 +22,7 @@ export class AddSwitchTenantButton extends FunctionNode {
         ]
       }
     }
-    const columns = tempState.table?.columns
+    const columns = state.table?.columns
     columns?.push(switchTenantAction)
 
     // dialog
@@ -55,7 +55,7 @@ export class AddSwitchTenantButton extends FunctionNode {
               }
             }
           },
-          bottomButtons: [
+          buttons: [
             {
               label: '确定切换',
               type: 'primary',
@@ -72,10 +72,10 @@ export class AddSwitchTenantButton extends FunctionNode {
         }
       }
     }
-    tempState.dialogs!.switch = switchDialog
+    state.dialogs!.switch = switchDialog
 
     // add switch button flows to actions config
-    tempState.actions!.openSwitchTenantDialog = [
+    state.actions!.openSwitchTenantDialog = [
       {
         name: 'arkfbp/flows/fetch',
         url: '/api/v1/tenant/{id}/',
@@ -93,9 +93,6 @@ export class AddSwitchTenantButton extends FunctionNode {
         }
       }
     ]
-    
-    return {
-      state: state
-    }
+    return pageState
   }
 }

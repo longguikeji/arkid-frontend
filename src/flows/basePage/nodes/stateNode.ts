@@ -9,7 +9,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import FormState from '@/admin/common/Form/FormState'
+import { initInputList, initPassword, initImport } from '@/utils/special-dialog'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -29,12 +29,12 @@ const BUTTON_LABEL = {
 export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
-    this.initPageMainState(state, initContent.init, options)
+    this.initPageMainState(state, initContent.init, currentPage, options)
     await this.initPageOperationState(state, initContent, currentPage)
     return this.inputs
   }
 
-  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, options?: BasePageOptions) {
+  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
@@ -44,7 +44,7 @@ export class StateNode extends FunctionNode {
         this.initTableMainState(state, schema)
         break
       case 'FormPage':
-        this.initFormMainState(state, schema, options)
+        this.initFormMainState(state, schema, currentPage, options)
         break
     }
   }
@@ -60,7 +60,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initFormMainState(state: BasePage, schema: ISchema, options?: BasePageOptions) {
+  initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
     const showReadOnly = options?.showReadOnly === false ? false : true,
           showWriteOnly = options?.showWriteOnly === false ? false : true,
           disabled = options?.disabled === false ? false : true
@@ -68,7 +68,7 @@ export class StateNode extends FunctionNode {
     if (form) {
       if (!state.form) state.form = { items: {}, inline: false }
       state.form.items = form.items
-      this.initInputListDialog(state, form)
+      initInputList(state, form, currentPage)
     } else if (forms) {
       state.forms = forms
       state.select = select
@@ -91,7 +91,18 @@ export class StateNode extends FunctionNode {
         await this.initAppointedPage(state, tag, key, currentPage)
         button = this.generateButtonState(key, tag, type, true)
       } else {
-        button = this.generateButtonState(key, currentPage, type, false)
+        switch (key) {
+          case 'import':
+            initImport(state, operation as ITagPageAction, currentPage)
+            button = this.generateButtonState(key, currentPage, type, true)
+            break
+          case 'password':
+            initPassword(state, operation as ITagPageAction, currentPage)
+            button = this.generateButtonState(key, currentPage, type, true)
+            break
+          default:
+            button = this.generateButtonState(key, currentPage, type, false)
+        }
       }
       if (!button) return
       this.addGlobalButton(state, type as string, button)
@@ -103,26 +114,31 @@ export class StateNode extends FunctionNode {
     for (const key in operations) {
       if (key === 'children') continue
       const operation = operations[key]
-      if (key === 'sort') {
-        this.addSortButton(state, operation as ITagPageMultiAction)
+      let button: ButtonState | null = null
+      if ((operation as ITagPageMapping).tag) {
+        const tag = (operation as ITagPageMapping).tag
+        await this.initAppointedPage(state, tag, key, currentPage)
+        button = this.generateButtonState(key, tag, type, true)
       } else {
-        let button: ButtonState | null = null
-        if ((operation as ITagPageMapping).tag) {
-          const tag = (operation as ITagPageMapping).tag
-          await this.initAppointedPage(state, tag, key, currentPage)
-          button = this.generateButtonState(key, tag, type, true)
-        } else {
-          button = this.generateButtonState(key , currentPage, type, false)
+        switch (key) {
+          case 'sort':
+            this.addSortButton(state, operation as ITagPageMultiAction)
+            break
+          case 'password':
+            initPassword(state, operation as ITagPageAction, currentPage)
+            button = this.generateButtonState(key , currentPage, type, true)
+            break
+          default:
+            button = this.generateButtonState(key , currentPage, type, false)
         }
-        if (!button) return
-        this.addLocalButton(state, type as string, button)
       }
+      if (button) this.addLocalButton(state, type as string, button)
     }
   }
 
   addGlobalButton(state: BasePage, type: string, button: ButtonState) {
     if (type === 'FormPage') {
-      state.bottomButtons?.push(button)
+      state.buttons?.push(button)
     } else {
       state.card?.buttons!.push(button)
     }
@@ -207,42 +223,6 @@ export class StateNode extends FunctionNode {
       type: pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' ),
       disabled: key === 'export' ? true : false,
       hint: currentPage === 'tenant_config' ? '删除后将彻底无法恢复' : undefined
-    }
-  }
-
-  initInputListDialog(state: BasePage, form: FormState) {
-    const items = form.items
-    for (const prop in items) {
-      const item = items[prop]
-      if (item.type === 'InputList') {
-        state.dialogs!.inputList = {
-          visible: false,
-          state: {
-            state: {
-              list: {
-                header: {
-                  title: '已选数据列表',
-                  buttons: [
-                    {
-                      label: '确认',
-                      type: 'primary',
-                      action: 'confirm'
-                    }
-                  ]
-                },
-                data: []
-              }
-            },
-            type: ''
-          }
-        }
-        state.actions!.initInputList = [
-          {
-            name: 'flows/list/initInputList'
-          }
-        ]
-        break
-      }
     }
   }
 }

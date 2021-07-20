@@ -4,26 +4,27 @@ import { TablePage } from '@/admin/TablePage/TablePageState'
 
 export class AddLoyoutButton extends FunctionNode {
   async run() {
-    const state = this.inputs.tempState
-    const tempState = state.state as TablePage
+    const pageState = this.inputs.state
+    const state = pageState.state as TablePage
+
     const logoutButton: ButtonState = {
       label: '退出登录',
       type: 'danger',
       action: 'logout'
     }
 
-    tempState.actions!['logout'] = [
+    state.actions!['logout'] = [
       {
         name: 'flows/common/logout'
       }
     ]
 
-    let buttons = tempState.card!.buttons
+    let buttons = state.card!.buttons
     if (!buttons) buttons = []
     buttons.push(logoutButton)
 
     return {
-      tempState: state
+      state: pageState
     }
   }
 }
