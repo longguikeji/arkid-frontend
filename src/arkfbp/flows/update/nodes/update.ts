@@ -22,7 +22,7 @@ export class Update extends AuthApiNode {
       lackRequiredParams = isLackRequiredParams(this.params, requiredSet)
     }
 
-    // 判断是否
+    // 判断是否缺少必填参数
     if (lackRequiredParams) {
       FlowModule.stopRunFlow()
       com.$message({

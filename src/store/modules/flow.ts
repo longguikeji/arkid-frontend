@@ -1,4 +1,4 @@
-import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 
 export interface IFlowState {
@@ -22,8 +22,9 @@ class Flow extends VuexModule implements IFlowState {
   }
 
   @Mutation
-  addUrl({ url, value }) {
-    this.urls[url] = value
+  addUrl({ page, url, value }) {
+    this.urls[page] = {}
+    this.urls[page][url] = value
   }
 
 }

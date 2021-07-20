@@ -88,7 +88,7 @@ export class StateNode extends FunctionNode {
       let button: ButtonState | null = null
       if ((operation as ITagPageMapping).tag) {
         const tag = (operation as ITagPageMapping).tag
-        await this.initAppointedPage(state, tag, key)
+        await this.initAppointedPage(state, tag, key, currentPage)
         button = this.generateButtonState(key, tag, type, true)
       } else {
         button = this.generateButtonState(key, currentPage, type, false)
@@ -109,7 +109,7 @@ export class StateNode extends FunctionNode {
         let button: ButtonState | null = null
         if ((operation as ITagPageMapping).tag) {
           const tag = (operation as ITagPageMapping).tag
-          await this.initAppointedPage(state, tag, key)
+          await this.initAppointedPage(state, tag, key, currentPage)
           button = this.generateButtonState(key, tag, type, true)
         } else {
           button = this.generateButtonState(key , currentPage, type, false)
@@ -192,9 +192,8 @@ export class StateNode extends FunctionNode {
     state.tree!.slot.buttons.state.push(button)
   }
 
-  // to get new page state
-  async initAppointedPage(state: BasePage, currentPage: string, key: string) {
-    const res = await runFlowByFile('flows/initPage', { currentPage })
+  async initAppointedPage(state: BasePage, currentPage: string, key: string, parent?: string) {
+    const res = await runFlowByFile('flows/initPage', { currentPage, parent })
     state.dialogs![key] = {
       visible: false,
       state: res

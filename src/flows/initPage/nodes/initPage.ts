@@ -12,6 +12,7 @@ export interface BasePageOptions {
   showReadOnly?: boolean
   showWriteOnly?: boolean
   disabled?: boolean
+  parent?: string
 }
 
 export class InitPage extends FunctionNode {
@@ -22,7 +23,7 @@ export class InitPage extends FunctionNode {
       const { page: initContent, description } = pageTagInfo
       if (!initContent) return null
       let state: any = null
-      let options: BasePageOptions = { description, showReadOnly: false, disabled: false }
+      let options: BasePageOptions = { description, showReadOnly: false, disabled: false, parent: this.inputs.parent }
       if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
       if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
       const isMultiPage = isArray(initContent)

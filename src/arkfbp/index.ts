@@ -25,6 +25,7 @@ export async function runFlowByActionName(com: any, actionName: string, p?: stri
   const baseState = com.$store.state
   const currentPageState = getCurrentPageState(baseState, path)
   const currentPage = currentPageState.name
+  const parent = currentPageState.parent
   if (!currentPageState?.actions) return
   const currentFlows: (IFlow | string)[] = currentPageState.actions[actionName]
   if (currentFlows?.length) {
@@ -33,22 +34,34 @@ export async function runFlowByActionName(com: any, actionName: string, p?: stri
       if (!FlowModule.run) break
       const flow = currentFlows[i]
       if (typeof flow === 'string') {
-        await runFlowByActionName(com, flow)
+        if (flow.includes('.')) {
+          const appointedActionMapping = flow.split('.')
+          const appointedActionName = appointedActionMapping[appointedActionMapping.length - 1]
+          await runFlowByActionName(com, appointedActionName, flow)
+        } else {
+          await runFlowByActionName(com, flow, p)
+        }
       } else {
-        await runFlow(com, currentPageState, flow as IFlow, currentPage)
+        await runFlow(com, currentPageState, flow as IFlow, currentPage, parent)
       }
     }
   }
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-export async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
+export async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, parent?: string) {
   const { name: filePath, ...args } = flow
-  const data = com.state?.selectedData || com.state?.data
-  let url, method
-  if (args.url) {
-    url = getUrl(args.url, data, currentPage)
-    FlowModule.addUrl({ url: args.url, value: url })
+  const data = com.state?.selectedData || com.state?.data || state?.data
+  let url = args.url, method
+  if (url) {
+    const urls = FlowModule.urls
+    const page = currentPage || parent
+    if (page && urls[page]) {
+      const key = Object.keys(urls[page])[0]
+      url = url.replace(key, urls[page][key])
+    }
+    url = getUrl(url, data, currentPage)
+    FlowModule.addUrl({ page: currentPage, url: args.url, value: url })
     method = args.method?.toUpperCase()
   }
   const inputs = {

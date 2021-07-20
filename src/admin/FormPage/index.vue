@@ -3,11 +3,13 @@
     :path="getChildPath('card')"
     class="form-page"
   >
-    <Select
-      v-if="state.select"
-      slot="header"
-      :path="getChildPath('select')"
-    />
+    <template v-if="state.select">
+      <b>{{ state.select.valueKey }}</b>
+      <Select
+        class="form-page-select"
+        :path="getChildPath('select')"
+      />
+    </template>
     <Form :path="formPath" />
     <template v-if="state.bottomButtons">
       <ButtonArray
@@ -77,5 +79,9 @@ export default class extends Mixins(BaseVue) {
   flex-direction: row;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.form-page-select {
+  display: inline-block;
+  margin-left: 20px;
 }
 </style>

@@ -27,7 +27,7 @@ export function getCurrentPageState(baseState: any, path: string) {
       const iPath = newPath.substring(0, indexs[i])
       pathMapping.push(iPath)
     }
-    for (let i = 0; i <= pathMapping.length - 1; i++) {
+    for (let i = 0, l = pathMapping.length; i < l; i++) {
       const state = getPageState(baseState, pathMapping[i])
       if (state) {
         tempState = state

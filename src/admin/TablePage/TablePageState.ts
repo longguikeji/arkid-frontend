@@ -8,6 +8,7 @@ import ListItemState from '@/admin/common/data/List/ListState'
 import { IFlow } from '@/arkfbp'
 
 export interface TablePage extends BaseState {
+  parent?: string
   name?: string
   filter?: FormState
   table?: TableState

@@ -41,20 +41,21 @@ export interface BasePage extends BaseState {
 
 export class Page {
 
-  static createPage(type: string, currentPage: string) {
+  static createPage(type: string, currentPage: string, parent?: string) {
     const page = new this()
     switch (type) {
       case 'TablePage':
-        return this.createTablePage(page, currentPage)
+        return this.createTablePage(page, currentPage, parent)
       case 'FormPage':
-        return this.createFormPage(page, currentPage)
+        return this.createFormPage(page, currentPage, parent)
       case 'TreePage':
-        return this.createTreePage(page, currentPage)
+        return this.createTreePage(page, currentPage, parent)
     }
   }
 
-  private static createTablePage(page: BasePage, currentPage: string): TablePage {
+  private static createTablePage(page: BasePage, currentPage: string, parent?: string): TablePage {
     return {
+      parent,
       name: currentPage,
       created: page.created,
       card: page.card,
@@ -68,8 +69,9 @@ export class Page {
     }
   }
 
-  private static createTreePage(page: BasePage, currentPage: string): TreePage {
+  private static createTreePage(page: BasePage, currentPage: string, parent?: string): TreePage {
     return {
+      parent,
       name: currentPage,
       created: page.created,
       card: page.card,
@@ -81,8 +83,9 @@ export class Page {
     }
   }
 
-  private static createFormPage(page: BasePage, currentPage: string): FormPage {
+  private static createFormPage(page: BasePage, currentPage: string, parent?: string): FormPage {
     return {
+      parent,
       name: currentPage,
       created: page.created,
       card: page.card,
@@ -131,17 +134,18 @@ export class Page {
 
 export class PageNode extends FunctionNode {
   async run() {
-    const { initContent, currentPage } = this.inputs
+    const { initContent, currentPage, options } = this.inputs
+    const parent = options?.parent
     const type = underlinedStrToUpperCamelStr(initContent.type)
-    const state =  this.getPageState(type, currentPage)
+    const state =  this.getPageState(type, currentPage, parent)
     this.inputs.state = state
     return this.inputs
   }
 
-  getPageState(type: string, currentPage: string) {
+  getPageState(type: string, currentPage: string, parent?: string) {
     return {
       type,
-      state: Page.createPage(type, currentPage)
+      state: Page.createPage(type, currentPage, parent)
     }
   }
 }
