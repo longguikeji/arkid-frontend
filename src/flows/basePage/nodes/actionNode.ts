@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
+import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction, ITagUpdateOperation } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { getContent } from '@/utils/schema'
 import { BasePage } from './pageNode'
@@ -84,7 +84,8 @@ export class ActionNode extends FunctionNode {
     for (const key in operations) {
       const operation = operations[key]
       if ((operation as ITagPageMapping).tag) {
-        this.addOpenAndClosePageAction(state, key)
+        this.addOpenPageAction(state, key)
+        this.addClosePageAction(state, key)
       } else {
         const { path, method } = operation as ITagPageAction
         switch (key) {
@@ -92,8 +93,12 @@ export class ActionNode extends FunctionNode {
             this.addExportAction(state, path, method)
             break
           case 'import':
+            this.addOpenPageAction(state, key)
+            this.addClosePageAction(state, key)
+            break
           case 'password':
-            this.addOpenAndClosePageAction(state, key)
+            this.addPasswordAction(state, (operation as ITagPageAction | ITagUpdateOperation))
+            this.addClosePageAction(state, key)
             break
           case 'children':
             this.addChildrenAction(state, path, method)
@@ -108,11 +113,8 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  addOpenAndClosePageAction(state: BasePage, key: string) {
-    const actionKeyMark = firstToUpperCase(key)
-    const openActionName = `open${actionKeyMark}Dialog`
-    const closeActionName = `close${actionKeyMark}Dialog`
-    state.actions![openActionName] = [
+  addOpenPageAction(state: BasePage, key: string) {
+    state.actions![`open${firstToUpperCase(key)}Dialog`] = [
       {
         name: 'arkfbp/flows/cancelValidate' 
       },
@@ -124,7 +126,10 @@ export class ActionNode extends FunctionNode {
         }
       }
     ]
-    state.actions![closeActionName] = [
+  }
+
+  addClosePageAction(state: BasePage, key: string) {
+    state.actions![`close${firstToUpperCase(key)}Dialog`] = [
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -132,6 +137,30 @@ export class ActionNode extends FunctionNode {
         }
       }
     ]
+  }
+
+  addPasswordAction(state: BasePage, operation: ITagPageAction | ITagUpdateOperation) {
+    state.actions![`openPasswordDialog`] = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.password.visible': true,
+        }
+      }
+    ]
+    if ((operation as ITagUpdateOperation).read) {
+      const { path, method } = (operation as ITagUpdateOperation).read
+      state.actions![`openPasswordDialog`].push(
+        {
+          name: 'arkfbp/flows/fetch',
+          url: path,
+          method,
+          response: {
+            'dialogs.password.state.state.data': ''
+          }
+        }
+      )
+    }
   }
 
   addExportAction(state: BasePage, path: string, method: string) {

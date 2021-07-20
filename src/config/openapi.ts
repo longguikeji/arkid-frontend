@@ -82,6 +82,11 @@ export interface ITagPageAction {
   method: string
 }
 
+export interface ITagUpdateOperation {
+  write: ITagPageAction
+  read: ITagPageAction
+}
+
 export interface ITagPageMultiAction {
   [key: string]: ITagPageAction
 }

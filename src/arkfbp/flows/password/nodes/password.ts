@@ -4,12 +4,12 @@ import { UserModule } from '@/store/modules/user'
 
 export class Password extends Update {
   async run() {
-    const { url, method, com } = this.inputs
-    const data = com.formData
-    const uuid = this.inputs.client.dialogs?.password?.data?.uuid || UserModule.uuid
+    const { url, method, com, data } = this.inputs
+    const submitData = com.formData
+    const uuid = data.uuid || UserModule.uuid
     const params = {
-      old_password: data.oldPassword,
-      password: data.password,
+      old_password: submitData.oldPassword,
+      password: submitData.password,
       uuid: uuid,
       tenant_uuid: TenantModule.currentTenant.uuid
     }

@@ -8,7 +8,7 @@ export class Update extends AuthApiNode {
   async run() {
     const { url, method, params, com, required } = this.inputs
     this.url = url
-    this.method = method
+    this.method = 'delete'
     this.params = params
 
     let lackRequiredParams = false

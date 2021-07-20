@@ -3,6 +3,7 @@ import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
 import { isEmptyObject, getOneCharacterIndexsInString } from '@/utils/common'
+import getDataByPath from '@/utils/datapath'
 
 export interface IFlow {
   name: string
@@ -177,7 +178,7 @@ function getCurrentPageState(com: any, page?: string, p?: string) {
     pathMappings.push(pathMapping)
   }
   for (let i = 0, l = pathMappings.length; i < l; i++) {
-    const state = com.getAnyStateByPath(pathMappings[i])
+    const state = getDataByPath(com.$store.state, pathMappings[i])
     if (!page) {
       const isBasePage = state?.type && ( state.type === 'TablePage' || state.type === 'FormPage' || state.type === 'TreePage' || state.type === 'DashboardPage')
       if (isBasePage) {

@@ -1,7 +1,8 @@
 import { BasePage } from '@/flows/basePage/nodes/pageNode'
 import FormState from '@/admin/common/Form/FormState'
-import { ITagPageAction } from '@/config/openapi'
+import { ITagPageAction, ITagUpdateOperation } from '@/config/openapi'
 import { getSchemaByPath } from '@/utils/schema'
+import { stat } from 'fs'
 
 export function initInputList(state: BasePage, form: FormState, page: string) {
   const items = form.items
@@ -48,8 +49,8 @@ export function initInputList(state: BasePage, form: FormState, page: string) {
   }
 }
 
-export function initPassword(state: BasePage, operation: ITagPageAction, page: string) {
-  const { path, method } = operation
+export function initPassword(state: BasePage, operation: ITagPageAction | ITagUpdateOperation, page: string) {
+  const { path, method } = (operation as ITagUpdateOperation).write || operation
   const schema = getSchemaByPath(path, method)
   state.dialogs!.password = {
     visible: false,
@@ -67,8 +68,7 @@ export function initPassword(state: BasePage, operation: ITagPageAction, page: s
       url: path,
       method
     },
-    `${page}.closePasswordDialog`,
-    `${page}.fetch`
+    `closePasswordDialog`
   ]
 }
 

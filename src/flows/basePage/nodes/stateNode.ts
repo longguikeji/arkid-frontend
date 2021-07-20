@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageOperation, ITagPageMultiAction } from '@/config/openapi'
+import { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { getSchemaByPath } from '@/utils/schema'
 import { BasePage } from '@/flows/basePage/nodes/pageNode'
@@ -75,15 +75,13 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initPageOperationState(pageState: BasePage, initContent: ITagPage, currentPage: string) {
+  async initPageOperationState(pageState: AdminComponentState, initContent: ITagPage, currentPage: string) {
     const { page, item } = initContent
-    if (page) await this.initGlobalOperationState(pageState, page, currentPage)
-    if (item) await this.initLocalOperationState(pageState, item, currentPage)
-  }
-
-  async initGlobalOperationState(pageState: AdminComponentState, operations: ITagPageOperation, currentPage: string) {
     const { state, type } = pageState
+    const pageKeys = Object.keys(page || {})
+    const operations = Object.assign({}, page, item)
     for (const key in operations) {
+      if (key === 'children') continue
       const operation = operations[key]
       let button: ButtonState | null = null
       if ((operation as ITagPageMapping).tag) {
@@ -100,42 +98,18 @@ export class StateNode extends FunctionNode {
             initPassword(state, operation as ITagPageAction, currentPage)
             button = this.generateButtonState(key, currentPage, type, true)
             break
+          case 'sort':
+            this.addSortButton(state, operation as ITagPageMultiAction)
+            break
           default:
             button = this.generateButtonState(key, currentPage, type, false)
         }
       }
-      if (!button) return
-      this.addGlobalButton(state, type as string, button)
+      if (!button) continue
+      pageKeys.includes(key) ? this.addGlobalButton(state, type as string, button) : this.addLocalButton(state, type as string, button)
     }
   }
-
-  async initLocalOperationState(pageState: AdminComponentState, operations: ITagPageOperation, currentPage: string) {
-    const { state, type } = pageState
-    for (const key in operations) {
-      if (key === 'children') continue
-      const operation = operations[key]
-      let button: ButtonState | null = null
-      if ((operation as ITagPageMapping).tag) {
-        const tag = (operation as ITagPageMapping).tag
-        await this.initAppointedPage(state, tag, key, currentPage)
-        button = this.generateButtonState(key, tag, type, true)
-      } else {
-        switch (key) {
-          case 'sort':
-            this.addSortButton(state, operation as ITagPageMultiAction)
-            break
-          case 'password':
-            initPassword(state, operation as ITagPageAction, currentPage)
-            button = this.generateButtonState(key , currentPage, type, true)
-            break
-          default:
-            button = this.generateButtonState(key , currentPage, type, false)
-        }
-      }
-      if (button) this.addLocalButton(state, type as string, button)
-    }
-  }
-
+  
   addGlobalButton(state: BasePage, type: string, button: ButtonState) {
     if (type === 'FormPage') {
       state.buttons?.push(button)
