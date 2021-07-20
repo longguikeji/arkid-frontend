@@ -9,7 +9,6 @@ export default interface FormState extends BaseState {
   labelPosition?: string
   labelWidth?: string
   labelSuffix?: string
-  isAdd?: boolean
 }
 
 export interface FormItemsState {

@@ -215,6 +215,7 @@ function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, req
 function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean) {
   const itemState = new FormObjectItemState()
   itemState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
+  Object.assign(itemState, { isAddItem: schema.format === 'custom_dict' })
   return {
     type: 'FormObjectItem',
     label: schema.title,
