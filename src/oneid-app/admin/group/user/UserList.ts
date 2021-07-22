@@ -151,7 +151,7 @@ export default class UserList extends Vue {
 
     this.table = data.results
     this.pagination.total = data.count
-    if (this.pagination.pageSizeOpts.indexOf(data.count) === -1) {
+    if (data.count > 100 && this.pagination.pageSizeOpts.indexOf(data.count) === -1) {
       this.pagination.pageSizeOpts.push(data.count)
     }
 
