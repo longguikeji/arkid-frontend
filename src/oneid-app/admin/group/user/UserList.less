@@ -15,6 +15,10 @@
       &:last-child {
         margin-right: 0;
       }
+
+      &.hidden {
+        display: none;
+      }
     }
 
     .search {
@@ -25,8 +29,16 @@
   &-table-wrapper {
     .table-btn {
       margin-right: 24px;
-      color: #006064;
+      color: @primary-color;
       cursor: pointer;
+    }
+  }
+
+  .sort-button {
+    cursor: pointer;
+
+    &:hover {
+      color: @primary-color;
     }
   }
 

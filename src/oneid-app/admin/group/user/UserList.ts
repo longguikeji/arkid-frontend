@@ -13,7 +13,11 @@ import './UserList.less'
   template: html`
   <div class="ui-user-list">
     <div class="ui-user-list-toolbar flex-row">
-      <div class="flex-row flex-auto">
+      <div v-if="isSortable">
+        <Button @click="cancelSort">取消</Button>
+        <Button :disabled="!table || table.length <= 1" type="primary" @click="confirmSort">确认排序</Button>
+      </div>
+      <div v-else class="flex-row flex-auto">
         <Button type="primary" @click="goAdd" v-if="table">添加账号</Button>
         <Button :disabled="tableSelection.length === 0" @click="doExport">批量导出</Button>
         <Upload name="users"
@@ -25,9 +29,9 @@ import './UserList.less'
           <Button type="primary">批量导入/修改</Button>
         </Upload>
 
-        <Button :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="doMove">调整分组</Button>
-        <Button :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="removeFromNode">移出分组</Button>
-        <Button :disabled="table && table.length === 0" v-if="isGroupPage">调整排序</Button>
+        <Button class="hidden" :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="doMove">调整分组</Button>
+        <Button class="hidden" :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="removeFromNode">移出分组</Button>
+        <Button :disabled="!table || table.length <= 1" v-if="isGroupPage" @click="doSort">调整排序</Button>
         <Button v-if="table" :disabled="tableSelection.length === 0" @click="doRemove">批量删除</Button>
       </div>
       <Input
@@ -43,7 +47,7 @@ import './UserList.less'
       <Table
         v-if="table"
         :columns="columns"
-        :data="table"
+        :data="tableSortable || table"
         class="table"
         @on-selection-change="onTableSelectionChange"
       />
@@ -105,13 +109,17 @@ export default class UserList extends Vue {
 
   chooseNode: any|null = null
 
+  isSortable: boolean = false
+
+  isDoSort: boolean = false
+
   get isGroupPage() {
     return this.$route.name!.startsWith('admin.group')
   }
 
   get columns() {
     return [
-      {type: 'selection', width: 50, align: 'center', fixed: 'left'},
+      this.renderFirstColumn(),
       {title: '序号', type: 'index', width: 60, fixed: 'left' },
       {title: '登录账号', width: 200, render: this.renderUsernameCell},
       {title: '姓名', key: 'name', width: 140},
@@ -126,6 +134,14 @@ export default class UserList extends Vue {
     ]
   }
 
+  renderFirstColumn() {
+    if (this.isSortable) {
+      return {title: '排序', width: 70, align: 'center', render: this.renderSortable, fixed: 'left'}
+    } else {
+      return {type: 'selection', width: 70, align: 'center', fixed: 'left'}
+    }
+  }
+
   async loadData() {
     const {pagination, node, keyword} = this
 
@@ -134,9 +150,16 @@ export default class UserList extends Vue {
       : await api.User.list({...pagination, keyword})
 
     this.table = data.results
+
     this.pagination.total = data.count
 
+    if (this.pagination.pageSizeOpts.indexOf(data.count) === -1) {
+      this.pagination.pageSizeOpts.push(data.count)
+    }
+
     this.$emit('ready')
+
+    return data
   }
 
   doSearch(event: Event) {
@@ -200,6 +223,19 @@ export default class UserList extends Vue {
       this.$Loading.error()
       // console.log(e)
     }
+  }
+
+  renderSortable(h: Vue.CreateElement, {index}: {index: number}) {
+    const type = index === 0 ? 'down' : ( index === this.table!.length - 1 ? 'up' : '' )
+    return h(Sortable, {
+      props: {
+        type,
+      },
+      on: {
+        'on-sort-up': () => this.sortUp(index),
+        'on-sort-down': () => this.sortDown(index),
+      },
+    })
   }
 
   renderUsernameCell(h: Vue.CreateElement, {row: user}: {row: User}) {
@@ -322,6 +358,46 @@ export default class UserList extends Vue {
     }
   }
 
+  doSort() {
+    this.isSortable = true
+  }
+
+  cancelSort() {
+    this.isSortable = false
+    if (this.isDoSort) this.loadData()
+  }
+
+  async confirmSort() {
+    this.$Loading.start()
+    try {
+      await api.Node.sortUsers(this.node!.id, this.table!)
+      this.$Loading.finish()
+      this.$emit('on-update')
+      this.loadData()
+    } catch (e) {
+      this.$Loading.error()
+    }
+    this.isSortable = false
+  }
+
+  sortUp(index: number) {
+    if (this.table && index !== 0) {
+      this.isDoSort = true
+      const data = [ this.table[index], this.table[index - 1] ]
+      this.$set(this.table, index, data[1])
+      this.$set(this.table, index-1, data[0])
+    }
+  }
+
+  sortDown(index: number) {
+    if (this.table && index !== this.table.length - 1) {
+      this.isDoSort = true
+      const data = [ this.table[index], this.table[index + 1] ]
+      this.$set(this.table, index, data[1])
+      this.$set(this.table, index+1, data[0])
+    }
+  }
+
   mounted() {
     this.loadData()
   }
@@ -339,4 +415,17 @@ export default class UserList extends Vue {
 })
 class ActionCell extends Vue {
   @Prop({type: Object, required: true}) user!: User
+}
+
+
+@Component({
+  template: html`
+  <div>
+  <Icon v-if="type !== 'down'" class="sort-button" size="15" type="md-arrow-round-up" @click="$emit('on-sort-up')" />
+  <Icon v-if="type !== 'up'" class="sort-button" size="15" type="md-arrow-round-down" @click="$emit('on-sort-down')" />
+  </div>
+  `,
+})
+class Sortable extends Vue {
+  @Prop({ type: String, required: true }) type!: string
 }
