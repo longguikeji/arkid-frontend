@@ -16,9 +16,9 @@ interface RouteMeta {
 
 // 根据OpenAPI信息动态生成当前登录用户所拥有权限的路由
 export function getDynamicRoutes() {
-  const oAPI: ISpec | undefined = OpenAPI.instance.config
-  if (!oAPI?.info?.routers) return []
-  const openAPIRoutes = oAPI.info.routers
+  const openAPI: ISpec | undefined = OpenAPI.instance.config
+  if (!openAPI?.info?.routers) return []
+  const openAPIRoutes = openAPI.info.routers
   let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
   routes = filterRoutes(routes)
   return routes

@@ -1,41 +1,30 @@
-// 此方法为全局中所有流内容公用的解析请求url地址的方法
-// 当前所有请求url的地址栏参数有 {id}  {parent_lookup_tenant}  {parent_lookup_webhook}  {tenant_id} 等几种类型和内容
-// 除id参数之外，其余内容，当使用到的时候进行引入 store 中的相关存储值进行读取
-// id参数则需要在调用该函数时传入data，通过data.id或data.uuid的方式进行读取
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 import getBaseUrl from '@/utils/get-base-url'
-import { FlowModule } from '@/store/modules/flow'
 
 export default function getUrl(url: string, data?: any, currentPage?: string): string {
-  if (url.lastIndexOf('{') !== -1) {
-    let property = url.slice(url.lastIndexOf('{') + 1, url.lastIndexOf('}'))
-    if (currentPage === 'tenant_config') property = 'tenant_uuid'
-    let param
-    switch (property) {
+  while (url.indexOf('{') !== -1) {
+    let id = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
+    if (currentPage === 'tenant_config') id = 'tenant_uuid'
+    let value
+    switch (id) {
       case 'parent_lookup_tenant':
       case 'tenant_uuid':
-        param = TenantModule.currentTenant.uuid
+        value = TenantModule.currentTenant.uuid || ''
         break
       case 'parent_lookup_user':
-        param = UserModule.uuid
-        break
-      case 'id':
-      case 'uuid':
-      case 'complexity_uuid':
-      case 'parent_lookup_webhook':
-      case 'parent_lookup_app':
-      case 'parent_lookup_provisioning':
-        param = data?.uuid
+        value = UserModule.uuid
         break
       case 'token':
-        param = getToken()
+        value = getToken()
+        break
+      default:
+        value = data.uuid
     }
-    url = url.slice(0, url.lastIndexOf('{')) + param + url.slice(url.lastIndexOf('}') + 1)
+    url = url.slice(0, url.indexOf('{')) + value + url.slice(url.indexOf('}') + 1)
   }
-  if (url.indexOf('{') !== -1) return getUrl(url)
   return url
 }
 

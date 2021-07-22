@@ -9,9 +9,9 @@ import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 
 export class ActionNode extends FunctionNode {
   async run() {
-    const { state, initContent, options } = this.inputs
+    const { state, initContent, options, currentPage } = this.inputs
     this.initPageFetchAction(state, initContent.init)
-    this.initPageOperationAction(state, initContent, options)
+    this.initPageOperationAction(state, initContent, options, currentPage)
     return this.inputs
   }
 
@@ -77,7 +77,7 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage, options?: BasePageOptions) {
+  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage, options?: BasePageOptions, currentPage?: string) {
     const { page, item } = initContent
     const state = pageState.state
     const operations = Object.assign({}, page, item)
@@ -107,7 +107,7 @@ export class ActionNode extends FunctionNode {
             this.addSortAction(state, operation as ITagPageMultiAction)
             break
           default:
-            this.addDirectAction(state, path, method, key, options)
+            this.addDirectAction(state, path, method, key, options, currentPage)
         }
       }
     }
@@ -173,7 +173,7 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addDirectAction(state: BasePage, path: string, method: string, key: string, options?: BasePageOptions) {
+  addDirectAction(state: BasePage, path: string, method: string, key: string, options?: BasePageOptions, currentPage?: string) {
     if (method !== 'delete' && method !== 'get') {
       const { required, mapping } = getActionMapping(path, method)
       state.actions![key] = [
@@ -195,7 +195,8 @@ export class ActionNode extends FunctionNode {
         {
           name: 'arkfbp/flows/update',
           url: path,
-          method
+          method,
+          parent: currentPage
         }
       ]
       if (method === 'delete') state.actions![key].push('fetch')

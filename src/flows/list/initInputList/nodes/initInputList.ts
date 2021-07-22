@@ -11,6 +11,7 @@ export class InitInputList extends FunctionNode {
     }).then((res) => {
       this.initInputListDialog(res, com, state.name)
       res.state.list = state.dialogs!.inputList.state.state.list
+      res.state.list.data = []
       state.dialogs!.inputList.state = res
       state.dialogs.inputList.visible = true
     })

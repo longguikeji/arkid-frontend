@@ -15,6 +15,7 @@ export interface IFlow {
   path?: string // 用于组件之间的指向
   required?: any // 用于验证
   data?: any
+  parent?: string
 }
 
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
@@ -58,13 +59,13 @@ async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, 
   const data = com.state?.selectedData || com.state?.data || state?.data
   let url = args.url, method
   if (url) {
-    url = getUrl(url, data, currentPage)
-    const urls = FlowModule.urls
-    const page = currentPage || parent
-    if (url.indexOf('{') !== -1 && page && urls[page]) {
+    if (url.indexOf('{') !== -1 && parent) {
+      const page = args.parent || parent
+      const urls = FlowModule.urls
       const key = Object.keys(urls[page])[0]
       url = url.replace(key, urls[page][key])
     }
+    url = getUrl(url, data, currentPage)
     FlowModule.addUrl({ page: currentPage, url: args.url, value: url })
     method = args.method?.toUpperCase()
   }

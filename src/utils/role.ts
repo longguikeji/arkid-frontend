@@ -15,8 +15,7 @@ export function getApiRolesByPageName(name: string): string[] {
           roles = roles.concat(pageRoles)
         }
       } else {
-        const path = (page as ITagPage).init?.path
-        const method = (page as ITagPage).init?.method
+        const { path, method } = (page as ITagPage).init
         if (path && method) {
           const apiRoles = getApiRolesByPath(path, method)
           roles = roles.concat(apiRoles)
