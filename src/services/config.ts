@@ -63,6 +63,10 @@ export interface TypeMetaInfo {
     location: string;
     bucket: string;
   }
+
+  contacts_config: {
+    is_show: boolean;
+  }
 }
 
 export class Config {
@@ -76,6 +80,15 @@ export class Config {
     }
 
     return `${url}/`
+  }
+
+  static async getContactsSwitch() {
+    const { data } = await http.get(this.url({ action: 'contacts' }))
+    return data.is_show
+  }
+
+  static async updateContactsSwitch(show: boolean) {
+    http.put(this.url({ action: 'contacts' }), { is_show: show })
   }
 
   static async retrieve() {

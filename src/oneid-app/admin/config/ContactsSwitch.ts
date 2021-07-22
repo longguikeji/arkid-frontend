@@ -1,5 +1,5 @@
-import {Config as ConfigApi} from '@/services/config'
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Config as ConfigApi } from '@/services/config'
+import { Component, Vue } from 'vue-property-decorator'
 import './ContactsSwitch.less'
 
 @Component({
@@ -9,7 +9,7 @@ import './ContactsSwitch.less'
       <h2 class="subtitle">通讯录开关设置</h2>
       <div>
         <span>通讯录开关：</span>
-        <SwitchButton v-model="status" @on-change="change" size="large">
+        <SwitchButton v-model="show" @on-change="change" size="large">
           <span slot="open">开启</span>
           <span slot="close">关闭</span>
         </SwitchButton>
@@ -19,26 +19,14 @@ import './ContactsSwitch.less'
   `,
 })
 export default class ContactsSwitch extends Vue {
-  private status: boolean = false
+  private show: boolean = false
 
-  mounted() {
-    this.getConfig()
+  async mounted() {
+    this.show = (this.$app.metaInfo && this.$app.metaInfo.contacts.show) || false
   }
 
-  // get contacts-switch config
-  async getConfig() {
-    // ...
-  }
-
-  // save contacts-switch config
   async change(value: boolean) {
-    this.status = value
-    await this.saveConfig()
+    this.show = value
+    await ConfigApi.updateContactsSwitch(this.show)
   }
-
-  // save contacts-switch config
-  async saveConfig() {
-    // ...
-  }
-
 }

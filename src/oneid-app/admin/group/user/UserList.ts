@@ -31,7 +31,7 @@ import './UserList.less'
 
         <Button class="hidden" :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="doMove">调整分组</Button>
         <Button class="hidden" :disabled="tableSelection.length === 0" v-if="isGroupPage" @click="removeFromNode">移出分组</Button>
-        <Button :disabled="!table || table.length <= 1" v-if="isGroupPage" @click="doSort">调整排序</Button>
+        <Button :disabled="!table || table.length <= 1" v-if="isGroupPage" @click="toSort">调整排序</Button>
         <Button v-if="table" :disabled="tableSelection.length === 0" @click="doRemove">批量删除</Button>
       </div>
       <Input
@@ -47,7 +47,7 @@ import './UserList.less'
       <Table
         v-if="table"
         :columns="columns"
-        :data="tableSortable || table"
+        :data="table"
         class="table"
         @on-selection-change="onTableSelectionChange"
       />
@@ -150,16 +150,12 @@ export default class UserList extends Vue {
       : await api.User.list({...pagination, keyword})
 
     this.table = data.results
-
     this.pagination.total = data.count
-
     if (this.pagination.pageSizeOpts.indexOf(data.count) === -1) {
       this.pagination.pageSizeOpts.push(data.count)
     }
 
     this.$emit('ready')
-
-    return data
   }
 
   doSearch(event: Event) {
@@ -358,7 +354,7 @@ export default class UserList extends Vue {
     }
   }
 
-  doSort() {
+  toSort() {
     this.isSortable = true
   }
 

@@ -680,11 +680,21 @@ export class StorageConfig {
   }
 }
 
+export class ContactsConfig {
+  static fromData(data: TypeMetaInfo['contacts_config']) {
+    const obj = new this()
+    obj.show = data.is_show
+    return obj
+  }
+
+  show = false
+}
+
 export class Config {
 
   static fromData(data: TypeMetaInfo) {
-    const obj = new this()
 
+    const obj = new this()
     obj.ding = Ding.fromData(data.ding_config)
     obj.alipay = Alipay.fromData(data.alipay_config)
     obj.wechatWork = WechatWork.fromData(data.work_wechat_config)
@@ -693,6 +703,10 @@ export class Config {
     obj.org = Org.fromData(data.company_config)
     obj.account = Account.fromData(data.account_config)
     obj.sms = data.sms_config
+
+    if (data.contacts_config) {
+      obj.contacts = ContactsConfig.fromData(data.contacts_config)
+    }
 
     return obj
   }
@@ -704,6 +718,7 @@ export class Config {
   wechatWork!: WechatWork
   wechat!: Wechat
   qq!: QQ
+  contacts!: ContactsConfig
 
   toData() {
     return {
