@@ -49,7 +49,7 @@ import Slider from 'iview/src/components/slider'
 import Spin from 'iview/src/components/spin'
 import Split from 'iview/src/components/split'
 import Steps from 'iview/src/components/steps'
-import Switch from 'iview/src/components/switch'
+import SwitchButton from 'iview/src/components/switch'
 import Table from 'iview/src/components/table'
 import Tabs from 'iview/src/components/tabs'
 import Tag from 'iview/src/components/tag'
@@ -142,7 +142,7 @@ const components = {
   Transfer,
   Upload,
   // Circle,
-  // Switch,
+  SwitchButton,
 }
 
 

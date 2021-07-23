@@ -214,7 +214,7 @@ export default class Layout extends Vue {
       {title: '配置管理', name: 'admin.config'},
       {title: '操作日志', name: 'admin.oplog'},
     ]
-    const wsMenu = this.$app.user && this.$app.user.is_extern_user ? [
+    const wsMenu = !(this.$app.metaInfo && this.$app.metaInfo.contacts.show) || (this.$app.user && this.$app.user.is_extern_user) ? [
       {title: '我的应用', name: 'workspace.apps'},
       {title: '个人资料', name: 'workspace.userinfo'},
     ] : [

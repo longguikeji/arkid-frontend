@@ -153,6 +153,12 @@ export class Node {
     // const resp = await http.get(url);
     // return resp.data;
   }
+  static async sortUsers(id: string, users: model.User[]) {
+    const url = `${this.baseUrl}/${id}/user/`
+    const data = { user_uids: users.map(user => user.username), subject: 'sort' }
+    const resp = await http.patch(url, data)
+    return resp.data
+  }
   static get Manager() {
     return Manager
   }
