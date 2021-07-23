@@ -33,7 +33,7 @@ export function getApiRolesByPath(path: string, method: string) {
 
 export default function hasPermission(page: string) {
   let currentRole = UserModule.role
-  if (currentRole === UserRole.Platform) currentRole = UserRole.User
+  if (currentRole === UserRole.Platform && page === 'tenant_create') return true
   const roles = getApiRolesByPageName(page)
   // roles.length = 0 - only staged code
   return roles.length === 0 || roles.includes(currentRole)

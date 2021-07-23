@@ -10,6 +10,7 @@ import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { initInputList, initPassword, initImport } from '@/utils/special-dialog'
+import hasPermission from '@/utils/role'
 
 const BUTTON_LABEL = {
   create: '创建',
@@ -191,6 +192,8 @@ export class StateNode extends FunctionNode {
   }
 
   generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean): ButtonState | null {
+    const hp = hasPermission(currentPage)
+    if (!hp) return null
     return {
       label: BUTTON_LABEL[key],
       action: isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key,

@@ -59,11 +59,11 @@ async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, 
   const data = com.state?.selectedData || com.state?.data || state?.data
   let url = args.url, method
   if (url) {
-    if (url.indexOf('{') !== -1 && parent) {
-      const page = args.parent || parent
+    const p = args.parent || parent
+    if (url.indexOf('{') !== -1 && p) {
       const urls = FlowModule.urls
-      const key = Object.keys(urls[page])[0]
-      url = url.replace(key, urls[page][key])
+      const key = Object.keys(urls[p])[0]
+      url = url.replace(key, urls[p][key])
     }
     url = getUrl(url, data, currentPage)
     FlowModule.addUrl({ page: currentPage, url: args.url, value: url })
