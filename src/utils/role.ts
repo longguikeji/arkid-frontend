@@ -3,24 +3,13 @@ import OpenAPI, { ITagPage } from '@/config/openapi'
 import { isArray } from '@/utils/common'
 
 export function getApiRolesByPageName(name: string): string[] {
-  const pageTagInfo = OpenAPI.instance.getOnePageTagInfo(name)
+  const info = OpenAPI.instance.getOnePageTagInfo(name)
   let roles: string[] = []
-  if (pageTagInfo) {
-    const { page } = pageTagInfo
-    if (page) {
-      const isMultiPage = isArray(page)
-      if (isMultiPage) {
-        for (const p of page as string[]) {
-          const pageRoles = getApiRolesByPageName(p)
-          roles = roles.concat(pageRoles)
-        }
-      } else {
-        const { path, method } = (page as ITagPage).init
-        if (path && method) {
-          const apiRoles = getApiRolesByPath(path, method)
-          roles = roles.concat(apiRoles)
-        }
-      }
+  if (info?.page) {
+    const { path, method } = info.page.init
+    if (path && method) {
+      const apiRoles = getApiRolesByPath(path, method)
+      roles = roles.concat(apiRoles)
     }
   }
   return roles
@@ -31,10 +20,17 @@ export function getApiRolesByPath(path: string, method: string) {
   return operation.roles || []
 }
 
-export default function hasPermission(page: string) {
+export default function hasPermission(page: string | string[]) {
   let currentRole = UserModule.role
   if (currentRole === UserRole.Platform && page === 'tenant_create') return true
-  const roles = getApiRolesByPageName(page)
+  let roles: string[] = []
+  if (isArray(page)) {
+    for (const p of page) {
+      roles = roles.concat(getApiRolesByPageName(p))
+    }
+  } else {
+    roles = getApiRolesByPageName(page as string)
+  }
   // roles.length = 0 - only staged code
   return roles.length === 0 || roles.includes(currentRole)
 }

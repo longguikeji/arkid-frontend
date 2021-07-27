@@ -1,11 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import { ITagPage } from '@/config/openapi'
 import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app_list_update', 'external_idp_update' ]
-const PAGE_DISABLED_TRUE = [ 'profile', 'lr_config' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
 
 export interface BasePageOptions {
   description?: string
@@ -17,58 +16,43 @@ export interface BasePageOptions {
 
 export class InitPage extends FunctionNode {
   async run() {
-    const currentPage = this.inputs.currentPage
-    const pageTagInfo = OpenAPI.instance.getOnePageTagInfo(currentPage)
-    if (pageTagInfo) {
-      const { page: initContent, description } = pageTagInfo
-      if (!initContent) return null
-      let state: any = null
-      let options: BasePageOptions = { description, showReadOnly: false, disabled: false, parent: this.inputs.parent }
-      if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
-      if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
-      const isMultiPage = isArray(initContent)
-      if (isMultiPage) {
-        state = []
-        const len = (initContent as string[]).length
-        for (let i = 0; i < len; i++) {
-          const pageState = await runFlowByFile('flows/initPage', { currentPage: initContent[i] })
-          state.push(pageState)
-        }
-      } else {
-        state = await this.initPage((initContent as ITagPage), currentPage, options)
+    const page: string | string[] = this.inputs.page
+    let state: any = null
+    if (isArray(page)) {
+      state = []
+      for (const p of page) {
+        const res = await this.initBasePage(p)
+        state.push(res)
       }
-      await this.runCustomPageFlow(state, currentPage)
-      return state
+    } else {
+      state = await this.initBasePage(page as string)
     }
+    return state
   }
 
-  async initPage(initContent: ITagPage, currentPage: string, options?: BasePageOptions) {
-    let initFileName = ''
-    switch (initContent.type) {
-      case 'table_page':
-      case 'form_page':
-      case 'tree_page':
-        initFileName = 'flows/basePage'
-        break
-      case 'dashboard_page':
-        initFileName = 'flows/dashboardPage/init'
-        break
-    }
-    const res = await runFlowByFile(initFileName, {
-      initContent,
-      currentPage,
-      options
-    })
-    return res.state
+  async initBasePage(currentPage: string) {
+    const info = OpenAPI.instance.getOnePageTagInfo(currentPage)
+    if (!info) return null
+    const { page: initContent, description } = info
+    if (!initContent) return null
+    let options: BasePageOptions = { description, showReadOnly: false, disabled: false, parent: this.inputs.parent }
+    if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
+    if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
+    let flow = 'flows/basePage'
+    if (initContent.type === 'dashboard_page') flow = 'flows/dashboardPage/init'
+    const res = await runFlowByFile(flow, { initContent, currentPage, options })
+    const state = res.state
+    await this.runCustomPageFlow(state, currentPage)
+    return state
   }
 
   async runCustomPageFlow(state: any, currentPage: string) {
     let curstomPageFlow: string = ''
     switch (currentPage) {
-      case 'app_list':
+      case 'app':
         curstomPageFlow = 'flows/appManager/authPageBtn'
         break
-      case 'gmanager':
+      case 'group':
         curstomPageFlow = 'flows/group/changeFetch'
         break
       case 'maketplace':
@@ -77,10 +61,10 @@ export class InitPage extends FunctionNode {
       case 'third_party_account':
         curstomPageFlow = 'flows/thirdPartyAccount/addUnbindButton'
         break
-      case 'lr_config':
+      case 'login_register_config':
         curstomPageFlow = 'flows/loginRegisterConfig/updated'
         break
-      case 'password_factor':
+      case 'password':
         curstomPageFlow = 'flows/passwordManager/addAction'
         break
       case 'tenant_config':

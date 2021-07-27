@@ -12,9 +12,7 @@
         :src="icon"
         class="login-image"
       />
-      <h2
-        class="login-title"
-      >
+      <h2 class="login-title">
         {{ title }}
       </h2>
     </div>
@@ -39,7 +37,7 @@
             v-for="(item, itemIndex) in form.items"
             :key="itemIndex"
             :prop="item.name"
-            :class="{'authcode': hasGraphicCode(item)}"
+            :class="{authcode: hasGraphicCode(item)}"
           >
             <el-input
               v-model="formData[pageData][formIndex][item.name]"
@@ -98,11 +96,39 @@
         type="text"
       />
     </div>
+    <el-dialog
+      v-if="btn.agreement"
+      :visible="agreementVisible"
+      :title="btn.agreement.title"
+      :show-close="false"
+      class="agreement"
+      center
+      :modal="false"
+      :fullscreen="isFullScreen"
+    >
+      <div
+        class="content"
+        v-html="btn.agreement.content"
+      />
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="agreementVisible = false">
+          不同意
+        </el-button>
+        <el-button
+          type="primary"
+          @click="agree"
+        >
+          同意
+        </el-button>
+      </div>
+    </el-dialog>
   </el-dialog>
 </template>
 
 <script lang="ts" src="./LoginComponent.ts">
-
 </script>
 <style lang="scss" scoped>
 .login {
@@ -148,6 +174,14 @@
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
     }
+  }
+}
+
+::v-deep .agreement {
+  .el-dialog__title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: gray;
   }
 }
 </style>

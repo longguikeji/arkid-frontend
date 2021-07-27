@@ -42,6 +42,10 @@ export interface ButtonConfig {
     params?: any // key: fromItem.name
   }
   delay?:Number
+  agreement?: {
+    title?: string
+    content?: string
+  }
 }
 
 export interface LoginTenant {

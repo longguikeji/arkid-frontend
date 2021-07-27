@@ -8,4 +8,5 @@ export default interface RichState extends BaseState {
   toolbar?: string[]
   menubar?: string
   isDisabledUploadImage?: boolean
+  disabled?: boolean
 }

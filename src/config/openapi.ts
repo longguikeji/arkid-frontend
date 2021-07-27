@@ -67,7 +67,7 @@ export interface ITag {
   name: string
   description?: string
   externalDocs?: IExternalDocs
-  page?: ITagPage | string[]
+  page?: ITagPage
 }
 
 export interface ITagPage {

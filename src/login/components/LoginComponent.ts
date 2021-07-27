@@ -41,6 +41,8 @@ export default class LoginComponent extends Vue {
       RULES.mobile
     ]
   }
+  agreementVisible = false
+  btn: ButtonConfig = {}
 
   get pageData() {
     if (this.page === '') {
@@ -116,38 +118,47 @@ export default class LoginComponent extends Vue {
   }
 
   async btnClickHandler(btn:ButtonConfig) {
-    if (btn.http || btn.delay) this.btnHttp(btn)
-    if (btn.gopage) this.togglePage(btn)
-    if (btn.redirect) this.redirect(btn)
+    this.btn = btn
+    if (btn.http || btn.delay) this.btnHttp()
+    if (btn.gopage) this.togglePage()
+    if (btn.redirect) this.redirect()
   }
 
-  btnHttp(btn: ButtonConfig) {
+  btnHttp() {
     (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
       if (valid) {
-        await this.btnResponse(btn)
+        await this.btnResponse()
       }
     })
   }
 
-  redirect(btn: ButtonConfig) {
+  redirect() {
     let redirectParams = ``
-    const params = btn.redirect!.params
+    const params = this.btn.redirect!.params
     for (const key in params) {
       redirectParams += `&${key}=${params[key]}`
     }
     redirectParams = redirectParams.substring(1)
-    const url = btn.redirect!.url + '?' + redirectParams
+    const url = this.btn.redirect!.url + '?' + redirectParams
     window.location.replace(url)
   }
 
-  togglePage(btn: ButtonConfig) {
-    this.pageData = btn.gopage!
+  togglePage() {
+    if (this.btn.agreement) {
+      this.agreementVisible = true
+    } else {
+      this.goPage()
+    }
+  }
+
+  goPage() {
+    this.pageData = this.btn.gopage!
     this.resetFields()
     this.resetRules()
   }
 
-  async btnResponse(btn: ButtonConfig) {
-    let { url, method, params } = btn.http!
+  async btnResponse() {
+    let { url, method, params } = this.btn.http!
     for (let key in params) {
       if (this.currentFormData.hasOwnProperty(key)) {
         params[key] = this.currentFormData[key]
@@ -258,5 +269,10 @@ export default class LoginComponent extends Vue {
       e.preventDefault()
       return false
     }
+  }
+
+  agree() {
+    this.agreementVisible = false
+    this.goPage()
   }
 }

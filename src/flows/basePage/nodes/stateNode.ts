@@ -184,7 +184,7 @@ export class StateNode extends FunctionNode {
   }
 
   async initAppointedPage(state: BasePage, currentPage: string, key: string, parent?: string) {
-    const res = await runFlowByFile('flows/initPage', { currentPage, parent })
+    const res = await runFlowByFile('flows/initPage', { page: currentPage, parent })
     state.dialogs![key] = {
       visible: false,
       state: res

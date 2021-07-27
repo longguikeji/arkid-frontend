@@ -2,7 +2,7 @@
   <div
     v-if="state && initCompleted"
     style="height: 100%"
-    :class="currentPage"
+    :class="page"
   >
     <div
       v-if="isMultiPage"
@@ -49,13 +49,12 @@ export default class extends Vue {
     return isArray(this.state)
   }
 
-  private get currentPage() {
+  private get page(): string | string[] {
     return this.$route.meta.page
   }
 
   async created() {
-    const currentPage = this.currentPage
-    await runFlowByFile('flows/initPage', { currentPage }).then(async(result) => {
+    await runFlowByFile('flows/initPage', { page: this.page }).then(async(result) => {
       await AdminModule.setAdmin(result)
       this.initCompleted = true
     })

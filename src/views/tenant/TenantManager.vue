@@ -31,7 +31,7 @@ export default class extends Vue {
     return TenantModule.tenantState
   }
 
-  private get currentPage() {
+  private get page() {
     return this.$route.meta.page
   }
 
@@ -43,9 +43,8 @@ export default class extends Vue {
     this.isShow = true
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
-    const currentPage = this.currentPage
     await runFlowByFile('flows/initPage', {
-      currentPage
+      page: this.page
     }).then(async(state) => {
       await runFlowByFile('flows/tenant/addButton', {
         state,

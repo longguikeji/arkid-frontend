@@ -177,7 +177,7 @@ function createInputNumberItem(prop: string, schema: ISchema, disabled: boolean,
 
 function createInputItem(prop: string, schema: ISchema, disabled: boolean, required: boolean) {
   return {
-    type: 'Input',
+    type: schema.format === 'html' ? 'Rich' : 'Input',
     label: schema.title,
     prop: prop,
     state: {
