@@ -53,7 +53,10 @@ export class InitPage extends FunctionNode {
         curstomPageFlow = 'flows/appManager/authPageBtn'
         break
       case 'group':
-        curstomPageFlow = 'flows/group/changeFetch'
+        curstomPageFlow = 'flows/group/group'
+        break
+      case 'group_user':
+        curstomPageFlow = 'flows/group/groupUser'
         break
       case 'maketplace':
         curstomPageFlow = 'flows/maketplace/initFilter'

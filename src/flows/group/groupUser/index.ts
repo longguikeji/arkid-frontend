@@ -2,7 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { ChangeFetch } from './nodes/changeFetch'
+import { GroupUser } from './nodes/groupUser'
 
 export class Main extends Flow {
   createNodes() {
@@ -10,10 +10,10 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'changeFetch'
+        next: 'groupUser'
       }, {
-        cls: ChangeFetch,
-        id: 'changeFetch',
+        cls: GroupUser,
+        id: 'groupUser',
         next: 'stop'
       }, {
         cls: StopNode,

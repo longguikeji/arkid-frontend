@@ -6,7 +6,7 @@ export class Password extends Update {
   async run() {
     const { url, method, com, data } = this.inputs
     const submitData = com.formData
-    const uuid = data.uuid || UserModule.uuid
+    const uuid = data?.uuid || UserModule.uuid
     const params = {
       old_password: submitData.oldPassword,
       password: submitData.password,

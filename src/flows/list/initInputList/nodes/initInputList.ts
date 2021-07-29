@@ -5,9 +5,8 @@ import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentSta
 export class InitInputList extends FunctionNode {
   async run() {
     const { client: state, com } = this.inputs
-    const currentPage = com.state.page
     await runFlowByFile('flows/initPage', {
-      currentPage
+      page: com.state.page,
     }).then((res) => {
       this.initInputListDialog(res, com, state.name)
       res.state.list = state.dialogs!.inputList.state.state.list

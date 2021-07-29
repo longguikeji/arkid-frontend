@@ -188,7 +188,7 @@ function createInputItem(prop: string, schema: ISchema, disabled: boolean, requi
       required: required,
       showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
       autocomplete: 'new-password',
-      format: prop === 'icon' ? 'icon' : schema.format,
+      format: prop === 'icon' ? 'upload_url' : schema.format,
       hint: schema.hint,
       disabled: disabled,
       name: prop,
