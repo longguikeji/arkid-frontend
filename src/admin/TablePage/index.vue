@@ -5,7 +5,7 @@
       :path="getChildPath('card')"
     >
       <Form
-        :path="filterPath"
+        :path="getChildPath('filter')"
         class="table-page-filter"
       />
       <Table :path="getChildPath('table')" />
@@ -56,15 +56,6 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   get state(): TablePage {
     return this.$state as TablePage
-  }
-
-  get filterPath(): string {
-    if (this.state.filter?.items) {
-      this.state.filter.inline = true
-      return this.getChildPath('filter')
-    } else {
-      return ''
-    }
   }
 }
 </script>

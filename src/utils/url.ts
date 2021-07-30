@@ -3,28 +3,36 @@ import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 import getBaseUrl from '@/utils/get-base-url'
+import { FlowModule } from '@/store/modules/flow'
+import { isEmptyObject } from '@/utils/common'
 
-export default function getUrl(url: string, data?: any, currentPage?: string): string {
-  while (url.indexOf('{') !== -1) {
-    let id = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
-    if (currentPage === 'tenant_config') id = 'tenant_uuid'
-    let value
-    switch (id) {
-      case 'parent_lookup_tenant':
-      case 'tenant_uuid':
-        value = TenantModule.currentTenant.uuid || ''
-        break
-      case 'parent_lookup_user':
-        value = UserModule.uuid
-        break
-      case 'token':
-        value = getToken()
-        break
-      default:
-        value = data.uuid
-    }
-    url = url.slice(0, url.indexOf('{')) + value + url.slice(url.indexOf('}') + 1)
+export default function getUrl(url: string, page?: string): string {
+  if (!url.includes('{')) return url
+  const data = FlowModule.data
+  const pages = page!.split('.')
+  const id = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
+  let value
+  switch (id) {
+    case 'parent_lookup_user':
+      value = UserModule.uuid
+      break
+    case 'token':
+      value = getToken() || ''
+      break
+    default:
+      value = TenantModule.currentTenant.uuid || id
   }
+  if (value !== id) url = url.slice(0, url.indexOf('{')) + value + url.slice(url.indexOf('}') + 1)
+  // parent page data
+  if (!isEmptyObject(data)) {
+    let name = pages[0]
+    for (let i = 0, len = pages.length; i < len; i++) {
+      if (!url.includes('{')) break
+      url = url.slice(0, url.indexOf('{')) + data[name]?.uuid + url.slice(url.indexOf('}') + 1)
+      name += pages[i+1]
+    }
+  }
+  if (page === 'desktop') return getUrl(url, page)
   return url
 }
 

@@ -7,7 +7,7 @@ import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false): FormPage {
-  const formPageState: FormPage = {}  
+  const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
     const selectState:SelectState = {
@@ -104,7 +104,7 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
       required: required,
       disabled: disabled && !schema.readOnly,
       options: [],
-      action: 'initInputList',
+      action: schema.page,
       page: schema.page,
       field: schema.field
     }
@@ -113,14 +113,12 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
 
 function createArrayItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean, required: boolean) {
   let item: FormItemState | null = null
-  if (schema.items) {
-    const ref = (schema.items as ISchema)?.$ref
-    if (ref) {
-      const arraySchema = OpenAPI.instance.getSchemaByRef(ref)
-      item = createItemByPropSchema(prop, arraySchema, showReadOnly, showWriteOnly, disabled, required)
-      item!.label = schema.title
-      item!.state.multiple = true
-    }
+  const ref = schema.items && (schema.items as ISchema)?.$ref
+  if (ref) {
+    const arraySchema = OpenAPI.instance.getSchemaByRef(ref)
+    item = createItemByPropSchema(prop, arraySchema, showReadOnly, showWriteOnly, disabled, required)
+    item!.label = schema.title
+    item!.state.multiple = true
   } else {
     item = {
       type: 'Select',

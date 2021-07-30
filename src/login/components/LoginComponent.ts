@@ -17,7 +17,7 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) title?:string
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
-  @Prop({ required: true, default: {} }) complexity!: TenantPasswordComplexity
+  @Prop({ required: true }) complexity?: TenantPasswordComplexity
 
   imageCodeSrc: string = ''
   forms: object = {}
@@ -40,9 +40,8 @@ export default class LoginComponent extends Vue {
   }
 
   get passwordRule() {
-    const { regular, title } = this.complexity
-    const regex = regular ? new RegExp(regular) : DEFAULT_PASSWORD_RULE.regex
-    const hint = title || DEFAULT_PASSWORD_RULE.hint
+    const regex = this.complexity?.regular ? new RegExp(this.complexity.regular) : DEFAULT_PASSWORD_RULE.regex
+    const hint = this.complexity?.title || DEFAULT_PASSWORD_RULE.hint
     return getRegexRule(hint, regex)
   }
 
@@ -163,8 +162,8 @@ export default class LoginComponent extends Vue {
 
   async btnClickHandler(btn: ButtonConfig) {
     this.btn = btn
-    if (btn.http) this.btnHttp()
-    if (btn.gopage) this.goPage()
+    if (btn.http && !btn.delay) this.btnHttp()
+    if (btn.gopage && !btn.http) this.goPage()
     if (btn.redirect) this.redirect()
     if (btn.delay) await this.btnRequest()
   }
@@ -219,7 +218,9 @@ export default class LoginComponent extends Vue {
     }
     const response = await this.http(url, method, params)
     const data = response.data
-    if (data.error === '0' && data.data.token) {
+    if (data.error === '0' && this.btn.gopage) {
+      this.switchPage()
+    } else if (data.error === '0' && data.data.token) {
       // set token
       LoginStore.token = data.data.token
       // 绑定用户与第三方账号

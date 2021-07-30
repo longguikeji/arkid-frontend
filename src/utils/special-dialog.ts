@@ -1,52 +1,52 @@
-import { BasePage } from '@/flows/basePage/nodes/pageNode'
-import FormState from '@/admin/common/Form/FormState'
+import { BasePage } from '@/flows/page/basePage/nodes/pageNode'
 import { ITagPageAction, ITagUpdateOperation } from '@/config/openapi'
 import { getSchemaByPath } from '@/utils/schema'
-import { stat } from 'fs'
+import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
-export function initInputList(state: BasePage, form: FormState, page: string) {
-  const items = form.items
-  for (const prop in items) {
-    const item = items[prop]
-    if (item.type === 'InputList') {
-      state.dialogs!.inputList = {
-        visible: false,
-        state: {
-          state: {
-            list: {
-              header: {
-                title: '已选数据列表',
-                buttons: [
-                  {
-                    label: '确认',
-                    type: 'primary',
-                    action: 'confirm'
-                  }
-                ]
-              },
-              data: []
-            },
-            parent: page
+export function initInputList(state: any, page: string, item: FormItemState) {
+  if (state[`${page}.inputList`]) return
+  state[page].state.dialogs.inputList = {
+    visible: false,
+    page: `${page}.inputList`
+  }
+  state[`${page}.inputList`] = {
+    
+  }
+  state.dialogs!.inputList = {
+    visible: false,
+    state: {
+      state: {
+        list: {
+          header: {
+            title: '已选数据列表',
+            buttons: [
+              {
+                label: '确认',
+                type: 'primary',
+                action: 'confirm'
+              }
+            ]
           },
-          type: ''
-        }
-      }
-      state.actions!.initInputList = [
-        {
-          name: 'flows/list/initInputList'
-        }
-      ]
-      state.actions!.closeInputList = [
-        {
-          name: 'arkfbp/flows/assign',
-          response: {
-            'dialogs.inputList.visible': false
-          }
-        }
-      ]
-      break
+          data: []
+        },
+        parent: page
+      },
+      type: ''
     }
   }
+  state.actions!.initInputList = [
+    {
+      name: 'flows/list/initInputList'
+    }
+  ]
+  state.actions!.closeInputList = [
+    {
+      name: 'arkfbp/flows/assign',
+      response: {
+        'dialogs.inputList.visible': false
+      }
+    }
+  ]
 }
 
 export function initPassword(state: BasePage, operation: ITagPageAction | ITagUpdateOperation, page: string) {

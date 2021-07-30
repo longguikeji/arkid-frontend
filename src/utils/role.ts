@@ -1,5 +1,5 @@
 import { UserModule, UserRole } from '@/store/modules/user'
-import OpenAPI, { ITagPage } from '@/config/openapi'
+import OpenAPI from '@/config/openapi'
 import { isArray } from '@/utils/common'
 
 export function getApiRolesByPageName(name: string): string[] {
@@ -22,7 +22,7 @@ export function getApiRolesByPath(path: string, method: string) {
 
 export default function hasPermission(page: string | string[]) {
   let currentRole = UserModule.role
-  if (currentRole === UserRole.Platform && page === 'tenant_create') return true
+  if (currentRole === UserRole.Platform && page === 'tenant.create') return true
   let roles: string[] = []
   if (isArray(page)) {
     for (const p of page) {

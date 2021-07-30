@@ -7,7 +7,7 @@
   >
     <table-page
       v-if="initCompleted"
-      path="tenant.tenantState.state"
+      :path="`tenant.tenantState.${page}.state`"
     />
   </el-dialog>
 </template>
@@ -44,13 +44,15 @@ export default class extends Vue {
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
     await runFlowByFile('flows/initPage', {
-      page: this.page
+      page: this.page,
+      state: {}
     }).then(async(state) => {
-      await runFlowByFile('flows/tenant/addButton', {
+      await runFlowByFile('flows/custom/tenant/addButton', {
         state,
-        com: this
-      }).then(res => {
-        TenantModule.changeState(res)
+        com: this,
+        page: this.page
+      }).then(_ => {
+        TenantModule.changeState(state)
         this.initCompleted = true
       })
     })

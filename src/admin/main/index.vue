@@ -1,22 +1,18 @@
 <template>
   <div
-    v-if="state && initCompleted"
+    v-if="isCompleted"
     style="height: 100%"
     :class="page"
   >
-    <div
-      v-if="isMultiPage"
-      class="multi-page"
-    >
-      <template v-for="(page, index) in state">
-        <AdminComponent
-          :key="index"
-          :path="'admin.adminState[' + index + ']'"
-        />
-      </template>
+    <div v-if="isMultiPage">
+      <AdminComponent
+        v-for="(i, index) in page"
+        :key="index"
+        :path="`admin.adminState.${i}`"
+      />
     </div>
     <div v-else>
-      <AdminComponent :path="'admin.adminState'" />
+      <AdminComponent :path="`admin.adminState.${page}`" />
     </div>
   </div>
   <div
@@ -39,24 +35,25 @@ import { isArray } from '@/utils/common'
   components: {}
 })
 export default class extends Vue {
-  private initCompleted = false
-
   private get state() {
     return AdminModule.adminState
-  }
-
-  private get isMultiPage() {
-    return isArray(this.state)
   }
 
   private get page(): string | string[] {
     return this.$route.meta.page
   }
 
+  private get isMultiPage() {
+    return isArray(this.page)
+  }
+
+  private get isCompleted(): boolean {
+    return Object.keys(this.state || {}).length > 0
+  }
+
   async created() {
-    await runFlowByFile('flows/initPage', { page: this.page }).then(async(result) => {
+    await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
       await AdminModule.setAdmin(result)
-      this.initCompleted = true
     })
   }
 

@@ -2,8 +2,8 @@ import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { stateFilter } from '@/utils/flow'
 import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
-import { isEmptyObject, getOneCharacterIndexsInString } from '@/utils/common'
-import getDataByPath from '@/utils/datapath'
+import { isEmptyObject } from '@/utils/common'
+import BaseVue from '@/admin/base/BaseVue'
 
 export interface IFlow {
   name: string
@@ -21,57 +21,42 @@ export interface IFlow {
 // 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
-export async function runFlowByActionName(com: any, actionName: string, page?: string, path?: string) {
-  const currentPageState = getCurrentPageState(com, page, path) || com.state
-  if (!currentPageState) return
-  const { name: currentPage, parent, actions } = currentPageState
+// name某个页面的名称
+export async function runFlowByActionName(com: BaseVue, action: string, name?: string) {
+  const state = getCurrentPageStateByName(com, name)
+  if (!state) return
+  const { name: currentPage, actions } = state
   if (!actions) return
-  const currentFlows: (IFlow | string)[] = actions[actionName]
-  if (currentFlows?.length) {
+  const flows: (IFlow | string)[] = actions[action]
+  if (flows?.length) {
     FlowModule.startRunFlow()
-    for (let i = 0, l = currentFlows.length; i < l; i++) {
+    for (let i = 0, l = flows.length; i < l; i++) {
       if (!FlowModule.run) break
-      const flow = currentFlows[i]
+      const flow = flows[i]
       if (typeof flow === 'string') {
         if (flow.includes('.')) {
           const fs = flow.split('.')
-          if (fs.length === 2) {
-            const appointedPage = fs[0]
-            const appointedPageActionName = fs[1]
-            await runFlowByActionName(com, appointedPageActionName, appointedPage)
-          } else {
-            const appointedActionName = fs[fs.length - 1]
-            await runFlowByActionName(com, appointedActionName, undefined, flow)
-          }
+          const appointedPageActionName = fs[fs.length - 1]
+          const appointedPage = fs.slice(0, -1).join('.')
+          await runFlowByActionName(com, appointedPageActionName, appointedPage)
         } else {
           await runFlowByActionName(com, flow)
         }
       } else {
-        await runFlow(com, currentPageState, flow as IFlow, currentPage, parent)
+        await runFlow(com, state, flow as IFlow, currentPage)
       }
     }
   }
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, parent?: string) {
+async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
   const { name: filePath, ...args } = flow
-  const data = com.state?.selectedData || com.state?.data || state?.data
-  let url = args.url, method
-  if (url) {
-    const p = args.parent || parent
-    if (url.indexOf('{') !== -1 && p) {
-      const urls = FlowModule.urls
-      const key = Object.keys(urls[p])[0]
-      url = url.replace(key, urls[p][key])
-    }
-    url = getUrl(url, data, currentPage)
-    FlowModule.addUrl({ page: currentPage, url: args.url, value: url })
-    method = args.method?.toUpperCase()
-  }
+  const data = com.state.selectedData || com.state.data
+  if (data) FlowModule.addPageData({ page: currentPage, data })
   const inputs = {
-    url,
-    method,
+    url: args.url ? getUrl(args.url, currentPage) : undefined,
+    method: args.method?.toUpperCase(),
     params: {},
     client: state,
     clientServer: args.response,
@@ -165,33 +150,16 @@ function getStateByStringConfig(state: any, str: string) {
   return tempState
 }
 
-function getCurrentPageState(com: any, page?: string, p?: string) {
-  let path = p || com.path
-  let pageState
-  const ps = path.split('.')
-  if (ps.length === 3) ps.pop()
-  path = ps.join('.')
-  if (!path) return
-  const indexs = getOneCharacterIndexsInString(path, '.')
-  const pathMappings: string[] = []
-  for (let i = indexs.length - 1; i >= 1; i--) {
-    const pathMapping = path.substring(0, indexs[i])
-    pathMappings.push(pathMapping)
+function getCurrentPageStateByName(com: BaseVue, name?: string) {
+  let temp = com.$store.state
+  let path = com.path.substring(0, com.path.indexOf('.state'))
+  path = `${path.replace(/[\[]/g, '.').replace(/[\]]/g, '')}`
+  const keys = path.split('.')
+  const pageKeys = keys.filter((_, index) => index > 1)
+  const mainKeys: string[] = []
+  Array.prototype.push.apply(mainKeys, [ keys[0], keys[1], pageKeys.join('.'), 'state' ])
+  for (let i = 0; i <= 3; i++) {
+    temp = (name && temp[name]) || temp[mainKeys[i]]
   }
-  for (let i = 0, l = pathMappings.length; i < l; i++) {
-    const state = getDataByPath(com.$store.state, pathMappings[i])
-    if (!page) {
-      const isBasePage = state?.type && ( state.type === 'TablePage' || state.type === 'FormPage' || state.type === 'TreePage' || state.type === 'DashboardPage')
-      if (isBasePage) {
-        pageState = state.state
-        break
-      }
-    } else {
-      if (state.name === page) {
-        pageState = state
-        break
-      }
-    }
-  }
-  return pageState
+  return temp
 }

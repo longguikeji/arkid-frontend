@@ -169,7 +169,7 @@
       border-bottom-right-radius: 0px;
     }
     img {
-      width: 9em;
+      width: 120px;
       cursor: pointer;
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;

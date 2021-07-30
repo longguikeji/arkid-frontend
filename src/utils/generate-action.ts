@@ -2,9 +2,9 @@ import { getSchemaByPath } from '@/utils/schema'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
-export function getActionMapping(path: string, method: string, blank?: boolean) {
+export function getActionMapping(path: string, method: string, blank?: boolean, response?: boolean) {
   let mapping = {}, required
-  const isResponse = method === 'get' ? true : false
+  const isResponse = response || method === 'get' ? true : false
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName

@@ -1,11 +1,11 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import { GlobalValueModule } from '@/store/modules/global-value'
-import getDataByPath from '@/utils/datapath'
+import getStateByPath from '@/utils/state'
 
 export class Upload extends AuthApiNode {
   async run() {
     const com = this.inputs.com
-    const state = getDataByPath(com.$store.state, com.path)
+    const state = getStateByPath(com.$store.state, com.path)
     const fileData = this.inputs.data
     const file = fileData.file
     if (state.format === 'upload_file') {
