@@ -19,7 +19,7 @@ export default class LoginMixin extends Vue {
   }
 
   get isShowContacts(): boolean {
-    return (this.$app.metaInfo && this.$app.metaInfo.contacts.show) || false
+    return (this.$app.metaInfo && this.$app.metaInfo.contacts && this.$app.metaInfo.contacts.show) || false
   }
 
   @Watch('isLogin')
