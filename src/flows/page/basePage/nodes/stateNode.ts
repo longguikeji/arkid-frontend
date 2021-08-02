@@ -9,7 +9,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import { initInputList, initPassword, initImport } from '@/utils/special-dialog'
+import { initPassword, initImport } from '@/utils/special-dialog'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
@@ -31,12 +31,12 @@ const BUTTON_LABEL = {
 export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
-    this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
+    await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
     await this.initPageOperationState(state[currentPage], initContent, currentPage)
     return this.inputs
   }
 
-  initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
+  async initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
     const { type, state } = pageState
@@ -46,7 +46,7 @@ export class StateNode extends FunctionNode {
         this.initTableMainState(state, schema)
         break
       case 'FormPage':
-        this.initFormMainState(state, schema, currentPage, options)
+        await this.initFormMainState(state, schema, currentPage, options)
         break
     }
   }
@@ -62,7 +62,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
+  async initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
     const showReadOnly = options?.showReadOnly === false ? false : true,
           showWriteOnly = options?.showWriteOnly === false ? false : true,
           disabled = options?.disabled === false ? false : true
@@ -74,7 +74,7 @@ export class StateNode extends FunctionNode {
       for (const prop in items) {
         const item = items[prop]
         if (item.type === 'InputList') {
-          this.initInputList(state, currentPage, item)
+          await this.initInputList(state, currentPage, item)
         }
       }
     } else if (forms) {
@@ -190,7 +190,7 @@ export class StateNode extends FunctionNode {
     state.tree!.slot.buttons.state.push(button)
   }
 
-  async initAppointedPage(state: BasePage, currentPage: string, key?: string) {
+  async initAppointedPage(state: BasePage, currentPage: string, key: string) {
     await runFlowByFile('flows/initPage', { page: currentPage, state: this.inputs.state })
     if (key) {
       state.dialogs![key] = {
@@ -213,21 +213,41 @@ export class StateNode extends FunctionNode {
   }
 
   async initInputList(state: BasePage, currentPage: string, item: FormItemState) {
-  //   const page = item.state.page
-  //   state.dialogs![page] = {
-  //     visible: false,
-  //     page
-  //   }
-  //   state.actions![page] = [
-  //     {
-  //       name: "arkfbp/flows/assign",
-  //       response: {
-  //         [`dialogs.${page}.visible`]: true
-  //       }
-  //     }
-  //   ]
-  //   if (!this.inputs.state[page]) {
-  //     await this.initAppointedPage(state, page)
-  //   }
+    item.state.parent = currentPage
+    const listPage = item.state.page
+    const pageState = this.inputs.state[listPage]
+    if (pageState) return
+    await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
+    const list = {
+      header: {
+        title: '已选数据列表',
+        buttons: [
+          {
+            label: '确认所选',
+            type: 'primary',
+            action: 'confirm'
+          }
+        ]
+      },
+      data: []
+    }
+    this.inputs.state[listPage].state.list = list
+    state.dialogs![listPage] = {
+      visible: false,
+      page: listPage
+    }
+    state.actions![`close${listPage}`] = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          [`dialogs.${listPage}.visible`]: false
+        }
+      }
+    ]
+    state.actions!.initInputList = [
+      {
+        name: 'flows/common/inputList/init'
+      }
+    ]
   }
 }

@@ -104,7 +104,7 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
       required: required,
       disabled: disabled && !schema.readOnly,
       options: [],
-      action: schema.page,
+      action: 'initInputList',
       page: schema.page,
       field: schema.field
     }

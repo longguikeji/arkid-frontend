@@ -22,8 +22,8 @@ export interface IFlow {
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
 // name某个页面的名称
-export async function runFlowByActionName(com: BaseVue, action: string, name?: string) {
-  const state = getCurrentPageStateByName(com, name)
+export async function runFlowByActionName(com: BaseVue, action: string, pagName?: string) {
+  const state = getCurrentPageState(com, pagName)
   if (!state) return
   const { name: currentPage, actions } = state
   if (!actions) return
@@ -150,16 +150,18 @@ function getStateByStringConfig(state: any, str: string) {
   return tempState
 }
 
-function getCurrentPageStateByName(com: BaseVue, name?: string) {
+function getCurrentPageState(com: BaseVue, name?: string) {
   let temp = com.$store.state
   let path = com.path.substring(0, com.path.indexOf('.state'))
   path = `${path.replace(/[\[]/g, '.').replace(/[\]]/g, '')}`
   const keys = path.split('.')
-  const pageKeys = keys.filter((_, index) => index > 1)
-  const mainKeys: string[] = []
-  Array.prototype.push.apply(mainKeys, [ keys[0], keys[1], pageKeys.join('.'), 'state' ])
-  for (let i = 0; i <= 3; i++) {
-    temp = (name && temp[name]) || temp[mainKeys[i]]
+  temp = temp[keys[0]]
+  temp = temp[keys[1]]
+  if (name) {
+    temp = temp[name]
+  } else {
+    const pageKeys = keys.filter((_, index) => index > 1)
+    temp = temp[pageKeys.join('.')]
   }
-  return temp
+  return temp.state
 }

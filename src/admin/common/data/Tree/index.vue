@@ -10,7 +10,7 @@
       ref="tree"
       :data="state.data"
       :props="state.props"
-      node-key="uuid"
+      node-key="id"
       :render-after-expand="state.renderAfterExpand"
       :highlight-current="state.highlightCurrent"
       :default-expand-all="state.defaultExpandAll"
@@ -30,8 +30,6 @@
       :allow-drag="allowDrag"
       :filter-node-method="filterNode"
       @node-click="handleNodeClick"
-      @node-expand="handleNodeExpand"
-      @check="handleNodeCheck"
     >
       <span
         slot-scope="{node, data}"
@@ -94,15 +92,12 @@ export default class extends Mixins(BaseVue) {
     return true
   }
 
-  handleNodeExpand(data: TreeNodeProps) {
-    this.operateAction(data, 'expand')
-  }
-
-  handleNodeCheck(data: TreeNodeProps) {
-    this.operateAction(data, 'check')
-  }
-
   handleNodeClick(data: TreeNodeProps) {
+    if (this.state.checkAction) {
+      this.state.selectedData = data
+      this.runAction(this.state.checkAction)
+    }
+    if (data.children?.length) return
     this.operateAction(data, 'click')
   }
 
