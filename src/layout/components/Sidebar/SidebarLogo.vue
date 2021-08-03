@@ -8,7 +8,7 @@
         v-if="collapse"
         key="collapse"
         class="sidebar-logo-link"
-        to="/tenant"
+        :to="to"
       >
         <img
           :src="currentTenantContent.icon ? currentTenantContent.icon : 'favicon.ico'"
@@ -19,7 +19,7 @@
         v-else
         key="expand"
         class="sidebar-logo-link"
-        to="/tenant"
+        :to="to"
       >
         <img
           :src="currentTenantContent.icon ? currentTenantContent.icon : 'favicon.ico'"
@@ -47,6 +47,10 @@ export default class extends Vue {
 
   get currentTenantContent() {
     return TenantModule.currentTenant
+  }
+
+  get to() {
+    return { path: '/tenant' }
   }
 }
 </script>

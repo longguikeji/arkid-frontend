@@ -29,7 +29,7 @@
         :name="index.toString()"
       >
         <el-form
-          :ref="`${page}${index}`"
+          :ref="page"
           :model="form"
           :rules="rules"
         >
@@ -37,7 +37,7 @@
             v-for="(item, itemIndex) in cform.items"
             :key="itemIndex"
             :prop="item.name"
-            :class="{authcode: isNeedImageCode(item)}"
+            :class="{'authcode': isNeedImageCode(item)}"
           >
             <el-input
               v-model="form[item.name]"
@@ -52,6 +52,7 @@
                 slot="append"
                 :config="item.append"
                 :action="btnClickHandler"
+                :is-change-delay="isChangeDelay"
               />
             </el-input>
             <img
@@ -160,7 +161,7 @@
   flex-wrap: wrap;
 }
 
-::v-deep .authcode {
+::v-deep .el-form-item.authcode {
   .el-form-item__content {
     display: flex;
     align-items: center;
@@ -174,6 +175,12 @@
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
     }
+  }
+}
+
+::v-deep .el-form-item {
+  img {
+    display: none;
   }
 }
 

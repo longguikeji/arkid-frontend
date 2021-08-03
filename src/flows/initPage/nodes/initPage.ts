@@ -4,7 +4,7 @@ import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app_list_update', 'external_idp_update' ]
-const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
 
 export interface BasePageOptions {
   description?: string
@@ -72,6 +72,8 @@ export class InitPage extends FunctionNode {
         curstomPageFlow = 'flows/custom/tenant/deleteTenant'
         break
       case 'extension':
+      case 'extension.create':
+      case 'extension.update':
         curstomPageFlow = 'flows/custom/extension/addAction'
     }
     if (curstomPageFlow !== '') await runFlowByFile(curstomPageFlow, { state, page: currentPage })

@@ -9,7 +9,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import { initPassword, initImport } from '@/utils/special-dialog'
+import { addPasswordDialog, addImportDialog } from '@/utils/dialogs'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
@@ -99,11 +99,11 @@ export class StateNode extends FunctionNode {
       } else {
         switch (key) {
           case 'import':
-            initImport(state, operation as ITagPageAction, currentPage)
+            addImportDialog(this.inputs.state, state, operation as ITagPageAction, currentPage)
             button = this.generateButtonState(key, currentPage, type, true)
             break
           case 'password':
-            initPassword(state, operation as ITagPageAction, currentPage)
+            addPasswordDialog(this.inputs.state, state, operation as ITagPageAction, currentPage)
             button = this.generateButtonState(key, currentPage, type, true)
             break
           case 'sort':

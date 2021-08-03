@@ -3,6 +3,7 @@ import Router, { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
+import { UserModule, UserRole } from '@/store/modules/user'
 import { getDynamicRoutes } from './dynamic'
 import { getToken } from '@/utils/auth'
 
@@ -104,6 +105,7 @@ const router = createRouter()
 router.beforeEach((to, from, next) => {
   const isLogin = getToken()  
   const tenantUUId = TenantModule.currentTenant.uuid
+  const role = UserModule.role
   let nextUrl = ''
   if (isLogin) {
     if (to.query.next) {
@@ -111,7 +113,11 @@ router.beforeEach((to, from, next) => {
     } else if (to.path === '/login' || to.path === '/third_part_callback') {
       nextUrl = '/'
     } else if (to.path === '/tenant') {
-      next()
+      if (role === UserRole.User) {
+        nextUrl = from.path
+      } else {
+        next()
+      }
     } else if (!tenantUUId) {
       nextUrl = '/tenant'
     }

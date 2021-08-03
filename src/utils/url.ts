@@ -29,7 +29,7 @@ export default function getUrl(url: string, page?: string): string {
     for (let i = 0, len = pages.length; i < len; i++) {
       if (!url.includes('{')) break
       url = url.slice(0, url.indexOf('{')) + data[name]?.uuid + url.slice(url.indexOf('}') + 1)
-      name += pages[i+1]
+      name += `.${pages[i+1]}`
     }
   }
   if (page === 'desktop') return getUrl(url, page)

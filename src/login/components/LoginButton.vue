@@ -36,28 +36,41 @@ import { ButtonConfig } from '../interface'
 })
 export default class LoginButton extends Vue {
   @Prop({ required: false, default: 'primary' }) type?:string
-  @Prop({ required: true }) config?:ButtonConfig
+  @Prop({ required: true, default: {} }) config?:ButtonConfig
   @Prop({ default: false }) long?:boolean
   @Prop() action?:Function
+  @Prop({ required: false, default: false }) isChangeDelay?: boolean
+
+  private delayData = 0
 
   get label() {
     const _label = (this.config?.label || '') + (this.delayData ? '(' + this.delayData + ')' : '')
     return _label
   }
 
-  delayData = 0
-
   get disabled():boolean {
     return Boolean(this.delayData)
   }
 
-  async clickHandler() {
-    const btn = this.config || {}
-    this.delayData = Number(btn.delay)
-    if (this.action) this.action(btn)
+  @Watch('isChangeDelay')
+  changeDelay(val) {
+    if (val) {
+      this.delayData = Number(this.config?.delay || 0)
+      this.delayHandler()
+    } else {
+      this.delayData = 0
+    }
   }
 
   @Watch('delayData')
+  onDelayDataChange() {
+    this.delayHandler()
+  }
+
+  async clickHandler() {
+    if (this.action) this.action(this.config)
+  }
+
   delayHandler() {
     if (this.delayData > 0) {
       setTimeout(this.delayCountDown, 1000)
@@ -67,9 +80,8 @@ export default class LoginButton extends Vue {
   }
 
   delayCountDown() {
-    if (this.delayData > 0) {
-      this.delayData -= 1
-    }
+    console.log('')
+    this.delayData -= 1
   }
 
   get btnClass() {

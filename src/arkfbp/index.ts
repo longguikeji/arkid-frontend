@@ -22,28 +22,26 @@ export interface IFlow {
 // 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
 // 并逐一执行其中的各个流内容
 // name某个页面的名称
-export async function runFlowByActionName(com: BaseVue, action: string, pagName?: string) {
-  const state = getCurrentPageState(com, pagName)
+export async function runFlowByActionName(com: BaseVue, actionName: string, pageName?: string) {
+  if (actionName.includes('.')) {
+    const index = actionName.lastIndexOf('.')
+    pageName = actionName.substring(0, index)
+    actionName = actionName.substring(index+1)
+  }
+  const state = getCurrentPageState(com, pageName)
   if (!state) return
   const { name: currentPage, actions } = state
   if (!actions) return
-  const flows: (IFlow | string)[] = actions[action]
-  if (flows?.length) {
+  const action: (IFlow | string)[] = actions[actionName]
+  if (action?.length) {
     FlowModule.startRunFlow()
-    for (let i = 0, l = flows.length; i < l; i++) {
+    for (let i = 0, l = action.length; i < l; i++) {
       if (!FlowModule.run) break
-      const flow = flows[i]
-      if (typeof flow === 'string') {
-        if (flow.includes('.')) {
-          const fs = flow.split('.')
-          const appointedPageActionName = fs[fs.length - 1]
-          const appointedPage = fs.slice(0, -1).join('.')
-          await runFlowByActionName(com, appointedPageActionName, appointedPage)
-        } else {
-          await runFlowByActionName(com, flow)
-        }
+      const item = action[i]
+      if (typeof item === 'string') {
+        await runFlowByActionName(com, item, pageName)
       } else {
-        await runFlow(com, state, flow as IFlow, currentPage)
+        await runFlow(com, state, item as IFlow, currentPage)
       }
     }
   }

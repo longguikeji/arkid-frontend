@@ -4,7 +4,7 @@ import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../util/rules'
-import request from '../request'
+import http from '../http'
 import { error } from '@/constants/error'
 
 @Component({
@@ -26,6 +26,7 @@ export default class LoginComponent extends Vue {
   rules: object = {}
   agreementVisible: boolean = false
   btn: ButtonConfig = {}
+  isChangeDelay: boolean = false
 
   get fullscreen(): boolean {
     return document.body.clientWidth < 600
@@ -46,22 +47,21 @@ export default class LoginComponent extends Vue {
   }
 
   created() {
-    this.initPage()
+    this.initPageName()
     this.processConfig()
     this.addKeyPressEvent()
   }
 
   handleTabClick() {
     this.resetFields()
+    this.isChangeDelay = false
   }
 
-  async http(url: string, method: string, data?: any) {
-    method = method.toLowerCase()
-    return await request[method](url, data)
-  }
-
-  initPage() {
-    this.page = this.config ? Object.keys(this.config)[0] : ''
+  initPageName() {
+    for (const key in this.config) {
+      this.page = key
+      break
+    }
   }
 
   processConfig() {
@@ -109,7 +109,7 @@ export default class LoginComponent extends Vue {
 
   resetFields() {
     this.$nextTick(() => {
-      this.$refs[`${this.page}${this.tabIndex}`][0].resetFields()
+      this.$refs[this.page][this.tabIndex].resetFields()
     })
   }
 
@@ -129,7 +129,7 @@ export default class LoginComponent extends Vue {
 
   validateCheckPassword(rule: any, value: string, callback: Function) {
     if (this.form['checkpassword']) {
-      this.$refs[`${this.page}${this.tabIndex}`][0].validateField('checkpassword')
+      this.$refs[this.page][this.tabIndex].validateField('checkpassword')
     }
     callback()
   }
@@ -143,35 +143,43 @@ export default class LoginComponent extends Vue {
   }
 
   isNeedImageCode(item: FormItemConfig) {
-    const hasCode = item.name === 'code' && !item.append && this.page === 'login'
-    if (hasCode && this.imageCodeSrc === '') {
-      this.getImageCode()
-    }
-    return hasCode
-  }
-
-  async getImageCode() {
-    const response = await this.http('/api/v1/authcode/generate', 'get')
-    const data = response.data
-    if (!data.error) {
-      const { key, base64 } = data
-      LoginStore.CodeFileName = key
-      this.imageCodeSrc = `data:image/png;base64,${base64}`
-    }  
+    this.$nextTick(() => {
+      const hasCode = item.name === 'code' && !item.append && this.page === 'login'
+      if (hasCode && this.imageCodeSrc === '') {
+        this.getImageCode()
+      }
+      return hasCode
+    })
   }
 
   async btnClickHandler(btn: ButtonConfig) {
     this.btn = btn
-    if (btn.http && !btn.delay) this.btnHttp()
+    if (btn.http && !btn.delay) this.btnHttpCheck()
     if (btn.gopage && !btn.http) this.goPage()
     if (btn.redirect) this.redirect()
-    if (btn.delay) await this.btnRequest()
+    if (btn.delay) this.btnDelayCheck()
   }
 
-  btnHttp() {
-    (this.$refs[`${this.page}${this.tabIndex}`][0] as Vue & { validate: Function }).validate(async (valid: boolean) => {
+  btnHttpCheck() {
+    this.$refs[this.page][this.tabIndex].validate(async (valid: boolean) => {
       if (valid) {
         await this.btnRequest()
+      }
+    })
+  }
+
+  btnDelayCheck() {
+    const params = this.btn.http!.params
+    const key = Object.keys(params)[0]
+    this.$refs[this.page][this.tabIndex].validateField(key, async (err) => {
+      if (!err) {
+        await this.btnRequest()
+      } else {
+        this.$message({
+          message: err,
+          type: 'error',
+          showClose: true
+        })
       }
     })
   }
@@ -187,6 +195,7 @@ export default class LoginComponent extends Vue {
   switchPage() {
     this.page = this.btn.gopage!
     this.tabIndex = '0'
+    this.isChangeDelay = false
     this.resetRules()
     this.resetFields()
   }
@@ -207,6 +216,21 @@ export default class LoginComponent extends Vue {
     this.switchPage()
   }
 
+  async request(url: string, method: string, data?: any) {
+    method = method.toLowerCase()
+    return await http[method](url, data)
+  }
+
+  async getImageCode() {
+    const response = await this.request('/api/v1/authcode/generate', 'get')
+    const data = response.data
+    if (!data.error) {
+      const { key, base64 } = data
+      LoginStore.CodeFileName = key
+      this.imageCodeSrc = `data:image/png;base64,${base64}`
+    }  
+  }
+
   async btnRequest() {
     let { url, method, params } = this.btn.http!
     for (let key in params) {
@@ -216,30 +240,39 @@ export default class LoginComponent extends Vue {
         if (key === 'code_filename') params[key] = LoginStore.CodeFileName
       }
     }
-    const response = await this.http(url, method, params)
+    const response = await this.request(url, method, params)
     const data = response.data
-    if (data.error === '0' && this.btn.gopage) {
-      this.switchPage()
-    } else if (data.error === '0' && data.data.token) {
-      // set token
-      LoginStore.token = data.data.token
-      // 绑定用户与第三方账号
-      if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
-        const parmas = {
-          user_id: LoginStore.ThirdUserID
+    if (data.error === '0') {
+      if (this.btn.delay) {
+        this.isChangeDelay = true
+      } else if (this.btn.gopage) {
+        this.$message({
+          message: '重置密码成功，请登录',
+          type: 'success',
+          showClose: true
+        })
+        this.switchPage()
+      } else if (data.data.token) {
+        // set token
+        LoginStore.token = data.data.token
+        // 绑定用户与第三方账号
+        if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
+          const parmas = {
+            user_id: LoginStore.ThirdUserID
+          }
+          url = LoginStore.BindUrl
+          method = 'post'
+          await this.request(url, method, parmas)
+          LoginStore.BindUrl = ''
+          LoginStore.ThirdUserID = ''
         }
-        url = LoginStore.BindUrl
-        method = 'post'
-        await this.http(url, method, parmas)
-        LoginStore.BindUrl = ''
-        LoginStore.ThirdUserID = ''
-      }
-      // next url
-      if (LoginStore.NextUrl) {
-        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
-        LoginStore.NextUrl = ''
-      } else {
-        window.location.reload()
+        // next url
+        if (LoginStore.NextUrl) {
+          window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
+          LoginStore.NextUrl = ''
+        } else {
+          window.location.reload()
+        }
       }
     } else {
       if (data.is_need_refresh && LoginStore.CodeFileName === '') {
@@ -247,7 +280,7 @@ export default class LoginComponent extends Vue {
       }
       this.$message({
         message: error[data.error] || data.message || 'error',
-        type: data.error && data.error !== '0' ? 'error' : 'success',
+        type: 'error',
         showClose: true
       })
     }

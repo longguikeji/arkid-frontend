@@ -14,7 +14,7 @@ import LoginComponent from './components/LoginComponent.vue'
 import { LoginPagesConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import getBaseUrl from '@/utils/get-base-url'
-import request from './request'
+import http from './http'
 
 @Component({
   name: 'Login',
@@ -62,7 +62,7 @@ export default class Login extends Vue {
     if (LoginStore.TenantUUID) {
       url = '/api/v1/loginpage/?tenant=' + LoginStore.TenantUUID
     }
-    const response = await request.get(url)
+    const response = await http.get(url)
     const page = response.data
     const { tenant, data } = page
     const config = {}
