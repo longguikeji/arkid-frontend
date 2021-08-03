@@ -10,7 +10,7 @@ export class AuthPageBtn extends FunctionNode {
     columns[columns.length - 1]?.scope?.state?.push({
       label: '配置授权页面',
       type: 'info',
-      action: 'openAuthPage'
+      action: 'openAuthDialog'
     })
     pageState.state.actions!.openAuthDialog = [
       {

@@ -3,7 +3,7 @@ import { runFlowByFile } from '@/arkfbp/index'
 import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
-const PAGE_SHOW_READONLY = [ 'profile', 'app_list_update', 'external_idp_update' ]
+const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
 const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
 
 export interface BasePageOptions {
@@ -56,8 +56,8 @@ export class InitPage extends FunctionNode {
       case 'maketplace':
         curstomPageFlow = 'flows/custom/maketplace/initFilter'
         break
-      case 'third_party_account':
-        curstomPageFlow = 'flows/custom/thirdPartyAccount/addUnbindButton'
+      case 'third_part_account':
+        curstomPageFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
         break
       case 'login_register_config':
         curstomPageFlow = 'flows/custom/loginRegisterConfig/addAction'

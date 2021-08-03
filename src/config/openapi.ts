@@ -73,8 +73,8 @@ export interface ITag {
 export interface ITagPage {
   type: string
   init: ITagPageAction
-  page?: ITagPageOperation
-  item?: ITagPageOperation
+  global?: ITagPageOperation
+  local?: ITagPageOperation
 }
 
 export interface ITagPageAction {

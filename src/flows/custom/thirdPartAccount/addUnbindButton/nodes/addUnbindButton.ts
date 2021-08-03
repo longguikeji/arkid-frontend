@@ -1,5 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+
 export class AddUnbindButton extends FunctionNode {
   async run() {
     const { state, page } = this.inputs
@@ -19,7 +20,7 @@ export class AddUnbindButton extends FunctionNode {
     })
     pageState.state.actions!.unbind = [
       {
-        name: 'flows/thirdPartyAccount/unbind'
+        name: 'flows/custom/thirdPartAccount/unbind'
       },
       'fetch'
     ]

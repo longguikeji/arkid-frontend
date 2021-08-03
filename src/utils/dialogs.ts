@@ -2,8 +2,24 @@ import { BasePage } from '@/flows/page/basePage/nodes/pageNode'
 import { ITagPageAction, ITagUpdateOperation } from '@/config/openapi'
 import { getSchemaByPath } from '@/utils/schema'
 
-export function addInputListDialog() {
-
+export function addInputListDialog(state: BasePage, page: string) {
+  state.dialogs![page] = {
+    visible: false,
+    page
+  }
+  state.actions![`close${page}`] = [
+    {
+      name: 'arkfbp/flows/assign',
+      response: {
+        [`dialogs.${page}.visible`]: false
+      }
+    }
+  ]
+  state.actions!.initInputList = [
+    {
+      name: 'flows/common/inputList/init'
+    }
+  ]
 }
 
 export function addPasswordDialog(adminState: any, state: BasePage, operation: ITagUpdateOperation | ITagPageAction, page: string) {

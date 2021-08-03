@@ -82,9 +82,9 @@ export class ActionNode extends FunctionNode {
   }
 
   initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage, currentPage: string) {
-    const { page, item } = initContent
+    const { global, local } = initContent
     const state = pageState.state
-    const operations = Object.assign({}, page, item)
+    const operations = Object.assign({}, global, local)
     for (const key in operations) {
       const operation = operations[key]
       if ((operation as ITagPageMapping).tag) {

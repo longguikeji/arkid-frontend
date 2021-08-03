@@ -23,7 +23,7 @@ export default function getUrl(url: string, page?: string): string {
       value = TenantModule.currentTenant.uuid || id
   }
   if (value !== id) url = url.slice(0, url.indexOf('{')) + value + url.slice(url.indexOf('}') + 1)
-  // parent page data
+  if (page === 'desktop') return getUrl(url, page)
   if (!isEmptyObject(data)) {
     let name = pages[0]
     for (let i = 0, len = pages.length; i < len; i++) {
@@ -32,7 +32,6 @@ export default function getUrl(url: string, page?: string): string {
       name += `.${pages[i+1]}`
     }
   }
-  if (page === 'desktop') return getUrl(url, page)
   return url
 }
 

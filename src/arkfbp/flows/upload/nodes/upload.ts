@@ -14,7 +14,7 @@ export class Upload extends AuthApiNode {
       reader.onload = (e: any) => {
         com.state.value = e.target.result
       }
-    } else if (state.format === 'upload_url') {
+    } else {
       let formData = new FormData();
       formData.append("file", file)
       this.$state.commit((state) => {

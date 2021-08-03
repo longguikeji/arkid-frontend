@@ -13,11 +13,7 @@ export default function getStateByPath(state: any, path: string): any {
         break
       case ']':
         key = key.substring(1)
-        if (key.includes('=')) {
-          // ...
-        } else {
-          temp = temp[key] || {}
-        }
+        temp = temp[key] || {}
         key = ''
         break
       case '.':

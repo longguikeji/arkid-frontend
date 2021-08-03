@@ -12,6 +12,7 @@
     <el-dialog
       :visible="show"
       :modal="false"
+      @close="show = false"
     >
       <el-card>
         <div slot="header">

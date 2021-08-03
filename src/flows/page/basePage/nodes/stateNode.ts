@@ -9,7 +9,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { firstToUpperCase } from '@/utils/common'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import { addPasswordDialog, addImportDialog } from '@/utils/dialogs'
+import { addInputListDialog, addPasswordDialog, addImportDialog } from '@/utils/dialogs'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
@@ -84,10 +84,10 @@ export class StateNode extends FunctionNode {
   }
 
   async initPageOperationState(pageState: AdminComponentState, initContent: ITagPage, currentPage: string) {
-    const { page, item } = initContent
+    const { global, local } = initContent
     const { state, type } = pageState
-    const pageKeys = Object.keys(page || {})
-    const operations = Object.assign({}, page, item)
+    const globalKeys = Object.keys(global || {})
+    const operations = Object.assign({}, global, local)
     for (const key in operations) {
       if (key === 'children') continue
       const operation = operations[key]
@@ -114,7 +114,7 @@ export class StateNode extends FunctionNode {
         }
       }
       if (!button) continue
-      pageKeys.includes(key) ? this.addGlobalButton(state, type as string, button) : this.addLocalButton(state, type as string, button)
+      globalKeys.includes(key) ? this.addGlobalButton(state, type as string, button) : this.addLocalButton(state, type as string, button)
     }
   }
   
@@ -215,6 +215,7 @@ export class StateNode extends FunctionNode {
   async initInputList(state: BasePage, currentPage: string, item: FormItemState) {
     item.state.parent = currentPage
     const listPage = item.state.page
+    addInputListDialog(state, listPage)
     const pageState = this.inputs.state[listPage]
     if (pageState) return
     await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
@@ -232,22 +233,5 @@ export class StateNode extends FunctionNode {
       data: []
     }
     this.inputs.state[listPage].state.list = list
-    state.dialogs![listPage] = {
-      visible: false,
-      page: listPage
-    }
-    state.actions![`close${listPage}`] = [
-      {
-        name: 'arkfbp/flows/assign',
-        response: {
-          [`dialogs.${listPage}.visible`]: false
-        }
-      }
-    ]
-    state.actions!.initInputList = [
-      {
-        name: 'flows/common/inputList/init'
-      }
-    ]
   }
 }
