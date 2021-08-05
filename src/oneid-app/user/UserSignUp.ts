@@ -190,7 +190,7 @@ export default class UserSignUp extends Vue {
   }
 
   get isCommonFormShow() {
-    return  this.emailForm.email || (this.selectedRegisterType && this.selectedRegisterType.includes('手机'))
+    return this.emailForm.email || (this.selectedRegisterType && this.selectedRegisterType.includes('手机'))
   }
 
   get isMobileFormShow() {
@@ -244,6 +244,16 @@ export default class UserSignUp extends Vue {
     return {
       breadcrumb: false,
     }
+  }
+
+  @Watch('selectedRegisterType')
+  onSelectedRegisterTypeChange() {
+    this.addEnterKeypressEvent()
+  }
+
+  @Watch('emailForm.email')
+  onEmailChange() {
+    this.addEnterKeypressEvent()
   }
 
   @Watch('mobileForm.smsCode')
@@ -382,6 +392,24 @@ export default class UserSignUp extends Vue {
   mounted() {
     if (this.$app.isLogin) {
       this.$app.goHome()
+    } else {
+      this.addEnterKeypressEvent()
+    }
+  }
+
+  addEnterKeypressEvent() {
+    const type = this.selectedRegisterType
+    const email = this.emailForm.email
+    window.document.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        if (type.includes('邮箱') && !email) {
+          this.sendEmail()
+        } else if (type.includes('手机')) {
+          this.handleSubmit()
+        } else if (type.includes('初始')) {
+          this.login()
+        }
+      }
     }
   }
 

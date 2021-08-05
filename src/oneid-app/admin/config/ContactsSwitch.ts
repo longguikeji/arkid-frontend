@@ -22,7 +22,7 @@ export default class ContactsSwitch extends Vue {
   private show: boolean = false
 
   async mounted() {
-    this.show = (this.$app.metaInfo && this.$app.metaInfo.contacts.show) || false
+    this.show = (this.$app.metaInfo && this.$app.metaInfo.contacts && this.$app.metaInfo.contacts.show) || false
   }
 
   async change(value: boolean) {

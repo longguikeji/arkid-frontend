@@ -141,8 +141,27 @@ export default class UserBindThirdParty extends Vue {
     }
   }
 
+  @Watch('isNewUser')
+  onIsNewUserChange() {
+    this.addEnterKeypressEvent()
+  }
+
   mounted() {
     this.varifyState()
+    this.addEnterKeypressEvent()
+  }
+
+  addEnterKeypressEvent() {
+    const isNewUser = this.isNewUser
+    window.document.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        if (isNewUser) {
+          this.submitRegisterForm()
+        } else {
+          this.submitSmsCode()
+        }
+      }
+    }
   }
 
   varifyState() {
