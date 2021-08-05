@@ -119,7 +119,7 @@ export default class UserPassword extends Vue {
     const passwordDiffCheck = {
       trigger: 'blur',
       validator: (rule: any, value: string, cb: any) => {
-        if (this.resetForm.firstPassword != this.resetForm.secondPassword) {
+        if (this.resetForm.firstPassword !== this.resetForm.secondPassword) {
           cb(new Error('两次输入的密码不一致'))
         }
         else {
@@ -144,12 +144,12 @@ export default class UserPassword extends Vue {
     return {breadcrumb: false}
   }
 
-  async onResetTypeChange() {
+  onResetTypeChange() {
     if (this.$refs.mobileForm) {
-      await this.$refs.mobileForm.resetFields()
+      this.$refs.mobileForm.resetFields()
     }
     if(this.$refs.emailForm) {
-      await this.$refs.emailForm.resetFields()
+      this.$refs.emailForm.resetFields()
     }
   }
 
@@ -188,10 +188,10 @@ export default class UserPassword extends Vue {
   }
 
   getVisibleState(itemIndex: number) {
-    if (itemIndex == 0) {
+    if (itemIndex === 0) {
       return this.selectedResetPasswordType.includes('邮箱') && this.isEmailSend ? 'visible' : 'hidden'
     }
-    if (itemIndex == 1) {
+    if (itemIndex === 1) {
       return this.selectedResetPasswordType.includes('手机') && !this.isVerified? 'visible' : 'hidden'
     }
   }
@@ -202,22 +202,22 @@ export default class UserPassword extends Vue {
       this.captchaKey = captcha_key
       this.captchaImg = captcha_img
     } catch(err) {
-      console.log(err)
+      // console.log(err)
     }
   }
 
   async sendSms() {
     const {mobileForm} = this
     const {username, mobile} = mobileForm
-    const mobile_regex = RegExp(/(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/)
-    if (!mobile_regex.test(mobile)) {
+    const mobileRegex = RegExp(/(^(1)\d{10}$)|(^(\+\d{1,3}) \d{4,12}$)/)
+    if (!mobileRegex.test(mobile)) {
       return
     }
     try {
       await api.ApiService.sendResetPasswordSms(mobile, username)
       this.$Message.success('成功发送短信')
     } catch(err) {
-      console.log(err)
+      // console.log(err)
       this.$Message.error('发送短信失败')
     }
   }
@@ -233,7 +233,7 @@ export default class UserPassword extends Vue {
           this.mobileForm.smsToken = sms_token
           this.isVerified = 'sms'
         } catch(err) {
-          console.log(err)
+          // console.log(err)
           this.$Message.error('重置密码失败')
         }
       }
@@ -248,7 +248,7 @@ export default class UserPassword extends Vue {
       this.$Message.success('成功发送邮件')
       this.isEmailSend = true
     } catch(err) {
-      console.log(err)
+      // console.log(err)
       this.$Message.error('发送邮件失败')
     }
   }
@@ -268,7 +268,7 @@ export default class UserPassword extends Vue {
         this.$Message.success('成功重置密码')
         this.$app.goHome()
       } catch(err) {
-        console.log(err)
+        // console.log(err)
         this.$Message.error('重置密码失败')
       }
     }
@@ -285,7 +285,7 @@ export default class UserPassword extends Vue {
         this.$Message.success('成功重置密码')
         this.$app.goHome()
       } catch(err) {
-        console.log(err)
+        // console.log(err)
         this.$Message.error('重置密码失败')
       }
     }
@@ -338,7 +338,7 @@ export default class UserPassword extends Vue {
       this.emailForm.emailToken = token
       this.isVerified = 'email'
     } catch(err) {
-      console.log(err)
+      // console.log(err)
       this.$Message.error('验证邮箱失败')
     }
   }
