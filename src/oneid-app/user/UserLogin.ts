@@ -258,6 +258,16 @@ export default class UserLogin extends Vue {
   loginStateCheck() {
     if (this.$app.isLogin) {
       this.$app.goHome()
+    } else {
+      this.addEnterKeypressEvent()
+    }
+  }
+
+  addEnterKeypressEvent() {
+    window.document.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        this.handleSubmit()
+      }
     }
   }
 

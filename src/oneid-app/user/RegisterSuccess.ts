@@ -1,5 +1,5 @@
-import {Vue, Component, Prop, Watch} from 'vue-property-decorator';
-import './RegisterSuccess.less';
+import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
+import './RegisterSuccess.less'
 
 @Component({
   template: html`
@@ -11,30 +11,40 @@ import './RegisterSuccess.less';
       <Button type="primary" @click="goHome" class="simpleframe-btn go-home">去登录</Button>
     </div>
   </SimpleFrame>
-  `
+  `,
 })
 export default class RegisterSuccess extends Vue {
-  timer = null;
-  maxTimeout: number = 5;
-  
+  timer = null
+  maxTimeout: number = 5
+
   goHome() {
-    this.$router.push({name: 'oneid.login', query: {next: String(this.$route.query.next) || ''}});
+    this.$router.push({name: 'oneid.login', query: {next: String(this.$route.query.next) || ''}})
   }
 
   created() {
-    this.timer = setInterval(this.checkTimeout, 1000);
+    this.timer = setInterval(this.checkTimeout, 1000)
+    this.addEnterKeypressEvent()
+  }
+
+  addEnterKeypressEvent() {
+    window.document.onkeypress = (e) => {
+      if (e.key === 'Enter') {
+        this.goHome()
+      }
+    }
   }
 
   checkTimeout() {
     if (--this.maxTimeout > 0) {
-      return;
+      return
     }
     else {
-      clearInterval(this.timer);
-      this.goHome();
+      clearInterval(this.timer)
+      this.goHome()
     }
   }
+
   destroyed() {
-    clearInterval(this.timer);
+    clearInterval(this.timer)
   }
 }
