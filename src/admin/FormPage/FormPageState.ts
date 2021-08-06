@@ -6,11 +6,13 @@ import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import { IFlow } from '@/arkfbp'
 
 export interface FormPage extends CardState {
+  name?: string
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
   card?: CardState
   select?: SelectState
   forms?: {[value:string]: FormState}
-  bottomButtons?: Array<ButtonState> // form 结构中的底部按钮内容
+  buttons?: Array<ButtonState>
   actions?: { [name: string]: (IFlow | string)[] }
+  data?: any
 }

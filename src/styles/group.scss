@@ -1,14 +1,16 @@
-.group {
-  .multi-page {
-    .tree-page {
-      display: inline-block;
-      width: 30%;
-      height: calc(100vh - 84px);
-    }
-    .table-page {
-      display: inline-block;
-      width: 70%;
+.group, .group_user {
+  .tree-page {
+    display: inline-block;
+    width: 30%;
+    height: calc(100vh - 84px);
+    vertical-align: top;
+    ::v-deep .el-card {
       height: 100%;
     }
+  }
+  .table-page {
+    display: inline-block;
+    width: 70%;
+    height: 100%;
   }
 }

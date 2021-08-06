@@ -72,9 +72,10 @@ const getDynamicRule = (name?: string, format?: string, hint?: string, required?
 // format OpenAPI描述的校验字段类型  uri email password mobile other
 // hint 对应OpenAPI字段描述中的hint内容，文本提示
 // required 是否为必填字段
-export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean): string {
+export function validate(value: any, name: string, format?: string, hint?: string, required?: boolean, p?: string): string {
   let { message, pattern, isAnti } = getDynamicRule(name, format, hint, required)
-  if (value) {
+  if (p) pattern = new RegExp(p)
+  if (value && pattern) {
     if (name === 'regular') {
       message = regexValidator(value)
     } else {

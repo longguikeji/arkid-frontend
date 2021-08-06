@@ -2,9 +2,8 @@ import { RouteConfig } from 'vue-router'
 import Layout from '@/layout/index.vue'
 import Admin from '@/admin/main/index.vue'
 import { UserModule, UserRole } from '@/store/modules/user'
-import OpenAPI, { ISpec, IOpenAPIRouter, ITagPage } from '@/config/openapi'
-import { getApiRoles, getInitContent } from '@/utils/schema'
-import { isArray } from '@/utils/common'
+import OpenAPI, { ISpec, IOpenAPIRouter } from '@/config/openapi'
+import hasPermission from '@/utils/role'
 
 interface RouteMeta {
   title: string
@@ -17,9 +16,9 @@ interface RouteMeta {
 
 // 根据OpenAPI信息动态生成当前登录用户所拥有权限的路由
 export function getDynamicRoutes() {
-  const oAPI: ISpec | undefined = OpenAPI.instance.config
-  if (!oAPI?.info?.routers) return []
-  const openAPIRoutes = oAPI.info.routers
+  const openAPI: ISpec | undefined = OpenAPI.instance.config
+  if (!openAPI?.info?.routers) return []
+  const openAPIRoutes = openAPI.info.routers
   let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
   routes = filterRoutes(routes)
   return routes
@@ -37,10 +36,7 @@ function processOpenAPIRoutes(routes: IOpenAPIRouter[]): RouteConfig[] {
 
 function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
   const page = route.page
-  if (page) {
-    const isValid = getPageValidity(page)
-    if (!isValid) return undefined
-  }
+  if (page && !hasPermission(page)) return undefined
   const { path, children } = route
   const newRoute: RouteConfig = {
     path: '/' + path,
@@ -68,10 +64,7 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
   if (routes) {
     for (let i = 0, len = routes.length; i < len; i++) {
       const page = routes[i].page
-      if (page) {
-        const isValid = getPageValidity(page)
-        if (!isValid) continue
-      }
+      if (page && !hasPermission(page)) continue
       const { path, children } = routes[i]
       const childRoute = {
         path: path,
@@ -99,40 +92,6 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
     affix: affix || false
   }
   return meta
-}
-
-function getPageValidity(page: string): boolean {
-  let isValid = true
-  const initContent = getInitContent(page)
-  if (!initContent) {
-    return true
-  }
-  let pageRoles: string[] = []
-  if (isArray(initContent)) {
-    (initContent as ITagPage[]).forEach(page => {
-      const path = page?.init?.path
-      const method = page?.init?.method
-      if (path && method) {
-        const roles = getApiRoles(path, method)
-        pageRoles.push.apply(pageRoles, roles)
-      }
-    })
-  } else {
-    const path = (initContent as ITagPage).init?.path
-    const method = (initContent as ITagPage).init?.method
-    if (path && method) {
-      const roles = getApiRoles(path, method)
-      pageRoles.push.apply(pageRoles, roles)
-    }
-  }
-  let currentUserRole = UserModule.role
-  if (currentUserRole === UserRole.Platform) {
-    currentUserRole = UserRole.User
-  }
-  if (pageRoles.indexOf(currentUserRole) < 0) {
-    isValid = false
-  }
-  return isValid
 }
 
 // extra function - only staged code

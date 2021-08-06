@@ -1,83 +1,81 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import { ITagPage } from '@/config/openapi'
 import { isArray } from '@/utils/common'
+import OpenAPI from '@/config/openapi'
+
+const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
+
+export interface BasePageOptions {
+  description?: string
+  showReadOnly?: boolean
+  showWriteOnly?: boolean
+  disabled?: boolean
+}
 
 export class InitPage extends FunctionNode {
   async run() {
-    const initContent = this.inputs.initContent
-    const currentPage = this.inputs.currentPage
-    const isMultiPage = isArray(initContent)
-    let state
-    if (isMultiPage) {
-      state = []
-      for (let i = 0; i < initContent.length; i++) {
-        const pageState = await this.initPage(initContent[i], currentPage)
-        state.push(pageState)
+    const { page, state } = this.inputs
+    if (isArray(page)) {
+      for (const i of page) {
+        await this.initBasePage(state, i)
+        await this.runCustomPageFlow(state, i)
       }
     } else {
-      state = await this.initPage(initContent, currentPage)
+      await this.initBasePage(state, page)
+      await this.runCustomPageFlow(state, page)
     }
-    await this.runCustomPageFlow(state, initContent, currentPage)
-    return {
-      state: state
-    }
-  }
-
-  async initPage(initContent: ITagPage, currentPage: string) {
-    let state
-    let initFileName = ''
-    switch (initContent.type) {
-      case 'table_page':
-      case 'form_page':
-      case 'tree_page':
-        initFileName = 'flows/basePage'
-        break
-      case 'dashboard_page':
-        initFileName = 'flows/dashboardPage/init'
-        break
-    }
-    await runFlowByFile(initFileName, {
-      initContent,
-      currentPage
-    }).then(async (data) => {
-      state = data.state
-    })
     return state
   }
 
-  async runCustomPageFlow(state: any, initContent: ITagPage, currentPage: string) {
+  async initBasePage(state: object, currentPage: string) {
+    const info = OpenAPI.instance.getOnePageTagInfo(currentPage)
+    if (!info) return null
+    const { page: initContent, description } = info
+    if (!initContent) return
+    const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
+    if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
+    if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
+    let flow = 'flows/page/basePage'
+    if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
+    await runFlowByFile(flow, { state, initContent, currentPage, options })
+  }
+
+  async runCustomPageFlow(state: any, currentPage: string) {
     let curstomPageFlow: string = ''
     switch (currentPage) {
-      case 'app_list':
-        curstomPageFlow = 'flows/appManager/authPageBtn'
+      case 'app':
+        curstomPageFlow = 'flows/custom/appManager/authPageBtn'
         break
       case 'group':
-        curstomPageFlow = 'flows/group/changeFetch'
+        curstomPageFlow = 'flows/custom/group/group'
+        break
+      case 'group_user':
+        curstomPageFlow = 'flows/custom/group/groupUser'
         break
       case 'maketplace':
-        curstomPageFlow = 'flows/maketplace/initFilter'
+        curstomPageFlow = 'flows/custom/maketplace/initFilter'
         break
-      case 'third_party_account':
-        curstomPageFlow = 'flows/thirdPartyAccount/addUnbindButton'
+      case 'third_part_account':
+        curstomPageFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
         break
-      case 'lr_config':
-        curstomPageFlow = 'flows/loginRegisterConfig/updated'
+      case 'login_register_config':
+        curstomPageFlow = 'flows/custom/loginRegisterConfig/addAction'
         break
-      case 'password_factor':
-        curstomPageFlow = 'flows/passwordManager/addAction'
+      case 'login_register_config.update':
+        curstomPageFlow = 'flows/custom/loginRegisterConfig/options'
+        break
+      case 'password':
+        curstomPageFlow = 'flows/custom/password/addAction'
         break
       case 'tenant_config':
-        curstomPageFlow = 'flows/tenant/deleteTenant'
+        curstomPageFlow = 'flows/custom/tenant/deleteTenant'
         break
       case 'extension':
-        curstomPageFlow = 'flows/extension/addAction'
+      case 'extension.create':
+      case 'extension.update':
+        curstomPageFlow = 'flows/custom/extension/addAction'
     }
-    if (curstomPageFlow !== '') {
-      await runFlowByFile(curstomPageFlow, {
-        state,
-        initContent
-      })
-    }
+    if (curstomPageFlow !== '') await runFlowByFile(curstomPageFlow, { state, page: currentPage })
   }
 }

@@ -10,7 +10,7 @@ export class Update extends AuthApiNode {
     this.url = url
     this.method = method
     this.params = params
-    // 进行必填字段的统一判断
+
     let lackRequiredParams = false
     if (required) {
       let requiredSet = required
@@ -22,7 +22,6 @@ export class Update extends AuthApiNode {
       lackRequiredParams = isLackRequiredParams(this.params, requiredSet)
     }
 
-    // 判断是否
     if (lackRequiredParams) {
       FlowModule.stopRunFlow()
       com.$message({

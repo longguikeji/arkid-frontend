@@ -43,15 +43,15 @@
         @paste.native.capture.prevent="onPaste"
       />
     </el-form-item>
-    <el-form-item>
+    <el-form-item class="password-buttons">
+      <el-button @click="resetPasswordForm">
+        重置
+      </el-button>
       <el-button
         type="primary"
         @click="submitPasswordForm"
       >
         确认
-      </el-button>
-      <el-button @click="resetPasswordForm">
-        重置
       </el-button>
     </el-form-item>
   </el-form>
@@ -129,5 +129,8 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-
+.password-buttons {
+  display: flex;
+  justify-content: flex-end;
+}
 </style>

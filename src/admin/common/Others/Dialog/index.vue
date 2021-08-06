@@ -17,24 +17,7 @@
     :center="state.center"
     :destory-on-close="state.destoryOnClose"
   >
-    <AdminComponent :path="getChildPath('state')" />
-
-    <span
-      v-if="!state.isCancelFooter"
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        class="dialog__cancel__button"
-        :size="state.cancelButtonSize || 'small'"
-        @click="state.visible = false"
-      >取 消</el-button>
-      <ButtonArray
-        v-if="state.buttons && state.buttons.length > 0"
-        class="dialog__actions__button"
-        :path="getActionPath()"
-      />
-    </span>
+    <AdminComponent :path="dialogPath" />
   </el-dialog>
 </template>
 
@@ -54,17 +37,6 @@ export default class extends Mixins(BaseVue) {
     return this.$state as DialogState
   }
 
-  getActionPath() {
-    const data = this.state.data as any
-    if (this.state.buttons) {
-      this.state.buttons.forEach((e: any) => {
-        e.data = data
-      })
-    }
-
-    return this.getChildPath('buttons')
-  }
-
   get defaultWidth() {
     if (document.body.clientWidth > 1400) {
       return '65%'
@@ -80,6 +52,16 @@ export default class extends Mixins(BaseVue) {
       return false
     } else {
       return true
+    }
+  }
+
+  get dialogPath() {
+    if (this.state.page) {
+      return this.path.includes('[')
+        ? `${this.path.substring(0, this.path.indexOf('['))}[${this.state.page}]`
+        : `${this.path.split('.').slice(0, 2).join('.')}[${this.state.page}]`
+    } else {
+      return this.getChildPath('state')
     }
   }
 }

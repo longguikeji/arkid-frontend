@@ -29,21 +29,11 @@ export default class OpenAPI {
       throw Error("can't find schema in components by ref: " + ref)
     }
   }
-  
-  public getAllTags() {
-    return this.config?.tags || []
-  }
 
-  public getOneTagInfo(name: string) {
-    let tagInfo: any = null
-    if (this.config?.tags) {
-      this.config?.tags.forEach(tag => {
-        if (tag.name === name) {
-          tagInfo = tag
-        }
-      })
-    }
-    return tagInfo
+  public getOnePageTagInfo(name: string): ITag | undefined {
+    const tags = this.config?.tags as ITag[]
+    if (!tags?.length) return undefined
+    return tags.find(tag => tag.name === name)
   }
 }
 
@@ -73,22 +63,6 @@ export interface IExternalDocs {
   description?: string
 }
 
-export interface ITagPageAction {
-  path: string
-  method: string
-}
-
-export interface ITagPage {
-  type: string
-  init?: ITagPageAction
-  page?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
-  item?: { [key: string]: ITagPageAction | ITagInitUpdateAction }
-}
-
-export interface ITagInitUpdateAction {
-  [ name: string ]: ITagPageAction
-}
-
 export interface ITag {
   name: string
   description?: string
@@ -96,7 +70,34 @@ export interface ITag {
   page?: ITagPage
 }
 
-// export interface IExample {}
+export interface ITagPage {
+  type: string
+  init: ITagPageAction
+  global?: ITagPageOperation
+  local?: ITagPageOperation
+}
+
+export interface ITagPageAction {
+  path: string
+  method: string
+}
+
+export interface ITagUpdateOperation {
+  write: ITagPageAction
+  read: ITagPageAction
+}
+
+export interface ITagPageMultiAction {
+  [key: string]: ITagPageAction
+}
+
+export interface ITagPageMapping {
+  tag: string
+}
+
+export interface ITagPageOperation {
+  [key: string]: ITagPageAction | ITagPageMapping | ITagPageMultiAction
+}
 
 export interface IHeader extends IBaseSchema {
   type: string

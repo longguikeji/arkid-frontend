@@ -1,53 +1,50 @@
 <template>
   <el-dialog
-    visible
-    :show-close="false"
     class="login"
+    :visible="true"
+    :show-close="false"
     center
-    :fullscreen="isFullScreen"
     width="450px"
+    :fullscreen="fullscreen"
   >
     <div slot="title">
       <el-image
-        :src="icon"
         class="login-image"
+        :src="icon"
       />
-      <h2
-        class="login-title"
-      >
+      <h2 class="login-title">
         {{ title }}
       </h2>
     </div>
     <el-tabs
-      v-if="currentPage"
-      v-model="currentFormIndex"
+      v-if="pageConfig"
+      v-model="tabIndex"
       stretch
       @tab-click="handleTabClick"
     >
       <el-tab-pane
-        v-for="(form, formIndex) in currentPage.forms"
-        :key="formIndex"
-        :label="form.label"
-        :name="formIndex.toString()"
+        v-for="(cform, index) in pageConfig.forms"
+        :key="index"
+        :label="cform.label"
+        :name="index.toString()"
       >
         <el-form
-          :ref="pageData"
-          :model="currentFormData"
+          :ref="page"
+          :model="form"
           :rules="rules"
         >
           <el-form-item
-            v-for="(item, itemIndex) in form.items"
+            v-for="(item, itemIndex) in cform.items"
             :key="itemIndex"
             :prop="item.name"
-            :class="{'authcode': hasGraphicCode(item)}"
+            :class="{'authcode': isNeedImageCode(item)}"
           >
             <el-input
-              v-model="formData[pageData][formIndex][item.name]"
+              v-model="form[item.name]"
               :type="item.type"
               :name="item.name"
               :placeholder="item.placeholder"
               :show-password="item.type === 'password'"
-              @blur="onBlur($event, item.name)"
               @paste.native.capture="onPaste($event, item.name)"
             >
               <login-button
@@ -55,29 +52,30 @@
                 slot="append"
                 :config="item.append"
                 :action="btnClickHandler"
+                :is-change-delay="isChangeDelay"
               />
             </el-input>
             <img
               v-if="item.name === 'code' && !item.append"
-              :src="graphicCodeSrc"
+              :src="imageCodeSrc"
               alt=""
-              @click="getGraphicCode"
+              @click="getImageCode"
             >
           </el-form-item>
           <login-button
             :long="true"
-            :config="form.submit"
+            :config="cform.submit"
             :action="btnClickHandler"
           />
         </el-form>
       </el-tab-pane>
     </el-tabs>
     <div
-      v-if="currentPage.bottoms"
+      v-if="pageConfig.bottoms"
       class="form-bottom"
     >
       <login-button
-        v-for="(bottom, bottomIndex) in currentPage.bottoms"
+        v-for="(bottom, bottomIndex) in pageConfig.bottoms"
         :key="bottomIndex"
         :config="bottom"
         :action="btnClickHandler"
@@ -86,24 +84,52 @@
       />
     </div>
     <div
-      v-if="currentPage.extend"
+      v-if="pageConfig.extend"
       class="third-login"
     >
-      <el-divider>{{ currentPage.extend.title }}</el-divider>
+      <el-divider>{{ pageConfig.extend.title }}</el-divider>
       <login-button
-        v-for="(btn, btnIndex) of currentPage.extend.buttons"
+        v-for="(btn, btnIndex) of pageConfig.extend.buttons"
         :key="btnIndex"
         :config="btn"
         :action="btnClickHandler"
         type="text"
       />
     </div>
+    <el-dialog
+      v-if="btn.agreement"
+      :visible="agreementVisible"
+      :title="btn.agreement.title"
+      :show-close="false"
+      class="agreement"
+      center
+      :modal="false"
+      :fullscreen="fullscreen"
+    >
+      <div
+        class="content"
+        v-html="btn.agreement.content"
+      />
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="agreementVisible = false">
+          不同意
+        </el-button>
+        <el-button
+          type="primary"
+          @click="agree"
+        >
+          同意
+        </el-button>
+      </div>
+    </el-dialog>
   </el-dialog>
 </template>
 
-<script lang="ts" src="./LoginComponent.ts">
+<script lang="ts" src="./LoginComponent.ts" />
 
-</script>
 <style lang="scss" scoped>
 .login {
   text-align: center;
@@ -135,19 +161,34 @@
   flex-wrap: wrap;
 }
 
-::v-deep .authcode {
+::v-deep .el-form-item.authcode {
   .el-form-item__content {
     display: flex;
+    align-items: center;
     input {
       border-top-right-radius: 0px;
       border-bottom-right-radius: 0px;
     }
     img {
-      height: 36px;
+      width: 120px;
       cursor: pointer;
       border-top-right-radius: 4px;
       border-bottom-right-radius: 4px;
     }
+  }
+}
+
+::v-deep .el-form-item {
+  img {
+    display: none;
+  }
+}
+
+::v-deep .agreement {
+  .el-dialog__title {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: gray;
   }
 }
 </style>

@@ -33,4 +33,6 @@ export default interface TreeState extends BaseState {
   slotState?: { [key: string]: { type: string, state: any} }// slotState
   action?: Function | string // 给tree添加action，当点击节点时触发action内容
   actionType?: string // 区分 expand click check 等动作
+  checkAction?: Function | string // check-action
+  multiple?: boolean // 是否多选 用于使用 checkbox 时的情形
 }

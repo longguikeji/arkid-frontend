@@ -1,5 +1,5 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import getDataByPath from '@/utils/datapath'
+import getStateByPath from '@/utils/state'
 import { runFlowByActionName } from '@/arkfbp'
 
 export interface BaseState {
@@ -23,7 +23,7 @@ export default class extends Vue {
   }
 
   get $state(): BaseState {
-    const s = getDataByPath(this.$store.state, this.path)
+    const s = getStateByPath(this.$store.state, this.path)
     return s || {}
   }
 
@@ -37,6 +37,10 @@ export default class extends Vue {
       sp += '.' + path
     }
     return sp
+  }
+
+  getAnyStateByPath(path: string) {
+    return getStateByPath(this.$store.state, path)
   }
 
   created() {

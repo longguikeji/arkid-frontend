@@ -19,4 +19,5 @@ export default interface ButtonState extends BaseState {
   badge?: BadgeState // 如果需要badge,添加badge对象即可
   data?: any // 绑定的一些其他所需数据
   cloumn?: any //
+  hint?: string // 提示文本
 }

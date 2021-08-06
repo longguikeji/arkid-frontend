@@ -1,17 +1,19 @@
 <template>
   <Card
-    :path="getChildPath('')"
+    :path="getChildPath('card')"
     class="form-page"
   >
-    <Select
-      v-if="state.select"
-      slot="header"
-      :path="getChildPath('select')"
-    />
+    <template v-if="state.select">
+      <b>{{ state.select.valueKey }}</b>
+      <Select
+        class="form-page-select"
+        :path="getChildPath('select')"
+      />
+    </template>
     <Form :path="formPath" />
-    <template v-if="state.bottomButtons">
+    <template v-if="state.buttons">
       <ButtonArray
-        :path="getChildPath('bottomButtons')"
+        :path="getChildPath('buttons')"
         class="form__page__buttons"
       />
     </template>
@@ -73,6 +75,13 @@ export default class extends Mixins(BaseVue) {
 }
 ::v-deep .tui-editor-defaultUI { width: 1000px;}
 .form__page__buttons {
-  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+.form-page-select {
+  display: inline-block;
+  margin-left: 20px;
 }
 </style>

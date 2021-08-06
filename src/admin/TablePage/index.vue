@@ -1,35 +1,34 @@
 <template>
-  <Card
-    :path="getChildPath('card')"
-    class="table-page"
-  >
-    <div>
+  <div class="table-page">
+    <Card
+      :class="[{'table-page-main': !!state.list}]"
+      :path="getChildPath('card')"
+    >
       <Form
-        :path="filterPath"
+        :path="getChildPath('filter')"
         class="table-page-filter"
       />
-    </div>
-    <template v-if="state.list">
-      <Card
-        :path="getChildPath('list.header')"
-        class="tablepage__list"
-      >
-        <List :path="getChildPath('list.data')" />
-      </Card>
-    </template>
-    <Table :path="getChildPath('table')" />
-    <Pagination
-      v-if="state.pagination"
-      :path="getChildPath('pagination')"
-    />
-    <template v-if="state.dialogs">
-      <Dialog
-        v-for="dialogName in Object.keys(state.dialogs)"
-        :key="dialogName"
-        :path="getChildPath('dialogs.' + dialogName)"
+      <Table :path="getChildPath('table')" />
+      <Pagination
+        v-if="state.pagination"
+        :path="getChildPath('pagination')"
       />
-    </template>
-  </Card>
+      <template v-if="state.dialogs">
+        <Dialog
+          v-for="dialogName in Object.keys(state.dialogs)"
+          :key="dialogName"
+          :path="getChildPath('dialogs.' + dialogName)"
+        />
+      </template>
+    </Card>
+    <Card
+      v-if="state.list"
+      :path="getChildPath('list.header')"
+      class="table-page-list"
+    >
+      <List :path="getChildPath('list.data')" />
+    </Card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -58,15 +57,6 @@ export default class extends Mixins(BaseVue) {
   get state(): TablePage {
     return this.$state as TablePage
   }
-
-  get filterPath(): string {
-    if (this.state.filter?.items) {
-      this.state.filter.inline = true
-      return this.getChildPath('filter')
-    } else {
-      return ''
-    }
-  }
 }
 </script>
 
@@ -74,6 +64,10 @@ export default class extends Mixins(BaseVue) {
 .table-page {
   height: 100%;
   min-height: calc(100vh - 84px);
+  .table-page-main {
+    width: 70%;
+    display: inline-block;
+  }
   ::v-deep  .el-card__body {
     padding: 10px;
     height: 100% !important;
@@ -106,6 +100,12 @@ export default class extends Mixins(BaseVue) {
       .el-pagination {
         bottom: 10px;
       }
+    }
+    .table-page-list {
+      width: 30%;
+      display: inline-block;
+      vertical-align: top;
+      min-height: 300px;
     }
   }
 }

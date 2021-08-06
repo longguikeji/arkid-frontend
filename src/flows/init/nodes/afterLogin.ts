@@ -21,7 +21,7 @@ export class AfterLogin extends AuthApiNode {
     if (tenantUUId) {
       // 获取用户权限
       await this.setCurrentUserPermission(tenantUUId)
-      // 获取config
+      // 获取租户config
       await this.setTenantConfig(tenantUUId)
       // 获取租户的密码复杂度
       await this.setTenantPasswordComplexity(tenantUUId)
@@ -76,9 +76,9 @@ export class AfterLogin extends AuthApiNode {
   }
 
   async setTenantConfig(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/config/`
+    this.url = `/api/v1/tenant/${tenantUUId}/config/login_register/`
     this.method = 'GET'
-    const { data } = await super.run()
+    const data = await super.run()
     GlobalValueModule.setGlobalConfig(data)
   }
 

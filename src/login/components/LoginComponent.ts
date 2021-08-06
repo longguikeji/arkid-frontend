@@ -3,8 +3,8 @@ import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
-import { RULES, getRegexRule, DEFAULT_PASSWORD_COMPLEXITY } from '../util/rules'
-import request from '../request'
+import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../util/rules'
+import http from '../http'
 import { error } from '@/constants/error'
 
 @Component({
@@ -18,165 +18,261 @@ export default class LoginComponent extends Vue {
   @Prop({ required: true }) icon?:string
   @Prop({ required: true }) config?:LoginPagesConfig
   @Prop({ required: true }) complexity?: TenantPasswordComplexity
-  
-  graphicCodeSrc: string = ''
-  page = ''
-  currentFormIndex = '0'
-  formData = {}
-  rules = {
-    password: <any>[
-      RULES.required
-    ],
-    checkpassword: [
-      RULES.required,
-      this.currentPasswordComplexity,
-      { validator: this.checkPassword, trigger: 'blur' }
-    ],
-    username: [
-      RULES.required,
-      RULES.username
-    ],
-    mobile: [
-      RULES.required,
-      RULES.mobile
-    ]
+
+  imageCodeSrc: string = ''
+  forms: object = {}
+  page: string = ''
+  tabIndex: string = '0'
+  rules: object = {}
+  agreementVisible: boolean = false
+  btn: ButtonConfig = {}
+  isChangeDelay: boolean = false
+
+  get fullscreen(): boolean {
+    return document.body.clientWidth < 600
   }
 
-  get pageData() {
-    if (this.page === '') {
-      for (const key in this.config) {
-        this.page = key
-        break
-      }
-    }
-    return this.page
+  get pageConfig(): LoginPageConfig | undefined {
+    return this.config ? this.config[this.page] : undefined
   }
 
-  set pageData(value:string) {
-    this.page = value
-    this.$nextTick(() => {
-      this.currentFormIndex = '0'
-    })
+  get form() {
+    return this.forms[this.page][this.tabIndex]
   }
 
-  created() {
-    for (const p in this.config) {
-      this.$set(this.formData, p, [])
-      const _page = this.config[p]
-      for (const f in _page.forms) {
-        this.$set(this.formData[p], f, {})
-        const _form:FormConfig = _page.forms[f]
-        for (const i in _form.items) {
-          const _item:FormItemConfig = _form.items[i]
-          if (_item.name) this.$set(this.formData[p][f], _item.name, '')
-        }
-      }
-    }
-
-    const that = this
-    window.document.onkeypress = async function(e:KeyboardEvent) {
-      // console.log(e)
-      if (e.code === 'Enter' && that.currentPage?.forms) {
-        that.btnClickHandler(that.currentPage.forms[that.currentFormIndex].submit)
-      }
-    }
-  }
-
-  get isFullScreen() {
-    if (document.body.clientWidth < 600) { return true }
-    return false
-  }
-
-  get currentPage():LoginPageConfig | undefined {
-    let re
-    if (this.config) {
-      re = this.config[this.pageData]
-    }
-    return re
-  }
-
-  get currentFormData() {
-    return this.formData[this.pageData][this.currentFormIndex]
-  }
-
-  get currentPasswordComplexity() {
-    let regex =  DEFAULT_PASSWORD_COMPLEXITY.regex
-    let hint = DEFAULT_PASSWORD_COMPLEXITY.hint
-    if (this.complexity?.regular) {
-      regex = new RegExp(this.complexity?.regular)
-      hint = this.complexity.title || ''
-    }
+  get passwordRule() {
+    const regex = this.complexity?.regular ? new RegExp(this.complexity.regular) : DEFAULT_PASSWORD_RULE.regex
+    const hint = this.complexity?.title || DEFAULT_PASSWORD_RULE.hint
     return getRegexRule(hint, regex)
   }
 
-  async http(url: string, method: string, data?: any) {
-    method = method.toLowerCase()
-    const response = await request[method](url, data)
-    return response
+  created() {
+    this.initPageName()
+    this.processConfig()
+    this.addKeyPressEvent()
   }
 
-  async btnClickHandler(btn:ButtonConfig) {
-    if (btn.http || btn.delay) this.btnHttp(btn)
-    if (btn.gopage) this.togglePage(btn)
-    if (btn.redirect) this.redirect(btn)
+  handleTabClick() {
+    this.resetFields()
+    this.isChangeDelay = false
   }
 
-  btnHttp(btn: ButtonConfig) {
-    (this.$refs[this.pageData][this.currentFormIndex] as Vue & { validate: Function }).validate(async (valid: boolean) => {
+  initPageName() {
+    for (const key in this.config) {
+      this.page = key
+      break
+    }
+  }
+
+  processConfig() {
+    for (const p in this.config) {
+      this.$set(this.forms, p, [])
+      const _page = this.config[p]
+      for (const f in _page.forms) {
+        this.$set(this.forms[p], f, {})
+        const _form: FormConfig = _page.forms[f]
+        for (const i in _form.items) {
+          const _item: FormItemConfig = _form.items[i]
+          if (_item.name) {
+            this.$set(this.forms[p][f], _item.name, '')
+            this.addRule(_item.name)
+          }
+        }
+      }
+    }
+  }
+
+  addRule(name: string) {
+    this.$set(this.rules, name, [ RULES.required ])
+    if (RULES[name]) this.rules[name].push(RULES[name])
+    if (name === 'checkpassword') {
+      Array.prototype.push.apply(this.rules[name], [ this.passwordRule,
+        { validator: this.checkPassword, trigger: 'blur' } ])
+    }
+  }
+
+  addKeyPressEvent() {
+    const that = this
+    window.document.onkeypress = async function(e:KeyboardEvent) {
+      if (e.code === 'Enter' && that.pageConfig?.forms) {
+        that.btnClickHandler(that.pageConfig.forms[that.tabIndex].submit)
+      }
+    }
+  }
+
+  onPaste(e: Event, name: string) {
+    if (name.includes('password')) {
+      e.preventDefault()
+      return false
+    }
+  }
+
+  resetFields() {
+    this.$nextTick(() => {
+      this.$refs[this.page][this.tabIndex].resetFields()
+    })
+  }
+
+  resetRules() {
+    if (this.page === 'register') {
+      this.$set(this.rules, 'password', [
+        RULES.required,
+        this.passwordRule,
+        { validator: this.validateCheckPassword, trigger: 'blur' }
+      ])
+    } else {
+      this.$set(this.rules, 'password', [
+        RULES.required
+      ])
+    }
+  }
+
+  validateCheckPassword(rule: any, value: string, callback: Function) {
+    if (this.form['checkpassword']) {
+      this.$refs[this.page][this.tabIndex].validateField('checkpassword')
+    }
+    callback()
+  }
+
+  checkPassword(rule: any, value: string, callback: Function) {
+    if (value !== this.form['password']) {
+      callback(new Error('两次输入的密码不同'))
+    } else {
+      callback()
+    }
+  }
+
+  isNeedImageCode(item: FormItemConfig) {
+    this.$nextTick(() => {
+      const hasCode = item.name === 'code' && !item.append && this.page === 'login'
+      if (hasCode && this.imageCodeSrc === '') {
+        this.getImageCode()
+      }
+      return hasCode
+    })
+  }
+
+  async btnClickHandler(btn: ButtonConfig) {
+    this.btn = btn
+    if (btn.http && !btn.delay) this.btnHttpCheck()
+    if (btn.gopage && !btn.http) this.goPage()
+    if (btn.redirect) this.redirect()
+    if (btn.delay) this.btnDelayCheck()
+  }
+
+  btnHttpCheck() {
+    this.$refs[this.page][this.tabIndex].validate(async (valid: boolean) => {
       if (valid) {
-        await this.btnResponse(btn)
+        await this.btnRequest()
       }
     })
   }
 
-  redirect(btn: ButtonConfig) {
+  btnDelayCheck() {
+    const params = this.btn.http!.params
+    const key = Object.keys(params)[0]
+    this.$refs[this.page][this.tabIndex].validateField(key, async (err) => {
+      if (!err) {
+        await this.btnRequest()
+      } else {
+        this.$message({
+          message: err,
+          type: 'error',
+          showClose: true
+        })
+      }
+    })
+  }
+
+  goPage() {
+    if (this.btn.agreement) {
+      this.agreementVisible = true
+    } else {
+      this.switchPage()
+    }
+  }
+
+  switchPage() {
+    this.page = this.btn.gopage!
+    this.tabIndex = '0'
+    this.isChangeDelay = false
+    this.resetRules()
+    this.resetFields()
+  }
+
+  redirect() {
     let redirectParams = ``
-    const params = btn.redirect!.params
+    const params = this.btn.redirect!.params
     for (const key in params) {
       redirectParams += `&${key}=${params[key]}`
     }
     redirectParams = redirectParams.substring(1)
-    const url = btn.redirect!.url + '?' + redirectParams
+    const url = this.btn.redirect!.url + '?' + redirectParams
     window.location.replace(url)
   }
 
-  togglePage(btn: ButtonConfig) {
-    this.pageData = btn.gopage!
-    this.resetFields()
-    this.resetRules()
+  agree() {
+    this.agreementVisible = false
+    this.switchPage()
   }
 
-  async btnResponse(btn: ButtonConfig) {
-    let { url, method, params } = btn.http!
+  async request(url: string, method: string, data?: any) {
+    method = method.toLowerCase()
+    return await http[method](url, data)
+  }
+
+  async getImageCode() {
+    const response = await this.request('/api/v1/authcode/generate', 'get')
+    const data = response.data
+    if (!data.error) {
+      const { key, base64 } = data
+      LoginStore.CodeFileName = key
+      this.imageCodeSrc = `data:image/png;base64,${base64}`
+    }  
+  }
+
+  async btnRequest() {
+    let { url, method, params } = this.btn.http!
     for (let key in params) {
-      if (this.currentFormData.hasOwnProperty(key)) {
-        params[key] = this.currentFormData[key]
+      if (this.form.hasOwnProperty(key)) {
+        params[key] = this.form[key]
       } else {
         if (key === 'code_filename') params[key] = LoginStore.CodeFileName
       }
     }
-    const response = await this.http(url, method, params)
+    const response = await this.request(url, method, params)
     const data = response.data
-    if (data.error === '0' && data.data.token) {
-      // set token
-      LoginStore.token = data.data.token
-      // 绑定用户与第三方账号
-      if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
-        const parmas = {
-          user_id: LoginStore.ThirdUserID
+    if (data.error === '0') {
+      if (this.btn.delay) {
+        this.isChangeDelay = true
+      } else if (this.btn.gopage) {
+        this.$message({
+          message: '重置密码成功，请登录',
+          type: 'success',
+          showClose: true
+        })
+        this.switchPage()
+      } else if (data.data.token) {
+        // set token
+        LoginStore.token = data.data.token
+        // 绑定用户与第三方账号
+        if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
+          const parmas = {
+            user_id: LoginStore.ThirdUserID
+          }
+          url = LoginStore.BindUrl
+          method = 'post'
+          await this.request(url, method, parmas)
+          LoginStore.BindUrl = ''
+          LoginStore.ThirdUserID = ''
         }
-        url = LoginStore.BindUrl
-        method = 'post'
-        await this.http(url, method, parmas)
-        LoginStore.BindUrl = ''
-        LoginStore.ThirdUserID = ''
-      }
-      // next url
-      if (LoginStore.NextUrl) {
-        window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
-        LoginStore.NextUrl = ''
-      } else {
-        window.location.reload()
+        // next url
+        if (LoginStore.NextUrl) {
+          window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
+          LoginStore.NextUrl = ''
+        } else {
+          window.location.reload()
+        }
       }
     } else {
       if (data.is_need_refresh && LoginStore.CodeFileName === '') {
@@ -187,76 +283,6 @@ export default class LoginComponent extends Vue {
         type: 'error',
         showClose: true
       })
-    }
-  }
-
-  handleTabClick() {
-    this.resetFields()
-  }
-
-  resetFields() {
-    this.$nextTick(() => {
-      this.$refs[this.pageData][this.currentFormIndex].resetFields()
-    })
-  }
-
-  resetRules() {
-    if (this.page === 'register') {
-      this.rules.password = [
-        RULES.required,
-        this.currentPasswordComplexity,
-        { validator: this.validateCheckPassword, trigger: 'blur' }
-      ]
-    } else {
-      this.rules.password = [
-        RULES.required,
-      ]
-    }
-  }
-
-  validateCheckPassword(rule: any, value: string, callback: Function) {
-    if (this.currentFormData['checkpassword']) {
-      this.$refs[this.pageData][this.currentFormIndex].validateField('checkpassword')
-    }
-    callback()
-  }
-
-  checkPassword(rule: any, value: string, callback: Function) {
-    if (value !== this.currentFormData['password']) {
-      callback(new Error('两次输入的密码不同'))
-    } else {
-      callback()
-    }
-  }
-
-  onBlur(event: Event, name: string) {
-    this.$refs[this.pageData][this.currentFormIndex].validateField(name)
-  }
-
-  async getGraphicCode() {
-    const url = '/api/v1/authcode/generate'
-    const method = 'get'
-    const response = await this.http(url, method)
-    const data = response.data
-    if (!data.error) {
-      const { key, base64 } = data
-      LoginStore.CodeFileName = key
-      this.graphicCodeSrc = `data:image/png;base64,${base64}`
-    }  
-  }
-
-  hasGraphicCode(item: FormItemConfig) {
-    const hasCode = item.name === 'code' && !item.append
-    if (hasCode && this.graphicCodeSrc === '') {
-      this.getGraphicCode()
-    }
-    return hasCode
-  }
-
-  onPaste(e, name: string) {
-    if (name.includes('password')) {
-      e.preventDefault()
-      return false
     }
   }
 }

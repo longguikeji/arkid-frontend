@@ -13,7 +13,7 @@ export class Main extends Flow {
     }, {
       cls: Update,
       id: 'update',
-      next: 'stop'
+      next: 'close'
     }, {
       cls: StopNode,
       id: 'stop',

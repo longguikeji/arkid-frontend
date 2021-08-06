@@ -8,6 +8,7 @@
       :id="id"
       v-model="state.value"
       :init="initOptions"
+      :disabled="state.disabled"
     />
     <div
       v-if="state.isDisabledUploadImage"

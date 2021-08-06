@@ -3,7 +3,8 @@ import FormState from '../FormState'
 
 export default class FormObjectItemState implements FormState {
   items?:{[prop:string]:FormItemState}
-
+  isAddItem?: boolean
+  
   public get value() {
     const data = {}
     if (!this.items) return data

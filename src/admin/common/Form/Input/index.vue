@@ -67,25 +67,12 @@ export default class extends Mixins(BaseVue) {
   }
 
   onBlur() {
-    const { name, value, format, hint, required } = this.state
-    this.hint = validate(value, name, format, hint, required)
+    const { name, value, format, hint, required, pattern } = this.state
+    this.hint = validate(value, name, format, hint, required, pattern)
   }
 
   async upload(data: any) {
-    this.state.file = data.file
-    const type = data.file.type
-    if (type) {
-      const t = type.split('/')[0]
-      if (t === 'image') {
-        await runFlowByFile('arkfbp/flows/upload', { com: this })
-      } else {
-        this.$message({
-          message: '文件类型不符合',
-          type: 'error',
-          showClose: true
-        })
-      }
-    }
+    await runFlowByFile('arkfbp/flows/upload', { com: this, data })
   }
 }
 </script>

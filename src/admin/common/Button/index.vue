@@ -43,7 +43,7 @@ export default class extends Mixins(BaseVue) {
           confirmType = 'warning'
           break
       }
-      this.$confirm('确定执行 ' + this.state.label + ' 操作吗？', headMessage, {
+      this.$confirm(this.state.hint || `确定执行${this.state.label}操作吗？`, headMessage, {
         confirmButtonText: this.state.label,
         cancelButtonText: '取消',
         type: confirmType

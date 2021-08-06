@@ -19,7 +19,6 @@ export default interface DialogState extends AdminComponentState {
   beforeClose?: Function // 关闭前的回调，会暂停 Dialog 的关闭
   center?: boolean // 是否对头部和底部采用居中布局
   destroyOnClose?: boolean // 关闭时销毁 Dialog 中的元素
-  reliantValues?: any // 对话框所依赖的其他数据值的集合
-  cancelButtonSize?: string
-  isCancelFooter?: boolean
+  cancelFooter?: boolean
+  page?: string // dialog-pointed-page
 }

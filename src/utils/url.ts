@@ -1,39 +1,37 @@
-// 此方法为全局中所有流内容公用的解析请求url地址的方法
-// 当前所有请求url的地址栏参数有 {id}  {parent_lookup_tenant}  {parent_lookup_webhook}  {tenant_id} 等几种类型和内容
-// 除id参数之外，其余内容，当使用到的时候进行引入 store 中的相关存储值进行读取
-// id参数则需要在调用该函数时传入data，通过data.id或data.uuid的方式进行读取
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
 import getBaseUrl from '@/utils/get-base-url'
+import { FlowModule } from '@/store/modules/flow'
+import { isEmptyObject } from '@/utils/common'
 
-export default function getUrl(currentUrl: string, data: any = {}, page: string = '') {
-  let url = currentUrl
-  if (url.indexOf('{') !== -1) {
-    let property = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
-    if (page === 'tenant_config') property = 'tenant_uuid'
-    // 之后如果某个url中有其他的参数需要，可以继续在这里进行添加
-    let param
-    switch (property) {
-      case 'parent_lookup_tenant':
-      case 'tenant_uuid':
-        param = TenantModule.currentTenant.uuid
-        break
-      case 'parent_lookup_user':
-        param = UserModule.uuid
-        break
-      case 'id':
-      case 'uuid':
-      case 'complexity_uuid':
-        param = data?.uuid
-        break
-      case 'token':
-        param = getToken()
-    }
-    url = url.slice(0, url.indexOf('{')) + param + url.slice(url.indexOf('}') + 1)
+export default function getUrl(url: string, page?: string): string {
+  if (!url.includes('{')) return url
+  const data = FlowModule.data
+  const pages = page!.split('.')
+  const id = url.slice(url.indexOf('{') + 1, url.indexOf('}'))
+  let value
+  switch (id) {
+    case 'parent_lookup_user':
+      value = UserModule.uuid
+      break
+    case 'token':
+      value = getToken() || ''
+      break
+    default:
+      value = TenantModule.currentTenant.uuid || id
   }
-  if (url.indexOf('{') !== -1) return getUrl(url, data)
+  if (value !== id) url = url.slice(0, url.indexOf('{')) + value + url.slice(url.indexOf('}') + 1)
+  if (page === 'desktop') return getUrl(url, page)
+  if (!isEmptyObject(data)) {
+    let name = pages[0]
+    for (let i = 0, len = pages.length; i < len; i++) {
+      if (!url.includes('{')) break
+      url = url.slice(0, url.indexOf('{')) + data[name]?.uuid + url.slice(url.indexOf('}') + 1)
+      name += `.${pages[i+1]}`
+    }
+  }
   return url
 }
 
@@ -56,21 +54,19 @@ export function getSlug() {
   return slug
 }
 
-export function addSlugToUrl(com?: any) {
-  const slug = GlobalValueModule.slug
-  const oldSlug = getSlug()
-  if (!slug || slug === oldSlug) {
-    if (com) {
-      com.$message({
-        message: !slug ? '短连接不存在' : '当前短连接与切换短连接相同',
-        type: 'warning',
-        showClose: true
-      })
-    }
-    return
+export function addSlugToUrl(com: any, slug: string) {
+  const beforeSlug = GlobalValueModule.slug
+  if (slug === beforeSlug) {
+    com.$message({
+      message: !slug ? '短连接不存在' : '当前短连接标识与切换短连接标识相同',
+      type: 'info',
+      showClose: true
+    })
+  } else {
+    GlobalValueModule.setSlug(slug)
+    const host = GlobalValueModule.originUrl
+    const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
+    const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
+    window.location.replace(url)
   }
-  const host = GlobalValueModule.originUrl
-  const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
-  const url = newHost + '/' + getBaseUrl() + '?token=' + getToken()
-  window.location.replace(url)
 }
