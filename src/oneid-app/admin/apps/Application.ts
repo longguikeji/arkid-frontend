@@ -14,10 +14,7 @@ const required = {required: true, message: 'Required', trigger: 'blur'}
   },
   template: html`
   <div class="ui-admin-apps-app-list flex-col flex-auto">
-    <div v-if="!appList" style="margin: auto; display: flex;">
-      <Spin large></Spin>
-    </div>
-    <div v-if="appList" class="ui-admin-apps-app-list--toolbar flex-row">
+    <div class="ui-admin-apps-app-list--toolbar flex-row">
       <div class="flex-row">
         <h1>全部应用</h1>
         <Button @click="add">添加应用</Button>
@@ -31,12 +28,12 @@ const required = {required: true, message: 'Required', trigger: 'blur'}
         @on-change="onSearchChange"
       />
     </div>
-    <div v-if="appList" class="table-wrapper">
+    <div class="table-wrapper">
       <Table :data="appList" :columns="columns" class="table"/>
     </div>
-    <div v-if="appList" class="page-wrapper">
+    <div class="page-wrapper">
       <Page
-        v-if="appList"
+        v-if="appList.length"
         :total="pagination.total"
         :page-size="pagination.pageSize"
         :page-size-opts="pagination.pageSizeOpts"
@@ -62,7 +59,7 @@ export default class Application extends Vue {
   searchText = ''
   showAddApp = false
   showProtocolInterface = false
-  appList: App[] | null = null
+  appList: App[] = []
   pagination = {
     total: 0,
     page: 1,
