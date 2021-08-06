@@ -1,5 +1,4 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import AdminComponentState from '@/admin/common/adminComponent/AdminComponentState'
 
 export class DeleteTenant extends FunctionNode {
   async run() {
