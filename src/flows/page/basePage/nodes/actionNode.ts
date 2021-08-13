@@ -31,9 +31,11 @@ export class ActionNode extends FunctionNode {
 
   initTablePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
-    const response = {},
-          request = {}
-    response['table.data'] = props.data
+    const response = {
+      'table.data': props.data,
+      data: props.data
+    }
+    const request = {}
     if (props.pagination) {
       response['pagination.total'] = props.pagination
       request['page'] = 'pagination.currentPage'
@@ -56,14 +58,17 @@ export class ActionNode extends FunctionNode {
       blank = true
       flowName = 'arkfbp/flows/assign'
     }
-    const { mapping } = getActionMapping(path, method, blank, response)
+    let { mapping } = getActionMapping(path, method, blank, response)
+    mapping = Object.assign(mapping, { data: '' })
     this.addFetchAction(state, path, method, mapping, undefined, flowName)
   }
 
   initTreePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
-    const response = {}
-    response['tree.data'] = props.data
+    const response = {
+      'tree.data': props.data,
+      data: props.data
+    }
     this.setImportButtonDisabledProp(state, response, props.data)
     this.addFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
   }

@@ -58,5 +58,7 @@ export class ClientResponseNode extends FunctionNode {
         }
       }
     }
+
+    return this.inputs
   }
 }
