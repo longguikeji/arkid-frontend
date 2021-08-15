@@ -2,17 +2,17 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { InitInputList } from './nodes/init'
+import { SelectNode } from './nodes/select'
 
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'initInputList'
+      next: 'select'
     }, {
-      cls: InitInputList,
-      id: 'initInputList',
+      cls: SelectNode,
+      id: 'select',
       next: 'stop'
     }, {
       cls: StopNode,

@@ -5,7 +5,6 @@ import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
-import { getDefaultOptions } from '@/utils/options'
 
 export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false): FormPage {
   const formPageState: FormPage = {}
@@ -61,7 +60,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   if (!showWriteOnly && schema.writeOnly) return item
   if (schema.format === 'download_url') {
     item = createLinkItem(prop, schema)
-  } else if (schema.page) {
+  } else if (schema.page && schema.type !== 'object') {
     item = createInputListItem(prop, schema, disabled, required)
   } else if (schema.type === 'array') {
     item = createArrayItem(prop, schema, showReadOnly, showWriteOnly, disabled, required)
@@ -100,7 +99,7 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
     prop: prop,
     state: {
       multiple: schema.type === 'array',
-      value: schema.default,
+      value: schema.type === 'array' ? [] : '',
       default: schema.default,
       required: required,
       disabled: disabled && !schema.readOnly,

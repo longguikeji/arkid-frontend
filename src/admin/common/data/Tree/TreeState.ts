@@ -3,7 +3,6 @@ import TreeNodeProps from './TreeNodeProps'
 
 export default interface TreeState extends BaseState {
   data?: Array<TreeNodeProps> // 展示数据
-  selectedData?: any // 选中的数据
   emptyText?: string // 内容为空的时候展示的文本
   nodeKey?: string // 每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
   props?: TreeNodeProps // 配置选项，具体看 TreeNodeProps.ts 文件
@@ -35,4 +34,6 @@ export default interface TreeState extends BaseState {
   actionType?: string // 区分 expand click check 等动作
   checkAction?: Function | string // check-action
   multiple?: boolean // 是否多选 用于使用 checkbox 时的情形
+  nodeClickAction?: Function | string // for list data
+  node?: any // node data
 }
