@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+
 // 将以短横线连接的字符串改为小驼峰的格式
 export function underlinedStrToUpperCamelStr(str: string): string {
   if (str.includes('_')) {
@@ -57,4 +59,9 @@ export function processUUId(uuid: string) {
 
 export function firstToUpperCase(str: string): string {
   return str.trim().toLowerCase().replace(str[0], str[0].toUpperCase())
+}
+
+export function getUUId() {
+  const uuid = uuidv4()
+  return processUUId(uuid)
 }

@@ -4,6 +4,7 @@ import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { processUUId } from '@/utils/common'
+import { getDeviceType, getOS, getBrowser, getDeviceId, getIP } from '@/utils/device'
 
 export class AfterLogin extends AuthApiNode {
 
@@ -25,6 +26,8 @@ export class AfterLogin extends AuthApiNode {
       await this.setTenantConfig(tenantUUId)
       // 获取租户的密码复杂度
       await this.setTenantPasswordComplexity(tenantUUId)
+      // 创建一条设备信息
+      await this.createCurrentUserDeviceInfo(tenantUUId)
     } else {
       UserModule.setUserRole(UserRole.Platform)
     }
@@ -87,6 +90,22 @@ export class AfterLogin extends AuthApiNode {
     this.method = 'GET'
     const data = await super.run()
     GlobalValueModule.setPasswordComplexify(data)
+  }
+
+  async createCurrentUserDeviceInfo(tenantUUId: string) {
+    this.url = `/api/v1/tenant/${tenantUUId}/device/`
+    this.method = 'POST'
+    this.params = {
+      device_type: getDeviceType(),
+      system_version: getOS(),
+      browser_version: getBrowser(),
+      ip: getIP(),
+      mac_address: '',
+      device_number: '',
+      device_id: getDeviceId(),
+      account_ids: [ UserModule.uuid ]
+    }
+    await super.run()
   }
 
 }

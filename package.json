@@ -44,6 +44,7 @@
     "sortablejs": "^1.10.2",
     "tinymce": "^5.4.2",
     "tui-editor": "^1.4.10",
+    "uuid": "^8.3.2",
     "vue": "^2.6.12",
     "vue-amap": "^0.5.10",
     "vue-class-component": "^7.2.5",
