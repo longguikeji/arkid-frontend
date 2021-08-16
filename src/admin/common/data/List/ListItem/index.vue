@@ -1,12 +1,11 @@
 <template>
   <li
     :title="state.label"
-    @click="handleClick()"
   >
     {{ label }}
     <i
       class="el-icon-delete"
-      @click="handleClick()"
+      @click="handleClick"
     />
   </li>
 </template>
