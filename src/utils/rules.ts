@@ -1,6 +1,6 @@
 import { ValidateModule } from '@/store/modules/validate'
 import { GlobalValueModule } from '@/store/modules/global-value'
-import { getRegexRule } from '@/login/util/rules'
+import { getRegexRule } from '@/login/utils/rules'
 
 const getUploadFileRegular = () => {
   const formats = GlobalValueModule.uploadFileFormat

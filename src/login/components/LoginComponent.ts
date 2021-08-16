@@ -3,7 +3,7 @@ import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
-import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../util/rules'
+import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../http'
 import { error } from '@/constants/error'
 
@@ -284,5 +284,9 @@ export default class LoginComponent extends Vue {
         showClose: true
       })
     }
+  }
+
+  async recordCurrentDeviceInfo() {
+
   }
 }
