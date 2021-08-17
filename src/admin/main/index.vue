@@ -18,19 +18,12 @@
   <div v-else-if="url">
     <iframe :src="url" />
   </div>
-  <div
-    v-else
-    class="placeholder"
-  >
-    页面功能正在开发中...
-  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
-import BaseVue from '@/admin/base/BaseVue'
 import { isArray } from '@/utils/common'
 
 @Component({

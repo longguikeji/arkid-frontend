@@ -1,11 +1,12 @@
 <template>
   <ul v-if="state.length">
-    <li
-      v-for="(item, index) in state"
-      :key="index"
-    >
-      {{ item.label }}
-    </li>
+    <template v-for="(item, index) in state">
+      <list-item
+        :key="index"
+        :index="index"
+        :path="getChildPath(index)"
+      />
+    </template>
   </ul>
 </template>
 
@@ -13,10 +14,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import ListItemState from './ListState'
 import BaseVue from '@/admin/base/BaseVue'
+import ListItem from './ListItem/index.vue'
 
 @Component({
   name: 'List',
-  components: {}
+  components: {
+    ListItem
+  }
 })
 export default class extends Mixins(BaseVue) {
   get state(): Array<ListItemState> {
@@ -30,13 +34,5 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  li {
-    width: 100%;
-    padding: 3px;
-    box-sizing: border-box;
-    &:hover {
-      background-color: #f5f6f8;
-    }
-  }
 }
 </style>

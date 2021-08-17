@@ -205,6 +205,7 @@ export interface IBaseSchema {
   field?: string
   page?: string
   hint?: string
+  link?: string
 }
 
 export interface ISchema extends IBaseSchema {

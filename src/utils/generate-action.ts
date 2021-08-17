@@ -68,7 +68,7 @@ function getResponseMapping(prop: string, schema: ISchema, response: any, target
     }
   } else {
     const stateMapping = `${target}${prop}.state.value`
-    response[stateMapping] = blank ? ( defaultValue !== undefined ? defaultValue : '' ) : prop
+    response[stateMapping] = blank ? ( defaultValue !== undefined ? defaultValue : '' ) : schema.link || prop
   }
 }
 

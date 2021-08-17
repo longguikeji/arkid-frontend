@@ -93,19 +93,12 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleNodeClick(data: TreeNodeProps) {
-    if (this.state.checkAction) {
-      this.state.selectedData = data
-      this.runAction(this.state.checkAction)
-    }
-    if (data.children?.length) return
-    this.operateAction(data, 'click')
-  }
-
-  operateAction(data: TreeNodeProps, actionType: string) {
+    this.state.node = data
     if (this.state.action) {
-      this.state.selectedData = data
-      this.state.actionType = actionType
       this.runAction(this.state.action)
+    }
+    if (this.state.nodeClickAction) {
+      this.runAction(this.state.nodeClickAction)
     }
   }
 
@@ -130,7 +123,7 @@ export default class extends Mixins(BaseVue) {
         }
       }
     }
-    return this.getChildPath('slotState.' + nodeData.uuid! + '')
+    return this.getChildPath('slotState.' + nodeData.uuid + '')
   }
 
   setTreeNodeSlotStateData(treeData: Array<TreeNodeProps>, nodeData: TreeNodeProps) {

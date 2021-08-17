@@ -6,7 +6,6 @@ export function getApiRolesByPageName(name: string): string[] {
   const info = OpenAPI.instance.getOnePageTagInfo(name)
   let roles: string[] = []
   if (info?.page?.init) {
-    if (typeof info.page === 'string') return []
     const { path, method } = info.page.init
     if (path && method) {
       const apiRoles = getApiRolesByPath(path, method)

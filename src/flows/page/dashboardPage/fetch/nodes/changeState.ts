@@ -4,7 +4,7 @@ import DashboardItemState from '@/admin/DashboardPage/DashboardItem/DashboardIte
 
 export class ChangeState extends FunctionNode {
   async run() {
-    const state = this.$state.fetch()
+    const { state } = this.$state.fetch()
     const apps = this.inputs.results // apps
     UserModule.setUserApps(apps)
     let x = 0, y = 0

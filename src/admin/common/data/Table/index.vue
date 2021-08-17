@@ -1,6 +1,6 @@
 <template>
   <el-table
-    ref="elementTable"
+    ref="arkidTable"
     :row-key="rowKeyFunc"
     :data="tableData"
     :height="'70vh'"
@@ -10,19 +10,19 @@
     :fit="state.fit"
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow || true"
-    @select="handleSelectionChange"
+    @select="handleSingleSelectionChange"
     @row-click="handleRowClick"
     @select-all="handleAllSelectionChange"
   >
     <el-table-column
-      v-if="state.selection && state.selection.exist === true"
+      v-if="state.selection"
       type="selection"
       :width="state.selection.width || '50'"
     />
     <el-table-column
-      v-if="state.index && state.index.exist === true"
+      v-if="state.index"
       type="index"
-      :width="state.index.width || '30'"
+      :width="state.indexWidth || '30'"
       label="#"
     />
     <TableColumn
@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import TableState from './TableState'
 import TableColumn from './TableColumn/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
@@ -56,6 +56,20 @@ export default class extends Mixins(BaseVue) {
     return this.state.data
   }
 
+  get default() {
+    return this.state.selection?.default
+  }
+
+  // @Watch('tableData')
+  // onTableDataChange() {
+  //   this.initTableSelection()
+  // }
+
+  // @Watch('default')
+  // onTableSelectionDefaultChange() {
+  //   this.initTableSelection()
+  // }
+
   mounted() {
     if (this.state.sortable) {
       this.initRowSort()
@@ -74,58 +88,71 @@ export default class extends Mixins(BaseVue) {
     })
   }
 
-  rowKeyFunc(row: any) {
-    if (row.id || row.uuid) {
-      return row.id || row.uuid
+  rowKeyFunc(row) {
+    if (row.uuid) {
+      return row.uuid
     }
   }
 
-  handleSelectionChange(val: any, row: any) {
-    this.assignValuesToSelections(val)
-    this.executeSelectionAction(row, true)
+  // initTableSelection() {
+  //   if (this.state.selection) {
+  //     this.$nextTick(() => {
+  //       const defaults = this.state.selection!.default
+  //       this.tableData?.forEach(row => {
+  //         if (row.uuid) {
+  //           if (defaults?.includes(row.uuid)) {
+  //             (this.$refs.arkidTable as any).toggleRowSelection(row, true)
+  //             this.dealSelectionValue(row)
+  //           } else {
+  //             (this.$refs.arkidTable as any).clearSelection()
+  //           }
+  //         }
+  //       })
+  //     })
+  //   }
+  // }
+
+  handleRowClick(row) {
+    this.state.row = row
+    this.runAction(this.state.rowClickAction)
   }
 
-  handleAllSelectionChange(val) {
-    this.assignValuesToSelections(val)
-    this.executeSelectionAction(val, false)
+  handleSingleSelectionChange() {
+    // this.dealSelectionValue(row)
+    // const action = this.state.selection!.action
+    // this.runAction(action)
   }
 
-  assignValuesToSelections(val) {
-    if (this.state.selection) {
-      if (!this.state.selection.values) {
-        this.state.selection.values = []
-      }
-      this.state.selection.values = val
-    }
+  handleAllSelectionChange() {
+    // this.dealAllSelectionValue(selection)
+    // const action = this.state.selection!.action
+    // this.runAction(action)
   }
 
-  handleRowClick(val) {
-    this.executeSelectionAction(val, true)
-    if (this.state.selection?.exist) {
-      const values = this.state.selection.values
-      let index = -1
-      for (let i = 0; i < values.length; i++) {
-        if (values[i].uuid === val.uuid) {
-          index = i
-          break
-        }
-      }
-      const multipleTable: any = this.$refs.elementTable
-      if (index === -1) {
-        this.state.selection.values.push(val)
-        multipleTable.toggleRowSelection(val, true)
-      } else {
-        this.state.selection.values.splice(index, 1)
-        multipleTable.toggleRowSelection(val, false)
-      }
-    }
-  }
+  // dealSelectionValue(value) {
+  //   const values = this.state.selection!.values
+  //   const defaults = this.state.selection!.default
+  //   const ids = values.map(item => item.uuid)
+  //   if (ids.includes(value.uuid)) {
+  //     for (let i = 0, len = values.length; i < len; i++) {
+  //       values.splice(i, 1)
+  //       break
+  //     }
+  //   } else {
+  //     values.push(value)
+  //   }
+  //   if (!defaults!.includes(value.uuid)) {
+  //     defaults?.push(value.uuid)
+  //   }
+  // }
 
-  executeSelectionAction(val, isSingle) {
-    if (this.state.selectAction) {
-      this.state.isSingle = isSingle
-      this.runAction(this.state.selectAction)
-    }
-  }
+  // dealAllSelectionValue(value) {
+  //   let values = this.state.selection!.values
+  //   if (values?.length) {
+  //     values.length = 0
+  //   } else {
+  //     values = value
+  //   }
+  // }
 }
 </script>

@@ -2,6 +2,7 @@
   <div>
     <el-select
       v-model="state.value"
+      value-key="uuid"
       :multiple="state.multiple"
       :disabled="state.readonly"
       @focus="toSetListData"
