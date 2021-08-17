@@ -256,8 +256,7 @@ export default class LoginComponent extends Vue {
       } else if (data.data.token) {
         // set token
         LoginStore.token = data.data.token
-        // debugger
-        this.recordCurrentDeviceInfo()
+        await this.recordCurrentDeviceInfo(data.data.user_uuid)
         // 绑定用户与第三方账号
         if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
           const parmas = {
@@ -289,17 +288,19 @@ export default class LoginComponent extends Vue {
     }
   }
 
-  async recordCurrentDeviceInfo() {
-    const url = `/api/v1/tenant/${LoginStore.TenantUUID}/device/`
-    // debugger
-    await http.post(url, {
+  async recordCurrentDeviceInfo(user: string) {
+    const device = LoginStore.device
+    if (device) return
+    LoginStore.device = getDeviceId()
+    const res = await http.post('/api/v1/device/', {
       device_type: getDeviceType(),
       system_version: getOS(),
       browser_version: getBrowser(),
       mac_address: '',
       device_number: '',
-      device_id: getDeviceId(),
-      // account_ids: [ UserModule.uuid ]
+      device_id: LoginStore.device,
+      account_ids: [ user ]
     })
+    debugger
   }
 }

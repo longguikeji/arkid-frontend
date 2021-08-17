@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { IFlow } from '@/arkfbp'
+import { TenantModule } from '@/store/modules/tenant'
 
 export class AddAction extends FunctionNode {
   async run() {
@@ -66,14 +67,6 @@ export class AddAction extends FunctionNode {
             value: ''
           }
         },
-        // account_ids: {
-        //   label: '用户账号ID',
-        //   type: 'Input',
-        //   isSetWidth: false,
-        //   state: {
-        //     value: ''
-        //   }
-        // },
         action: {
           type: 'Button',
           isSetWidth: false,
@@ -89,6 +82,7 @@ export class AddAction extends FunctionNode {
     if (fetchAction) {
       fetchAction[0] = {
         ...(fetchAction[0] as IFlow),
+        // url: `${fetchAction[0].url}?tenant_uuid=${TenantModule.currentTenant.uuid}`,
         name: 'flows/custom/device/filter',
         request: {
           device_type: 'filter.items.device_type.state.value',
