@@ -60,7 +60,3 @@ export function getDeviceId() {
   const uuid = uuidv4()
   return uuid.replace(/-/g, '')
 }
-
-export function getIP() {
-  return (window as any).returnCitySN.cip
-}

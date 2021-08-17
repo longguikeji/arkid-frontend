@@ -6,7 +6,7 @@ import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../http'
 import { error } from '@/constants/error'
-import { getDeviceType, getOS, getBrowser, getDeviceId, getIP } from '../utils/device'
+import { getDeviceType, getOS, getBrowser, getDeviceId } from '../utils/device'
 
 @Component({
   name: 'LoginComponent',
@@ -296,7 +296,6 @@ export default class LoginComponent extends Vue {
       device_type: getDeviceType(),
       system_version: getOS(),
       browser_version: getBrowser(),
-      ip: getIP(),
       mac_address: '',
       device_number: '',
       device_id: getDeviceId(),
