@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import ListItemState from './ListState'
+import ListItemState from './ListItem/ListItemState'
 import BaseVue from '@/admin/base/BaseVue'
 import ListItem from './ListItem/index.vue'
 

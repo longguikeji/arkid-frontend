@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import ListItemState from '@/admin/common/data/List/ListState'
+import ListItemState from '@/admin/common/data/List/ListItem/ListItemState'
 import { processUUId } from '@/utils/common'
 
 export class SelectNode extends FunctionNode {

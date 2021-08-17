@@ -4,6 +4,7 @@
   >
     {{ label }}
     <i
+      v-if="state.isShowDelete !== false"
       class="el-icon-delete"
       @click="handleClick"
     />

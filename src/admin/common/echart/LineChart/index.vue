@@ -67,8 +67,7 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
       this.chart.setOption({
         title: {
           text: state.header?.text,
-          subtext: state.header?.subtext,
-          left: 'center'
+          subtext: state.header?.subtext
         },
         xAxis: {
           data: state.xAxis,

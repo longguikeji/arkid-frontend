@@ -3,4 +3,5 @@ export default interface ListItemState {
   value: string | number
   action?: string | Function
   index?: number
+  isShowDelete?: boolean
 }

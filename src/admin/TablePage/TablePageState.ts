@@ -4,7 +4,7 @@ import TableState from '../common/data/Table/TableState'
 import FormState from '../common/Form/FormState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import DialogState from '../common/Others/Dialog/DialogState'
-import ListItemState from '@/admin/common/data/List/ListState' 
+import ListItemState from '@/admin/common/data/List/ListItem/ListItemState' 
 import { IFlow } from '@/arkfbp'
 
 export interface TablePage extends BaseState {

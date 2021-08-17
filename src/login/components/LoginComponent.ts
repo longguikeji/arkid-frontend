@@ -292,7 +292,7 @@ export default class LoginComponent extends Vue {
     const device = LoginStore.device
     if (device) return
     LoginStore.device = getDeviceId()
-    const res = await http.post('/api/v1/device/', {
+    await http.post('/api/v1/device/', {
       device_type: getDeviceType(),
       system_version: getOS(),
       browser_version: getBrowser(),
@@ -301,6 +301,5 @@ export default class LoginComponent extends Vue {
       device_id: LoginStore.device,
       account_ids: [ user ]
     })
-    debugger
   }
 }

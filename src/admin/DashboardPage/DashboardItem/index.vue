@@ -10,6 +10,7 @@ import CardPanel from '@/admin/common/panel/CardPanel/index.vue'
 import LineChart from '@/admin/common/echart/LineChart/index.vue'
 import PieChart from '@/admin/common/echart/PieChart/index.vue'
 import BarChart from '@/admin/common/echart/BarChart/index.vue'
+import ListPanel from '@/admin/common/panel/ListPanel/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -18,7 +19,8 @@ import BaseVue from '@/admin/base/BaseVue'
     CardPanel,
     LineChart,
     PieChart,
-    BarChart
+    BarChart,
+    ListPanel
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -32,7 +34,8 @@ export default class extends Mixins(BaseVue) {
         CardPanel,
         LineChart,
         PieChart,
-        BarChart
+        BarChart,
+        ListPanel
       },
       render: (h:Function) => {
         return h(
