@@ -20,7 +20,7 @@ export class SelectNode extends FunctionNode {
       let isExistThisValue = false
       for (let i = 0, len = listData.length; i < len; i++) {
         const item = listData[i]
-        if (processUUId(item.value) === processUUId(data[field])) {
+        if (processUUId(String(item.value)) === processUUId(data[field])) {
           listData.splice(i, 1)
           isExistThisValue = true
           break

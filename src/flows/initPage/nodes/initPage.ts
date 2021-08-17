@@ -87,6 +87,7 @@ export class InitPage extends FunctionNode {
         break
       case 'contacts_user':
         customFlow = 'flows/custom/contacts/user'
+        break
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }

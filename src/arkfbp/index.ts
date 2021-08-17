@@ -154,5 +154,5 @@ function getCurrentPageState(com: BaseVue, name?: string) {
   const keys = path.split('.')[1].includes('[') ? path.replace(/[\[]/g, '.').replace(/[\]]/g, '').split('.') : path.split('.')
   temp = temp[keys[0]]
   temp = temp[keys[1]]
-  return temp[pageName].state
+  return temp[pageName]?.state
 }
