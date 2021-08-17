@@ -1,8 +1,8 @@
-name: arkid-fe v2 cicd
+name: arkid-fe v2 example816 cicd
 on:
   push:
     branches:
-      - v2-dev
+      - v2-example-20210816
 jobs:
   dev2test:
     runs-on: ubuntu-latest
@@ -36,13 +36,13 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-          harbor.longguikeji.com/ark-releases/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
-          longguikeji/arkid-fe:v2dev
+          harbor.longguikeji.com/ark-releases/arkid-fe:v2-example-20210816-${{ github.run_number }}
+          longguikeji/arkid-fe:v2-example-20210816
     - name: deploy to cluster
       uses: steebchen/kubectl@v2.0.0
       with: # defaults to latest kubectl binary version
         config: ${{ secrets.KUBE_CONFIG_HW }}
-        command: -n arkidv2 --insecure-skip-tls-verify=true set image --record deployment/arkidv2-fe arkid-fe=harbor.longguikeji.com/ark-releases/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
+        command: -n v2-example-20210816 --insecure-skip-tls-verify=true set image --record deployment/arkidv2-example816-fe arkid-fe=harbor.longguikeji.com/ark-releases/arkid-fe:v2-example-20210816-${{ github.run_number }}
     - name: Feishu 报忧
       if: ${{ failure() }}
       uses: wangsijie/feishu-bot@v1
@@ -60,4 +60,4 @@ jobs:
         data: |
           {"msg_type":"post","content":{"post":{"zh_cn":{"title": "${{ github.event.repository.name }}流水线状态通知",
           "content":[[{"tag":"text","text":"${{ github.event.repository.name }} 项目流水线有更新: "},
-          {"tag":"a","text":"${{ github.event.ref }} 分支构建并部署成功，点击查看部署后的效果","href":"http://arkid.vtwo.longguikeji.com/"}]]}}}}
+          {"tag":"a","text":"${{ github.event.ref }} 分支构建并部署成功，点击查看部署后的效果","href":"https://arkidv2.example816.longguikeji.com/"}]]}}}}
