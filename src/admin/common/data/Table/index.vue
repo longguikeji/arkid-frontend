@@ -15,6 +15,26 @@
     @select-all="handleAllSelectionChange"
   >
     <el-table-column
+      v-if="state.isExpand"
+      type="expand"
+    >
+      <template slot-scope="scope">
+        <el-form
+          label-position="left"
+          inline
+          class="table-expand"
+        >
+          <el-form-item
+            v-for="(value, key, index) in scope.row"
+            :key="index"
+            :label="state.columns[index].label || key"
+          >
+            {{ value }}
+          </el-form-item>
+        </el-form>
+      </template>
+    </el-table-column>
+    <el-table-column
       v-if="state.selection"
       type="selection"
       :width="state.selection.width || '50'"
@@ -156,3 +176,18 @@ export default class extends Mixins(BaseVue) {
   // }
 }
 </script>
+
+<style lang="scss" scoped>
+.table-expand {
+  font-size: 0;
+}
+.table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+</style>

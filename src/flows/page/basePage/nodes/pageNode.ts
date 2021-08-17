@@ -103,7 +103,8 @@ export class Page {
   table: TableState = {
     columns: [],
     data: [],
-    selection: undefined
+    selection: undefined,
+    isExpand: false
   }
   form: FormState = {
     items: {},
@@ -131,7 +132,7 @@ export class Page {
 
 export class PageNode extends FunctionNode {
   async run() {
-    const { state, initContent, currentPage } = this.inputs
+    const { state, initContent, currentPage, options } = this.inputs
     const type = underlinedStrToUpperCamelStr(initContent.type)
     state[currentPage] = this.getPageState(type, currentPage)
     return this.inputs
