@@ -1,4 +1,4 @@
-import { getUUId } from './common'
+import { v4 as uuidv4 } from 'uuid'
 
 export function getDeviceType() {
   let deviceType: string = ''
@@ -57,7 +57,8 @@ export function getBrowser() {
 }
 
 export function getDeviceId() {
-  return getUUId()
+  const uuid = uuidv4()
+  return uuid.replace(/-/g, '')
 }
 
 export function getIP() {

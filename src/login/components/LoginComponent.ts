@@ -6,6 +6,7 @@ import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../http'
 import { error } from '@/constants/error'
+import { getDeviceType, getOS, getBrowser, getDeviceId, getIP } from '../utils/device'
 
 @Component({
   name: 'LoginComponent',
@@ -255,6 +256,8 @@ export default class LoginComponent extends Vue {
       } else if (data.data.token) {
         // set token
         LoginStore.token = data.data.token
+        // debugger
+        this.recordCurrentDeviceInfo()
         // 绑定用户与第三方账号
         if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
           const parmas = {
@@ -287,6 +290,17 @@ export default class LoginComponent extends Vue {
   }
 
   async recordCurrentDeviceInfo() {
-
+    const url = `/api/v1/tenant/${LoginStore.TenantUUID}/device/`
+    // debugger
+    await http.post(url, {
+      device_type: getDeviceType(),
+      system_version: getOS(),
+      browser_version: getBrowser(),
+      ip: getIP(),
+      mac_address: '',
+      device_number: '',
+      device_id: getDeviceId(),
+      // account_ids: [ UserModule.uuid ]
+    })
   }
 }
