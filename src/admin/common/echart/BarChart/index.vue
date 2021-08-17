@@ -6,19 +6,19 @@
 import echarts, { EChartOption } from 'echarts'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import ResizeMixin from '@/components/Charts/mixins/resize'
-import LineChartState from './LineChartState'
+import BarChartState from './BarChartState'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
-  name: 'LineChart'
+  name: 'BarChart'
 })
 export default class extends Mixins(ResizeMixin, BaseVue) {
-  get state(): LineChartState {
-    return this.$state as LineChartState
+  get state(): BarChartState {
+    return this.$state as BarChartState
   }
 
   @Watch('state', { deep: true })
-  private onChartDataChange(value: LineChartState) {
+  private onChartDataChange(value: BarChartState) {
     this.setOptions(value)
   }
 
@@ -41,7 +41,7 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
     this.setOptions(this.state)
   }
 
-  private setOptions(state: LineChartState) {
+  private setOptions(state: BarChartState) {
     if (this.chart) {
       const legendData:string[] = []
       const seriesData: object[] = []
@@ -50,16 +50,8 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
           legendData.push(serie.name || '')
           seriesData.push({
             name: serie.name,
-            itemStyle: {
-              lineStyle: {
-                width: 2
-              }
-            },
-            smooth: true,
-            type: 'line',
+            type: 'bar',
             data: serie.data
-            // animationDuration: 2800,
-            // animationEasing: 'cubicInOut'
           })
         })
       }
@@ -67,22 +59,14 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
       this.chart.setOption({
         title: {
           text: state.header?.text,
-          subtext: state.header?.subtext,
-          left: 'center'
+          subtext: state.header?.subtext
         },
         xAxis: {
           data: state.xAxis,
-          boundaryGap: false,
-          axisTick: {
-            show: false
+          type: 'category',
+          axisLabel: {
+            interval: 0
           }
-        },
-        grid: {
-          left: 10,
-          right: 10,
-          bottom: 20,
-          top: 30,
-          containLabel: true
         },
         tooltip: {
           trigger: 'axis',
@@ -91,10 +75,11 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
           },
           padding: 8
         },
+        grid: {
+          height: 300
+        },
         yAxis: {
-          axisTick: {
-            show: false
-          }
+          type: 'value'
         },
         legend: {
           data: legendData

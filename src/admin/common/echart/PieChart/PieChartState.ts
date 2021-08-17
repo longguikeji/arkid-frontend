@@ -8,4 +8,9 @@ interface PieData {
 export default interface PieChartState extends BaseState {
   title?: string
   datas?: Array<PieData>
+  header?: {
+    text?: string,
+    subtext?: string
+  },
+  isShowLegend?: boolean
 }

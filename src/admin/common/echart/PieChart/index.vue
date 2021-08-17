@@ -51,20 +51,24 @@ export default class extends Mixins(ResizeMixin, BaseVue) {
       }
 
       this.chart.setOption({
+        title: {
+          text: state.header?.text,
+          subtext: state.header?.subtext,
+          left: 'center'
+        },
         tooltip: {
           trigger: 'item',
           formatter: '{a} <br/>{b} : {c} ({d}%)'
         },
-        legend: {
+        legend: this.state.isShowLegend ? {
           left: 'center',
           bottom: '10',
           data: legendData
-        },
+        } : undefined,
         series: [
           {
             name: state.title,
             type: 'pie',
-            roseType: 'radius',
             radius: [15, 95],
             center: ['50%', '38%'],
             data: state.datas

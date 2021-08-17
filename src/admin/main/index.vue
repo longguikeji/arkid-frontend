@@ -4,7 +4,11 @@
     style="height: 100%"
     :class="page"
   >
-    <div v-if="isMultiPage">
+    <div
+      v-if="isUrlPage"
+      v-html="state"
+    />
+    <div v-else-if="isMultiPage">
       <AdminComponent
         v-for="(i, index) in page"
         :key="index"
@@ -41,6 +45,14 @@ export default class extends Vue {
 
   private get page(): string | string[] {
     return this.$route.meta.page
+  }
+
+  private get url(): string | undefined {
+    return this.$route.meta.url
+  }
+
+  private get isUrlPage() {
+    return typeof this.state === 'string'
   }
 
   private get isMultiPage() {

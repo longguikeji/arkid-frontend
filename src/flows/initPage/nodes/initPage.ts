@@ -33,12 +33,16 @@ export class InitPage extends FunctionNode {
     if (!info) return null
     const { page: initContent, description } = info
     if (!initContent) return
-    const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
-    if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
-    if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
-    let flow = 'flows/page/basePage'
-    if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
-    await runFlowByFile(flow, { state, initContent, currentPage, options })
+    if (typeof initContent === "string") {
+      // ...
+    } else {
+      const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
+      if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
+      if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
+      let flow = 'flows/page/basePage'
+      if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
+      await runFlowByFile(flow, { state, initContent, currentPage, options })
+    }
   }
 
   async runCustomPageFlow(state: any, currentPage: string) {

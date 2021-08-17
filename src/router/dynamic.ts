@@ -12,6 +12,7 @@ interface RouteMeta {
   affix?: boolean
   hidden?: boolean
   roles?: Array<string>
+  url?: string
 }
 
 // 根据OpenAPI信息动态生成当前登录用户所拥有权限的路由
@@ -67,7 +68,7 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
       if (page && !hasPermission(page)) continue
       const { path, children } = routes[i]
       const childRoute = {
-        path: path,
+        path,
         name: path,
         component: isAdmin ? Admin : undefined,
         children: children ? generateChildRoutes(children, false) : undefined,
@@ -84,11 +85,12 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
 }
 
 function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
-  const { name, icon, page } = route
+  const { name, icon, page, url } = route
   const meta: RouteMeta = {
     title: name,
     icon: icon || 'dashboard',
-    page: page,
+    page,
+    url,
     affix: affix || false
   }
   return meta

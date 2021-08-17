@@ -9,6 +9,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import CardPanel from '@/admin/common/panel/CardPanel/index.vue'
 import LineChart from '@/admin/common/echart/LineChart/index.vue'
 import PieChart from '@/admin/common/echart/PieChart/index.vue'
+import BarChart from '@/admin/common/echart/BarChart/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -16,7 +17,8 @@ import BaseVue from '@/admin/base/BaseVue'
   components: {
     CardPanel,
     LineChart,
-    PieChart
+    PieChart,
+    BarChart
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -29,7 +31,8 @@ export default class extends Mixins(BaseVue) {
       components: {
         CardPanel,
         LineChart,
-        PieChart
+        PieChart,
+        BarChart
       },
       render: (h:Function) => {
         return h(
@@ -50,7 +53,7 @@ export default class extends Mixins(BaseVue) {
 
   private handleClick() {
     const item = this.state.state
-    this.$emit('appClick', item)
+    this.$emit('appClick', item, this.state.type)
   }
 }
 </script>

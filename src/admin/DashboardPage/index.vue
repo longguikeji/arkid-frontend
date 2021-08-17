@@ -110,7 +110,8 @@ export default class extends Mixins(BaseVue) {
     DesktopModule.updateCurrentDesktopApp(app)
   }
 
-  showAppPage(data: any) {
+  showAppPage(data: any, type: string) {
+    if (type !== 'CardPanel') return
     if (data.url && data.uuid) {
       let url = data.url
       url = getUrl(url)
