@@ -4,20 +4,19 @@
     style="height: 100%"
     :class="page"
   >
-    <div
-      v-if="isUrlPage"
-      v-html="state"
-    />
-    <div v-else-if="isMultiPage">
+    <template v-if="isMultiPage">
       <AdminComponent
         v-for="(i, index) in page"
         :key="index"
         :path="`admin.adminState.${i}`"
       />
-    </div>
-    <div v-else>
+    </template>
+    <template v-else>
       <AdminComponent :path="`admin.adminState.${page}`" />
-    </div>
+    </template>
+  </div>
+  <div v-else-if="url">
+    <iframe :src="url" />
   </div>
   <div
     v-else
@@ -51,10 +50,6 @@ export default class extends Vue {
     return this.$route.meta.url
   }
 
-  private get isUrlPage() {
-    return typeof this.state === 'string'
-  }
-
   private get isMultiPage() {
     return isArray(this.page)
   }
@@ -82,4 +77,10 @@ export default class extends Vue {
   text-align: center;
   padding-top: 50px;
 }
+
+iframe {
+  width: 100%;
+  height: calc(100vh - 84px);
+}
+
 </style>
