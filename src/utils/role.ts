@@ -17,6 +17,7 @@ export function getApiRolesByPageName(name: string): string[] {
 
 export function getApiRolesByPath(path: string, method: string) {
   const operation = OpenAPI.instance.getOperation(path, method)
+  if (!operation) return []
   return operation.roles || []
 }
 
