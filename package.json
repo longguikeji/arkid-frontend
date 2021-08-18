@@ -11,6 +11,7 @@
     "svg": "vsvg -s ./src/icons/svg -t ./src/icons/components --ext ts --es6"
   },
   "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^3.3.0",
     "@tinymce/tinymce-vue": "^3.2.2",
     "@types/cookie": "^0.4.0",
     "@vue/compiler-sfc": "^3.0.9",
