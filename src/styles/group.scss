@@ -1,7 +1,7 @@
 .group, .group_user {
   .tree-page {
     display: inline-block;
-    width: 30%;
+    width: 25%;
     height: calc(100vh - 84px);
     vertical-align: top;
     ::v-deep .el-card {
@@ -10,7 +10,7 @@
   }
   .table-page {
     display: inline-block;
-    width: 70%;
+    width: 75%;
     height: 100%;
   }
 }
