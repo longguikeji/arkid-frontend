@@ -4,7 +4,7 @@ import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update', 'log_config' ]
-const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'login_register_config_info' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'login_register_config_info', 'log_config' ]
 const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
 
 export interface BasePageOptions {

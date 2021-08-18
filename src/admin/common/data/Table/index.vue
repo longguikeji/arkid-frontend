@@ -109,9 +109,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   rowKeyFunc(row) {
-    if (row.uuid) {
-      return row.uuid
-    }
+    return row.uuid || row.id || row.username
   }
 
   // initTableSelection() {
