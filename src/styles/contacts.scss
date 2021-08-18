@@ -1,0 +1,17 @@
+.contacts_group.contacts_user {
+  .tree-page {
+    display: inline-block;
+    width: 30%;
+    height: calc(100vh - 84px);
+    vertical-align: top;
+    .el-card {
+      height: calc(100vh - 84px) !important;
+      overflow-y: auto;
+    }
+  }
+  .table-page {
+    display: inline-block;
+    width: 70%;
+    height: 100%;
+  }
+}
