@@ -82,7 +82,7 @@ export class AddAction extends FunctionNode {
     if (fetchAction) {
       fetchAction[0] = {
         ...(fetchAction[0] as IFlow),
-        url: `${fetchAction[0].url}?tenant_uuid=${TenantModule.currentTenant.uuid}`,
+        // url: `${fetchAction[0].url}?tenant_uuid=${TenantModule.currentTenant.uuid}`,
         name: 'flows/custom/device/filter',
         request: {
           device_type: 'filter.items.device_type.state.value',
