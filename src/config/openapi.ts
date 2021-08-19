@@ -16,7 +16,7 @@ export default class OpenAPI {
   }
 
   public getOperation(path:string, method:string):IOperation {
-    return this.config?.paths[path][method]
+    return this.config && this.config.paths && this.config.paths[path] && this.config.paths[path][method]
   }
 
   public getSchemaByRef(ref:string):ISchema {
