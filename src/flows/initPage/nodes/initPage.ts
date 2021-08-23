@@ -75,6 +75,7 @@ export class InitPage extends FunctionNode {
       case 'extension.create':
       case 'extension.update':
         curstomPageFlow = 'flows/custom/extension/addAction'
+        break
     }
     if (curstomPageFlow !== '') await runFlowByFile(curstomPageFlow, { state, page: currentPage })
   }

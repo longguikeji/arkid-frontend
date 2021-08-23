@@ -6,7 +6,7 @@ export class ChangeTreeNodeState extends Fetch {
     const res = await super.run()
     const data = getTreeData(res.results)
     const com = this.inputs.com
-    const selectedData = com.state.selectedData
-    selectedData.children = data
+    const node = com.state.node
+    node.children = data
   }
 }
