@@ -93,6 +93,7 @@ export interface ITagPageMultiAction {
 
 export interface ITagPageMapping {
   tag: string
+  description?: string
 }
 
 export interface ITagPageOperation {

@@ -125,9 +125,9 @@ export class StateNode extends FunctionNode {
       const operation = operations[key]
       let button: ButtonState | null = null
       if ((operation as ITagPageMapping).tag) {
-        const tag = (operation as ITagPageMapping).tag
+        const { tag, description } = operation as ITagPageMapping
         await this.initAppointedPage(state, tag, key)
-        button = this.generateButtonState(key, tag, type, true)
+        button = this.generateButtonState(key, tag, type, true, description)
       } else {
         switch (key) {
           case 'import':
@@ -232,11 +232,11 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean): ButtonState | null {
+  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean, description?: string): ButtonState | null {
     const hp = hasPermission(currentPage)
     if (!hp) return null
     return {
-      label: BUTTON_LABEL[key],
+      label: description || BUTTON_LABEL[key],
       action: isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key,
       type: pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' ),
       disabled: key === 'export' ? true : false,
