@@ -44,7 +44,7 @@ export class StateNode extends FunctionNode {
     state.card!.title = options?.description || ''
     switch (type) {
       case 'TablePage':
-        this.initTableMainState(state, schema)
+        this.initTableMainState(state, schema, options)
         break
       case 'FormPage':
         await this.initFormMainState(state, schema, currentPage, options)
@@ -52,7 +52,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initTableMainState(state: BasePage, schema: ISchema) {
+  initTableMainState(state: BasePage, schema: ISchema, options?: BasePageOptions) {
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const columnState: TableColumnState = {
@@ -61,6 +61,7 @@ export class StateNode extends FunctionNode {
       }
       state.table?.columns?.push(columnState)
     }
+    state.table!.isExpand = options?.isExpandTableColumn || false
   }
 
   async initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
