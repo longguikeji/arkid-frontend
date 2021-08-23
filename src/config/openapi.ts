@@ -311,5 +311,6 @@ export interface IOpenAPIRouter {
   path: string
   icon: string
   page?: string
+  url?: string
   children?: IOpenAPIRouter[]
 }

@@ -11,6 +11,7 @@ interface RouteMeta {
   page?: string
   affix?: boolean
   hidden?: boolean
+  url?: string
   roles?: Array<string>
 }
 
@@ -84,12 +85,13 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
 }
 
 function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
-  const { name, icon, page } = route
+  const { name, icon, page, url } = route
   const meta: RouteMeta = {
     title: name,
     icon: icon || 'dashboard',
-    page: page,
-    affix: affix || false
+    page,
+    affix: affix || false,
+    url
   }
   return meta
 }

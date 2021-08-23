@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isCompleted"
+    v-if="isStatePage"
     style="height: 100%"
     :class="page"
   >
@@ -15,6 +15,9 @@
       <AdminComponent :path="`admin.adminState.${page}`" />
     </div>
   </div>
+  <div v-else-if="url">
+    <iframe :src="url" />
+  </div>
   <div
     v-else
     class="placeholder"
@@ -28,7 +31,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
 import BaseVue from '@/admin/base/BaseVue'
-import { isArray } from '@/utils/common'
+import { isArray, isObject } from 'lodash'
 
 @Component({
   name: 'Admin',
@@ -43,18 +46,24 @@ export default class extends Vue {
     return this.$route.meta.page
   }
 
+  private get url(): string | undefined {
+    return this.$route.meta.url
+  }
+
   private get isMultiPage() {
     return isArray(this.page)
   }
 
-  private get isCompleted(): boolean {
-    return Object.keys(this.state || {}).length > 0
+  private get isStatePage(): boolean {
+    return isObject(this.state)
   }
 
   async created() {
-    await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
-      await AdminModule.setAdmin(result)
-    })
+    if (this.page) {
+      await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
+        await AdminModule.setAdmin(result)
+      })
+    }
   }
 
   async destroyed() {
@@ -69,5 +78,10 @@ export default class extends Vue {
 .placeholder {
   text-align: center;
   padding-top: 50px;
+}
+
+iframe {
+  width: 100%;
+  height: calc(100vh - 90px);
 }
 </style>
