@@ -25,11 +25,11 @@
       <el-tab-pane
         v-for="(cform, index) in pageConfig.forms"
         :key="index"
+        :ref="`${page}${index}`"
         :label="cform.label"
         :name="index.toString()"
       >
         <el-form
-          :ref="page"
           :model="form"
           :rules="rules"
         >

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Prop, Component } from 'vue-property-decorator'
+import { Prop, Component, Watch } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
@@ -32,18 +32,26 @@ export default class LoginComponent extends Vue {
     return document.body.clientWidth < 600
   }
 
-  get pageConfig(): LoginPageConfig | undefined {
-    return this.config ? this.config[this.page] : undefined
-  }
-
   get form() {
     return this.forms[this.page][this.tabIndex]
+  }
+
+  get pageConfig(): LoginPageConfig | undefined {
+    return this.config && this.page ? this.config[this.page] : undefined
   }
 
   get passwordRule() {
     const regex = this.complexity?.regular ? new RegExp(this.complexity.regular) : DEFAULT_PASSWORD_RULE.regex
     const hint = this.complexity?.title || DEFAULT_PASSWORD_RULE.hint
     return getRegexRule(hint, regex)
+  }
+
+  get tab(): string {
+    return `${this.page}${this.tabIndex}`
+  }
+
+  get currentForm() {
+    return this.$refs[this.tab][0].$children[0]
   }
 
   created() {
@@ -109,7 +117,7 @@ export default class LoginComponent extends Vue {
 
   resetFields() {
     this.$nextTick(() => {
-      this.$refs[this.page][this.tabIndex].resetFields()
+      this.currentForm.resetFields()
     })
   }
 
@@ -129,7 +137,7 @@ export default class LoginComponent extends Vue {
 
   validateCheckPassword(rule: any, value: string, callback: Function) {
     if (this.form['checkpassword']) {
-      this.$refs[this.page][this.tabIndex].validateField('checkpassword')
+      this.currentForm.validateField('checkpassword')
     }
     callback()
   }
@@ -161,7 +169,7 @@ export default class LoginComponent extends Vue {
   }
 
   btnHttpCheck() {
-    this.$refs[this.page][this.tabIndex].validate(async (valid: boolean) => {
+    this.currentForm.validate(async (valid: boolean) => {
       if (valid) {
         await this.btnRequest()
       }
@@ -170,8 +178,8 @@ export default class LoginComponent extends Vue {
 
   btnDelayCheck() {
     const params = this.btn.http!.params
-    const key = Object.keys(params)[0]
-    this.$refs[this.page][this.tabIndex].validateField(key, async (err) => {
+    const keys = Object.keys(params)
+    this.currentForm.validateField(keys, async (err) => {
       if (!err) {
         await this.btnRequest()
       } else {
