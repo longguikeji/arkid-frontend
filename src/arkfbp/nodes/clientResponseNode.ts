@@ -47,7 +47,7 @@ export class ClientResponseNode extends FunctionNode {
           if (lastKey === 'data') { value = tempS }
         }
         tempC[lastKey] = lastKey === 'disabled' ? !value : value
-        if (tempC.options) setOptions(tempC)
+        if (tempC.options && tempC.page) setOptions(tempC)
       } else {
         if (lastKey === 'data') {
           tempC[lastKey] = depData
