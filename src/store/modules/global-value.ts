@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
-import { DEFAULT_PASSWORD_RULE } from '@/login/util/rules'
+import { DEFAULT_PASSWORD_RULE } from '@/login/utils/rules'
 
 export interface IValidatorStrategy {
   regex?: RegExp
