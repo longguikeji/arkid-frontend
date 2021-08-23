@@ -32,6 +32,7 @@ export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
     await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
+    if (initContent.filter) this.initPageFilterState(state[currentPage], initContent.filter, currentPage, options)
     await this.initPageOperationState(state[currentPage], initContent, currentPage)
     return this.inputs
   }
@@ -80,6 +81,36 @@ export class StateNode extends FunctionNode {
     } else if (forms) {
       state.forms = forms
       state.select = select
+    }
+  }
+
+  initPageFilterState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
+    const { path, method } = operation
+    const schema = getSchemaByPath(path, method)
+    const { form } = generateForm(schema, false, true, false)
+    if (form) {
+      for (const key in form.items) {
+        let item = form.items[key]
+        form.items[key] = {
+          ...item,
+          isSetWidth: false
+        }
+      }
+      pageState.state.filter = {
+        inline: true,
+        size: 'mini',
+        items: Object.assign(form.items, {
+          action: {
+            type: 'Button',
+            isSetWidth: false,
+            state: {
+              label: '搜索',
+              type: 'primary',
+              action: 'fetch'
+            }
+          }
+        })
+      }
     }
   }
 

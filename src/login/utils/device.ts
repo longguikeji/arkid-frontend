@@ -37,10 +37,6 @@ export const getDevice = () => {
   }
 }
 
-export const getIp = () => {
-  return ip.address()
-}
-
 export const getMacAddress = () => {
   let macAddr: string = ''
   macaddress.one((err: string, mac: string) => {

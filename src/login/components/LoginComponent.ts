@@ -4,7 +4,7 @@ import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
-import { getIp, getDevice, getDeviceId, getMacAddress } from '../utils/device'
+import { getDevice, getDeviceId, getMacAddress } from '../utils/device'
 import http from '../http'
 import { error } from '@/constants/error'
 
@@ -298,7 +298,6 @@ export default class LoginComponent extends Vue {
   }
 
   async recordDevice(userUUId: string) {
-    // const ip = getIp()
     const device = getDevice()
     const deviceId = await getDeviceId()
     const macAddress = getMacAddress()

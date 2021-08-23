@@ -42,41 +42,43 @@ export class InitPage extends FunctionNode {
   }
 
   async runCustomPageFlow(state: any, currentPage: string) {
-    let curstomPageFlow: string = ''
+    let customFlow: string = ''
     switch (currentPage) {
       case 'app':
-        curstomPageFlow = 'flows/custom/appManager/authPageBtn'
+        customFlow = 'flows/custom/appManager/authPageBtn'
         break
       case 'group':
-        curstomPageFlow = 'flows/custom/group/group'
+        customFlow = 'flows/custom/group/group'
         break
       case 'group_user':
-        curstomPageFlow = 'flows/custom/group/groupUser'
+        customFlow = 'flows/custom/group/groupUser'
         break
       case 'maketplace':
-        curstomPageFlow = 'flows/custom/maketplace/initFilter'
+        customFlow = 'flows/custom/maketplace/initFilter'
         break
       case 'third_part_account':
-        curstomPageFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
+        customFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
         break
       case 'login_register_config':
-        curstomPageFlow = 'flows/custom/loginRegisterConfig/addAction'
+        customFlow = 'flows/custom/loginRegisterConfig/addAction'
         break
       case 'login_register_config.update':
-        curstomPageFlow = 'flows/custom/loginRegisterConfig/options'
+        customFlow = 'flows/custom/loginRegisterConfig/options'
         break
       case 'password':
-        curstomPageFlow = 'flows/custom/password/addAction'
+        customFlow = 'flows/custom/password/addAction'
         break
       case 'tenant_config':
-        curstomPageFlow = 'flows/custom/tenant/deleteTenant'
+        customFlow = 'flows/custom/tenant/deleteTenant'
         break
       case 'extension':
       case 'extension.create':
       case 'extension.update':
-        curstomPageFlow = 'flows/custom/extension/addAction'
+        customFlow = 'flows/custom/extension/addAction'
         break
+      case 'device':
+        customFlow = 'flows/custom/device'
     }
-    if (curstomPageFlow !== '') await runFlowByFile(curstomPageFlow, { state, page: currentPage })
+    if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }
 }
