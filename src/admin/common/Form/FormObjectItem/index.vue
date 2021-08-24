@@ -1,14 +1,13 @@
 <template>
   <el-card class="card">
+    <el-button
+      v-if="state.isAddItem"
+      type="primary"
+      @click="handleClick"
+    >
+      自定义字段
+    </el-button>
     <Form :path="getChildPath('')" />
-    <template v-if="state.isAddItem">
-      <el-button
-        type="primary"
-        @click="show = true"
-      >
-        点击添加
-      </el-button>
-    </template>
     <el-dialog
       :visible="show"
       :modal="false"
@@ -83,28 +82,39 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
+  handleClick() {
+    this.show = true
+    const items = this.state.items
+    if (!items) return
+    const keys = Object.keys(items)
+    this.values = keys
+  }
+
   add() {
-    this.values.push(this.value)
+    this.values.push(this.value.trim())
     this.value = ''
   }
 
   close(index: number) {
+    this.$delete(this.state.items!, this.values[index])
     this.values.splice(index, 1)
   }
 
   confirm() {
     const values = this.values
-    let items = this.state.items
-    if (!items) items = {}
+    const keys = Object.keys(this.state.items!)
     for (let i = 0, len = values.length; i < len; i++) {
       const value = values[i]
-      items[i] = {
-        label: value,
-        type: 'Input',
-        state: {
-          value: '',
-          placeholder: `请输入${value}`
-        }
+      if (keys.indexOf(value) < 0) {
+        this.$set(this.state.items!, value, {
+          label: value,
+          type: 'Input',
+          prop: value,
+          state: {
+            value: '',
+            placeholder: `请输入${value}`
+          }
+        })
       }
     }
     this.show = false
@@ -117,7 +127,7 @@ export default class extends Mixins(BaseVue) {
   display: inline-block;
   width: 100%;
   .tag {
-    margin-left: 10px;
+    margin: 5px;
   }
 }
 </style>
