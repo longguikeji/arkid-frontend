@@ -39,7 +39,6 @@ import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
-import getUrl from '@/utils/url'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -112,9 +111,7 @@ export default class extends Mixins(BaseVue) {
 
   showAppPage(data: any) {
     if (data.url && data.uuid) {
-      let url = data.url
-      url = getUrl(url)
-      window.open(url, '_blank')
+      window.open(data.url, '_blank')
     } else {
       this.$message({
         message: '该应用未设置调转路径或缺少标识信息',

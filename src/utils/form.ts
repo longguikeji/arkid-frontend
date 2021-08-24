@@ -5,8 +5,9 @@ import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
+import { runFlowByFile } from '@/arkfbp'
 
-export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false): FormPage {
+export default async function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false) {
   const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -34,12 +35,12 @@ export default function generateForm(schema: ISchema, showReadOnly: boolean = tr
   } else {
     const formState:FormState = {}
     formPageState.form = formState
-    formState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
+    formState.items = await getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
   }
   return formPageState
 }
 
-function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
+async function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
   const tempItems:{[prop:string]:FormItemState} = {}
   const requiredSchema = schema.required
   for (const prop in schema.properties) {
@@ -48,13 +49,13 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: b
     }
     const propSchema = schema.properties[prop]
     const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
+    const item = await createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean):FormItemState | null {
+async function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean) {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
@@ -73,7 +74,7 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   } else if (schema.type === 'boolean') {
     item = createBooleanItem(prop, schema, disabled, required)
   } else if (schema.type === 'object') {
-    item = createObjectItem(prop, schema, showReadOnly, showWriteOnly, disabled)
+    item = await createObjectItem(prop, schema, showReadOnly, showWriteOnly, disabled)
   } else if (schema.allOf?.length || schema.oneOf?.length) { 
     item = createCombineItem(prop, schema, showReadOnly, showWriteOnly, disabled, required)
   }
@@ -210,10 +211,16 @@ function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, req
   }
 }
 
-function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean) {
+async function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean) {
   const itemState = new FormObjectItemState()
-  itemState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
-  Object.assign(itemState, { isAddItem: schema.format === 'custom_dict' })
+  if (schema.init) {
+    const { path, method } = schema.init
+    const items = await runFlowByFile('flows/common/customFields/init', { url: path, method: method.toUpperCase() })
+    itemState.items = items
+  } else {
+    itemState.items = await getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
+    Object.assign(itemState, { isAddItem: schema.format === 'custom_dict' })
+  }
   return {
     type: 'FormObjectItem',
     label: schema.title,

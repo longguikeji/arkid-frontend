@@ -3,7 +3,8 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { UrlNode } from '@/arkfbp/nodes/urlNode'
-import { Sort } from './nodes/sort'
+import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
+import { InitCustomFieldsNode } from './nodes/init'
 
 export class Main extends Flow {
   createNodes() {
@@ -14,10 +15,14 @@ export class Main extends Flow {
     }, {
       cls: UrlNode,
       id: 'url',
-      next: 'sort'
+      next: 'fetch'
     }, {
-      cls: Sort,
-      id: 'sort',
+      cls: Fetch,
+      id: 'fetch',
+      next: 'init-custom-fields'
+    }, {
+      cls: InitCustomFieldsNode,
+      id: 'init-custom-fields',
       next: 'stop'
     }, {
       cls: StopNode,

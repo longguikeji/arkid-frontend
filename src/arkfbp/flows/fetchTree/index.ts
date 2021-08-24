@@ -2,6 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
+import { UrlNode } from '@/arkfbp/nodes/urlNode'
 import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
 import { ChangeTreeState } from './nodes/changeTreeState'
 
@@ -10,6 +11,10 @@ export class Main extends Flow {
     return [{
       cls: StartNode,
       id: 'start',
+      next: 'url'
+    }, {
+      cls: UrlNode,
+      id: 'url',
       next: 'fetch'
     }, {
       cls: Fetch,
@@ -21,9 +26,7 @@ export class Main extends Flow {
       next: 'stop'
     }, {
       cls: StopNode,
-      id: 'stop',
-      x: 455,
-      y: 70
+      id: 'stop'
     }]
   }
 

@@ -1,6 +1,5 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { stateFilter } from '@/utils/flow'
-import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
 import { isEmptyObject } from '@/utils/common'
 import BaseVue from '@/admin/base/BaseVue'
@@ -52,7 +51,7 @@ async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) 
   if (data) FlowModule.addPageData({ page: currentPage, data })
   const { url, method, response, target, required, path } = args
   const inputs = {
-    url: url ? getUrl(url, currentPage) : undefined,
+    url: url,
     method: method?.toUpperCase(),
     params: {},
     client: state,
@@ -61,7 +60,8 @@ async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) 
     com,
     required,
     path,
-    data
+    data,
+    page: currentPage
   }
   // 对 request 请求参数进行解析处理
   if (args.request && !isEmptyObject(args.request)) {

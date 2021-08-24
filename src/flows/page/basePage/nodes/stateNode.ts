@@ -32,7 +32,7 @@ export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
     await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
-    if (initContent.filter) this.initPageFilterState(state[currentPage], initContent.filter, currentPage, options)
+    if (initContent.filter) await this.initPageFilterState(state[currentPage], initContent.filter, currentPage, options)
     await this.initPageOperationState(state[currentPage], initContent, currentPage)
     return this.inputs
   }
@@ -68,7 +68,7 @@ export class StateNode extends FunctionNode {
     const showReadOnly = options?.showReadOnly === false ? false : true,
           showWriteOnly = options?.showWriteOnly === false ? false : true,
           disabled = options?.disabled === false ? false : true
-    const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
+    const { form, forms, select } = await generateForm(schema, showReadOnly, showWriteOnly, disabled)
     if (form) {
       if (!state.form) state.form = { items: {}, inline: false }
       const items = form.items
@@ -85,10 +85,10 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initPageFilterState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
+  async initPageFilterState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
-    const { form } = generateForm(schema, false, true, false)
+    const { form } = await generateForm(schema, false, true, false)
     if (form) {
       for (const key in form.items) {
         let item = form.items[key]

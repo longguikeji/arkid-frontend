@@ -16,9 +16,7 @@ export class Main extends Flow {
       next: 'stop'
     }, {
       cls: StopNode,
-      id: 'stop',
-      x: 455,
-      y: 70
+      id: 'stop'
     }]
   }
 
