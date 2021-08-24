@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { proxyClientServer, stateFilter } from '@/utils/flow'
 import { setOptions } from '@/utils/options'
+import { runFlowByFile } from '@/arkfbp'
 
 export class ClientResponseNode extends FunctionNode {
   async run() {
@@ -56,7 +57,6 @@ export class ClientResponseNode extends FunctionNode {
         }
       }
     }
-
     return this.inputs
   }
 }

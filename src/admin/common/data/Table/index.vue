@@ -40,7 +40,7 @@
       :width="state.selection.width || '50'"
     />
     <el-table-column
-      v-if="state.index"
+      v-if="state.index || true"
       type="index"
       :width="state.indexWidth || '30'"
       label="#"
@@ -109,9 +109,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   rowKeyFunc(row) {
-    if (row.uuid) {
-      return row.uuid
-    }
+    return row.uuid || row.id || row.username
   }
 
   // initTableSelection() {

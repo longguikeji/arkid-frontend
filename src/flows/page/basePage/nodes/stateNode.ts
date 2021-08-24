@@ -1,7 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { getSchemaByPath } from '@/utils/schema'
+import { getSchemaByPath, isImportInputList } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
@@ -68,15 +68,18 @@ export class StateNode extends FunctionNode {
     const showReadOnly = options?.showReadOnly === false ? false : true,
           showWriteOnly = options?.showWriteOnly === false ? false : true,
           disabled = options?.disabled === false ? false : true
-    const { form, forms, select } = await generateForm(schema, showReadOnly, showWriteOnly, disabled)
+    const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
     if (form) {
       if (!state.form) state.form = { items: {}, inline: false }
       const items = form.items
       state.form.items = items
-      for (const prop in items) {
-        const item = items[prop]
-        if (item.type === 'InputList') {
-          await this.initInputList(state, currentPage, item)
+      if (items) {
+        const inputListItems = []
+        isImportInputList(items, inputListItems)
+        if (inputListItems.length) {
+          inputListItems.forEach(async (item) => {
+            await this.initInputList(state, currentPage, item)
+          })
         }
       }
     } else if (forms) {
@@ -88,7 +91,7 @@ export class StateNode extends FunctionNode {
   async initPageFilterState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
-    const { form } = await generateForm(schema, false, true, false)
+    const { form } = generateForm(schema, false, true, false)
     if (form) {
       for (const key in form.items) {
         let item = form.items[key]

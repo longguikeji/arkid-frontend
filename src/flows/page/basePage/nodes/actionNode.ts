@@ -15,21 +15,21 @@ export class ActionNode extends FunctionNode {
   }
 
   initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
-    const { path, method } = initAction
+    const { path, method, parameters } = initAction
     const { state, type } = pageState
     switch (type) {
       case 'TablePage':
-        this.initTablePageFetchAction(state, path, method)
+        this.initTablePageFetchAction(state, path, method, parameters)
         break
       case 'FormPage':
-        this.initFormPageFetchAction(state, path, method)
+        this.initFormPageFetchAction(state, path, method, parameters)
         break
       case 'TreePage':
         this.initTreePageFetchAction(state, path, method)
     }
   }
 
-  initTablePageFetchAction(state: BasePage, path: string, method: string) {
+  initTablePageFetchAction(state: BasePage, path: string, method: string, parameters?: any) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {
       'table.data': props.data,
@@ -47,11 +47,16 @@ export class ActionNode extends FunctionNode {
         action: 'fetch'
       }
     }
+    if (parameters) {
+      Object.keys(parameters).forEach(key => {
+        request[key] = parameters[key]
+      })
+    }
     this.setImportButtonDisabledProp(state, response, props.data)
     this.addFetchAction(state, path, method, response, request)
   }
 
-  initFormPageFetchAction(state: BasePage, path: string, method: string) {
+  initFormPageFetchAction(state: BasePage, path: string, method: string, parameters?: any) {
     const response = true
     let blank = false, flowName
     if (method !== 'get') {
@@ -59,8 +64,15 @@ export class ActionNode extends FunctionNode {
       flowName = 'arkfbp/flows/assign'
     }
     let { mapping } = getActionMapping(path, method, blank, response)
+    let request
+    if (parameters) {
+      request = {}
+      Object.keys(parameters).forEach(key => {
+        request[key] = parameters[key]
+      })
+    }
     mapping = Object.assign(mapping, { data: '' })
-    this.addFetchAction(state, path, method, mapping, undefined, flowName)
+    this.addFetchAction(state, path, method, mapping, request, flowName)
   }
 
   initTreePageFetchAction(state: BasePage, path: string, method: string) {
@@ -96,7 +108,7 @@ export class ActionNode extends FunctionNode {
         this.addOpenPageAction(state, key)
         this.addClosePageAction(state, key)
       } else {
-        const { path, method } = operation as ITagPageAction
+        const { path, method, parameters } = operation as ITagPageAction
         switch (key) {
           case 'export':
             this.addExportAction(state, path, method)
@@ -116,7 +128,7 @@ export class ActionNode extends FunctionNode {
             this.addSortAction(state, operation as ITagPageMultiAction)
             break
           default:
-            this.addDirectAction(state, path, method, key, currentPage)
+            this.addDirectAction(state, path, method, key, currentPage, parameters)
         }
       }
     }
@@ -181,13 +193,20 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addDirectAction(state: BasePage, path: string, method: string, key: string, currentPage: string) {
+  addDirectAction(state: BasePage, path: string, method: string, key: string, currentPage: string, parameters?: any) {
+    let params = ''
+    if (parameters) {
+      Object.keys(parameters).forEach(key => {
+        params += `${params}&${key}=${parameters[key]}`
+      })
+      params = `?${params.substring(1)}`
+    }
     switch (method) {
       case 'delete':
         state.actions![key] = [
           {
             name: 'arkfbp/flows/update',
-            url: path,
+            url: `${path}${params}`,
             method
           },
           'fetch'
@@ -197,7 +216,7 @@ export class ActionNode extends FunctionNode {
         state.actions![key] = [
           {
             name: 'arkfbp/flows/update',
-            url: path,
+            url: `${path}${params}`,
             method
           }
         ]
@@ -211,7 +230,7 @@ export class ActionNode extends FunctionNode {
           },
           {
             name: 'arkfbp/flows/update',
-            url: path,
+            url: `${path}${params}`,
             method,
             request: mapping,
             required

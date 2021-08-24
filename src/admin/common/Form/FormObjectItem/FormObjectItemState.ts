@@ -5,6 +5,11 @@ import Vue from 'vue'
 export default class FormObjectItemState implements FormState {
   items?:{[prop:string]:FormItemState}
   isAddItem?: boolean
+  data?: any
+  init?: {
+    path: string
+    method: string
+  }
   
   public get value() {
     return this.getValue(this.items)
@@ -19,12 +24,13 @@ export default class FormObjectItemState implements FormState {
     if (!this.items) return data
     for (const prop in items) {
       const item = items[prop]
-      data[item.prop] = item.type === 'FormObjectItem' ? this.getValue(item.state.items) : item.state.value || ''
+      data[item.prop] = item.type === 'FormObjectItem' ? this.getValue(item.state.items) : item.state.value
     }
     return data
   }
 
   private setValue(value: Object | string, items?: { [prop: string]: FormItemState}) {
+    this.data = value
     if (!items) return
     const keys = Object.keys(items)
     const valueKeys = Object.keys(value)

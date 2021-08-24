@@ -5,9 +5,8 @@ import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
-import { runFlowByFile } from '@/arkfbp'
 
-export default async function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false) {
+export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false) {
   const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -35,12 +34,12 @@ export default async function generateForm(schema: ISchema, showReadOnly: boolea
   } else {
     const formState:FormState = {}
     formPageState.form = formState
-    formState.items = await getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
+    formState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
   }
   return formPageState
 }
 
-async function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
+function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
   const tempItems:{[prop:string]:FormItemState} = {}
   const requiredSchema = schema.required
   for (const prop in schema.properties) {
@@ -49,13 +48,13 @@ async function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteO
     }
     const propSchema = schema.properties[prop]
     const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = await createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
+    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-async function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean) {
+function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean) {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
@@ -74,7 +73,7 @@ async function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly
   } else if (schema.type === 'boolean') {
     item = createBooleanItem(prop, schema, disabled, required)
   } else if (schema.type === 'object') {
-    item = await createObjectItem(prop, schema, showReadOnly, showWriteOnly, disabled)
+    item = createObjectItem(prop, schema, showReadOnly, showWriteOnly, disabled)
   } else if (schema.allOf?.length || schema.oneOf?.length) { 
     item = createCombineItem(prop, schema, showReadOnly, showWriteOnly, disabled, required)
   }
@@ -211,14 +210,13 @@ function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, req
   }
 }
 
-async function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean) {
+function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, showWriteOnly: boolean, disabled: boolean) {
   const itemState = new FormObjectItemState()
   if (schema.init) {
-    const { path, method } = schema.init
-    const items = await runFlowByFile('flows/common/customFields/init', { url: path, method: method.toUpperCase() })
-    itemState.items = items
+    itemState.items = {}
+    Object.assign(itemState, { init: schema.init })
   } else {
-    itemState.items = await getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
+    itemState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
     Object.assign(itemState, { isAddItem: schema.format === 'custom_dict' })
   }
   return {

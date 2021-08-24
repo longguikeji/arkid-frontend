@@ -59,6 +59,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import Form from '@/admin/common/Form/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 import FormObjectItemState from './FormObjectItemState'
+import { runFlowByFile } from '@/arkfbp'
 
 @Component({
   name: 'FormObjectItem',
@@ -73,6 +74,13 @@ export default class extends Mixins(BaseVue) {
 
   get state(): FormObjectItemState {
     return this.$state as FormObjectItemState
+  }
+
+  async created() {
+    if (this.state.init) {
+      const { path, method } = this.state.init
+      await runFlowByFile('flows/common/customFields/init', { url: path, method: method.toUpperCase(), com: this })
+    }
   }
 
   add() {

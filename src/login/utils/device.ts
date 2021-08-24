@@ -1,5 +1,4 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
-import ip from 'ip'
 import Parser from 'ua-parser-js'
 import macaddress from 'macaddress'
 

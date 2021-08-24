@@ -47,7 +47,7 @@ export async function runFlowByActionName(com: BaseVue, actionName: string, page
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
 async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
   const { name: filePath, ...args } = flow
-  const data = com.state.node || com.state.data
+  const data = com.state.node || com.state.data  
   if (data) FlowModule.addPageData({ page: currentPage, data })
   const { url, method, response, target, required, path } = args
   const inputs = {

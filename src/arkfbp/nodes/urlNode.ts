@@ -45,7 +45,7 @@ export class UrlNode extends FunctionNode {
       let name = this._pages[0]
       for (let i = 0, len = this._pages.length; i < len; i++) {
         if (!this._url.includes('{')) break
-        this._url = this._url.slice(0, this._url.indexOf('{')) + this._data[name]?.uuid + this._url.slice(this._url.indexOf('}') + 1)
+        if (this._data[name]) this._url = this._url.slice(0, this._url.indexOf('{')) + this._data[name]?.uuid + this._url.slice(this._url.indexOf('}') + 1)
         name += `.${this._pages[i+1]}`
       }
     }
@@ -53,7 +53,7 @@ export class UrlNode extends FunctionNode {
 
   async run() {
     this.initStatement()
-    if (this.condition()) {
+    while (this.condition()) {
       this.process()
     }
     this.inputs.url = this._url

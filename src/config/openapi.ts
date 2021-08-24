@@ -80,6 +80,7 @@ export interface ITagPage {
 export interface ITagPageAction {
   path: string
   method: string
+  parameters?: any
 }
 
 export interface ITagUpdateOperation {

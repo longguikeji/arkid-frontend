@@ -10,7 +10,7 @@ export class SelectNode extends FunctionNode {
     const data = state.table ? state.table.row : state.tree ? state.tree.node : null
     if (!data || !data[field]) return
     const item = {
-      label: data.label || data.name || '',
+      label: data.label || data.name || data.username || '',
       value: data[field],
       action: 'delete'
     }
