@@ -28,20 +28,21 @@ export class UrlNode extends FunctionNode {
   }
 
   process() {
-    const paramKey = this._url.slice(this._url.indexOf('{') + 1, this._url.indexOf('}'))
-    let value: string | undefined = undefined
-    switch (paramKey) {
-      case 'parent_lookup_user':
-        value = UserModule.uuid
-        break
-      case 'token':
-        value = getToken() || ''
-        break
-      default:
-        value = TenantModule.currentTenant.uuid || paramKey
+    if (this._url.includes('parent_lookup_user')) {
+      this._url = this._url.replace(/\{parent_lookup_user\}/g, UserModule.uuid)
     }
-    if (value !== paramKey) this._url = this._url.slice(0, this._url.indexOf('{')) + value + this._url.slice(this._url.indexOf('}') + 1)
-    if (this._page && this._page !== 'desktop' && !isEmpty(this._data)) {
+    if (this._url.includes('parent_lookup_tenant') || this._url.includes('tenant_uuid')) {
+      const uuid = TenantModule.currentTenant.uuid
+      if (!uuid) throw new Error('not tenant uuid')
+      this._url = this._url.replace(/(\{parent_lookup_tenant\}|\{tenant_uuid\})/g, uuid)
+    }
+    if (this._url.includes('token')) {
+      const token = getToken()
+      if (!token) throw new Error('not token')
+      this._url = this._url.replace(/\{token\}/, token)
+    }
+    if (!this._url.includes('{')) return
+    if (!isEmpty(this._data)) {
       let name = this._pages[0]
       for (let i = 0, len = this._pages.length; i < len; i++) {
         if (!this._url.includes('{')) break

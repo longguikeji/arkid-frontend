@@ -45,14 +45,6 @@ export function getContent(path: string, method: string) {
   return content
 }
 
-export function getApiRoles(path: string, method: string): string[] {
-  const operation = OpenAPI.instance.getOperation(path, method)
-  if (operation.roles) {
-    return operation.roles
-  }
-  return []
-}
-
 export function isImportInputList(items: FormItemsState, inputListItems: FormItemState[]){
   Object.keys(items).forEach((key, index) => {
     const item = items[key]

@@ -16,6 +16,7 @@ export default class OpenAPI {
   }
 
   public getOperation(path:string, method:string):IOperation {
+    if (path.includes('?')) path = path.substring(0, path.indexOf('?'))
     return this.config && this.config.paths && this.config.paths[path] && this.config.paths[path][method]
   }
 
