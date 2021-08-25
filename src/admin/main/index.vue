@@ -61,7 +61,9 @@ export default class extends Vue {
   async created() {
     if (this.page) {
       await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
-        await AdminModule.setAdmin(result)
+        if (Object.keys(result).length > 0) {
+          await AdminModule.setAdmin(result)
+        }
       })
     }
   }

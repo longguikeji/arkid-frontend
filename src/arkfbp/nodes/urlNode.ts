@@ -11,12 +11,14 @@ export class UrlNode extends FunctionNode {
   private _pages: string[] = []
   private _page: string = ''
   private _data: any = null
+  private _uuid: string = ''
 
   initStatement() {
     const { url, page } = this.inputs
     if (!url) throw new Error('is a valid url')
     this._url = url
     this._data = FlowModule.data
+    this._uuid = TenantModule.currentTenant.uuid || ''
     if (page) {
       this._pages = page.split('.')
       this._page = page
@@ -32,9 +34,10 @@ export class UrlNode extends FunctionNode {
       this._url = this._url.replace(/\{parent_lookup_user\}/g, UserModule.uuid)
     }
     if (this._url.includes('parent_lookup_tenant') || this._url.includes('tenant_uuid')) {
-      const uuid = TenantModule.currentTenant.uuid
-      if (!uuid) throw new Error('not tenant uuid')
-      this._url = this._url.replace(/(\{parent_lookup_tenant\}|\{tenant_uuid\})/g, uuid)
+      this._url = this._url.replace(/(\{parent_lookup_tenant\}|\{tenant_uuid\})/g, this._uuid)
+    }
+    if (this._page === 'tenant_config') {
+      this._url = this._url.replace('{id}', this._uuid)
     }
     if (this._url.includes('token')) {
       const token = getToken()
