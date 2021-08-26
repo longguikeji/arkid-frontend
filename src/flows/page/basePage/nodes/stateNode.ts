@@ -1,7 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction } from '@/config/openapi'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { getSchemaByPath } from '@/utils/schema'
+import { getSchemaByPath, isImportInputList } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
@@ -32,6 +32,7 @@ export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
     await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
+    if (initContent.filter) await this.initPageFilterState(state[currentPage], initContent.filter, currentPage, options)
     await this.initPageOperationState(state[currentPage], initContent, currentPage)
     return this.inputs
   }
@@ -43,7 +44,7 @@ export class StateNode extends FunctionNode {
     state.card!.title = options?.description || ''
     switch (type) {
       case 'TablePage':
-        this.initTableMainState(state, schema)
+        this.initTableMainState(state, schema, options)
         break
       case 'FormPage':
         await this.initFormMainState(state, schema, currentPage, options)
@@ -51,7 +52,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  initTableMainState(state: BasePage, schema: ISchema) {
+  initTableMainState(state: BasePage, schema: ISchema, options?: BasePageOptions) {
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const columnState: TableColumnState = {
@@ -60,6 +61,7 @@ export class StateNode extends FunctionNode {
       }
       state.table?.columns?.push(columnState)
     }
+    state.table!.isExpand = options?.isExpandTableColumn || false
   }
 
   async initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
@@ -71,15 +73,48 @@ export class StateNode extends FunctionNode {
       if (!state.form) state.form = { items: {}, inline: false }
       const items = form.items
       state.form.items = items
-      for (const prop in items) {
-        const item = items[prop]
-        if (item.type === 'InputList') {
-          await this.initInputList(state, currentPage, item)
+      if (items) {
+        const inputListItems = []
+        isImportInputList(items, inputListItems)
+        if (inputListItems.length) {
+          inputListItems.forEach(async (item) => {
+            await this.initInputList(state, currentPage, item)
+          })
         }
       }
     } else if (forms) {
       state.forms = forms
       state.select = select
+    }
+  }
+
+  async initPageFilterState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
+    const { path, method } = operation
+    const schema = getSchemaByPath(path, method)
+    const { form } = generateForm(schema, false, true, false)
+    if (form) {
+      for (const key in form.items) {
+        let item = form.items[key]
+        form.items[key] = {
+          ...item,
+          isSetWidth: false
+        }
+      }
+      pageState.state.filter = {
+        inline: true,
+        size: 'mini',
+        items: Object.assign(form.items, {
+          action: {
+            type: 'Button',
+            isSetWidth: false,
+            state: {
+              label: '搜索',
+              type: 'primary',
+              action: 'fetch'
+            }
+          }
+        })
+      }
     }
   }
 
@@ -93,9 +128,9 @@ export class StateNode extends FunctionNode {
       const operation = operations[key]
       let button: ButtonState | null = null
       if ((operation as ITagPageMapping).tag) {
-        const tag = (operation as ITagPageMapping).tag
+        const { tag, description } = operation as ITagPageMapping
         await this.initAppointedPage(state, tag, key)
-        button = this.generateButtonState(key, tag, type, true)
+        button = this.generateButtonState(key, tag, type, true, description)
       } else {
         switch (key) {
           case 'import':
@@ -200,11 +235,11 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean): ButtonState | null {
+  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean, description?: string): ButtonState | null {
     const hp = hasPermission(currentPage)
     if (!hp) return null
     return {
-      label: BUTTON_LABEL[key],
+      label: description || BUTTON_LABEL[key],
       action: isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key,
       type: pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' ),
       disabled: key === 'export' ? true : false,

@@ -1,9 +1,9 @@
 import { runWorkflowByClass } from 'arkfbp/lib/flow'
 import { stateFilter } from '@/utils/flow'
-import getUrl from '@/utils/url'
 import { FlowModule } from '@/store/modules/flow'
 import { isEmptyObject } from '@/utils/common'
 import BaseVue from '@/admin/base/BaseVue'
+import { getPageNameByPath } from '@/utils/state'
 
 export interface IFlow {
   name: string
@@ -14,14 +14,11 @@ export interface IFlow {
   target?: string // 配置jump时跳转的目标页面
   path?: string // 用于组件之间的指向
   required?: any // 用于验证
-  data?: any
-  parent?: string
 }
 
-// 根据某个按钮处的 action 配置项（字符串或函数格式--函数格式在BaseVue.ts中直接执行）
-// 查找当前 page-state 的 actions 中的以 actionName 为 key 的配置项内容
-// 并逐一执行其中的各个流内容
-// name某个页面的名称
+// actionName 操作名称，为了执行当前 actions 中的该动作
+// pageName 页面名称，为了查找某个页面的state选项，以便执行其中的actions内容
+// previous 上一个流操作的结果，有时可能在下一个流操作中使用到
 export async function runFlowByActionName(com: BaseVue, actionName: string, pageName?: string) {
   if (actionName.includes('.')) {
     const index = actionName.lastIndexOf('.')
@@ -50,26 +47,28 @@ export async function runFlowByActionName(com: BaseVue, actionName: string, page
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
 async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
   const { name: filePath, ...args } = flow
-  const data = com.state.selectedData || com.state.data
+  const data = com.state.node || com.state.data  
   if (data) FlowModule.addPageData({ page: currentPage, data })
+  const { url, method, response, target, required, path } = args
   const inputs = {
-    url: args.url ? getUrl(args.url, currentPage) : undefined,
-    method: args.method?.toUpperCase(),
+    url: url,
+    method: method?.toUpperCase(),
     params: {},
     client: state,
-    clientServer: args.response,
-    target: args.target,
-    path: args.path,
-    com: com,
-    required: args.required,
-    data: data
+    clientServer: response,
+    target,
+    com,
+    required,
+    path,
+    data,
+    page: currentPage
   }
   // 对 request 请求参数进行解析处理
   if (args.request && !isEmptyObject(args.request)) {
     const mapping = stateMappingProxy(state, args.request)
     inputs.params = parseStateMapping(state, mapping)
   }
-  await runFlowByFile(filePath, inputs)
+  return await runFlowByFile(filePath, inputs)
 }
 
 // 使用 arkfbp-javascript 执行配置中的流内容 
@@ -150,16 +149,10 @@ function getStateByStringConfig(state: any, str: string) {
 
 function getCurrentPageState(com: BaseVue, name?: string) {
   let temp = com.$store.state
-  let path = com.path.substring(0, com.path.indexOf('.state'))
-  path = `${path.replace(/[\[]/g, '.').replace(/[\]]/g, '')}`
-  const keys = path.split('.')
+  const path = com.path
+  const pageName = name || getPageNameByPath(path)
+  const keys = path.split('.')[1].includes('[') ? path.replace(/[\[]/g, '.').replace(/[\]]/g, '').split('.') : path.split('.')
   temp = temp[keys[0]]
   temp = temp[keys[1]]
-  if (name) {
-    temp = temp[name]
-  } else {
-    const pageKeys = keys.filter((_, index) => index > 1)
-    temp = temp[pageKeys.join('.')]
-  }
-  return temp.state
+  return temp[pageName].state
 }

@@ -1,13 +1,19 @@
 import TableColumnState from './TableColumn/TableColumnState'
-import SpecialCellState from './SpecialCellState'
 import { BaseState } from '@/admin/base/BaseVue'
 
+export interface SelectionState {
+  values: any[],
+  default?: string[],
+  action?: string | Function,
+  width?: string
+}
+
 export default interface TableState extends BaseState {
-  columns?: Array<TableColumnState>
-  selection?: SpecialCellState
-  selectAction?: Function | string
-  isSingle?: boolean 
-  index?: SpecialCellState
+  columns?: Array<TableColumnState> // 表格的columns内容
+  selection?: SelectionState // 是否展示多选列，以及其中的信息
+  isExpand?: boolean // 是否可以展开table-column
+  index?: boolean // 是否展示索引列
+  indexWidth?: string // 索引列的宽度 必须配合 index 为 true 使用
   data?: Array<any> //  显示的数据  array — —
   height?: number|string //  Table 的高度，默认为自动高度。如果 height 为 number 类型，单位 px；如果 height 为 string 类型，则这个高度会设置为 Table 的 style.height 的值，Table 的高度会受控于外部样式。  string/number  —  —
   maxHeight?: string|number //  Table 的最大高度。合法的值为数字或者单位为 px 的高度。  string/number  —  —
@@ -20,6 +26,8 @@ export default interface TableState extends BaseState {
   currentRowKey?: string|number //  当前行的 key，只写属性  String,Number  —  —
   rowClassName?: Function|string //  行的 className 的回调方法，也可以使用字符串为所有行设置一个固定的 className。  Function({row, rowIndex})/String  —  —
   rowStyle?: Function //  行的 style 的回调方法，也可以使用一个固定的 Object 为所有行设置一样的 Style。  Function({row, rowIndex})/Object  —  —
+  rowClickAction?: string | Function // 点击表格是的触发事件
+  row?: any // 存放列表某行数据内容
   cellClassName?: Function|string //  单元格的 className 的回调方法，也可以使用字符串为所有单元格设置一个固定的 className。  Function({row, column, rowIndex, columnIndex})/String  —  —
   cellStyle?: Function|object //  单元格的 style 的回调方法，也可以使用一个固定的 Object 为所有单元格设置一样的 Style。  Function({row, column, rowIndex, columnIndex})/Object  —  —
   headerRowClassName?: Function|string //  表头行的 className 的回调方法，也可以使用字符串为所有表头行设置一个固定的 className。  Function({row, rowIndex})/String  —  —

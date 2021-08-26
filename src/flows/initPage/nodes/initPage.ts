@@ -5,12 +5,14 @@ import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
 const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
+const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
 
 export interface BasePageOptions {
   description?: string
   showReadOnly?: boolean
   showWriteOnly?: boolean
   disabled?: boolean
+  isExpandTableColumn?: boolean
 }
 
 export class InitPage extends FunctionNode {
@@ -36,46 +38,59 @@ export class InitPage extends FunctionNode {
     const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
     if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
     if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
+    if (EXPAND_TABLE_COLUMN.includes(currentPage)) options.isExpandTableColumn = true
     let flow = 'flows/page/basePage'
     if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
     await runFlowByFile(flow, { state, initContent, currentPage, options })
   }
 
   async runCustomPageFlow(state: any, currentPage: string) {
-    let curstomPageFlow: string = ''
+    let customFlow: string = ''
     switch (currentPage) {
       case 'app':
-        curstomPageFlow = 'flows/custom/appManager/authPageBtn'
+        customFlow = 'flows/custom/appManager/authPageBtn'
         break
       case 'group':
-        curstomPageFlow = 'flows/custom/group/group'
+        customFlow = 'flows/custom/group/group'
         break
       case 'group_user':
-        curstomPageFlow = 'flows/custom/group/groupUser'
+        customFlow = 'flows/custom/group/groupUser'
         break
       case 'maketplace':
-        curstomPageFlow = 'flows/custom/maketplace/initFilter'
+        customFlow = 'flows/custom/maketplace/initFilter'
         break
       case 'third_part_account':
-        curstomPageFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
+        customFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
         break
       case 'login_register_config':
-        curstomPageFlow = 'flows/custom/loginRegisterConfig/addAction'
+        customFlow = 'flows/custom/loginRegisterConfig/addAction'
         break
       case 'login_register_config.update':
-        curstomPageFlow = 'flows/custom/loginRegisterConfig/options'
+        customFlow = 'flows/custom/loginRegisterConfig/options'
         break
       case 'password':
-        curstomPageFlow = 'flows/custom/password/addAction'
+        customFlow = 'flows/custom/password/addAction'
         break
       case 'tenant_config':
-        curstomPageFlow = 'flows/custom/tenant/deleteTenant'
+        customFlow = 'flows/custom/tenant/deleteTenant'
         break
       case 'extension':
       case 'extension.create':
       case 'extension.update':
-        curstomPageFlow = 'flows/custom/extension/addAction'
+        customFlow = 'flows/custom/extension/addAction'
+        break
+      case 'device':
+        customFlow = 'flows/custom/device'
+        break
+      case 'contacts_group':
+        customFlow = 'flows/custom/contacts/group'
+        break
+      case 'contacts_user':
+        customFlow = 'flows/custom/contacts/user'
+        break
+      case 'contacts_switch.update':
+        customFlow = 'flows/custom/contacts/switch'
     }
-    if (curstomPageFlow !== '') await runFlowByFile(curstomPageFlow, { state, page: currentPage })
+    if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }
 }

@@ -103,7 +103,7 @@ export class Page {
   table: TableState = {
     columns: [],
     data: [],
-    selection: {}
+    selection: undefined
   }
   form: FormState = {
     items: {},

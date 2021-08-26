@@ -1,14 +1,12 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { proxyClientServer, stateFilter } from '@/utils/flow'
+import { setOptions } from '@/utils/options'
+import { runFlowByFile } from '@/arkfbp'
 
-// 客户端响应节点
 export class ClientResponseNode extends FunctionNode {
   async run() {
-    // client 代表当前页面的 state
-    // clientServer 代表需要进行响应的数据映射关系
-    // data 代表刚刚请求的返回的数据内容 -- 只有fetch时才存在
     if (!this.$state.fetch().inputs) { return null }
-    let { client, clientServer, data: clientDepData } = this.$state.fetch().inputs
+    let { client, clientServer, data: depData } = this.$state.fetch().inputs
     let data = this.inputs
     clientServer = proxyClientServer(clientServer, data)
     if (!clientServer || !client) {
@@ -50,13 +48,15 @@ export class ClientResponseNode extends FunctionNode {
           if (lastKey === 'data') { value = tempS }
         }
         tempC[lastKey] = lastKey === 'disabled' ? !value : value
+        if (tempC.options && tempC.page) setOptions(tempC)
       } else {
         if (lastKey === 'data') {
-          tempC[lastKey] = clientDepData
+          tempC[lastKey] = depData
         } else {
           tempC[lastKey] = clientServer[key]
         }
       }
     }
+    return this.inputs
   }
 }

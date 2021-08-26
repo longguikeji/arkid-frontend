@@ -1,4 +1,6 @@
 export default interface ListItemState {
-  label: string | number;
-  value: string | number
+  label: string
+  value: string
+  action?: string | Function
+  index?: number
 }

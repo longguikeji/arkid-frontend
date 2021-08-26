@@ -10,7 +10,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
-import { runFlowByFile } from '@/arkfbp/index'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { removeToken } from '@/utils/auth'
 

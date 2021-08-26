@@ -16,7 +16,8 @@ export default class OpenAPI {
   }
 
   public getOperation(path:string, method:string):IOperation {
-    return this.config?.paths[path][method]
+    if (path.includes('?')) path = path.substring(0, path.indexOf('?'))
+    return this.config && this.config.paths && this.config.paths[path] && this.config.paths[path][method]
   }
 
   public getSchemaByRef(ref:string):ISchema {
@@ -80,6 +81,7 @@ export interface ITagPage {
 export interface ITagPageAction {
   path: string
   method: string
+  parameters?: any
 }
 
 export interface ITagUpdateOperation {
@@ -93,6 +95,7 @@ export interface ITagPageMultiAction {
 
 export interface ITagPageMapping {
   tag: string
+  description?: string
 }
 
 export interface ITagPageOperation {
@@ -205,6 +208,8 @@ export interface IBaseSchema {
   field?: string
   page?: string
   hint?: string
+  link?: string
+  init?: { path: string, method: string }
 }
 
 export interface ISchema extends IBaseSchema {
@@ -311,5 +316,6 @@ export interface IOpenAPIRouter {
   path: string
   icon: string
   page?: string
+  url?: string
   children?: IOpenAPIRouter[]
 }

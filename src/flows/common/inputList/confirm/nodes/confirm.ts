@@ -22,6 +22,5 @@ export class Confirm extends FunctionNode {
     } else {
       parentState.value = null
     }
-    return this.inputs
   }
 }

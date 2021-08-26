@@ -1,4 +1,6 @@
-import OpenAPI, { ISchema, ITagPage } from '@/config/openapi'
+import OpenAPI, { ISchema } from '@/config/openapi'
+import { FormItemsState } from '@/admin/common/Form/FormState'
+import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
 export function getSchemaByContent(content: { [requestBodyType: string]: {schema:ISchema}}):ISchema {
   let type = ''
@@ -43,10 +45,13 @@ export function getContent(path: string, method: string) {
   return content
 }
 
-export function getApiRoles(path: string, method: string): string[] {
-  const operation = OpenAPI.instance.getOperation(path, method)
-  if (operation.roles) {
-    return operation.roles
-  }
-  return []
+export function isImportInputList(items: FormItemsState, inputListItems: FormItemState[]){
+  Object.keys(items).forEach((key, index) => {
+    const item = items[key]
+    if (item.type === 'FormObjectItem') {
+      isImportInputList(item.state.items, inputListItems)
+    } else if (item.type === 'InputList') {
+      inputListItems.push(item)
+    }
+  })
 }
