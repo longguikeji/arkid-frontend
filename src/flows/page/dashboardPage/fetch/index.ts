@@ -1,11 +1,12 @@
-
 import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { UrlNode } from '@/arkfbp/nodes/urlNode'
 import { Fetch } from './nodes/fetch'
+import { Position } from './nodes/position'
 import { ChangeState } from './nodes/changeState'
+
 export class Main extends Flow {
   createNodes() {
     return [{
@@ -19,16 +20,18 @@ export class Main extends Flow {
     }, {
       cls: Fetch,
       id: 'fetch',
-      next: 'change'
+      next: 'position'
+    }, {
+      cls: Position,
+      id: 'position',
+      next: 'change-dashboard-item'
     }, {
       cls: ChangeState,
-      id: 'change',
+      id: 'change-dashboard-item',
       next: 'stop'
     }, {
       cls: StopNode,
-      id: 'stop',
-      x: 455,
-      y: 70
+      id: 'stop'
     }]
   }
 

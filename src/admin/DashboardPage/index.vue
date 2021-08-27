@@ -39,6 +39,7 @@ import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 import { GlobalValueModule } from '@/store/modules/global-value'
 import { getToken } from '@/utils/auth'
+import { runFlowByFile } from '@/arkfbp'
 
 // 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
@@ -50,7 +51,7 @@ import { getToken } from '@/utils/auth'
   }
 })
 export default class extends Mixins(BaseVue) {
-  private layout?: any[] = [] // 必须有初始值
+  private layout: any[] = [] // 必须有初始值
 
   get state(): DashboardPage {
     return this.$state as DashboardPage
@@ -70,12 +71,11 @@ export default class extends Mixins(BaseVue) {
 
   @Watch('items', { immediate: true })
   freshLayout() {
-    if (this.items === undefined) { return }
-    this.layout?.splice(0, this.layout.length)
+    if (!this.items) return
+    this.layout.splice(0, this.layout.length)
     for (let i = 0; i < this.items.length; i++) {
       const item = this.items[i]
-      if (item.position) { item.position.i = i }
-      this.layout?.push(item.position)
+      this.layout.push(item.position)
     }
     this.updateDesktopPage()
   }
@@ -85,14 +85,17 @@ export default class extends Mixins(BaseVue) {
     this.updateDesktopPage()
   }
 
-  resizedHandler(i:number, newH:number, newW:number) {
-    if (this.items) {
-      const item = this.items[i]
-      if (item.position) {
-        item.position.h = newH
-        item.position.w = newW
+  async resizedHandler(i:number, newH:number, newW:number) {
+    const item = this.items![i]
+    item.position!.h = newH
+    item.position!.w = newW
+    const items = this.items!.map((item: DashboardItemState) => {
+      return {
+        ...item.position,
+        uuid: item.state.uuid
       }
-    }
+    })
+    await runFlowByFile('flows/page/dashboardPage/adjust', { items })
   }
 
   updateDesktopPage() {
