@@ -210,6 +210,7 @@ export interface IBaseSchema {
   hint?: string
   link?: string
   init?: { path: string, method: string }
+  url?: string
 }
 
 export interface ISchema extends IBaseSchema {

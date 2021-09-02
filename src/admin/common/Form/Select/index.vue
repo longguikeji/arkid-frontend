@@ -8,6 +8,7 @@
       :disabled="state.disabled"
       :size="state.size"
       @change="changeSelectValue"
+      @visible-change="changeVisible"
     >
       <template v-if="state.type === 'group'">
         <el-option-group
@@ -50,6 +51,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import Tag from '@/admin/common/data/Tag/index.vue'
 import SelectState from './SelectState'
 import BaseVue from '@/admin/base/BaseVue'
+import { runFlowByFile } from '@/arkfbp'
 
 @Component({
   name: 'Select',
@@ -65,6 +67,12 @@ export default class extends Mixins(BaseVue) {
   async changeSelectValue() {
     if (this.state.action) {
       await this.runAction(this.state.action)
+    }
+  }
+
+  async changeVisible(val: boolean) {
+    if (val && this.state.url) {
+      await runFlowByFile('arkfbp/flows/options', { com: this, url: this.state.url })
     }
   }
 }
