@@ -42,7 +42,7 @@ export class Update extends AuthApiNode {
         showClose: true
       })
     }
-
+    
     return outputs
   }
 }

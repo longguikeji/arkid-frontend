@@ -135,17 +135,17 @@ export class StateNode extends FunctionNode {
         switch (key) {
           case 'import':
             addImportDialog(this.inputs.state, state, operation as ITagPageAction, currentPage)
-            button = this.generateButtonState(key, currentPage, type, true)
+            button = this.generateButtonState(key, currentPage, type, true, (operation as ITagPageAction).description)
             break
           case 'password':
             addPasswordDialog(this.inputs.state, state, operation as ITagPageAction, currentPage)
-            button = this.generateButtonState(key, currentPage, type, true)
+            button = this.generateButtonState(key, currentPage, type, true, (operation as ITagPageAction).description)
             break
           case 'sort':
             this.addSortButton(state, operation as ITagPageMultiAction)
             break
           default:
-            button = this.generateButtonState(key, currentPage, type, false)
+            button = this.generateButtonState(key, currentPage, type, false, (operation as ITagPageAction).description)
         }
       }
       if (!button) continue

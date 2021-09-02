@@ -15,21 +15,21 @@ export class ActionNode extends FunctionNode {
   }
 
   initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
-    const { path, method, parameters } = initAction
+    const { path, method } = initAction
     const { state, type } = pageState
     switch (type) {
       case 'TablePage':
-        this.initTablePageFetchAction(state, path, method, parameters)
+        this.initTablePageFetchAction(state, path, method)
         break
       case 'FormPage':
-        this.initFormPageFetchAction(state, path, method, parameters)
+        this.initFormPageFetchAction(state, path, method)
         break
       case 'TreePage':
         this.initTreePageFetchAction(state, path, method)
     }
   }
 
-  initTablePageFetchAction(state: BasePage, path: string, method: string, parameters?: any) {
+  initTablePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     const response = {
       'table.data': props.data,
@@ -47,16 +47,11 @@ export class ActionNode extends FunctionNode {
         action: 'fetch'
       }
     }
-    if (parameters) {
-      Object.keys(parameters).forEach(key => {
-        request[key] = parameters[key]
-      })
-    }
     this.setImportButtonDisabledProp(state, response, props.data)
     this.addFetchAction(state, path, method, response, request)
   }
 
-  initFormPageFetchAction(state: BasePage, path: string, method: string, parameters?: any) {
+  initFormPageFetchAction(state: BasePage, path: string, method: string) {
     const response = true
     let blank = false, flowName
     if (method !== 'get') {
@@ -64,15 +59,8 @@ export class ActionNode extends FunctionNode {
       flowName = 'arkfbp/flows/assign'
     }
     let { mapping } = getActionMapping(path, method, blank, response)
-    let request
-    if (parameters) {
-      request = {}
-      Object.keys(parameters).forEach(key => {
-        request[key] = parameters[key]
-      })
-    }
     mapping = Object.assign(mapping, { data: '' })
-    this.addFetchAction(state, path, method, mapping, request, flowName)
+    this.addFetchAction(state, path, method, mapping, undefined, flowName)
   }
 
   initTreePageFetchAction(state: BasePage, path: string, method: string) {
@@ -108,7 +96,7 @@ export class ActionNode extends FunctionNode {
         this.addOpenPageAction(state, key)
         this.addClosePageAction(state, key)
       } else {
-        const { path, method, parameters } = operation as ITagPageAction
+        const { path, method } = operation as ITagPageAction
         switch (key) {
           case 'export':
             this.addExportAction(state, path, method)
@@ -128,7 +116,7 @@ export class ActionNode extends FunctionNode {
             this.addSortAction(state, operation as ITagPageMultiAction)
             break
           default:
-            this.addDirectAction(state, path, method, key, currentPage, parameters)
+            this.addDirectAction(state, path, method, key, currentPage)
         }
       }
     }

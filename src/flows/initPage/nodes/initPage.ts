@@ -90,6 +90,9 @@ export class InitPage extends FunctionNode {
         break
       case 'contacts_switch.update':
         customFlow = 'flows/custom/contacts/switch'
+        break
+      case 'subuser':
+        customFlow = 'flows/custom/subuser/state'
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }
