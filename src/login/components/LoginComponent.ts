@@ -108,7 +108,7 @@ export default class LoginComponent extends Vue {
     }
   }
 
-  onPaste(e: Event, name: string) {
+  onCopy(e: Event, name: string) {
     if (name.includes('password')) {
       e.preventDefault()
       return false
