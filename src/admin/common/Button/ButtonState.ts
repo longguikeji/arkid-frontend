@@ -1,9 +1,8 @@
-
 import { BaseState } from '@/admin/base/BaseVue'
-import BadgeState from '../data/Badge/BadgeState'
+import TooltipState from '../Others/Tooltip/TooltipState'
 
 export default interface ButtonState extends BaseState {
-  label?: string
+  label?: string // 按钮文本
   size?: string // 尺寸  string  medium / small / mini —
   type?: string // 类型 string primary / success / warning / danger / info / text  —
   plain?: boolean // 是否朴素按钮 boolean — false
@@ -14,10 +13,10 @@ export default interface ButtonState extends BaseState {
   icon?: string // 图标类名 string — —
   autofocus?: boolean // 是否默认聚焦 boolean — false
   nativeType?: string // 原生 type 属性 string button / submit / reset button
-  value?: any // action时会传的参数
   action?: Function | string // flow name
-  badge?: BadgeState // 如果需要badge,添加badge对象即可
   data?: any // 绑定的一些其他所需数据
-  cloumn?: any //
-  hint?: string // 提示文本
+  hint?: string // 点击按钮后的提示文本 仅对danger/warning类型的按钮生效
+  name?: string // Button按钮的名称 具有唯一性 在判断是否需要禁用/是否隐藏等方面可以使用
+  tip?: TooltipState
+  isConfirm?: boolean
 }

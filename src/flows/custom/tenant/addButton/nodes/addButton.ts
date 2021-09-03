@@ -1,5 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+import { getButtonIcon, getButtonDefaultLabel } from '@/utils/button'
 
 export class AddButton extends FunctionNode {
 
@@ -10,9 +11,13 @@ export class AddButton extends FunctionNode {
     let buttons = pageState.state.card!.buttons
     if (!buttons) buttons = []
     buttons.push({
-      label: '退出登录',
       type: 'danger',
-      action: 'logout'
+      action: 'logout',
+      icon: getButtonIcon('logout'),
+      tip: {
+        content: getButtonDefaultLabel('logout'),
+      },
+      circle: true
     })
     pageState.state.actions!.logout = [
       {
@@ -29,9 +34,13 @@ export class AddButton extends FunctionNode {
         type: 'ButtonArray',
         state: [
           {
-            label: '切换租户',
             type: 'primary',
-            action: 'openSwitchTenantDialog'
+            action: 'openSwitchTenantDialog',
+            icon: getButtonIcon('switch'),
+            tip: {
+              content: getButtonDefaultLabel('switch')
+            },
+            circle: true
           }
         ]
       }

@@ -12,21 +12,8 @@ import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { addInputListDialog, addPasswordDialog, addImportDialog } from '@/utils/dialogs'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
-
-const BUTTON_LABEL = {
-  create: '创建',
-  import: '导入',
-  export: '导出',
-  update: '编辑',
-  delete: '删除',
-  retrieve: '查看',
-  password: '修改密码',
-  history: '历史记录',
-  provisioning: '同步配置',
-  mapping: '配置映射',
-  profile: '配置概述',
-  retry: '重发'
-}
+import { getButtonDefaultLabel, getButtonIcon } from '@/utils/button'
+import { TABLE_COLUMN_WIDTH } from '@/utils/table'
 
 export class StateNode extends FunctionNode {
   async run() {
@@ -40,6 +27,7 @@ export class StateNode extends FunctionNode {
   async initPageMainState(pageState: AdminComponentState, operation: ITagPageAction, currentPage: string, options?: BasePageOptions) {
     const { path, method } = operation
     const schema = getSchemaByPath(path, method)
+    if (!schema) return
     const { type, state } = pageState
     state.card!.title = options?.description || ''
     switch (type) {
@@ -53,11 +41,13 @@ export class StateNode extends FunctionNode {
   }
 
   initTableMainState(state: BasePage, schema: ISchema, options?: BasePageOptions) {
+    const name = state.name
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const columnState: TableColumnState = {
         label: iprop.title,
-        prop: prop
+        prop: prop,
+        width: name ? TABLE_COLUMN_WIDTH[name][prop] : undefined
       }
       state.table?.columns?.push(columnState)
     }
@@ -121,7 +111,7 @@ export class StateNode extends FunctionNode {
   async initPageOperationState(pageState: AdminComponentState, initContent: ITagPage, currentPage: string) {
     const { global, local } = initContent
     const { state, type } = pageState
-    const globalKeys = Object.keys(global || {})
+    const localKeys = Object.keys(local || {})
     const operations = Object.assign({}, global, local)
     for (const key in operations) {
       if (key === 'children') continue
@@ -149,7 +139,7 @@ export class StateNode extends FunctionNode {
         }
       }
       if (!button) continue
-      globalKeys.includes(key) ? this.addGlobalButton(state, type as string, button) : this.addLocalButton(state, type as string, button)
+      localKeys.includes(key) ? this.addLocalButton(state, type as string, button, localKeys.length) : this.addGlobalButton(state, type as string, button)
     }
   }
   
@@ -161,9 +151,9 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  addLocalButton(state: BasePage, type: string, button: ButtonState) {
+  addLocalButton(state: BasePage, type: string, button: ButtonState, amount: number) {
     if (type === 'TablePage') {
-      this.addTableLocalButton(state, button)
+      this.addTableLocalButton(state, button, amount)
     } else if (type === 'TreePage') {
       this.addTreeLocalButton(state, button)
     }
@@ -193,14 +183,17 @@ export class StateNode extends FunctionNode {
     state.table?.columns?.push(columnSort)
   }
 
-  addTableLocalButton(state: BasePage, button: ButtonState) {
+  addTableLocalButton(state: BasePage, button: ButtonState, amount: number) {
     const columns = state.table!.columns
     const len = columns?.length as number
+    const name = state.name
     if (columns![len - 1].prop !== 'actions') {
       state.table!.columns?.push(
         {
           prop: 'actions',
+          fixed: 'right',
           label: '操作',
+          width: name ? TABLE_COLUMN_WIDTH[name].actions : undefined,
           scope: {
             type: 'ButtonArray',
             state: []
@@ -235,15 +228,15 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean, description?: string): ButtonState | null {
-    const hp = hasPermission(currentPage)
-    if (!hp) return null
+  generateButtonState(key: string, currentPage: string, pageType?: string, isOpenPage?: boolean, description?: string, hint?: string): ButtonState | null {
+    if (!hasPermission(currentPage)) return null
+    const type = pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' )
+    const action = isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key
+    const label = description || getButtonDefaultLabel(key)
+    const disabled = key === 'export' ? true : false
     return {
-      label: description || BUTTON_LABEL[key],
-      action: isOpenPage ? `open${firstToUpperCase(key)}Dialog` : key,
-      type: pageType !== 'TreePage' ? ( key === 'delete' ? 'danger' : 'primary' ) : ( key === 'delete' || key === 'update' ? 'text' : 'primary' ),
-      disabled: key === 'export' ? true : false,
-      hint: currentPage === 'tenant_config' ? '删除后将彻底无法恢复' : undefined
+      icon: getButtonIcon(key), action, disabled, type, hint, circle: true,
+      tip: { content: label }
     }
   }
 

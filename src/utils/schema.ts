@@ -39,10 +39,13 @@ export function getSchemaByPath(path: string, method: string): ISchema {
 
 export function getContent(path: string, method: string) {
   const operation = OpenAPI.instance.getOperation(path, method)
-  if (!operation) { throw new Error('not exist operation in OpenAPI') }
-  const responseOrRequest = method.toLowerCase() === 'get' ? true : false
-  const content = responseOrRequest ? operation.responses[200].content : operation.requestBody.content
-  return content
+  if (!operation) {
+    return {}
+  } else {
+    const responseOrRequest = method.toLowerCase() === 'get' ? true : false
+    const content = responseOrRequest ? operation.responses[200].content : operation.requestBody.content
+    return content
+  }
 }
 
 export function isImportInputList(items: FormItemsState, inputListItems: FormItemState[]){

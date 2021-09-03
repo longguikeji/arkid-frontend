@@ -171,9 +171,13 @@
     },
     "buttons": [
       {
-        "label": "保存",
         "type": "primary",
-        "action": "save"
+        "action": "save",
+        "icon": "el-icon-folder-add",
+        "tip": {
+          "content": "保存"
+        },
+        "circle": true
       }
     ],
     "actions": {

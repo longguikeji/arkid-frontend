@@ -31,6 +31,7 @@ export class ActionNode extends FunctionNode {
 
   initTablePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
+    if (!props) return
     const response = {
       'table.data': props.data,
       data: props.data
@@ -65,6 +66,7 @@ export class ActionNode extends FunctionNode {
 
   initTreePageFetchAction(state: BasePage, path: string, method: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
+    if (!props) return
     const response = {
       'tree.data': props.data,
       data: props.data
@@ -264,6 +266,7 @@ export class ActionNode extends FunctionNode {
 
   getFetchActionPropsBySchema(path: string, method: string) {
     const content = getContent(path, method)
+    if (!content) return
     const type = Object.keys(content)[0]
     const responseSchema = content[type].schema
     let ref = responseSchema.$ref as string
