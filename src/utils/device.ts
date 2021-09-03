@@ -1,6 +1,5 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs'
 import Parser from 'ua-parser-js'
-import macaddress from 'macaddress'
 
 export const getDeviceId = async () => {
   const fpPromise = FingerprintJS.load()
@@ -36,13 +35,6 @@ export const getDevice = () => {
   }
 }
 
-export const getMacAddress = () => {
-  let macAddr: string = ''
-  macaddress.one((err: string, mac: string) => {
-    macAddr = mac
-  })
-  return macAddr
-}
 
 const getDeviceType = () => {
   let deviceType: string = ''

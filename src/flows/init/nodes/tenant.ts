@@ -1,26 +1,24 @@
 import { APINode } from "arkfbp/lib/apiNode"
 import { TenantModule } from '@/store/modules/tenant'
 import { getSlug } from '@/utils/url'
-import { GlobalValueModule } from '@/store/modules/global-value'
 import getBaseUrl from '@/utils/get-base-url'
 import { processUUId } from '@/utils/common'
 import { getUrlParamByName } from '@/utils/url'
+import { ConfigModule } from '@/store/modules/config'
 
-export class Tenant extends APINode {
+export class TenantNode extends APINode {
   async run() {
-    // 优先通过 slug 查找当前租户信息
     const slug = getSlug()
-    if (slug) {
-      this.url = '/api/v1/tenant/' + slug + '/slug/'
+    if (slug !== '') { // 优先通过短连接获取租户信息
+      this.url = `/api/v1/tenant/${slug}/slug/`
       this.method = 'GET'
-      const outputs = await super.run()
-      if (outputs.uuid) {
-        GlobalValueModule.setSlug(slug)
-        TenantModule.changeCurrentTenant(outputs)
+      const res = await super.run()
+      if (res.uuid) {
+        ConfigModule.setSlug(slug)
+        TenantModule.changeCurrentTenant(res)
       } else {
-        const originUrl = GlobalValueModule.originUrl
-        const newHref = originUrl + "/" + getBaseUrl()
-        window.location.href = newHref
+        const origin = ConfigModule.origin
+        window.location.href = `${origin}/${getBaseUrl()}`
       }
     } else {
       let tenantUUId = TenantModule.currentTenant.uuid || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')

@@ -32,7 +32,6 @@
     "jsonlint": "^1.6.3",
     "jszip": "^3.5.0",
     "lodash": "^4.17.20",
-    "macaddress": "^0.5.2",
     "mavon-editor": "^2.9.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
