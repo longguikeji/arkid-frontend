@@ -3,8 +3,8 @@
     class="dashboard-page"
     :layout.sync="layout"
     :col-num="8"
-    :is-draggable="true"
-    :is-resizable="true"
+    :is-draggable="isMove"
+    :is-resizable="isMove"
     :is-mirrored="false"
     :responsive="true"
     :vertical-compact="true"
@@ -37,7 +37,7 @@ import DashboardItemState from './DashboardItem/DashboardItemState'
 import VueGridLayout from 'vue-grid-layout'
 import BaseVue from '@/admin/base/BaseVue'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 import { getToken } from '@/utils/auth'
 import { runFlowByFile } from '@/arkfbp'
 
@@ -67,6 +67,10 @@ export default class extends Mixins(BaseVue) {
 
   get token() {
     return getToken()
+  }
+
+  get isMove() {
+    return ConfigModule.desktop.resize || false
   }
 
   @Watch('items', { immediate: true })

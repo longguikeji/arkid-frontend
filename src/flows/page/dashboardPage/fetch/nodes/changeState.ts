@@ -20,16 +20,16 @@ export class ChangeState extends FunctionNode {
           uuid: app.uuid
         },
         position: {
-          x: position.x !== undefined ? position.x : x,
-          y: position.y !== undefined ? position.y : y,
-          w: position.w !== undefined ? position.w : 2,
-          h: position.h !== undefined ? position.h : 1,
-          i: position.i !== undefined ? position.i : index
+          x: position ? position.x : x,
+          y: position ? position.y : y,
+          w: position ? position.w : 2,
+          h: position ? position.h : 1,
+          i: position ? position.i : index
         }
       }
       if (x >= 6) {
         x = 0
-      } else if (position.x === undefined) {
+      } else if (position?.x === undefined) {
         x = x + 2
       }
       client.items.push(item)

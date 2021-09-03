@@ -4,6 +4,7 @@ import Admin from '@/admin/main/index.vue'
 import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI, { ISpec, IOpenAPIRouter } from '@/config/openapi'
 import hasPermission from '@/utils/role'
+import { ConfigModule } from '@/store/modules/config'
 
 interface RouteMeta {
   title: string
@@ -36,9 +37,9 @@ function processOpenAPIRoutes(routes: IOpenAPIRouter[]): RouteConfig[] {
 }
 
 function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
-  const page = route.page
+  const { path, children, page } = route
+  if (path && hiddenRoute(path)) return undefined
   if (page && !hasPermission(page)) return undefined
-  const { path, children } = route
   const newRoute: RouteConfig = {
     path: '/' + path,
     name: path,
@@ -52,6 +53,10 @@ function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
         meta: getRouteMeta(route, true)
       }
     ]
+  }
+  if (path === 'desktop') {
+    newRoute.path = '/'
+    newRoute.redirect = '/desktop'
   }
   if (children) {
     const childRoutes = generateChildRoutes(children)
@@ -110,4 +115,14 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
     })
   }
   return roleRoutes
+}
+
+function hiddenRoute(path: string): boolean {
+  if (path === 'desktop') {
+    return !ConfigModule.desktop.visible
+  } else if (path === 'contacts') {
+    return !ConfigModule.contacts.isOpen
+  } else {
+    return false
+  }
 }

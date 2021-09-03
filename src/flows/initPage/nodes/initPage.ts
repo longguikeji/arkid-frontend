@@ -93,6 +93,15 @@ export class InitPage extends FunctionNode {
         break
       case 'subuser':
         customFlow = 'flows/custom/subuser/state'
+        break
+      case 'user_token_manage':
+        customFlow = 'flows/custom/user/token/state'
+        break
+      case 'profile':
+        customFlow = 'flows/custom/user/profile/state'
+        break
+      case 'profile.update':
+        customFlow = 'flows/custom/user/profile/edit'
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }

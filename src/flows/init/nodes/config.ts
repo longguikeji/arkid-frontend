@@ -144,7 +144,7 @@ export class ConfigNode extends AuthApiNode {
     if (data) {
       ConfigModule.setPasswordComplexify({
         regular: data.regular,
-        titles: data.title
+        title: data.title
       })
     }
   }

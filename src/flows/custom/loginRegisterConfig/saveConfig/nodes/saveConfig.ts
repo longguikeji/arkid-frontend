@@ -1,9 +1,15 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 
 export class SaveConfig extends FunctionNode {
   async run() {
-    const data = this.inputs.com.state.form?.items?.data?.state?.value
-    GlobalValueModule.setGlobalConfig(data)
+    const client = this.inputs.client
+    const data = client.form?.items?.data?.state?.data
+    if (data) {
+      ConfigModule.setTenantConfig({
+        closePageAutoLogout: data.close_page_auto_logout,
+        uploadFileFormat: data.upload_file_format
+      })
+    }
   }
 }

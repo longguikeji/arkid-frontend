@@ -26,7 +26,8 @@ interface ITenantConfig {
 }
 
 interface IPasswordComplexity {
-
+  regular: RegExp,
+  title: string
 }
 
 export interface IConfigState {
@@ -40,16 +41,16 @@ export interface IConfigState {
 
 @Module({ dynamic: true, store, name: 'config' })
 class Config extends VuexModule implements IConfigState {
-  public origin = ''
-  public slug = ''
-  public desktop = {
+  public origin: string = ''
+  public slug: string = ''
+  public desktop: IDesktopConfig = {
     visible: true,
     resize: true
   }
-  public contacts = {
+  public contacts: IContactsConfig = {
     isOpen: true
   }
-  public user = {
+  public user: IUserConfig = {
     isEditFields: [],
     isLoggingDevice: true,
     isLoggingIp: true,
@@ -57,11 +58,11 @@ class Config extends VuexModule implements IConfigState {
     isLookToken: true,
     isManualOverdueToken: true
   }
-  public tenant = {
+  public tenant: ITenantConfig = {
     closePageAutoLogout: false,
     uploadFileFormat: []
   }
-  public passwordComplexity = {
+  public passwordComplexity: IPasswordComplexity = {
     regular: DEFAULT_PASSWORD_RULE.regex,
     title: DEFAULT_PASSWORD_RULE.hint
   }

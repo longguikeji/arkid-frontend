@@ -1,6 +1,7 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import { getDevice, getDeviceId } from '@/utils/device'
 import { UserModule } from '@/store/modules/user'
+import { ConfigModule } from '@/store/modules/config'
 
 export class DeviceNode extends AuthApiNode {
 

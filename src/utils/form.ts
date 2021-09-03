@@ -133,6 +133,7 @@ function createArrayItem(prop: string, schema: ISchema, showReadOnly: boolean, s
         options: [],
         required: required,
         disabled: disabled && !schema.readOnly,
+        url: schema.url,
       }
     }
   }

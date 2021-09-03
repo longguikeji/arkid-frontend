@@ -1,11 +1,11 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 import { FlowModule } from '@/store/modules/flow'
 
 export class InputSlug extends FunctionNode {
   async run() {
     const inputSlugValue = this.inputs.params.slug
-    const slug = GlobalValueModule.slug
+    const slug = ConfigModule.slug
     if (slug !== inputSlugValue) {
       FlowModule.stopRunFlow()
       this.inputs.com.$message({

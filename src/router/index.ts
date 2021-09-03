@@ -57,28 +57,10 @@ export const menuRoutes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "login" */ '@/views/tenant/TenantManager.vue'),
     meta: { hidden: true, page: 'tenant' }
   },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/desktop',
-    children: [
-      {
-        path: 'desktop',
-        component: Admin,
-        name: 'desktop',
-        meta: {
-          title: '桌面',
-          icon: 'desktop',
-          affix: true,
-          page: 'desktop'
-        }
-      }
-    ]
-  },
   ...getDynamicRoutes(),
   {
     path: '*',
-    redirect: '/desktop',
+    redirect: '/mine/profile',
   }
 ]
 

@@ -1,5 +1,5 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 import { TenantModule } from '@/store/modules/tenant'
 
 export class UpdatePasswordComplexify extends AuthApiNode {
@@ -7,6 +7,6 @@ export class UpdatePasswordComplexify extends AuthApiNode {
     this.url = `/api/v1/tenant/${TenantModule.currentTenant.uuid}/current_password_complexity/`
     this.method = 'GET'
     const data = await super.run()
-    GlobalValueModule.setPasswordComplexify(data)
+    ConfigModule.setPasswordComplexify(data)
   }
 }

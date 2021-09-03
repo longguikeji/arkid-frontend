@@ -1,9 +1,9 @@
 import { ValidateModule } from '@/store/modules/validate'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 import { getRegexRule } from '@/login/utils/rules'
 
 const getUploadFileRegular = () => {
-  const formats = GlobalValueModule.uploadFileFormat
+  const formats = ConfigModule.tenant.uploadFileFormat
   const hint = `请输入${formats.join(',')}格式的文件`
   let formatStr = ''
   for (const format of formats) {
@@ -34,8 +34,8 @@ const RULE_HINT = {
 }
 
 export function getPasswordRule() {
-  const { regex, hint } = GlobalValueModule.passwordComplexity
-  return getRegexRule(hint || '', regex || new RegExp(''))
+  const { regular, title } = ConfigModule.passwordComplexity
+  return getRegexRule(title || '', regular || new RegExp(''))
 }
 
 // 根据OpenAPI返回的结果进行规则生成，后续可能需要进一步地更新

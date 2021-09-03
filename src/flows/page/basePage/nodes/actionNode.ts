@@ -9,7 +9,7 @@ import { firstToUpperCase } from '@/utils/common'
 export class ActionNode extends FunctionNode {
   async run() {
     const { state, initContent, currentPage } = this.inputs
-    this.initPageFetchAction(state[currentPage], initContent.init)
+    if (initContent.init) this.initPageFetchAction(state[currentPage], initContent.init)
     this.initPageOperationAction(state[currentPage], initContent, currentPage)
     return this.inputs
   }

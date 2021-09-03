@@ -31,7 +31,7 @@ const BUTTON_LABEL = {
 export class StateNode extends FunctionNode {
   async run() {
     const { initContent, state, currentPage, options } = this.inputs
-    await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
+    if (initContent.init) await this.initPageMainState(state[currentPage], initContent.init, currentPage, options)
     if (initContent.filter) await this.initPageFilterState(state[currentPage], initContent.filter, currentPage, options)
     await this.initPageOperationState(state[currentPage], initContent, currentPage)
     return this.inputs

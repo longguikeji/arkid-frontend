@@ -10,7 +10,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
-import { GlobalValueModule } from '@/store/modules/global-value'
+import { ConfigModule } from '@/store/modules/config'
 import { removeToken } from '@/utils/auth'
 
 @Component({
@@ -24,7 +24,7 @@ export default class extends Vue {
   private interval
 
   get closePageAutoLogout() {
-    return GlobalValueModule.closePageAutoLogout
+    return ConfigModule.tenant.closePageAutoLogout
   }
 
   mounted() {
