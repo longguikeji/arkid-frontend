@@ -61,7 +61,8 @@ export class InitFilter extends AuthApiNode {
             icon: getButtonIcon('search'),
             tip: {
               content: '插件搜索'
-            }
+            },
+            circle: true
           }
         }
       }

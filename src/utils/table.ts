@@ -19,23 +19,20 @@ export const TABLE_COLUMN_WIDTH = {
   'webhook': {
     'events': '600',
     'name': '200',
-    'secret': '200',
-    'url': '300',
     'uuid': '200',
+    'url': '300',
     'actions': '150'
   },
   'webhook.history': {
     'request': '600',
     'response': '600',
     'status': '100',
-    'uuid': '200',
     'actions': '150'
   },
   'password': {
     'is_apply': '90',
     'regular': '400',
     'title': '350',
-    'uuid': '200',
     'actions': '100'
   },
   'login_register_extension_config': {
@@ -51,7 +48,6 @@ export const TABLE_COLUMN_WIDTH = {
     'description': '300'
   },
   'permission_list': {
-    'uuid': '200',
     'name': '300'
   },
   'user': {
@@ -72,7 +68,6 @@ export const TABLE_COLUMN_WIDTH = {
     'name': '200',
     'schema': '300',
     'subject': '200',
-    'uuid': '200',
     'actions': '100'
   },
   'group_user': {
@@ -96,7 +91,6 @@ export const TABLE_COLUMN_WIDTH = {
     'ip': '300',
     'mac_address': '300',
     'system_version': '200',
-    'uuid': '200',
     'actions': '50'
   },
   'app': {
@@ -116,7 +110,6 @@ export const TABLE_COLUMN_WIDTH = {
     'matching_precedence': '300',
     'source_attribute': '200',
     'target_attribute': '200',
-    'uuid': '200',
     'actions': '100'
   },
   'app.provisioning.profile': {
@@ -126,12 +119,10 @@ export const TABLE_COLUMN_WIDTH = {
     'multi_value': '300',
     'name': '200',
     'type': '200',
-    'uuid': '200',
     'actions': '100'
   },
   'contacts_user_config': {
     'name': '200',
-    'uuid': '200',
     'actions': '50'
   },
   'user_table': {
@@ -157,7 +148,6 @@ export const TABLE_COLUMN_WIDTH = {
     'mobile': '200',
     'password': '200',
     'username': '200',
-    'uuid': '200',
     'actions': '150'
   },
   'contacts_user': {
@@ -172,7 +162,12 @@ export const TABLE_COLUMN_WIDTH = {
     'icon': '100',
     'name': '200',
     'slug': '200',
-    'uuid': '200',
     'actions': '150'
+  },
+  'system_password_manage': {
+    'is_apply': '90',
+    'regular': '400',
+    'title': '350',
+    'actions': '100'
   }
 }

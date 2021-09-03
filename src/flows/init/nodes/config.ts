@@ -137,7 +137,7 @@ export class ConfigNode extends AuthApiNode {
   }
 
   async setTenantPasswordComplexity(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/current_password_complexity/`
+    this.url = `/api/v1/config/current_password_complexity/?tenant=${tenantUUId}`
     this.method = 'GET'
     const outputs = await super.run()
     const data = outputs?.data
