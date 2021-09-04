@@ -33,35 +33,37 @@
           :model="form"
           :rules="rules"
         >
-          <el-form-item
-            v-for="(item, itemIndex) in cform.items"
-            :key="itemIndex"
-            :prop="item.name"
-            :class="{'authcode': isNeedImageCode(item)}"
-          >
-            <el-input
-              v-model="form[item.name]"
-              :type="item.type"
-              :name="item.name"
-              :placeholder="item.placeholder"
-              :show-password="item.type === 'password'"
-              @copy.native.capture="onCopy($event, item.name)"
+          <template v-for="(item, itemIndex) in cform.items">
+            <el-form-item
+              v-if="item.type !== 'hidden'"
+              :key="itemIndex"
+              :prop="item.name"
+              :class="{'authcode': isNeedImageCode(item)}"
             >
-              <login-button
-                v-if="item.append"
-                slot="append"
-                :config="item.append"
-                :action="btnClickHandler"
-                :is-change-delay="isChangeDelay"
-              />
-            </el-input>
-            <img
-              v-if="item.name === 'code' && !item.append"
-              :src="imageCodeSrc"
-              alt=""
-              @click="getImageCode"
-            >
-          </el-form-item>
+              <el-input
+                v-model="form[item.name]"
+                :type="item.type"
+                :name="item.name"
+                :placeholder="item.placeholder"
+                :show-password="item.type === 'password'"
+                @copy.native.capture="onCopy($event, item.name)"
+              >
+                <login-button
+                  v-if="item.append"
+                  slot="append"
+                  :config="item.append"
+                  :action="btnClickHandler"
+                  :is-change-delay="isChangeDelay"
+                />
+              </el-input>
+              <img
+                v-if="item.name === 'code' && !item.append"
+                :src="imageCodeSrc"
+                alt=""
+                @click="getImageCode"
+              >
+            </el-form-item>
+          </template>
           <login-button
             :long="true"
             :config="cform.submit"

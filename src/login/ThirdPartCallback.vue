@@ -44,7 +44,14 @@ export default class ThirdPartCallback extends Vue {
       if (response.next && typeof response.next === 'string') {
         LoginStore.NextUrl = response.next
       }
-      LoginStore.TenantUUID = response.tenant_uuid
+      const uuid = response.tenant_uuid
+      if (uuid) {
+        if (typeof uuid === 'string') {
+          LoginStore.TenantUUID = uuid
+        } else {
+          LoginStore.TenantUUID = uuid[0]
+        }
+      }
       this.$router.push({
         path: '/login',
         query: {

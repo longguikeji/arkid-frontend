@@ -23,6 +23,7 @@ export interface FormItemConfig {
   placeholder?:string
   name?:string
   append?:ButtonConfig
+  value?:string
 }
 
 export interface ButtonConfig {
