@@ -1,11 +1,10 @@
 import Vue from 'vue'
 import Router, { RouteConfig } from 'vue-router'
-import Layout from '@/layout/index.vue'
-import Admin from '@/admin/main/index.vue'
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { getDynamicRoutes } from './dynamic'
 import { getToken } from '@/utils/auth'
+import { ConfigModule } from '@/store/modules/config'
 
 /* Solve the problem of router repeatedly jumping to the same route */
 const originalPush = Router.prototype.push
@@ -57,11 +56,7 @@ export const menuRoutes: RouteConfig[] = [
     component: () => import(/* webpackChunkName: "login" */ '@/views/tenant/TenantManager.vue'),
     meta: { hidden: true, page: 'tenant' }
   },
-  ...getDynamicRoutes(),
-  {
-    path: '*',
-    redirect: '/mine/profile',
-  }
+  ...getDynamicRoutes()
 ]
 
 /**
@@ -88,20 +83,37 @@ router.beforeEach((to, from, next) => {
   const isLogin = getToken()  
   const tenantUUId = TenantModule.currentTenant.uuid
   const role = UserModule.role
+  const isVisibleDesktop = ConfigModule.desktop.visible
   let nextUrl = ''
   if (isLogin) {
     if (to.query.next) {
       next()
     } else if (to.path === '/login' || to.path === '/third_part_callback') {
-      nextUrl = '/'
+      if (!isVisibleDesktop) {
+        nextUrl = '/mine/profile'
+      } else {
+        nextUrl = '/desktop'
+      }
     } else if (to.path === '/tenant') {
       if (role === UserRole.User) {
-        nextUrl = from.path
+        if (!isVisibleDesktop) {
+          nextUrl = '/mine/profile'
+        } else {
+          nextUrl = '/desktop'
+        }
       } else {
         next()
       }
     } else if (!tenantUUId) {
       nextUrl = '/tenant'
+    } else if (to.path === '/desktop') {
+      if (!isVisibleDesktop) {
+        nextUrl = '/mine/profile'
+      } else {
+        nextUrl = ''
+      }
+    } else if (to.path === '/') {
+      nextUrl = '/desktop'
     }
   } else {
     if (tenantUUId) {
