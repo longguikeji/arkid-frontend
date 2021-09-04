@@ -33,4 +33,5 @@ export default interface SelectState extends BaseState {
   automaticDropdown?: boolean // 对于不可搜索的 Select，是否在输入框获得焦点后自动弹出选项菜单
   action?: string | Function // 下拉选项发生变化是出发的action动作
   required?: boolean // 是否必填
+  url?: string // 展示下拉框时去请求的url地址，以获取动态的select数据项
 }

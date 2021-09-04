@@ -1,10 +1,9 @@
 import Vue from 'vue'
-import { Prop, Component, Watch } from 'vue-property-decorator'
+import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
 import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
-import { getDevice, getDeviceId, getMacAddress } from '../utils/device'
 import http from '../http'
 import { error } from '@/constants/error'
 
@@ -109,7 +108,7 @@ export default class LoginComponent extends Vue {
     }
   }
 
-  onPaste(e: Event, name: string) {
+  onCopy(e: Event, name: string) {
     if (name.includes('password')) {
       e.preventDefault()
       return false
@@ -264,8 +263,6 @@ export default class LoginComponent extends Vue {
       } else if (data.data.token) {
         // set token
         LoginStore.token = data.data.token
-        // 保存登录设备
-        await this.recordDevice(data.data.user_uuid)
         // 绑定用户与第三方账号
         if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
           const parmas = {
@@ -297,18 +294,4 @@ export default class LoginComponent extends Vue {
     }
   }
 
-  async recordDevice(userUUId: string) {
-    const device = getDevice()
-    const deviceId = await getDeviceId()
-    const macAddress = getMacAddress()
-    await http.post('/api/v1/device/', {
-      device_type: device.type,
-      system_version: device.os,
-      browser_version: device.browser,
-      mac_address: macAddress,
-      device_number: '',
-      device_id: deviceId,
-      account_ids: [ userUUId ]
-    })
-  }
 }

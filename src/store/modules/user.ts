@@ -48,12 +48,12 @@ class User extends VuexModule implements IUserState {
   }
 
   @Mutation
-  setUserInfo(data: any) {
-    this.uuid = data.uuid
-    this.username = data.username
-    this.avatar = data.avatar
-    this.mobile = data.mobile
-    this.nickname = data.nickname
+  setUserInfo(user: IUserState) {
+    this.uuid = user.uuid
+    this.username = user.username
+    this.avatar = user.avatar || ''
+    this.mobile = user.mobile || ''
+    this.nickname = user.nickname || ''
   }
 
   @Mutation

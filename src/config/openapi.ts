@@ -81,7 +81,7 @@ export interface ITagPage {
 export interface ITagPageAction {
   path: string
   method: string
-  parameters?: any
+  description?: string
 }
 
 export interface ITagUpdateOperation {
@@ -210,6 +210,7 @@ export interface IBaseSchema {
   hint?: string
   link?: string
   init?: { path: string, method: string }
+  url?: string
 }
 
 export interface ISchema extends IBaseSchema {

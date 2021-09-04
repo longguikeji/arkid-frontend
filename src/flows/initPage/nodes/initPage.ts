@@ -4,7 +4,7 @@ import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
-const PAGE_DISABLED_TRUE = [ 'profile', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
+const PAGE_DISABLED_TRUE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
 const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
 
 export interface BasePageOptions {
@@ -90,6 +90,18 @@ export class InitPage extends FunctionNode {
         break
       case 'contacts_switch.update':
         customFlow = 'flows/custom/contacts/switch'
+        break
+      case 'subuser':
+        customFlow = 'flows/custom/subuser/state'
+        break
+      case 'user_token_manage':
+        customFlow = 'flows/custom/user/token/state'
+        break
+      case 'profile':
+        customFlow = 'flows/custom/user/profile/state'
+        break
+      case 'profile.update':
+        customFlow = 'flows/custom/user/profile/edit'
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }

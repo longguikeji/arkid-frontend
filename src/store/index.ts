@@ -10,7 +10,7 @@ import { IAccountState } from './modules/account'
 import { ITenantState } from './modules/tenant'
 import { IDesktopState } from './modules/desktop'
 import { IValidateState } from './modules/validate'
-import { IGlobalValueState } from './modules/global-value'
+import { IConfigState } from './modules/config'
 
 Vue.use(Vuex)
 
@@ -25,7 +25,7 @@ export interface IRootState {
   tenant: ITenantState
   desktop: IDesktopState
   validate: IValidateState
-  globalValue: IGlobalValueState
+  config: IConfigState
 }
 
 // Declare empty store first, dynamically register all modules later.

@@ -2,39 +2,47 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { GetOriginUrl } from './nodes/getOriginUrl'
-import { Tenant } from './nodes/tenant'
-import { InterceptToken } from './nodes/interceptToken'
-import { AfterLogin } from './nodes/afterLogin'
+import { OriginNode } from './nodes/origin'
+import { TenantNode } from './nodes/tenant'
+import { TokenNode } from './nodes/token'
+import { OpenapiNode } from './nodes/openapi'
+import { ConfigNode } from './nodes/config'
+import { DeviceNode } from './nodes/device'
 
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'getOriginUrl'
+      next: 'origin'
     }, {
-      cls: GetOriginUrl,
-      id: 'getOriginUrl',
+      cls: OriginNode,
+      id: 'origin',
       next: 'tenant'
     }, {
-      cls: Tenant,
+      cls: TenantNode,
       id: 'tenant',
-      next: 'interceptToken'
+      next: 'token'
     }, {
-      cls: InterceptToken,
-      id: 'interceptToken',
-      positiveNext: "afterLogin",
+      cls: TokenNode,
+      id: 'token',
+      positiveNext: "openapi",
       negativeNext: "stop",
     }, {
-      cls: AfterLogin,
-      id: 'afterLogin',
+      cls: OpenapiNode,
+      id: 'openapi',
+      next: 'config'
+    }, {
+      cls: ConfigNode,
+      id: 'config',
+      next: 'device'
+    }, {
+      cls: DeviceNode,
+      id: 'device',
       next: 'stop'
     }, {
       cls: StopNode,
-      id: 'stop',
-      x: 455,
-      y: 70
+      id: 'stop'
     }]
   }
 

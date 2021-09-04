@@ -35,10 +35,9 @@ export default interface TableColumnState extends BaseState {
   filterPlacement?: string //  过滤弹出框的定位  String  与 Tooltip 的 placement 属性相同  —
   filterMultiple?: boolean //  数据过滤的选项是否多选  Boolean  —  true
   filterMethod?: Function //  数据过滤使用的方法，如果是多选的筛选项，对每一条数据会执行多次，任意一次返回 true 就会显示。  Function(value, row, column)  —  —
-  filteredValue?: Array<any> // 选中的数据过滤项，如果需要自定义表头过滤的渲染方式，可能会需要此属性。  Array  —  —
-
+  filteredValue?: Array<any> // 选中的数据过滤项，如果需要自定义表头过滤的渲染方式，可能会需要此属性
   data?: any
   children?: Array<TableColumnState>
   scope?: AdminComponentState
-  scopeRowState?: Array<any>
+  scopeColumn?: Array<any>
 }

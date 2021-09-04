@@ -52,7 +52,11 @@ export default class FormObjectItemState implements FormState {
         if (item.type === 'FormObjectItem') {
           this.setValue(v, item.state.items)
         } else {
-          item.state.value = v
+          let value = v
+          if (value === undefined) {
+            value = item.state.value
+          }
+          item.state.value = value
         }
       }
     }

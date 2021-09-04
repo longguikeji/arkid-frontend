@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import authPage from '@/config/auth/auth_page.json'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+import { getButtonIcon } from '@/utils/button'
 
 export class AuthPageBtn extends FunctionNode {
   async run() {
@@ -8,9 +9,13 @@ export class AuthPageBtn extends FunctionNode {
     const pageState: AdminComponentState = state[page]
     const columns = pageState.state.table?.columns
     columns[columns.length - 1]?.scope?.state?.push({
-      label: '配置授权页面',
       type: 'info',
-      action: 'openAuthDialog'
+      action: 'openAuthDialog',
+      icon: getButtonIcon('auth'),
+      tip: {
+        content: '配置授权页面'
+      },
+      circle: true
     })
     pageState.state.actions!.openAuthDialog = [
       {

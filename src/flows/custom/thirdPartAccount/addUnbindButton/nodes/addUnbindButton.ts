@@ -1,5 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+import { getButtonIcon, getButtonDefaultLabel } from '@/utils/button'
 
 export class AddUnbindButton extends FunctionNode {
   async run() {
@@ -11,9 +12,13 @@ export class AddUnbindButton extends FunctionNode {
         type: 'ButtonArray',
         state: [
           {
-            label: '解绑',
             type: 'danger',
-            action: 'unbind'
+            action: 'unbind',
+            icon: getButtonIcon('unbind'),
+            tip: {
+              content: getButtonDefaultLabel('unbind')
+            },
+            circle: true
           }
         ]
       }

@@ -2,12 +2,12 @@
   <el-table
     ref="arkidTable"
     :row-key="rowKeyFunc"
-    :data="tableData"
+    :data="state.data"
     :height="'70vh'"
-    :stripe="state.stripe || true"
+    :stripe="state.stripe"
     :border="state.border"
     :size="state.size"
-    :fit="state.fit"
+    fit
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow || true"
     @select="handleSingleSelectionChange"
@@ -17,6 +17,7 @@
     <el-table-column
       v-if="state.isExpand"
       type="expand"
+      fixed="left"
     >
       <template slot-scope="scope">
         <el-form
@@ -38,24 +39,27 @@
       v-if="state.selection"
       type="selection"
       :width="state.selection.width || '50'"
+      fixed="left"
     />
     <el-table-column
       v-if="state.index || true"
       type="index"
-      :width="state.indexWidth || '30'"
+      :width="state.indexWidth || '50'"
       label="#"
+      fixed="left"
     />
-    <TableColumn
-      v-for="(child, index) in state.columns"
-      :key="index"
-      :data="tableData"
-      :path="getChildPath('columns[' + index + ']')"
-    />
+    <template v-if="state.columns.length">
+      <TableColumn
+        v-for="(child, index) in state.columns"
+        :key="index"
+        :path="getChildPath('columns[' + index + ']')"
+      />
+    </template>
   </el-table>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import TableState from './TableState'
 import TableColumn from './TableColumn/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
@@ -72,23 +76,9 @@ export default class extends Mixins(BaseVue) {
     return this.$state as TableState
   }
 
-  get tableData() {
-    return this.state.data
-  }
-
   get default() {
     return this.state.selection?.default
   }
-
-  // @Watch('tableData')
-  // onTableDataChange() {
-  //   this.initTableSelection()
-  // }
-
-  // @Watch('default')
-  // onTableSelectionDefaultChange() {
-  //   this.initTableSelection()
-  // }
 
   mounted() {
     if (this.state.sortable) {
@@ -99,11 +89,13 @@ export default class extends Mixins(BaseVue) {
   initRowSort() {
     const tbody: any = document.querySelector('.el-table__body-wrapper tbody')
     const _this: any = this
+    const { data, sortAction } = this.state
+    if (!data) return
     Sortable.create(tbody, {
       onEnd({ newIndex, oldIndex }) {
-        const currRow = _this.tableData.splice(oldIndex, 1)[0]
-        _this.tableData.splice(newIndex, 0, currRow)
-        _this.runAction(_this.state.sortAction)
+        const currRow = data.splice(oldIndex as number, 1)[0]
+        data.splice(newIndex as number, 0, currRow)
+        _this.runAction(sortAction)
       }
     })
   }
@@ -111,24 +103,6 @@ export default class extends Mixins(BaseVue) {
   rowKeyFunc(row) {
     return row.uuid || row.id || row.username
   }
-
-  // initTableSelection() {
-  //   if (this.state.selection) {
-  //     this.$nextTick(() => {
-  //       const defaults = this.state.selection!.default
-  //       this.tableData?.forEach(row => {
-  //         if (row.uuid) {
-  //           if (defaults?.includes(row.uuid)) {
-  //             (this.$refs.arkidTable as any).toggleRowSelection(row, true)
-  //             this.dealSelectionValue(row)
-  //           } else {
-  //             (this.$refs.arkidTable as any).clearSelection()
-  //           }
-  //         }
-  //       })
-  //     })
-  //   }
-  // }
 
   handleRowClick(row, column, event) {
     this.state.row = row

@@ -1,6 +1,7 @@
 import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { IFlow } from '@/arkfbp'
+import { getButtonIcon, getButtonDefaultLabel } from '@/utils/button'
 
 export class InitFilter extends AuthApiNode {
   async run() {
@@ -55,9 +56,13 @@ export class InitFilter extends AuthApiNode {
           type: 'Button',
           isSetWidth: false,
           state: {
-            label: '搜索',
             type: 'primary',
-            action: 'fetch'
+            action: 'fetch',
+            icon: getButtonIcon('search'),
+            tip: {
+              content: '插件搜索'
+            },
+            circle: true
           }
         }
       }

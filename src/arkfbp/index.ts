@@ -19,7 +19,7 @@ export interface IFlow {
 // actionName 操作名称，为了执行当前 actions 中的该动作
 // pageName 页面名称，为了查找某个页面的state选项，以便执行其中的actions内容
 // previous 上一个流操作的结果，有时可能在下一个流操作中使用到
-export async function runFlowByActionName(com: BaseVue, actionName: string, pageName?: string) {
+export async function runFlowByActionName(com: BaseVue, actionName: string, pageName?: string, previous?: any) {
   if (actionName.includes('.')) {
     const index = actionName.lastIndexOf('.')
     pageName = actionName.substring(0, index)
@@ -36,16 +36,16 @@ export async function runFlowByActionName(com: BaseVue, actionName: string, page
       if (!FlowModule.run) break
       const item = action[i]
       if (typeof item === 'string') {
-        await runFlowByActionName(com, item, pageName)
+        await runFlowByActionName(com, item, pageName, previous)
       } else {
-        await runFlow(com, state, item as IFlow, currentPage)
+        previous = await runFlow(com, state, item as IFlow, currentPage, previous)
       }
     }
   }
 }
 
 // 通过该函数去调用 runFlowByFile -- 解析 request 的参数信息
-async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) {
+async function runFlow (com: any, state: any, flow: IFlow, currentPage: string, previous?: any) {
   const { name: filePath, ...args } = flow
   const data = com.state.node || com.state.data  
   if (data) FlowModule.addPageData({ page: currentPage, data })
@@ -61,7 +61,8 @@ async function runFlow (com: any, state: any, flow: IFlow, currentPage: string) 
     required,
     path,
     data,
-    page: currentPage
+    page: currentPage,
+    previous
   }
   // 对 request 请求参数进行解析处理
   if (args.request && !isEmptyObject(args.request)) {

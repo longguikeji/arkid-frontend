@@ -119,6 +119,8 @@ function createArrayItem(prop: string, schema: ISchema, showReadOnly: boolean, s
     item = createItemByPropSchema(prop, arraySchema, showReadOnly, showWriteOnly, disabled, required)
     item!.label = schema.title
     item!.state.multiple = true
+    item!.state.url = schema.url
+    item!.state.prop = prop
   } else {
     item = {
       type: 'Select',
@@ -130,7 +132,8 @@ function createArrayItem(prop: string, schema: ISchema, showReadOnly: boolean, s
         default: schema.default,
         options: [],
         required: required,
-        disabled: disabled && !schema.readOnly
+        disabled: disabled && !schema.readOnly,
+        url: schema.url,
       }
     }
   }
