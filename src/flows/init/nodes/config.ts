@@ -3,6 +3,7 @@ import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
 import { processUUId } from '@/utils/common'
+import OpenAPI from '@/config/openapi'
 
 export class ConfigNode extends AuthApiNode {
 
@@ -107,19 +108,21 @@ export class ConfigNode extends AuthApiNode {
   }
 
   async setUserConfig(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/userconfig`
-    this.method = 'GET'
-    const outputs = await super.run()
-    const data = outputs?.data
-    if (data) {
-      ConfigModule.setUserConfig({
-        isEditFields: data.is_edit_fields,
-        isLoggingDevice: data.is_logging_device,
-        isLoggingIp: data.is_logging_ip,
-        isLogout: data.is_logout,
-        isLookToken: data.is_look_token,
-        isManualOverdueToken: data.is_manual_overdue_token
-      })
+    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig', 'get')) {
+      this.url = `/api/v1/tenant/${tenantUUId}/userconfig`
+      this.method = 'GET'
+      const outputs = await super.run()
+      const data = outputs?.data
+      if (data) {
+        ConfigModule.setUserConfig({
+          isEditFields: data.is_edit_fields,
+          isLoggingDevice: data.is_logging_device,
+          isLoggingIp: data.is_logging_ip,
+          isLogout: data.is_logout,
+          isLookToken: data.is_look_token,
+          isManualOverdueToken: data.is_manual_overdue_token
+        })
+      }
     }
   }
 

@@ -18,6 +18,7 @@ import { Component, Prop } from 'vue-property-decorator'
 import { TenantModule } from '@/store/modules/tenant'
 import { runFlowByFile } from '@/arkfbp/index'
 import { UserRole, UserModule } from '@/store/modules/user'
+import { ConfigModule } from '@/store/modules/config'
 
 @Component({
   name: 'TenantManager'
@@ -35,8 +36,16 @@ export default class extends Vue {
     return this.$route.meta.page
   }
 
+  private get isVisibleDesktop() {
+    return ConfigModule.desktop.visible
+  }
+
   goHome() {
-    this.$router.push('/')
+    if (this.isVisibleDesktop) {
+      this.$router.push('/desktop')
+    } else {
+      this.$router.push('/mine/profile')
+    }
   }
 
   async created() {

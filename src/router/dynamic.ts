@@ -54,10 +54,6 @@ function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
       }
     ]
   }
-  if (path === 'desktop') {
-    newRoute.path = '/'
-    newRoute.redirect = '/desktop'
-  }
   if (children) {
     const childRoutes = generateChildRoutes(children)
     newRoute.children = childRoutes

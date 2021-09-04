@@ -9,6 +9,7 @@ export class ChangePageStateNode extends FunctionNode {
     const pageState = state[page].state
     pageState.card.title = 'Token管理'
     const isLookToken = ConfigModule.user.isLookToken
+    const isManualOverdueToken = ConfigModule.user.isManualOverdueToken
     // add token input item content
     pageState.form.inline = true
     pageState.form.items.token = {
@@ -25,6 +26,9 @@ export class ChangePageStateNode extends FunctionNode {
     })
     // danger type
     pageState.buttons[0].type = 'danger'
+    if (!isManualOverdueToken) {
+      pageState.buttons[0].disabled = true
+    }
   }
 
 }
