@@ -36,8 +36,17 @@ export default class Login extends Vue {
     this.getLoginPage()
   }
 
-  get tenantUUID() {
-    return this.$route.query.tenant
+  get tenantUUID(): string | null {
+    const tenant = this.$route.query.tenant
+    if (tenant) {
+      if (typeof tenant === 'string') {
+        return tenant
+      } else {
+        return tenant[0]
+      }
+    } else {
+      return null
+    }
   }
 
   private async getLoginPage() {

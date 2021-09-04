@@ -82,7 +82,7 @@ export default class LoginComponent extends Vue {
         for (const i in _form.items) {
           const _item: FormItemConfig = _form.items[i]
           if (_item.name) {
-            this.$set(this.forms[p][f], _item.name, '')
+            this.$set(this.forms[p][f], _item.name,  _item.value || '')
             this.addRule(_item.name)
           }
         }
@@ -224,6 +224,22 @@ export default class LoginComponent extends Vue {
     this.switchPage()
   }
 
+  getParams() {
+    const params= this.btn.http!.params
+    let submitParams = {}
+    if (params) {
+      for (const key in params) {
+        if (this.form.hasOwnProperty(key)) {
+          submitParams[key] = this.form[key]
+        }
+        if (key === 'code_filename') submitParams[key] = LoginStore.CodeFileName
+      }
+    } else {
+      submitParams = this.form
+    }
+    return submitParams
+  }
+
   async request(url: string, method: string, data?: any) {
     method = method.toLowerCase()
     return await http[method](url, data)
@@ -240,13 +256,10 @@ export default class LoginComponent extends Vue {
   }
 
   async btnRequest() {
-    let { url, method, params } = this.btn.http!
-    for (let key in params) {
-      if (this.form.hasOwnProperty(key)) {
-        params[key] = this.form[key]
-      } else {
-        if (key === 'code_filename') params[key] = LoginStore.CodeFileName
-      }
+    let { url, method } = this.btn.http!
+    const params = this.getParams()
+    if (url.includes('tenant_uuid') && LoginStore.TenantUUID) {
+      url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
     const response = await this.request(url, method, params)
     const data = response.data
