@@ -169,5 +169,10 @@ export const TABLE_COLUMN_WIDTH = {
     'regular': '400',
     'title': '350',
     'actions': '100'
+  },
+  'authorization_agent': {
+    'type': '300',
+    'sort': '200',
+    'actions': '100'
   }
 }

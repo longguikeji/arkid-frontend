@@ -36,7 +36,7 @@ export class UrlNode extends FunctionNode {
     if (this._url.includes('parent_lookup_tenant') || this._url.includes('tenant_uuid')) {
       this._url = this._url.replace(/(\{parent_lookup_tenant\}|\{tenant_uuid\})/g, this._uuid)
     }
-    if (this._page === 'tenant_config') {
+    if (this._page === 'tenant_config' || this._page === 'tenant_config.update') {
       this._url = this._url.replace('{id}', this._uuid)
     }
     if (this._url.includes('token')) {

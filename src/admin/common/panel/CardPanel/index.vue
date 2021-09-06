@@ -18,6 +18,7 @@
     </div>
     <div
       class="card-panel-text no-drag"
+      :title="state.name"
     >
       {{ state.name }}
     </div>
