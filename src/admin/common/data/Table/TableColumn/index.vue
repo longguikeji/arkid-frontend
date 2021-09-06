@@ -71,7 +71,7 @@ export default class extends Mixins(BaseVue) {
       const prop = this.state.prop!
       this.state.scopeColumn[index] = {
         type,
-        state: row[prop] ? { value: row[prop] } : state
+        state: row[prop] !== undefined ? { value: row[prop] } : state
       }
     }
     return this.getChildPath(`scopeColumn[${index}]`)
