@@ -2,9 +2,8 @@
   <grid-layout
     class="dashboard-page"
     :layout.sync="layout"
-    :col-num="8"
     :is-draggable="isMove"
-    :is-resizable="isMove"
+    :is-resizable="false"
     :is-mirrored="false"
     :responsive="true"
     :vertical-compact="true"
@@ -16,10 +15,11 @@
       :key="item.i"
       :x="item.x"
       :y="item.y"
+      :i="item.i"
       :w="item.w"
       :h="item.h"
-      :i="item.i"
-      @resized="resizedHandler"
+      drag-ignore-from=".no-drag"
+      @move="moveEvent"
     >
       <DashboardItem
         :path="getChildPath('items[' + item.i + ']')"
@@ -41,7 +41,6 @@ import { ConfigModule } from '@/store/modules/config'
 import { getToken } from '@/utils/auth'
 import { runFlowByFile } from '@/arkfbp'
 
-// 将屏幕width分为8份，每份为一标准高宽，允许内部所有组件高宽只能是整数倍
 @Component({
   name: 'DashboardPage',
   components: {
@@ -89,10 +88,17 @@ export default class extends Mixins(BaseVue) {
     this.updateDesktopPage()
   }
 
-  async resizedHandler(i:number, newH:number, newW:number) {
+  async moveEvent(i: number, newX: number, newY: number) {
     const item = this.items![i]
-    item.position!.h = newH
-    item.position!.w = newW
+    item.position = {
+      ...item.position,
+      x: newX,
+      y: newY
+    }
+    await this.gridItemEventHandler()
+  }
+
+  async gridItemEventHandler() {
     const items = this.items!.map((item: DashboardItemState) => {
       return {
         ...item.position,

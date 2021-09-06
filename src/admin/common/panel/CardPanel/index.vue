@@ -4,17 +4,20 @@
     :style="{'--color': state.color}"
   >
     <div
-      class="card-panel-icon"
+      class="card-panel-icon no-drag"
     >
       <img
         v-if="state.img"
-        class="icon-img"
+        class="icon-img no-drag"
         :src="state.img"
       >
-      <span v-else>Logo</span>
+      <span
+        v-else
+        class="no-drag"
+      >Logo</span>
     </div>
     <div
-      class="card-panel-text"
+      class="card-panel-text no-drag"
     >
       {{ state.name }}
     </div>
@@ -42,7 +45,6 @@ export default class extends Mixins(BaseVue) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   box-sizing: border-box;
   background-color: #fff;
   box-shadow: 10px 10px 40px rgba(0, 0, 0, .05);
@@ -51,6 +53,7 @@ export default class extends Mixins(BaseVue) {
   color: #666;
   position: relative;
   text-align: center;
+  padding-top: 15px;
   &:hover {
     background: var(--color);
   }

@@ -48,8 +48,10 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  private handleClick() {
+  private handleClick(event) {
     const item = this.state.state
+    const className = event.target.className
+    if (!className.includes('no-drag')) return
     this.$emit('appClick', item)
   }
 }
