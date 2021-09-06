@@ -18,7 +18,7 @@
       @blur="onBlur"
     >
       <template
-        v-if="state.type === 'link'"
+        v-if="state.type === 'link' && state.disabled !== true"
         slot="append"
       >
         <el-upload

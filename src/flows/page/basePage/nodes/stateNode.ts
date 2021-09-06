@@ -98,9 +98,13 @@ export class StateNode extends FunctionNode {
             type: 'Button',
             isSetWidth: false,
             state: {
-              label: '搜索',
               type: 'primary',
-              action: 'fetch'
+              action: 'fetch',
+              icon: getButtonIcon('search'),
+              tip: {
+                content: '搜索'
+              },
+              circle: true
             }
           }
         })

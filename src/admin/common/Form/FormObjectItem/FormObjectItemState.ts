@@ -1,6 +1,7 @@
 import FormItemState from '../FormItem/FormItemState'
 import FormState from '../FormState'
 import Vue from 'vue'
+import { isBoolean } from 'lodash'
 
 export default class FormObjectItemState implements FormState {
   items?:{[prop:string]:FormItemState}
@@ -48,15 +49,11 @@ export default class FormObjectItemState implements FormState {
     } else {
       for (const prop in items) {
         const item = items[prop]
-        const v = typeof value === 'object' ? value[prop] : value
+        let v = typeof value === 'object' ? value[prop] : value
         if (item.type === 'FormObjectItem') {
           this.setValue(v, item.state.items)
         } else {
-          let value = v
-          if (value === undefined) {
-            value = item.state.value
-          }
-          item.state.value = value
+          item.state.value = isBoolean(item.state.value) ? Boolean(v) : v
         }
       }
     }
