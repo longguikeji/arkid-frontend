@@ -54,6 +54,7 @@ export default class extends Mixins(BaseVue) {
   position: relative;
   text-align: center;
   padding-top: 15px;
+  overflow: hidden;
   &:hover {
     background: var(--color);
   }
@@ -73,8 +74,9 @@ export default class extends Mixins(BaseVue) {
   }
   .card-panel-text {
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 15px 5px 0px 5px;
   }
 }
 </style>
