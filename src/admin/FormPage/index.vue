@@ -1,6 +1,7 @@
 <template>
-  <div
+  <Card
     class="form-page"
+    :path="getChildPath('card')"
   >
     <template v-if="state.select">
       <b>{{ state.select.valueKey }}</b>
@@ -23,7 +24,7 @@
         :path="getChildPath('dialogs.' + dialogName)"
       />
     </template>
-  </div>
+  </Card>
 </template>
 
 <script lang="ts">

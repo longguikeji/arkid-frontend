@@ -99,7 +99,7 @@ export const TABLE_COLUMN_WIDTH = {
     'name': '200',
     'type': '200',
     'url': '300',
-    'actions': '200'
+    'actions': '300'
   },
   'app.provisioning.mapping': {
     'apply_type': '200',

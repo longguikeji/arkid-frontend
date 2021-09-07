@@ -12,7 +12,7 @@ import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { addInputListDialog, addPasswordDialog, addImportDialog } from '@/utils/dialogs'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
-import { getButtonDefaultLabel, getButtonIcon } from '@/utils/button'
+import { getButtonDefaultLabel } from '@/utils/button'
 import { TABLE_COLUMN_WIDTH } from '@/utils/table'
 
 export class StateNode extends FunctionNode {
