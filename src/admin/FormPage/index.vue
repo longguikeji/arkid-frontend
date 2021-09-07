@@ -1,6 +1,5 @@
 <template>
-  <Card
-    :path="getChildPath('card')"
+  <div
     class="form-page"
   >
     <template v-if="state.select">
@@ -14,7 +13,7 @@
     <template v-if="state.buttons">
       <ButtonArray
         :path="getChildPath('buttons')"
-        class="form__page__buttons"
+        class="form-page-buttons"
       />
     </template>
     <template v-if="state.dialogs">
@@ -24,7 +23,7 @@
         :path="getChildPath('dialogs.' + dialogName)"
       />
     </template>
-  </Card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -74,10 +73,10 @@ export default class extends Mixins(BaseVue) {
   width: 1000px;
 }
 ::v-deep .tui-editor-defaultUI { width: 1000px;}
-.form__page__buttons {
+.form-page-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 20px;
 }
 .form-page-select {

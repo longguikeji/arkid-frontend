@@ -9,7 +9,7 @@
     :size="state.size"
     fit
     :show-header="state.showHeader"
-    :highlight-current-row="state.highlightCurrentRow || true"
+    :highlight-current-row="state.highlightCurrentRow"
     @select="handleSingleSelectionChange"
     @row-click="handleRowClick"
     @select-all="handleAllSelectionChange"

@@ -7,6 +7,7 @@
     :width="state.width"
     :fixed="state.fixed"
     :align="state.align || 'center'"
+    :show-overflow-tooltip="state.showOverflowTooltip"
   >
     <template v-if="state.children">
       <TableColumn

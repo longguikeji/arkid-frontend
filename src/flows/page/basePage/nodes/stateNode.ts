@@ -47,7 +47,8 @@ export class StateNode extends FunctionNode {
       const columnState: TableColumnState = {
         label: iprop.title,
         prop: prop,
-        width: name ? TABLE_COLUMN_WIDTH[name][prop] : undefined
+        width: name ? TABLE_COLUMN_WIDTH[name][prop] : undefined,
+        showOverflowTooltip: true
       }
       state.table?.columns?.push(columnState)
     }
@@ -98,13 +99,9 @@ export class StateNode extends FunctionNode {
             type: 'Button',
             isSetWidth: false,
             state: {
+              label: '搜索',
               type: 'primary',
-              action: 'fetch',
-              icon: getButtonIcon('search'),
-              tip: {
-                content: '搜索'
-              },
-              circle: true
+              action: 'fetch'
             }
           }
         })
@@ -239,8 +236,7 @@ export class StateNode extends FunctionNode {
     const label = description || getButtonDefaultLabel(key)
     const disabled = key === 'export' ? true : false
     return {
-      icon: getButtonIcon(key), action, disabled, type, hint, circle: true,
-      tip: { content: label }
+      label, action, disabled, type, hint
     }
   }
 
