@@ -22,6 +22,7 @@ export function getDynamicRoutes() {
   if (!openAPI?.info?.routers) return []
   const openAPIRoutes = openAPI.info.routers
   let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
+  // staged code
   routes = filterRoutes(routes)
   return routes
 }
@@ -103,7 +104,7 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   let roleRoutes = routes
   if (role === UserRole.User) {
     roleRoutes = routes.filter((route) => {
-      return route.path === '/book' || route.path === '/mine'
+      return route.path === '/contacts' || route.path === '/mine' || route.path === '/desktop'
     })
   } else if (role === UserRole.Tenant) {
     roleRoutes = routes.filter((route) => {
