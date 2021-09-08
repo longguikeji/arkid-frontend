@@ -1,14 +1,5 @@
 export const TABLE_COLUMN_WIDTH = {
   'maketplace': {
-    'description': '200',
-    'name': '200',
-    'logo': '100',
-    'maintainer': '100',
-    'scope': '200',
-    'tags': '300',
-    'type': '100',
-    'version': '100',
-    'homepage': '300'
   },
   'extension': {
     'actions': '150'
@@ -140,7 +131,7 @@ export const TABLE_COLUMN_WIDTH = {
   'third_part_account': {
     'name': '200',
     'tenant': '200',
-    'actions': '50'
+    'actions': '100'
   },
   'subuser': {
     'account_type': '100',
@@ -148,7 +139,7 @@ export const TABLE_COLUMN_WIDTH = {
     'mobile': '200',
     'password': '200',
     'username': '200',
-    'actions': '150'
+    'actions': '300'
   },
   'contacts_user': {
     'email': '200',

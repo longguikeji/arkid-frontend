@@ -77,8 +77,13 @@ export default class extends Mixins(BaseVue) {
 .form-page-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
   margin-top: 20px;
+}
+.el-dialog {
+  .form-page-buttons {
+    justify-content: center;
+  }
 }
 .form-page-select {
   display: inline-block;

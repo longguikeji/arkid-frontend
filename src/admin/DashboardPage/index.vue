@@ -7,7 +7,7 @@
     :is-mirrored="false"
     :responsive="true"
     :vertical-compact="true"
-    :margin="[32, 32]"
+    :margin="[0, 0]"
     :use-css-transforms="true"
   >
     <grid-item

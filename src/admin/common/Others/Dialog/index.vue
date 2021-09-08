@@ -91,5 +91,17 @@ export default class extends Mixins(BaseVue) {
   .el-dialog__close {
     z-index: 100;
   }
+  .el-dialog__body .el-card {
+    &.form-page,
+    &.table-page,
+    &.tree-page {
+      box-shadow: none;
+      border-radius: 0px;
+      border: 0px;
+      &.is-always-shadow {
+        box-shadow: none;
+      }
+    }
+  }
 }
 </style>

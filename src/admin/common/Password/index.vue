@@ -1,60 +1,65 @@
 <template>
-  <el-form
-    ref="passwordFormCom"
-    :model="formData"
-    status-icon
-    :rules="rules"
-    label-width="100px"
-  >
-    <el-form-item
-      v-if="state.hasOldPassword"
-      label="原密码"
-      prop="oldPassword"
+  <el-card>
+    <div slot="header">
+      设置密码
+    </div>
+    <el-form
+      ref="passwordFormCom"
+      :model="formData"
+      status-icon
+      :rules="rules"
+      label-width="100px"
     >
-      <el-input
-        v-model="formData.oldPassword"
-        type="password"
-        autocomplete="off"
-        show-password
-        @copy.native.capture.prevent="onCopy"
-      />
-    </el-form-item>
-    <el-form-item
-      label="密码"
-      prop="password"
-    >
-      <el-input
-        v-model="formData.password"
-        type="password"
-        autocomplete="off"
-        show-password
-        @copy.native.capture.prevent="onCopy"
-      />
-    </el-form-item>
-    <el-form-item
-      label="确认密码"
-      prop="checkPassword"
-    >
-      <el-input
-        v-model="formData.checkPassword"
-        type="password"
-        autocomplete="off"
-        show-password
-        @copy.native.capture.prevent="onCopy"
-      />
-    </el-form-item>
-    <el-form-item class="password-buttons">
-      <el-button @click="resetPasswordForm">
-        重置
-      </el-button>
-      <el-button
-        type="primary"
-        @click="submitPasswordForm"
+      <el-form-item
+        v-if="state.hasOldPassword"
+        label="原密码"
+        prop="oldPassword"
       >
-        确认
-      </el-button>
-    </el-form-item>
-  </el-form>
+        <el-input
+          v-model="formData.oldPassword"
+          type="password"
+          autocomplete="off"
+          show-password
+          @copy.native.capture.prevent="onCopy"
+        />
+      </el-form-item>
+      <el-form-item
+        label="密码"
+        prop="password"
+      >
+        <el-input
+          v-model="formData.password"
+          type="password"
+          autocomplete="off"
+          show-password
+          @copy.native.capture.prevent="onCopy"
+        />
+      </el-form-item>
+      <el-form-item
+        label="确认密码"
+        prop="checkPassword"
+      >
+        <el-input
+          v-model="formData.checkPassword"
+          type="password"
+          autocomplete="off"
+          show-password
+          @copy.native.capture.prevent="onCopy"
+        />
+      </el-form-item>
+      <div class="password-buttons">
+        <el-button @click="resetPasswordForm">
+          重置
+        </el-button>
+        <el-button
+          type="primary"
+          @click="submitPasswordForm"
+        >
+          确认
+        </el-button>
+      </div>
+    </el-form>
+  </el-card>
 </template>
 
 <script lang="ts">
@@ -131,6 +136,6 @@ export default class extends Mixins(BaseVue) {
 <style lang="scss" scoped>
 .password-buttons {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 </style>
