@@ -4,7 +4,7 @@ import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentSta
 import { getContent } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import { getActionMapping } from '@/utils/generate-action'
-import { firstToUpperCase } from '@/utils/common'
+import { upperFirst, camelCase } from 'lodash'
 
 export class ActionNode extends FunctionNode {
   async run() {
@@ -125,7 +125,8 @@ export class ActionNode extends FunctionNode {
   }
 
   addOpenPageAction(state: BasePage, key: string) {
-    state.actions![`open${firstToUpperCase(key)}Dialog`] = [
+    const actionName = `open${upperFirst(camelCase(key))}Dialog`
+    state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate' 
       },
@@ -139,7 +140,8 @@ export class ActionNode extends FunctionNode {
   }
 
   addClosePageAction(state: BasePage, key: string) {
-    state.actions![`close${firstToUpperCase(key)}Dialog`] = [
+    const actionName = `close${upperFirst(camelCase(key))}Dialog`
+    state.actions![actionName] = [
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -225,7 +227,7 @@ export class ActionNode extends FunctionNode {
             request: mapping,
             required
           },
-          `${parent}.close${firstToUpperCase(key)}Dialog`,
+          `${parent}.close${upperFirst(camelCase(key))}Dialog`,
           `${parent}.fetch`
         ]
     }

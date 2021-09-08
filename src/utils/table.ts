@@ -8,11 +8,11 @@ export const TABLE_COLUMN_WIDTH = {
     'actions': '150'
   },
   'webhook': {
-    'events': '600',
-    'name': '200',
-    'uuid': '200',
-    'url': '300',
-    'actions': '150'
+    'events': '400',
+    'name': '250',
+    'url': '150',
+    'actions': '230',
+    'secret': '100'
   },
   'webhook.history': {
     'request': '600',
@@ -21,10 +21,10 @@ export const TABLE_COLUMN_WIDTH = {
     'actions': '150'
   },
   'password': {
-    'is_apply': '90',
+    'is_apply': '80',
     'regular': '400',
-    'title': '350',
-    'actions': '100'
+    'title': '400',
+    'actions': '150'
   },
   'login_register_extension_config': {
     'actions': '150'
@@ -46,32 +46,32 @@ export const TABLE_COLUMN_WIDTH = {
     'city': '150',
     'country': '200',
     'email': '200',
-    'first_name': '300',
-    'last_name': '300',
-    'job_title': '300',
-    'mobile': '300',
+    'first_name': '200',
+    'last_name': '200',
+    'job_title': '200',
+    'mobile': '150',
     'nickname': '200',
-    'username': '200',
-    'actions': '150'
+    'username': '150',
+    'actions': '230'
   },
   'user.custom_fields': {
     'is_visible': '100',
     'name': '200',
     'schema': '300',
     'subject': '200',
-    'actions': '100'
+    'actions': '140'
   },
   'group_user': {
     'bind_info': '300',
     'city': '150',
     'country': '200',
     'email': '200',
-    'first_name': '300',
-    'last_name': '300',
-    'job_title': '300',
-    'mobile': '300',
+    'first_name': '200',
+    'last_name': '200',
+    'job_title': '200',
+    'mobile': '150',
     'nickname': '200',
-    'username': '200'
+    'username': '150'
   },
   'device': {
     'account_ids': '300',
@@ -82,7 +82,7 @@ export const TABLE_COLUMN_WIDTH = {
     'ip': '300',
     'mac_address': '300',
     'system_version': '200',
-    'actions': '50'
+    'actions': '100'
   },
   'app': {
     'auth_tmpl': '600',
@@ -121,12 +121,12 @@ export const TABLE_COLUMN_WIDTH = {
     'city': '150',
     'country': '200',
     'email': '200',
-    'first_name': '300',
-    'last_name': '300',
-    'job_title': '300',
-    'mobile': '300',
+    'first_name': '200',
+    'last_name': '200',
+    'job_title': '200',
+    'mobile': '150',
     'nickname': '200',
-    'username': '200'
+    'username': '150'
   },
   'third_part_account': {
     'name': '200',

@@ -99,11 +99,12 @@ export class Page {
     title: '',
     buttons: []
   }
-  filter: FormState = {}
+  filter: FormState | undefined = undefined
   table: TableState = {
     columns: [],
     data: [],
-    selection: undefined
+    selection: undefined,
+    border: true
   }
   form: FormState = {
     items: {},

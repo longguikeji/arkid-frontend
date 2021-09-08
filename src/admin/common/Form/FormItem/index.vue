@@ -9,10 +9,8 @@
     :required="state.required"
     :prop="state.prop"
     :error="state.error"
+    :label="state.label"
   >
-    <span
-      slot="label"
-    >{{ state.label }}</span>
     <AdminComponent
       :path="getChildPath('')"
     />

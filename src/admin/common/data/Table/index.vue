@@ -18,6 +18,7 @@
       v-if="state.isExpand"
       type="expand"
       fixed="left"
+      align="center"
     >
       <template slot-scope="scope">
         <el-form
@@ -40,13 +41,15 @@
       type="selection"
       :width="state.selection.width || '50'"
       fixed="left"
+      align="center"
     />
     <el-table-column
       v-if="state.index || true"
       type="index"
-      :width="state.indexWidth || '50'"
+      :width="state.indexWidth || '60'"
       label="#"
       fixed="left"
+      align="center"
     />
     <template v-if="state.columns.length">
       <TableColumn

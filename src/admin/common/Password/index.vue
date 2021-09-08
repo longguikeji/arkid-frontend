@@ -17,6 +17,7 @@
       >
         <el-input
           v-model="formData.oldPassword"
+          placeholder="请输入原密码"
           type="password"
           autocomplete="off"
           show-password
@@ -29,6 +30,7 @@
       >
         <el-input
           v-model="formData.password"
+          placeholder="请输入密码"
           type="password"
           autocomplete="off"
           show-password
@@ -41,6 +43,7 @@
       >
         <el-input
           v-model="formData.checkPassword"
+          placeholder="请再次输入密码"
           type="password"
           autocomplete="off"
           show-password

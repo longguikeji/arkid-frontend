@@ -74,9 +74,6 @@ export default class extends Mixins(BaseVue) {
 .dialog__actions__button {
   display: inline-block !important;
 }
-::v-deep .el-form-item__label {
-  width: 100px;
-}
 ::v-deep .el-dialog {
   .el-dialog__header {
     padding-top: 0px;
@@ -102,6 +99,14 @@ export default class extends Mixins(BaseVue) {
         box-shadow: none;
       }
     }
+  }
+  .el-card__header {
+    .buttons {
+      right: 30px !important;
+    }
+  }
+  .el-card__body {
+    padding: 20px;
   }
 }
 </style>
