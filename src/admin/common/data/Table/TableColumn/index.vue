@@ -1,5 +1,6 @@
 <template>
   <el-table-column
+    v-if="state.hidden !== true"
     :index="state.index"
     :column-key="state.columnKey"
     :label="state.label"

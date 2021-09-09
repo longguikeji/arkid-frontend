@@ -11,6 +11,8 @@
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow"
     @row-click="handleRowClick"
+    @select="handleRowSelect"
+    @select-all="handleSelectAll"
   >
     <el-table-column
       v-if="state.isExpand"
@@ -60,9 +62,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import TableState from './TableState'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import TableState, { SelectionState } from './TableState'
 import TableColumn from './TableColumn/index.vue'
+
 import BaseVue from '@/admin/base/BaseVue'
 import Sortable from 'sortablejs'
 
@@ -75,6 +78,15 @@ import Sortable from 'sortablejs'
 export default class extends Mixins(BaseVue) {
   get state(): TableState {
     return this.$state as TableState
+  }
+
+  get default() {
+    return this.state.selection?.default
+  }
+
+  @Watch('default')
+  onDefaultValueChange() {
+    this.initSelection()
   }
 
   mounted() {
@@ -104,6 +116,22 @@ export default class extends Mixins(BaseVue) {
   handleRowClick(row, column, event) {
     this.state.row = row
     this.runAction(this.state.rowClickAction)
+  }
+
+  initSelection() {
+    if (this.default) {
+      this.default.forEach(row => {
+        (this.$refs.arkidTable as any).toggleRowSelection(row)
+      })
+    }
+  }
+
+  handleRowSelect(selection: any, row: any) {
+    this.state.selection!.values = selection
+  }
+
+  handleSelectAll(selection: any) {
+    this.state.selection!.values = selection
   }
 }
 </script>

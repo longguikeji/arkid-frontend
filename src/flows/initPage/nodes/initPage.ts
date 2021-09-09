@@ -106,6 +106,9 @@ export class InitPage extends FunctionNode {
       case 'profile.update':
         customFlow = 'flows/custom/user/profile/edit'
         break
+      case 'profile_config_editfields.update':
+        customFlow = 'flows/custom/editfields/state'
+        break
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }

@@ -45,7 +45,7 @@ export default class Descriptions extends Mixins(BaseVue) {
   }
 
   get keys() {
-    const keys = []
+    const keys: string[] = []
     let isuuid = false
     Object.keys(this.state.items).forEach(key => {
       if (key !== 'uuid') {
