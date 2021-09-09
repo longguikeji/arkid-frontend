@@ -18,7 +18,7 @@ export const TABLE_COLUMN_WIDTH = {
     'request': '600',
     'response': '600',
     'status': '100',
-    'actions': '150'
+    'actions': '250'
   },
   'password': {
     'is_apply': '80',

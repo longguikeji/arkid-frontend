@@ -200,8 +200,8 @@ export default class LoginComponent extends Vue {
     }
   }
 
-  switchPage() {
-    this.page = this.btn.gopage!
+  switchPage(page?: string) {
+    this.page = page || this.btn.gopage!
     this.tabIndex = '0'
     this.isChangeDelay = false
     this.resetRules()
@@ -298,6 +298,8 @@ export default class LoginComponent extends Vue {
     } else {
       if (data.is_need_refresh && LoginStore.CodeFileName === '') {
         window.location.reload()
+      } else if (data.error === '10029') {
+        this.switchPage('password')
       }
       this.$message({
         message: error[data.error] || data.message || 'error',
