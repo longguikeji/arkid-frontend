@@ -1,32 +1,37 @@
 <template>
-  <grid-layout
+  <Card
+    :path="getChildPath('card')"
     class="dashboard-page"
-    :layout.sync="layout"
-    :is-draggable="isMove"
-    :is-resizable="false"
-    :is-mirrored="false"
-    :responsive="true"
-    :vertical-compact="true"
-    :margin="[0, 0]"
-    :use-css-transforms="true"
   >
-    <grid-item
-      v-for="item in layout"
-      :key="item.i"
-      :x="item.x"
-      :y="item.y"
-      :i="item.i"
-      :w="item.w"
-      :h="item.h"
-      drag-ignore-from=".no-drag"
-      @move="moveEvent"
+    <grid-layout
+      class="dashboard-page-grid"
+      :layout.sync="layout"
+      :is-draggable="isMove"
+      :is-resizable="false"
+      :is-mirrored="false"
+      :responsive="true"
+      :vertical-compact="true"
+      :margin="[0, 0]"
+      :use-css-transforms="true"
     >
-      <DashboardItem
-        :path="getChildPath('items[' + item.i + ']')"
-        @appClick="showAppPage"
-      />
-    </grid-item>
-  </grid-layout>
+      <grid-item
+        v-for="item in layout"
+        :key="item.i"
+        :x="item.x"
+        :y="item.y"
+        :i="item.i"
+        :w="item.w"
+        :h="item.h"
+        drag-ignore-from=".no-drag"
+        @move="moveEvent"
+      >
+        <DashboardItem
+          :path="getChildPath('items[' + item.i + ']')"
+          @appClick="showAppPage"
+        />
+      </grid-item>
+    </grid-layout>
+  </Card>
 </template>
 
 <script lang="ts">
@@ -40,13 +45,15 @@ import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
 import { ConfigModule } from '@/store/modules/config'
 import { getToken } from '@/utils/auth'
 import { runFlowByFile } from '@/arkfbp'
+import Card from '@/admin/common/Card/index.vue'
 
 @Component({
   name: 'DashboardPage',
   components: {
     DashboardItem,
     GridLayout: VueGridLayout.GridLayout,
-    GridItem: VueGridLayout.GridItem
+    GridItem: VueGridLayout.GridItem,
+    Card
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -137,8 +144,8 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.dashboard-page {
-  height: calc(100vh - 84px);
+.dashboard-page-grid {
+  height: calc(100vh - 84px) !important;
   overflow: auto;
   .single-app-page {
     width: 100%;

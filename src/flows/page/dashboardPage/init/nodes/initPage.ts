@@ -11,6 +11,23 @@ export class InitPage extends FunctionNode {
         items: [],
         actions: {
           created: []
+        },
+        card: {
+          title: '应用市集'
+        }
+      }
+    }
+    state['notice'] = {
+      type: 'TablePage',
+      state: {
+        name: 'notice',
+        table: {
+          data: [],
+          columns: []
+        },
+        card: {
+          title: '通知列表',
+          items: []
         }
       }
     }

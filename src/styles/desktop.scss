@@ -1,0 +1,16 @@
+.desktop.notice {
+  .dashboard-page {
+    display: inline-block;
+    width: 75%;
+    height: calc(100vh - 84px);
+    vertical-align: top;
+    ::v-deep .el-card {
+      height: 100%;
+    }
+  }
+  .table-page {
+    display: inline-block;
+    width: 25%;
+    height: 100%;
+  }
+}
