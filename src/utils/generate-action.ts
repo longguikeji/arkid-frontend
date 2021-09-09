@@ -2,7 +2,7 @@ import { getSchemaByPath } from '@/utils/schema'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
-export function getActionMapping(path: string, method: string, blank?: boolean, response?: boolean) {
+export function getActionMapping(path: string, method: string, blank?: boolean, response?: boolean, readonly?: boolean) {
   let mapping = {}, required
   const isResponse = response || method === 'get' ? true : false
   const schema = getSchemaByPath(path, method)
@@ -42,11 +42,11 @@ export function getActionMapping(path: string, method: string, blank?: boolean, 
   } else {
     required = filterReuqiredItems(schema)
     const props = schema.properties
-    const propTarget = `form.items.`
+    const propTarget = readonly ? `descriptions.items.` : `form.items.`
     for (const prop in props) {
       const item = props[prop]
       if (isResponse) {
-        getResponseMapping(prop, item, mapping, propTarget, blank)
+        getResponseMapping(prop, item, mapping, propTarget, blank, readonly)
       } else {
         getRequestMapping(prop, item, mapping, propTarget)
       }
@@ -59,7 +59,7 @@ export function getActionMapping(path: string, method: string, blank?: boolean, 
 // schema表示当前数据项在OpenAPI中的描述信息
 // response指的是生成的response响应体映射信息
 // target表示当前response指向那个Vue-Component内容，并最终去给该组件的vaule进行赋值
-function getResponseMapping(prop: string, schema: ISchema, response: any, target: string, blank: boolean = false) {
+function getResponseMapping(prop: string, schema: ISchema, response: any, target: string, blank: boolean = false, readonly: boolean = false) {
   const defaultValue = schema.type === 'boolean' ? !!schema.default : schema.default
   if (schema.allOf?.length || schema.oneOf?.length) {
     const dataSchema = getObjectSchema(schema)
@@ -67,7 +67,7 @@ function getResponseMapping(prop: string, schema: ISchema, response: any, target
       getResponseMapping(prop, dataSchema, response, target, blank)
     }
   } else {
-    const stateMapping = `${target}${prop}.state.value`
+    const stateMapping = readonly ? `${target}${prop}.value` : `${target}${prop}.state.value`
     response[stateMapping] = blank ? ( defaultValue !== undefined ? defaultValue : '' ) : schema.link || prop
   }
 }

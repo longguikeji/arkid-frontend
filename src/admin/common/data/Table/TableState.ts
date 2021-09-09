@@ -10,7 +10,7 @@ export interface SelectionState {
 
 export default interface TableState extends BaseState {
   columns?: Array<TableColumnState> // 表格的columns内容
-  selection?: SelectionState // 是否展示多选列，以及其中的信息
+  selection?: SelectionState | boolean // 是否展示多选列，以及其中的信息
   isExpand?: boolean // 是否可以展开table-column
   index?: boolean // 是否展示索引列
   indexWidth?: string // 索引列的宽度 必须配合 index 为 true 使用

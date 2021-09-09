@@ -28,7 +28,11 @@ export class StateNode extends FunctionNode {
     const schema = getSchemaByPath(path, method)
     if (!schema) return
     const { type, state } = pageState
-    state.card!.title = options?.description || ''
+    if (options?.readonly) {
+      state.descriptions!.title = options?.description || ''
+    } else {
+      state.card!.title = options?.description || ''
+    }
     switch (type) {
       case 'TablePage':
         this.initTableMainState(state, schema, options)
@@ -58,8 +62,10 @@ export class StateNode extends FunctionNode {
     const showReadOnly = options?.showReadOnly === false ? false : true,
           showWriteOnly = options?.showWriteOnly === false ? false : true,
           disabled = options?.disabled === false ? false : true
-    const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled)
-    if (form) {
+    const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled, options?.readonly)
+    if (options?.readonly) {
+      state.descriptions!.items = Object.assign({}, form!.items)
+    } else if (form) {
       if (!state.form) state.form = { items: {}, inline: false }
       const items = form.items
       state.form.items = items
@@ -146,15 +152,24 @@ export class StateNode extends FunctionNode {
   
   addGlobalButton(state: BasePage, type: string, button: ButtonState, key?: string) {
     if (type === 'FormPage') {
-      const buttons = state.buttons!
-      buttons.push(button)
-      const name = state.name
-      if (name?.includes('.') && buttons[0].label !== '取消') {
-        const parent = name.substring(0, name.lastIndexOf('.'))
-        buttons.unshift({
-          action: `${parent}.close${upperFirst(camelCase(key))}Dialog`,
-          label: '取消'
-        })
+      if (state.readonly) {
+        if (!state.descriptions.extra) {
+          state.descriptions!.extra = {
+            buttons: []
+          }
+        }
+        state.descriptions.extra.buttons.push(button)
+      } else {
+        const buttons = state.buttons!
+        buttons.push(button)
+        const name = state.name
+        if (name?.includes('.') && buttons[0].label !== '取消') {
+          const parent = name.substring(0, name.lastIndexOf('.'))
+          buttons.unshift({
+            action: `${parent}.close${upperFirst(camelCase(key))}Dialog`,
+            label: '取消'
+          })
+        }
       }
     } else {
       state.card?.buttons!.push(button)

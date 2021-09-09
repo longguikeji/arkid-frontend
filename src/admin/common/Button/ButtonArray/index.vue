@@ -25,7 +25,7 @@ import BaseVue from '@/admin/base/BaseVue'
 })
 export default class extends Mixins(BaseVue) {
   get state(): Array<ButtonState> {
-    return super.$state as Array<ButtonState>
+    return this.$state as Array<ButtonState>
   }
 }
 </script>

@@ -1,22 +1,29 @@
 <template>
-  <Card
-    class="form-page"
-    :path="getChildPath('card')"
-  >
-    <template v-if="state.select">
-      <b>{{ state.select.valueKey }}</b>
-      <Select
-        class="form-page-select"
-        :path="getChildPath('select')"
-      />
-    </template>
-    <Form :path="formPath" />
-    <template v-if="state.buttons">
-      <ButtonArray
-        :path="getChildPath('buttons')"
-        class="form-page-buttons"
-      />
-    </template>
+  <div>
+    <Descriptions
+      v-if="state.readonly === true"
+      :path="getChildPath('descriptions')"
+    />
+    <Card
+      v-else
+      class="form-page"
+      :path="getChildPath('card')"
+    >
+      <template v-if="state.select">
+        <b>{{ state.select.valueKey }}</b>
+        <Select
+          class="form-page-select"
+          :path="getChildPath('select')"
+        />
+      </template>
+      <Form :path="formPath" />
+      <template v-if="state.buttons">
+        <ButtonArray
+          :path="getChildPath('buttons')"
+          class="form-page-buttons"
+        />
+      </template>
+    </Card>
     <template v-if="state.dialogs">
       <Dialog
         v-for="dialogName in Object.keys(state.dialogs)"
@@ -24,7 +31,7 @@
         :path="getChildPath('dialogs.' + dialogName)"
       />
     </template>
-  </Card>
+  </div>
 </template>
 
 <script lang="ts">

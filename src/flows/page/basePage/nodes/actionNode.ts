@@ -59,7 +59,7 @@ export class ActionNode extends FunctionNode {
       blank = true
       flowName = 'arkfbp/flows/assign'
     }
-    let { mapping } = getActionMapping(path, method, blank, response)
+    let { mapping } = getActionMapping(path, method, blank, response, state.readonly)
     mapping = Object.assign(mapping, { data: '' })
     this.addFetchAction(state, path, method, mapping, undefined, flowName)
   }

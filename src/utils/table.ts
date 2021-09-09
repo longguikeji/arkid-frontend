@@ -165,5 +165,11 @@ export const TABLE_COLUMN_WIDTH = {
     'type': '300',
     'sort': '200',
     'actions': '100'
+  },
+  'profile_config_editfields': {
+
+  },
+  'profile_config_editfields.update': {
+    
   }
 }

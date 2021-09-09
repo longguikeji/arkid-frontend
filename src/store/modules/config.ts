@@ -12,12 +12,12 @@ interface IContactsConfig {
 }
 
 interface IUserConfig {
-  isEditFields: string[]
-  isLoggingDevice: boolean
-  isLoggingIp: boolean
-  isLogout: boolean
-  isLookToken: boolean
-  isManualOverdueToken: boolean
+  isEditFields?: string[]
+  isLoggingDevice?: boolean
+  isLoggingIp?: boolean
+  isLogout?: boolean
+  isLookToken?: boolean
+  isManualOverdueToken?: boolean
 }
 
 interface ITenantConfig {

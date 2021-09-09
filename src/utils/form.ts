@@ -6,7 +6,7 @@ import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false) {
+export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false, readonly: boolean = false) {
   const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -34,12 +34,12 @@ export default function generateForm(schema: ISchema, showReadOnly: boolean = tr
   } else {
     const formState:FormState = {}
     formPageState.form = formState
-    formState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '')
+    formState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled, '', readonly)
   }
   return formPageState
 }
 
-function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', ) {
+function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', readonly: boolean = false) {
   const tempItems:{[prop:string]:FormItemState} = {}
   const requiredSchema = schema.required
   for (const prop in schema.properties) {
@@ -48,18 +48,18 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: b
     }
     const propSchema = schema.properties[prop]
     const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired)
+    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired, readonly)
     if (item) tempItems[prop] = item
   }
   return tempItems
 }
 
-function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean) {
+function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean, readonly: boolean = false) {
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
   if (schema.format === 'download_url') {
-    item = createLinkItem(prop, schema)
+    item = createLinkItem(prop, schema, readonly)
   } else if (schema.page && schema.type !== 'object') {
     item = createInputListItem(prop, schema, disabled, required)
   } else if (schema.type === 'array') {
@@ -67,11 +67,11 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   } else if (schema.enum) {
     item = createEnumItem(prop, schema, disabled, required)
   } else if (schema.type === 'integer') {
-    item = createInputNumberItem(prop, schema, disabled, required)
+    item = createInputNumberItem(prop, schema, disabled, required, readonly)
   } else if (schema.type === 'string') {
-    item = createInputItem(prop, schema, disabled, required)
+    item = createInputItem(prop, schema, disabled, required, readonly)
   } else if (schema.type === 'boolean') {
-    item = createBooleanItem(prop, schema, disabled, required)
+    item = createBooleanItem(prop, schema, disabled, required, readonly)
   } else if (schema.type === 'object') {
     item = createObjectItem(prop, schema, showReadOnly, showWriteOnly, disabled)
   } else if (schema.allOf?.length || schema.oneOf?.length) { 
@@ -80,14 +80,22 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   return item
 }
 
-function createLinkItem(prop: string, schema: ISchema) {
-  return {
-    type: 'Link',
-    label: schema.title,
-    prop: prop,
-    state: {
-      value: schema.default,
-      displayContent: 'link'
+function createLinkItem(prop: string, schema: ISchema, readonly: boolean = false) {
+  if (readonly) {
+    return {
+      label: schema.title,
+      value: schema.default
+    }
+  } else {
+    return {
+      type: 'Link',
+      label: schema.title,
+      prop: prop,
+      state: {
+        value: schema.default,
+        displayContent: 'link',
+        readonly: readonly
+      }
     }
   }
 }
@@ -161,7 +169,8 @@ function createEnumItem(prop: string, schema: ISchema, disabled: boolean, requir
   }
 }
 
-function createInputNumberItem(prop: string, schema: ISchema, disabled: boolean, required: boolean) {
+function createInputNumberItem(prop: string, schema: ISchema, disabled: boolean, required: boolean, readonly: boolean = false) {
+  if (readonly) return { label: schema.title, value: schema.default }
   return {
     type: 'InputNumber',
     label: schema.title,
@@ -169,14 +178,15 @@ function createInputNumberItem(prop: string, schema: ISchema, disabled: boolean,
     state: {
       value: schema.default,
       default: schema.default,
-      readonly: schema.readOnly,
+      readonly: schema.readOnly || readonly,
       required: required,
       disabled: disabled && !schema.readOnly
     }
   }
 }
 
-function createInputItem(prop: string, schema: ISchema, disabled: boolean, required: boolean) {
+function createInputItem(prop: string, schema: ISchema, disabled: boolean, required: boolean, readonly: boolean = false) {
+  if (readonly) return { label: schema.title, value: schema.default }
   return {
     type: schema.format === 'html' ? 'Rich' : 'Input',
     label: schema.title,
@@ -184,7 +194,7 @@ function createInputItem(prop: string, schema: ISchema, disabled: boolean, requi
     state: {
       value: schema.default,
       default: schema.default,
-      readonly: schema.readOnly,
+      readonly: schema.readOnly || readonly,
       placeholder: '请输入' + schema.title,
       required: required,
       showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
@@ -199,7 +209,8 @@ function createInputItem(prop: string, schema: ISchema, disabled: boolean, requi
   }
 }
 
-function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, required: boolean) {
+function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, required: boolean, readonly: boolean = false) {
+  if (readonly) return { label: schema.title, value: schema.default }
   return {
     type: 'SwitchForm',
     label: schema.title,
@@ -209,6 +220,7 @@ function createBooleanItem(prop: string, schema: ISchema, disabled: boolean, req
       disabled: disabled && !schema.readOnly,
       default: schema.default || false,
       required: required,
+      readonly: readonly
     }
   }
 }

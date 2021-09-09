@@ -10,9 +10,7 @@
     fit
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow"
-    @select="handleSingleSelectionChange"
     @row-click="handleRowClick"
-    @select-all="handleAllSelectionChange"
   >
     <el-table-column
       v-if="state.isExpand"
@@ -79,10 +77,6 @@ export default class extends Mixins(BaseVue) {
     return this.$state as TableState
   }
 
-  get default() {
-    return this.state.selection?.default
-  }
-
   mounted() {
     if (this.state.sortable) {
       this.initRowSort()
@@ -110,42 +104,6 @@ export default class extends Mixins(BaseVue) {
   handleRowClick(row, column, event) {
     this.state.row = row
     this.runAction(this.state.rowClickAction)
-  }
-
-  handleSingleSelectionChange(selection, row) {
-    this.dealSelectionValue(row)
-    this.runAction(this.state.selection!.action)
-  }
-
-  handleAllSelectionChange(selection) {
-    this.dealAllSelectionValue(selection)
-    this.runAction(this.state.selection!.action)
-  }
-
-  dealSelectionValue(value) {
-    const values = this.state.selection!.values
-    const defaults = this.state.selection!.default
-    const ids = values.map(item => item.uuid)
-    if (ids.includes(value.uuid)) {
-      for (let i = 0, len = values.length; i < len; i++) {
-        values.splice(i, 1)
-        break
-      }
-    } else {
-      values.push(value)
-    }
-    if (!defaults!.includes(value.uuid)) {
-      defaults?.push(value.uuid)
-    }
-  }
-
-  dealAllSelectionValue(value) {
-    let values = this.state.selection!.values
-    if (values?.length) {
-      values.length = 0
-    } else {
-      values = value
-    }
   }
 }
 </script>

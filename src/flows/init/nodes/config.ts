@@ -108,22 +108,10 @@ export class ConfigNode extends AuthApiNode {
   }
 
   async setUserConfig(tenantUUId: string) {
-    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig', 'get')) {
-      this.url = `/api/v1/tenant/${tenantUUId}/userconfig`
-      this.method = 'GET'
-      const outputs = await super.run()
-      const data = outputs?.data
-      if (data) {
-        ConfigModule.setUserConfig({
-          isEditFields: data.is_edit_fields,
-          isLoggingDevice: data.is_logging_device,
-          isLoggingIp: data.is_logging_ip,
-          isLogout: data.is_logout,
-          isLookToken: data.is_look_token,
-          isManualOverdueToken: data.is_manual_overdue_token
-        })
-      }
-    }
+    await this.setUserConfigLogging(tenantUUId)
+    await this.setUserConfigLogout(tenantUUId)
+    await this.setUserConfigEditFields(tenantUUId)
+    await this.setUserConfigToken(tenantUUId)
   }
 
   async setTenantConfig(tenantUUId: string) {
@@ -152,4 +140,60 @@ export class ConfigNode extends AuthApiNode {
     }
   }
 
+  async setUserConfigLogging(tenantUUId: string) {
+    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logging', 'get')) {
+      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/logging`
+      this.method = 'GET'
+      const data = await super.run()
+      if (data) {
+        ConfigModule.setUserConfig({
+          isLoggingDevice: data.is_logging_device,
+          isLoggingIp: data.is_logging_ip
+        })
+      }
+    }
+  }
+
+  async setUserConfigLogout(tenantUUId: string) {
+    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logout', 'get')) {
+      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/logout`
+      this.method = 'GET'
+      const data = await super.run()
+      if (data) {
+        ConfigModule.setUserConfig({
+          isLogout: data.is_logout
+        })
+      }
+    }
+  }
+
+  async setUserConfigEditFields(tenantUUId: string) {
+    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/editfields', 'get')) {
+      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/editfields`
+      this.method = 'GET'
+      const data = await super.run()
+      if (data?.results) {
+        const fields = data.results.map(field => {
+          return field.en_name || field.name
+        })
+        ConfigModule.setUserConfig({
+          isEditFields: fields
+        })
+      }
+    }
+  }
+
+  async setUserConfigToken(tenantUUId: string) {
+    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/token', 'get')) {
+      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/token`
+      this.method = 'GET'
+      const data = await super.run()
+      if (data) {
+        ConfigModule.setUserConfig({
+          isLookToken: data.is_look_token,
+          isManualOverdueToken: data.is_manual_overdue_token
+        })
+      }
+    }
+  }
 }
