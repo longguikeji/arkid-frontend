@@ -13,11 +13,11 @@
     </template>
     <template v-if="items">
       <el-descriptions-item
-        v-for="(item, prop, index) in items"
+        v-for="(key, index) in keys"
         :key="index"
-        :label="item.label"
+        :label="items[key].label"
       >
-        {{ item.value }}
+        {{ items[key].value }}
       </el-descriptions-item>
     </template>
   </el-descriptions>
@@ -42,6 +42,20 @@ export default class Descriptions extends Mixins(BaseVue) {
 
   get items() {
     return this.state.items
+  }
+
+  get keys() {
+    const keys = []
+    let isuuid = false
+    Object.keys(this.state.items).forEach(key => {
+      if (key !== 'uuid') {
+        keys.push(key)
+      } else {
+        isuuid = true
+      }
+    })
+    if (isuuid) keys.push('uuid')
+    return keys
   }
 }
 </script>
