@@ -27,13 +27,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
 import DescriptionsState from './DescriptionsState'
-import DescriptionsItem from './DescriptionsItem/index.vue'
 
 @Component({
-  name: 'Descriptions',
-  components: {
-    DescriptionsItem
-  }
+  name: 'Descriptions'
 })
 export default class Descriptions extends Mixins(BaseVue) {
   get state(): DescriptionsState {

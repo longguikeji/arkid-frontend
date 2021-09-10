@@ -1,4 +1,4 @@
-FROM node:10.20.1-buster AS build_deps
+FROM node:12-buster AS build_deps
 USER root
 WORKDIR /workspace
 
