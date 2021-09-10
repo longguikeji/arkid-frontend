@@ -60,12 +60,23 @@ export class AddButton extends FunctionNode {
         }
       }
     ]
+    pageState.state.actions!.closeSwitchTenantDialog = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.switch.visible': false
+        }
+      }
+    ]
 
     const switchTenantPage = {
       type: 'FormPage',
       state: {
         name: 'tenant.switch',
         created: 'created',
+        card: {
+          title: '切换租户'
+        },
         form: {
           items: {
             uuid: {
@@ -89,6 +100,10 @@ export class AddButton extends FunctionNode {
           }
         },
         buttons: [
+          {
+            action: 'tenant.closeSwitchTenantDialog',
+            label: '取消'
+          },
           {
             label: '确定切换',
             type: 'primary',
