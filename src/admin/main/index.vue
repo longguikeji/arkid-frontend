@@ -1,19 +1,13 @@
 <template>
   <div
-    v-if="isStatePage"
-    style="height: 100%"
+    v-if="state"
     :class="page"
   >
-    <div v-if="isMultiPage">
-      <AdminComponent
-        v-for="(i, index) in page"
-        :key="index"
-        :path="`admin.adminState.${i}`"
-      />
-    </div>
-    <div v-else>
-      <AdminComponent :path="`admin.adminState.${page}`" />
-    </div>
+    <AdminComponent
+      v-for="(name, index) in names"
+      :key="index"
+      :path="`admin.adminState.${name}`"
+    />
   </div>
   <div v-else-if="url">
     <iframe :src="url" />
@@ -28,10 +22,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import BaseVue from '@/admin/base/BaseVue'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
-import BaseVue from '@/admin/base/BaseVue'
-import { isArray, isObject } from 'lodash'
 
 @Component({
   name: 'Admin',
@@ -50,34 +43,32 @@ export default class extends Vue {
     return this.$route.meta.url
   }
 
-  private get isMultiPage() {
-    return isArray(this.page)
-  }
-
-  private get isStatePage(): boolean {
-    return isObject(this.state)
+  private get names(): string[] {
+    return typeof this.page === 'string' ? [this.page] : this.page
   }
 
   async created() {
     if (this.page) {
-      await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
-        if (Object.keys(result).length > 0) {
-          await AdminModule.setAdmin(result)
+      await runFlowByFile('flows/initPage', { page: this.page }).then(
+        async(state) => {
+          if (state && Object.keys(state).length > 0) {
+            await AdminModule.setAdminState(state)
+          }
         }
-      })
+      )
     }
   }
 
   async destroyed() {
-    await AdminModule.setAdmin(null)
+    await AdminModule.setAdminState(null)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/group.scss';
-@import '../../styles/desktop.scss';
-@import '../../styles/contacts.scss';
+@import "../../styles/group.scss";
+@import "../../styles/desktop.scss";
+@import "../../styles/contacts.scss";
 
 .placeholder {
   text-align: center;

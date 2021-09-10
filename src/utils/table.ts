@@ -114,7 +114,7 @@ export const TABLE_COLUMN_WIDTH = {
   },
   'contacts_user_config': {
     'name': '200',
-    'actions': '50'
+    'actions': '100'
   },
   'user_table': {
     'bind_info': '300',
