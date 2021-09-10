@@ -40,4 +40,5 @@ export default interface TableColumnState extends BaseState {
   children?: Array<TableColumnState>
   scope?: AdminComponentState
   scopeColumn?: Array<any>
+  hidden?: boolean // 是否隐藏该列
 }

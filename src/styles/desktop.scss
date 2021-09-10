@@ -1,7 +1,7 @@
-.group, .group_user {
-  .tree-page {
+.desktop.notice {
+  .dashboard-page {
     display: inline-block;
-    width: 25%;
+    width: 75%;
     height: calc(100vh - 84px);
     vertical-align: top;
     ::v-deep .el-card {
@@ -10,7 +10,7 @@
   }
   .table-page {
     display: inline-block;
-    width: 75%;
+    width: 25%;
     height: 100%;
   }
 }

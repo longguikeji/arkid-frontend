@@ -74,7 +74,39 @@ export default class extends Mixins(BaseVue) {
 .dialog__actions__button {
   display: inline-block !important;
 }
-::v-deep .el-form-item__label {
-  width: 100px;
+::v-deep .el-dialog {
+  .el-dialog__header {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .el-dialog__body {
+    padding: 0px;
+  }
+  .el-dialog__headerbtn {
+    z-index: 100;
+  }
+  .el-dialog__close {
+    z-index: 100;
+  }
+  .el-dialog__body .el-card {
+    &.form-page,
+    &.table-page,
+    &.tree-page {
+      box-shadow: none;
+      border-radius: 0px;
+      border: 0px;
+      &.is-always-shadow {
+        box-shadow: none;
+      }
+    }
+  }
+  .el-card__header {
+    .buttons {
+      right: 30px !important;
+    }
+  }
+  .el-card__body {
+    padding: 20px;
+  }
 }
 </style>

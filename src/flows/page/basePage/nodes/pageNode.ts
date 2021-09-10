@@ -14,6 +14,8 @@ import { TablePage } from '@/admin/TablePage/TablePageState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import { TreePage } from '@/admin/TreePage/TreePageState'
 import SelectState from '@/admin/common/Form/Select/SelectState'
+import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
 
 export interface BasePageActions {
   [name: string]: Array<string | IFlow>
@@ -33,6 +35,8 @@ export interface BasePage extends BaseState {
   actions?: BasePageActions
   pagination?: PaginationState
   data?: any
+  descriptions?: any
+  readonly?: boolean
   list?: {
     header?: CardState
     data?: Array<ListItemState>
@@ -41,13 +45,13 @@ export interface BasePage extends BaseState {
 
 export class Page {
 
-  static createPage(type: string, currentPage: string) {
+  static createPage(type: string, currentPage: string, options: BasePageOptions) {
     const page = new this()
     switch (type) {
       case 'TablePage':
         return this.createTablePage(page, currentPage)
       case 'FormPage':
-        return this.createFormPage(page, currentPage)
+        return this.createFormPage(page, currentPage, options)
       case 'TreePage':
         return this.createTreePage(page, currentPage)
     }
@@ -81,7 +85,7 @@ export class Page {
     }
   }
 
-  private static createFormPage(page: BasePage, currentPage: string): FormPage {
+  private static createFormPage(page: BasePage, currentPage: string, options: BasePageOptions): FormPage {
     return {
       name: currentPage,
       created: page.created,
@@ -90,7 +94,9 @@ export class Page {
       dialogs: page.dialogs,
       actions: page.actions,
       buttons: page.buttons,
-      data: page.data
+      data: page.data,
+      readonly: options.readonly,
+      descriptions: options.readonly ? { items: {} } : undefined
     }
   }
 
@@ -99,11 +105,12 @@ export class Page {
     title: '',
     buttons: []
   }
-  filter: FormState = {}
+  filter: FormState | undefined = undefined
   table: TableState = {
     columns: [],
     data: [],
-    selection: undefined
+    selection: undefined,
+    border: true
   }
   form: FormState = {
     items: {},
@@ -131,16 +138,16 @@ export class Page {
 
 export class PageNode extends FunctionNode {
   async run() {
-    const { state, initContent, currentPage } = this.inputs
+    const { state, initContent, currentPage, options } = this.inputs
     const type = underlinedStrToUpperCamelStr(initContent.type)
-    state[currentPage] = this.getPageState(type, currentPage)
+    state[currentPage] = this.getPageState(type, currentPage, options)
     return this.inputs
   }
 
-  getPageState(type: string, currentPage: string) {
+  getPageState(type: string, currentPage: string, options: BasePageOptions) {
     return {
       type,
-      state: Page.createPage(type, currentPage)
+      state: Page.createPage(type, currentPage, options)
     }
   }
 }

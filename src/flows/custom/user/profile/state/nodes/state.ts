@@ -11,7 +11,7 @@ export class ChangePageStateNode extends FunctionNode {
       name: 'flows/common/logout'
     })
     // control logoff button
-    const buttons = pageState.buttons
+    const buttons = pageState.descriptions.extra.buttons
     const isLogout = ConfigModule.user.isLogout
     buttons.forEach(button => {
       if (button.action === 'logoff') {

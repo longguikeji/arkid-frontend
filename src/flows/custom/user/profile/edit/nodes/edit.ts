@@ -8,7 +8,7 @@ export class ControlEditFieldsNode extends FunctionNode {
     const pageState = state[page].state
     const items = pageState.form.items
     const editFields = ConfigModule.user.isEditFields
-    if (items) {
+    if (items && editFields) {
       for (const key in items) {
         if (editFields?.indexOf(key) < 0) {
           const item = items[key]

@@ -76,6 +76,8 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 @import '../../styles/group.scss';
+@import '../../styles/desktop.scss';
+@import '../../styles/contacts.scss';
 
 .placeholder {
   text-align: center;

@@ -6,9 +6,11 @@ import OpenAPI from '@/config/openapi'
 const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
 const PAGE_DISABLED_TRUE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
 const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
+const PAGE_READONLY = [ 'profile', 'tenant_config' ]
 
 export interface BasePageOptions {
   description?: string
+  readonly?: boolean
   showReadOnly?: boolean
   showWriteOnly?: boolean
   disabled?: boolean
@@ -39,6 +41,7 @@ export class InitPage extends FunctionNode {
     if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
     if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
     if (EXPAND_TABLE_COLUMN.includes(currentPage)) options.isExpandTableColumn = true
+    if (PAGE_READONLY.includes(currentPage)) options.readonly = true
     let flow = 'flows/page/basePage'
     if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
     await runFlowByFile(flow, { state, initContent, currentPage, options })
@@ -102,6 +105,10 @@ export class InitPage extends FunctionNode {
         break
       case 'profile.update':
         customFlow = 'flows/custom/user/profile/edit'
+        break
+      case 'profile_config_editfields.update':
+        customFlow = 'flows/custom/editfields/state'
+        break
     }
     if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
   }

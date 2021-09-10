@@ -133,8 +133,8 @@ export default class extends Vue {
   width: 48px;
   height: 48px;
   position: absolute;
-  top: 200px !important;
-  left: -40px;
+  top: 350px !important;
+  left: -20px;
   text-align: center;
   font-size: 24px;
   border-radius: 6px 0 0 6px !important;
@@ -147,6 +147,8 @@ export default class extends Vue {
   i {
     font-size: 24px;
     line-height: 48px;
+    float: left;
+    padding-left: 5px;
   }
 }
 </style>

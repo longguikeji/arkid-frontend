@@ -1,27 +1,21 @@
 <template>
-  <el-tooltip
-    :disabled="isDisabledToolTip"
-    :content="buttonTip.content"
-    :effect="buttonTip.effect"
+  <el-button
+    :size="state.size || 'small'"
+    :type="state.type"
+    :plain="state.plain"
+    :round="state.round"
+    :circle="state.circle"
+    :loading="state.loading"
+    :disabled="state.disabled"
+    :icon="state.icon"
+    :autofocus="state.autofocus"
+    :native-type="state.nativeType"
+    @click.stop="clickHandler"
   >
-    <el-button
-      :size="state.size || 'small'"
-      :type="state.type"
-      :plain="state.plain"
-      :round="state.round"
-      :circle="state.circle"
-      :loading="state.loading"
-      :disabled="state.disabled"
-      :icon="state.icon"
-      :autofocus="state.autofocus"
-      :native-type="state.nativeType"
-      @click.stop="clickHandler"
-    >
-      <template v-if="state.label">
-        {{ state.label }}
-      </template>
-    </el-button>
-  </el-tooltip>
+    <template v-if="state.label">
+      {{ state.label }}
+    </template>
+  </el-button>
 </template>
 
 <script lang="ts">
@@ -34,19 +28,11 @@ import BaseVue from '@/admin/base/BaseVue'
 })
 export default class extends Mixins(BaseVue) {
   get state(): ButtonState {
-    return super.$state as ButtonState
-  }
-
-  get isDisabledToolTip(): boolean {
-    return !this.state.tip || (this.state.tip && this.state.tip.disabled) || false
-  }
-
-  get buttonTip() {
-    return this.state.tip || {}
+    return this.$state as ButtonState
   }
 
   private async clickHandler() {
-    if (this.state.type === 'warning' || this.state.type === 'danger' || this.state.isConfirm) {
+    if (this.state.type === 'warning' || this.state.type === 'danger') {
       let headMessage = ''
       let confirmType: any
       switch (this.state.type) {
@@ -59,7 +45,7 @@ export default class extends Mixins(BaseVue) {
           confirmType = 'warning'
           break
       }
-      this.$confirm(this.state.hint || `确定执行${this.state.label || this.state.tip?.content}操作吗？`, headMessage, {
+      this.$confirm(this.state.hint || `确定执行${this.state.label}操作吗？`, headMessage, {
         confirmButtonText: this.state.label,
         cancelButtonText: '取消',
         type: confirmType

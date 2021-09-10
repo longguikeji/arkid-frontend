@@ -1,22 +1,29 @@
 <template>
-  <Card
-    :path="getChildPath('card')"
-    class="form-page"
-  >
-    <template v-if="state.select">
-      <b>{{ state.select.valueKey }}</b>
-      <Select
-        class="form-page-select"
-        :path="getChildPath('select')"
-      />
-    </template>
-    <Form :path="formPath" />
-    <template v-if="state.buttons">
-      <ButtonArray
-        :path="getChildPath('buttons')"
-        class="form__page__buttons"
-      />
-    </template>
+  <div>
+    <Descriptions
+      v-if="state.readonly === true"
+      :path="getChildPath('descriptions')"
+    />
+    <Card
+      v-else
+      class="form-page"
+      :path="getChildPath('card')"
+    >
+      <template v-if="state.select">
+        <b>{{ state.select.valueKey }}</b>
+        <Select
+          class="form-page-select"
+          :path="getChildPath('select')"
+        />
+      </template>
+      <Form :path="formPath" />
+      <template v-if="state.buttons">
+        <ButtonArray
+          :path="getChildPath('buttons')"
+          class="form-page-buttons"
+        />
+      </template>
+    </Card>
     <template v-if="state.dialogs">
       <Dialog
         v-for="dialogName in Object.keys(state.dialogs)"
@@ -24,7 +31,7 @@
         :path="getChildPath('dialogs.' + dialogName)"
       />
     </template>
-  </Card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -74,11 +81,16 @@ export default class extends Mixins(BaseVue) {
   width: 1000px;
 }
 ::v-deep .tui-editor-defaultUI { width: 1000px;}
-.form__page__buttons {
+.form-page-buttons {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   margin-top: 20px;
+}
+.el-dialog {
+  .form-page-buttons {
+    justify-content: center;
+  }
 }
 .form-page-select {
   display: inline-block;

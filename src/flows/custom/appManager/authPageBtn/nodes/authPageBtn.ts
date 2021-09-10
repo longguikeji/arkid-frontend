@@ -1,22 +1,27 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import authPage from '@/config/auth/auth_page.json'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { getButtonIcon } from '@/utils/button'
 
 export class AuthPageBtn extends FunctionNode {
   async run() {
     const { state, page } = this.inputs
     const pageState: AdminComponentState = state[page]
     const columns = pageState.state.table?.columns
-    columns[columns.length - 1]?.scope?.state?.push({
-      type: 'info',
-      action: 'openAuthDialog',
-      icon: getButtonIcon('auth'),
-      tip: {
-        content: '配置授权页面'
-      },
-      circle: true
-    })
+    const actionState = columns[columns.length - 1]?.scope?.state
+    actionState[2] = {
+      form: 'dropdown',
+      value: '更多',
+      size: 'small',
+      clearable: false,
+      buttons: [ {
+        ...actionState[2],
+        plain: true
+      }, {
+        action: 'openAuthDialog',
+        label: '配置授权页面',
+        plain: true
+      } ]
+    }
     pageState.state.actions!.openAuthDialog = [
       {
         name: 'arkfbp/flows/cancelValidate'

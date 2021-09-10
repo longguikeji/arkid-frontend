@@ -1,6 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { getButtonIcon, getButtonDefaultLabel } from '@/utils/button'
 
 export class AddButton extends FunctionNode {
 
@@ -13,11 +12,7 @@ export class AddButton extends FunctionNode {
     buttons.push({
       type: 'danger',
       action: 'logout',
-      icon: getButtonIcon('logout'),
-      tip: {
-        content: getButtonDefaultLabel('logout'),
-      },
-      circle: true
+      label: '退出登录'
     })
     pageState.state.actions!.logout = [
       {
@@ -52,11 +47,7 @@ export class AddButton extends FunctionNode {
           {
             type: 'primary',
             action: 'openSwitchTenantDialog',
-            icon: getButtonIcon('switch'),
-            tip: {
-              content: getButtonDefaultLabel('switch')
-            },
-            circle: true
+            label: '切换租户'
           }
         ]
       }
@@ -69,12 +60,23 @@ export class AddButton extends FunctionNode {
         }
       }
     ]
+    pageState.state.actions!.closeSwitchTenantDialog = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          'dialogs.switch.visible': false
+        }
+      }
+    ]
 
     const switchTenantPage = {
       type: 'FormPage',
       state: {
         name: 'tenant.switch',
         created: 'created',
+        card: {
+          title: '切换租户'
+        },
         form: {
           items: {
             uuid: {
@@ -98,6 +100,10 @@ export class AddButton extends FunctionNode {
           }
         },
         buttons: [
+          {
+            action: 'tenant.closeSwitchTenantDialog',
+            label: '取消'
+          },
           {
             label: '确定切换',
             type: 'primary',

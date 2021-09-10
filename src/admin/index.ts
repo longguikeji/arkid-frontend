@@ -2,6 +2,7 @@ import Vue from 'vue'
 
 import Button from '@/admin/common/Button/index.vue'
 import ButtonArray from '@/admin/common/Button/ButtonArray/index.vue'
+import ButtonDropdown from '@/admin/common/Button/ButtonDropdown/index.vue'
 import Link from '@/admin/common/Link/index.vue'
 import Input from '@/admin/common/Form/Input/index.vue'
 import InputList from '@/admin/common/Form/InputList/index.vue'
@@ -53,11 +54,13 @@ import TablePage from '@/admin/TablePage/index.vue'
 import TreePage from '@/admin/TreePage/index.vue'
 import DashboardPage from '@/admin/DashboardPage/index.vue'
 import Password from '@/admin/common/Password/index.vue'
+import Descriptions from '@/admin/common/Descriptions/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
 Vue.component('Button', Button)
 Vue.component('ButtonArray', ButtonArray)
+Vue.component('ButtonDropdown', ButtonDropdown)
 Vue.component('Link', Link)
 Vue.component('Input', Input)
 Vue.component('InputList', InputList)
@@ -107,3 +110,4 @@ Vue.component('TablePage', TablePage)
 Vue.component('TreePage', TreePage)
 Vue.component('DashboardPage', DashboardPage)
 Vue.component('Password', Password)
+Vue.component('Descriptions', Descriptions)

@@ -81,7 +81,7 @@ export interface ITagPage {
 export interface ITagPageAction {
   path: string
   method: string
-  description?: string
+  description: string
 }
 
 export interface ITagUpdateOperation {
@@ -95,7 +95,7 @@ export interface ITagPageMultiAction {
 
 export interface ITagPageMapping {
   tag: string
-  description?: string
+  description: string
 }
 
 export interface ITagPageOperation {

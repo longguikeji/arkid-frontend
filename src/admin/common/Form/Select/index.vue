@@ -4,7 +4,7 @@
       v-model="state.value"
       :placeholder="state.placeholder"
       :multiple="state.multiple"
-      :clearable="state.clearable || true"
+      :clearable="state.clearable"
       :disabled="state.disabled"
       :size="state.size"
       @change="changeSelectValue"

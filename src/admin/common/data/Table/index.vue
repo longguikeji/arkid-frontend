@@ -9,15 +9,16 @@
     :size="state.size"
     fit
     :show-header="state.showHeader"
-    :highlight-current-row="state.highlightCurrentRow || true"
-    @select="handleSingleSelectionChange"
+    :highlight-current-row="state.highlightCurrentRow"
     @row-click="handleRowClick"
-    @select-all="handleAllSelectionChange"
+    @select="handleRowSelect"
+    @select-all="handleSelectAll"
   >
     <el-table-column
       v-if="state.isExpand"
       type="expand"
       fixed="left"
+      align="center"
     >
       <template slot-scope="scope">
         <el-form
@@ -40,13 +41,15 @@
       type="selection"
       :width="state.selection.width || '50'"
       fixed="left"
+      align="center"
     />
     <el-table-column
       v-if="state.index || true"
       type="index"
-      :width="state.indexWidth || '50'"
+      :width="state.indexWidth || '60'"
       label="#"
       fixed="left"
+      align="center"
     />
     <template v-if="state.columns.length">
       <TableColumn
@@ -59,9 +62,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import TableState from './TableState'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
+import TableState, { SelectionState } from './TableState'
 import TableColumn from './TableColumn/index.vue'
+
 import BaseVue from '@/admin/base/BaseVue'
 import Sortable from 'sortablejs'
 
@@ -78,6 +82,11 @@ export default class extends Mixins(BaseVue) {
 
   get default() {
     return this.state.selection?.default
+  }
+
+  @Watch('default')
+  onDefaultValueChange() {
+    this.initSelection()
   }
 
   mounted() {
@@ -109,40 +118,20 @@ export default class extends Mixins(BaseVue) {
     this.runAction(this.state.rowClickAction)
   }
 
-  handleSingleSelectionChange(selection, row) {
-    this.dealSelectionValue(row)
-    this.runAction(this.state.selection!.action)
-  }
-
-  handleAllSelectionChange(selection) {
-    this.dealAllSelectionValue(selection)
-    this.runAction(this.state.selection!.action)
-  }
-
-  dealSelectionValue(value) {
-    const values = this.state.selection!.values
-    const defaults = this.state.selection!.default
-    const ids = values.map(item => item.uuid)
-    if (ids.includes(value.uuid)) {
-      for (let i = 0, len = values.length; i < len; i++) {
-        values.splice(i, 1)
-        break
-      }
-    } else {
-      values.push(value)
-    }
-    if (!defaults!.includes(value.uuid)) {
-      defaults?.push(value.uuid)
+  initSelection() {
+    if (this.default) {
+      this.default.forEach(row => {
+        (this.$refs.arkidTable as any).toggleRowSelection(row)
+      })
     }
   }
 
-  dealAllSelectionValue(value) {
-    let values = this.state.selection!.values
-    if (values?.length) {
-      values.length = 0
-    } else {
-      values = value
-    }
+  handleRowSelect(selection: any, row: any) {
+    this.state.selection!.values = selection
+  }
+
+  handleSelectAll(selection: any) {
+    this.state.selection!.values = selection
   }
 }
 </script>

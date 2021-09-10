@@ -1,5 +1,6 @@
 <template>
   <el-table-column
+    v-if="state.hidden !== true"
     :index="state.index"
     :column-key="state.columnKey"
     :label="state.label"
@@ -7,6 +8,7 @@
     :width="state.width"
     :fixed="state.fixed"
     :align="state.align || 'center'"
+    :show-overflow-tooltip="state.showOverflowTooltip"
   >
     <template v-if="state.children">
       <TableColumn

@@ -1,5 +1,7 @@
 <template>
-  <span v-if="state.readonly">{{ state.value }} </span>
+  <div v-if="state.readonly">
+    {{ state.value }}
+  </div>
   <div v-else>
     <el-input
       v-model="state.value"

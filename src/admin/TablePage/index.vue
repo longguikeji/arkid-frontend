@@ -5,6 +5,7 @@
       :path="getChildPath('card')"
     >
       <Form
+        v-if="state.filter"
         :path="getChildPath('filter')"
         class="table-page-filter"
       />
@@ -69,13 +70,15 @@ export default class extends Mixins(BaseVue) {
     display: inline-block;
   }
   ::v-deep  .el-card__body {
-    padding: 10px;
     height: 100% !important;
+    .table-page-filter {
+      padding: 10px;
+    }
     .el-table {
       height: 90% !important;
     }
     .el-pagination {
-      margin-top: 10px;
+      margin: 10px;
     }
     .el-dialog.is-fullscreen {
       min-height: 100% !important;
