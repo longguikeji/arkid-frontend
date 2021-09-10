@@ -145,13 +145,11 @@ export default class extends Mixins(BaseVue) {
   left: 50%;
   transform: translateX(-50%);
 }
-.custom-tree-node {
-  position: relative;
-}
 .custom-tree-node-other {
   margin-left: 20px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  right: 10px;
 }
 </style>
