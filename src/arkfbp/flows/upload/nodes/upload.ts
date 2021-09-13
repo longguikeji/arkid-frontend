@@ -1,8 +1,8 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { ConfigModule } from '@/store/modules/config'
 import getStateByPath from '@/utils/state'
 
-export class Upload extends AuthApiNode {
+export class Upload extends APINode {
   async run() {
     const com = this.inputs.com
     const state = getStateByPath(com.$store.state, com.path)

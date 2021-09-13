@@ -1,6 +1,6 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 
-export class Sort extends AuthApiNode {
+export class Sort extends APINode {
   async run() {
     this.url = this.inputs.url
     this.method = this.inputs.method

@@ -1,7 +1,7 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { TenantModule } from '@/store/modules/tenant'
 
-export class OptionsNode extends AuthApiNode {
+export class OptionsNode extends APINode {
   async run() {
     let { com, url } = this.inputs
     url = url.replace('{tenant_uuid}', TenantModule.currentTenant.uuid)

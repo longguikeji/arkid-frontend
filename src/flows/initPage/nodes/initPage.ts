@@ -52,7 +52,7 @@ export class InitPage extends FunctionNode {
   }
 
   async toPerformPageBaseFlow(page: string, state: any) {
-    // debugger
+    // ...
   }
 
   async toPerformPageCustomFlow(page: string, state: any) {

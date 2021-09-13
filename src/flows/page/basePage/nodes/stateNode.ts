@@ -301,7 +301,8 @@ export class StateNode extends FunctionNode {
         type,
         disabled: key === 'export' ? true : false,
         label: description,
-        hint
+        hint,
+        name: key
       }
     } else {
       return null

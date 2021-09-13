@@ -1,4 +1,4 @@
-import { AuthApiNode } from "@/arkfbp/nodes/authApiNode"
+import { APINode } from '@/arkfbp/nodes/apiNode'
 
 interface AuthTemplate {
   icon?: string
@@ -16,7 +16,7 @@ interface AuthButton {
   height?: number
 }
 
-export class SaveTemplate extends AuthApiNode {
+export class SaveTemplate extends APINode {
 
   private style: string = ''
 
