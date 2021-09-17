@@ -76,6 +76,13 @@ export interface ITagPage {
   init: ITagPageAction
   global?: ITagPageOperation
   local?: ITagPageOperation
+  node?: ITagPageNodeAction
+}
+
+export interface ITagPageNodeAction {
+  path?: string
+  method?: string
+  linkage?: string
 }
 
 export interface ITagPageAction {

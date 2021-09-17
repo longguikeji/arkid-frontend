@@ -14,7 +14,7 @@ export interface BasePageOptions {
   showReadOnly?: boolean
   showWriteOnly?: boolean
   disabled?: boolean
-  isExpandTableColumn?: boolean
+  tableIsExpand?: boolean
 }
 
 export class InitPage extends FunctionNode {
@@ -40,7 +40,7 @@ export class InitPage extends FunctionNode {
     const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
     if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
     if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
-    if (EXPAND_TABLE_COLUMN.includes(currentPage)) options.isExpandTableColumn = true
+    if (EXPAND_TABLE_COLUMN.includes(currentPage)) options.tableIsExpand = true
     if (PAGE_READONLY.includes(currentPage)) options.readonly = true
     let flow = 'flows/page/basePage'
     if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'

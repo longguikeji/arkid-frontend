@@ -55,7 +55,7 @@ export class StateNode extends FunctionNode {
       }
       state.table?.columns?.push(columnState)
     }
-    state.table!.isExpand = options?.isExpandTableColumn || false
+    state.table!.isExpand = options?.tableIsExpand || false
   }
 
   async initFormMainState(state: BasePage, schema: ISchema, currentPage: string, options?: BasePageOptions) {
