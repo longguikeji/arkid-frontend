@@ -7,7 +7,7 @@
   >
     <table-page
       v-if="initCompleted"
-      :path="`tenant.tenantState.${page}.state`"
+      :path="`tenant.tenantState[${page}].state`"
     />
   </el-dialog>
 </template>

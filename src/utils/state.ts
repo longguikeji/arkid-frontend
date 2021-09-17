@@ -33,12 +33,3 @@ export default function getStateByPath(state: any, path: string): any {
   if (key && temp) temp = temp[key] || {}
   return temp
 }
-
-// 根据path属性, 获取页面名称
-export function getPageNameByPath(path: string): string {
-  path = path.substring(0, path.indexOf('.state'))
-  path = `${path.replace(/[\[]/g, '.').replace(/[\]]/g, '')}`
-  const keys = path.split('.')
-  const pageKeys = keys.filter((_, index) => index > 1)
-  return pageKeys.join('.')
-}

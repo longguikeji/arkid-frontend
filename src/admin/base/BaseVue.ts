@@ -27,6 +27,11 @@ export default class extends Vue {
     return s || {}
   }
 
+  get page(): string | null {
+    const matchs = this.path.match(/\[(.+?)\]/)
+    return matchs ? matchs[1] : null
+  }
+
   getChildPath(path: String|Number) {
     let sp = this.path
     if (typeof path === 'number') {

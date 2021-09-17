@@ -172,5 +172,6 @@ export const TABLE_COLUMN_WIDTH = {
   'profile_config_editfields.update': {
     
   },
-  'notice': {}
+  'notice': {},
+  'other_auth_factor_config': {}
 }
