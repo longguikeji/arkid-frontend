@@ -288,7 +288,7 @@ export class ActionNode extends FunctionNode {
     if (btns) {
       for (let i = 0, len = btns.length; i < len; i++) {
         const btn = btns[i]
-        if (btn.label === '导出' || btn.label === 'export') {
+        if (btn.name === 'export') {
           response[`card.buttons[${i}].disabled`] = refer ? `${refer}.length` : 'length'
           break
         }

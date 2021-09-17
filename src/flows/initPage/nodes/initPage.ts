@@ -1,12 +1,22 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
-import { isArray } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
 const PAGE_DISABLED_TRUE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
 const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
 const PAGE_READONLY = [ 'profile', 'tenant_config' ]
+
+const PAGE_BASE_FLOW = {
+  'table_page': 'flows/page/basePage',
+  'form_page': 'flows/page/basePage',
+  'tree_page': 'flows/page/basePage',
+  'dashboard_page': 'flows/page/dashboardPage/init'
+}
+
+const PAGE_CUSTOM_FLOW = {
+
+}
 
 export interface BasePageOptions {
   description?: string
@@ -18,18 +28,42 @@ export interface BasePageOptions {
 }
 
 export class InitPage extends FunctionNode {
+
   async run() {
-    const { page, state } = this.inputs
-    if (isArray(page)) {
+    let { page, state } = this.inputs
+    if (!state) state = {}
+    if (typeof page === 'string') {
+      // await this.toPerformPageFlow(page, state)
+      await this.initBasePage(state, page)
+      await this.runCustomPageFlow(state, page)
+    } else {
       for (const i of page) {
+        // await this.toPerformPageFlow(i, state)
         await this.initBasePage(state, i)
         await this.runCustomPageFlow(state, i)
       }
-    } else {
-      await this.initBasePage(state, page)
-      await this.runCustomPageFlow(state, page)
     }
     return state
+  }
+
+  async toPerformPageFlow(page: string, state: any) {
+    await this.toPerformPageBaseFlow(page, state)
+    await this.toPerformPageCustomFlow(page, state)
+  }
+
+  async toPerformPageBaseFlow(page: string, state: any) {
+    // ...
+  }
+
+  async toPerformPageCustomFlow(page: string, state: any) {
+    const customFlow = PAGE_CUSTOM_FLOW[page]
+    if (customFlow) {
+      await runFlowByFile(customFlow, { page, state })
+    }
+  }
+
+  initPageOptions(page: string, options?: BasePageOptions) {
+    // ...
   }
 
   async initBasePage(state: object, currentPage: string) {

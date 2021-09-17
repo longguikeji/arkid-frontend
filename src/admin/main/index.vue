@@ -22,10 +22,9 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import BaseVue from '@/admin/base/BaseVue'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
-import BaseVue from '@/admin/base/BaseVue'
-import { isArray, isObject } from 'lodash'
 
 @Component({
   name: 'Admin',
@@ -50,24 +49,26 @@ export default class extends Vue {
 
   async created() {
     if (this.page) {
-      await runFlowByFile('flows/initPage', { page: this.page, state: {} }).then(async(result) => {
-        if (Object.keys(result).length > 0) {
-          await AdminModule.setAdmin(result)
+      await runFlowByFile('flows/initPage', { page: this.page }).then(
+        async(state) => {
+          if (state && Object.keys(state).length > 0) {
+            await AdminModule.setAdminState(state)
+          }
         }
-      })
+      )
     }
   }
 
   async destroyed() {
-    await AdminModule.setAdmin(null)
+    await AdminModule.setAdminState(null)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/group.scss';
-@import '../../styles/desktop.scss';
-@import '../../styles/contacts.scss';
+@import "../../styles/group.scss";
+@import "../../styles/desktop.scss";
+@import "../../styles/contacts.scss";
 
 .placeholder {
   text-align: center;

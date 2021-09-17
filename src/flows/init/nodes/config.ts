@@ -1,11 +1,11 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
 import { processUUId } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
-export class ConfigNode extends AuthApiNode {
+export class ConfigNode extends APINode {
 
   async run() {
     // 如若登录之后依旧没有租户信息，则去进行查询租户列表

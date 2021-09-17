@@ -1,10 +1,11 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 
-export class Fetch extends AuthApiNode {
+export class Fetch extends APINode {
   async run() {
-    this.url = this.inputs.url
-    this.method = this.inputs.method
-    this.params = this.inputs.params
+    const { url, method, params } = this.inputs
+    this.url = url
+    this.method = method
+    this.params = params
     const outputs = await super.run()
     this.$state.commit((state: any) => {
       state.inputs = this.inputs

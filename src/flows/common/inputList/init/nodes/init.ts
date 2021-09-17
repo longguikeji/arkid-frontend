@@ -6,7 +6,7 @@ export class InitInputList extends FunctionNode {
   async run() {
     const { client: state, com } = this.inputs
     const { page, multiple, field, parent, value, options } = com.state
-    const pageState: AdminComponentState = AdminModule.adminState[page]
+    const pageState: AdminComponentState = AdminModule.adminState![page]
     const type = pageState.type
     // add action
     Object.assign(pageState.state.actions, {

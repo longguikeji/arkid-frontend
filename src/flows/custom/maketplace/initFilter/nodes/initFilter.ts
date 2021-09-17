@@ -1,8 +1,8 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { IFlow } from '@/arkfbp'
 
-export class InitFilter extends AuthApiNode {
+export class InitFilter extends APINode {
   async run() {
     const { state, page } = this.inputs
     const pageState: AdminComponentState = state[page]
