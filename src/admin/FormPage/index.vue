@@ -60,8 +60,16 @@ export default class extends Mixins(BaseVue) {
   get formPath():string {
     if (this.state.select) {
       return this.getChildPath('forms.' + this.state.select.value)
+    } else {
+      const items = this.state.form?.items
+      if (items) {
+        const keys = Object.keys(items)
+        if (keys.length === 1 && items[keys[0]].type === 'FormObjectItem') {
+          return this.getChildPath(`form.items.${keys[0]}.state`)
+        }
+      }
+      return this.getChildPath('form')
     }
-    return this.getChildPath('form')
   }
 }
 </script>
