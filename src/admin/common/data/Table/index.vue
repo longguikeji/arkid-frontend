@@ -3,7 +3,7 @@
     ref="arkidTable"
     :row-key="rowKeyFunc"
     :data="state.data"
-    :height="'70vh'"
+    :height="state.height"
     :stripe="state.stripe"
     :border="state.border"
     :size="state.size"

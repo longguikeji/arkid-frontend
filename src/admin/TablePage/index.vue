@@ -1,7 +1,6 @@
 <template>
   <div class="table-page">
     <Card
-      :class="[{'table-page-main': !!state.list}]"
       :path="getChildPath('card')"
     >
       <Form
@@ -63,30 +62,29 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .table-page {
-  height: 100%;
-  min-height: calc(100vh - 84px);
-  .table-page-main {
-    width: 70%;
-    display: inline-block;
-  }
+  height: calc(100vh - 90px);
+  overflow: hidden;
   ::v-deep  .el-card__body {
-    height: 100% !important;
+    position: relative;
+    height: calc(100vh - 90px);
     .table-page-filter {
       padding: 10px;
-    }
-    .el-table {
-      height: 90% !important;
+      box-sizing: border-box;
     }
     .el-pagination {
       margin: 10px;
+      position: absolute;
+      bottom: 50px;
     }
     .el-dialog.is-fullscreen {
       min-height: 100% !important;
     }
-    .el-table__body-wrapper {
-      height: auto !important;
-      overflow: auto;
-      min-height: 77vh !important;
+    .el-table {
+      max-height: calc(100vh - 90px);
+      overflow: hidden;
+      .el-table__body-wrapper {
+        overflow: auto;
+      }
     }
   }
 }

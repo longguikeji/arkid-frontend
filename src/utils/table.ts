@@ -180,3 +180,7 @@ export const TABLE_COLUMN_WIDTH = {
     'actions': '150'
   }
 }
+
+export const TABLE_HEIGHT = {
+  'sub_admin_config': '78vh'
+}
