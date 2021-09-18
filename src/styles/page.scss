@@ -6,7 +6,7 @@
   .tree-page {
     display: inline-block;
     width: 30%;
-    height: calc(100vh - 84px);
+    height: calc(100vh - 90px);
     vertical-align: top;
     ::v-deep .el-card {
       height: 100%;
@@ -23,15 +23,15 @@
   .dashboard-page {
     display: inline-block;
     width: 75%;
-    height: calc(100vh - 84px);
+    height: calc(100vh - 90px);
     vertical-align: top;
     ::v-deep .el-card {
       height: 100%;
     }
   }
-  .table-page {
+  .list-card {
     display: inline-block;
     width: 25%;
-    height: 100%;
+    height: calc(100vh - 90px);
   }
 }

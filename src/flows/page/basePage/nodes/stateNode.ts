@@ -80,7 +80,7 @@ export class StateNode extends FunctionNode {
       state.table!.columns!.push(columnState)
     }
     state.table!.isExpand = options?.tableIsExpand
-    state.table!.height = TABLE_HEIGHT[page]
+    state.table!.height = TABLE_HEIGHT[page] || '78vh'
   }
   
   initPageDescription() {
@@ -206,7 +206,7 @@ export class StateNode extends FunctionNode {
           }
         ]
       },
-      data: []
+      items: []
     }
     this.inputs.state[listPage].state.list = list
   }

@@ -182,5 +182,5 @@ export const TABLE_COLUMN_WIDTH = {
 }
 
 export const TABLE_HEIGHT = {
-  'sub_admin_config': '78vh'
+  'third_part_account': '83vh',
 }

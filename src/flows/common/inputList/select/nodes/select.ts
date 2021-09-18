@@ -6,7 +6,7 @@ export class SelectNode extends FunctionNode {
   async run() {
     const { client: state, params } = this.inputs
     const { multiple, field } = params
-    const listData: Array<ListItemState> = state.list.data
+    const listData: ListItemState[] = state.list.items
     const data = state.table ? state.table.row : state.tree ? state.tree.node : null
     if (!data || !data[field]) return
     const item = {

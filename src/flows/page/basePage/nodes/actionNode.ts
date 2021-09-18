@@ -128,7 +128,8 @@ export class ActionNode extends FunctionNode {
         currentPage: 1,
         pageSize: 10,
         total: 0,
-        action: 'fetch'
+        action: 'fetch',
+        layout: 'sizes, prev, pager, next, total'
       }
     } else {
       state.pagination = undefined

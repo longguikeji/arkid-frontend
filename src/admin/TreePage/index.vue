@@ -17,13 +17,11 @@
         />
       </template>
     </Card>
-    <Card
+    <List
       v-if="state.list"
-      :path="getChildPath('list.header')"
+      :path="getChildPath('list')"
       class="tree-page-list"
-    >
-      <List :path="getChildPath('list.data')" />
-    </Card>
+    />
   </div>
 </template>
 
@@ -69,6 +67,16 @@ export default class extends Mixins(BaseVue) {
     width: 50%;
     vertical-align: top;
     min-height: 300px;
+  }
+  ::v-deep .el-card {
+    .el-card__body {
+      height: calc(100vh - 90px);
+      position: relative;
+      .el-pagination {
+        position: absolute;
+        bottom: 70px;
+      }
+    }
   }
 }
 </style>

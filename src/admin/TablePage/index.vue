@@ -21,13 +21,11 @@
         />
       </template>
     </Card>
-    <Card
+    <List
       v-if="state.list"
-      :path="getChildPath('list.header')"
+      :path="getChildPath('list.data')"
       class="table-page-list"
-    >
-      <List :path="getChildPath('list.data')" />
-    </Card>
+    />
   </div>
 </template>
 

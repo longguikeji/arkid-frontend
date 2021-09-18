@@ -12,7 +12,7 @@ import TreeState from '@/admin/common/data/Tree/TreeState'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import PaginationState from '@/admin/common/data/Pagination/PaginationState'
 import SelectState from '@/admin/common/Form/Select/SelectState'
-import ListItemState from '@/admin/common/data/List/ListState' 
+import { ListState } from '@/admin/common/data/List/ListState' 
 import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
 import { camelCase } from 'lodash'
 
@@ -30,10 +30,7 @@ export interface BasePage extends BaseState {
   pagination?: PaginationState
   descriptions?: DescriptionsState
   readonly?: boolean
-  list?: {
-    header?: CardState
-    data?: Array<ListItemState>
-  },
+  list?: ListState,
   data?: any
 }
 
