@@ -91,11 +91,19 @@ export class ActionNode extends FunctionNode {
     const blank = method === 'get' ? false : true
     let { mapping } = getActionMapping(path, method, blank, true, options.readonly)
     mapping = Object.assign(mapping, { data: '' })
+    state.actions!.created.push('fetch')
     if (method === 'get') {
-      state.actions!.created.push('fetch')
       state.actions!.fetch = [
         {
           name: 'arkfbp/flows/fetch',
+          url: path, method,
+          response: mapping
+        }
+      ]
+    } else {
+      state.actions!.fetch = [
+        {
+          name: 'arkfbp/flows/assign',
           url: path, method,
           response: mapping
         }

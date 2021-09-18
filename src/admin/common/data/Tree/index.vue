@@ -102,38 +102,24 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  getTreeNodeSlotPath(item: any, nodeData: TreeNodeProps) {
-    this.state.slotState = {}
-    if (this.state.data && nodeData.uuid && this.state.slotState) {
-      this.setTreeNodeSlotStateData(this.state.data, nodeData)
-      const currentNodeState = this.nodeState[nodeData.uuid]
-      if (currentNodeState && currentNodeState.uuid) {
-        if (item.state instanceof Array) {
-          this.state.slotState[currentNodeState.uuid] = {
-            type: item.type,
-            state: item.state.map(istate => {
-              return {
-                ...istate,
-                data: currentNodeState
-              }
-            })
-          }
-        } else {
-          this.state.slotState[currentNodeState.uuid] = item
-        }
-      }
+  getTreeNodeSlotPath(item: any, node: TreeNodeProps) {
+    if (!this.state.slotState) {
+      this.state.slotState = {}
     }
-    return this.getChildPath('slotState.' + nodeData.uuid! + '')
-  }
-
-  setTreeNodeSlotStateData(treeData: Array<TreeNodeProps>, nodeData: TreeNodeProps) {
-    treeData.forEach(treeItemData => {
-      if (treeItemData.uuid && treeItemData.uuid === nodeData.uuid) {
-        this.nodeState[treeItemData.uuid] = treeItemData
-      } else if (treeItemData.children && treeItemData.children.length > 0) {
-        this.setTreeNodeSlotStateData(treeItemData.children, nodeData)
+    const uuid = node.uuid
+    if (uuid) {
+      this.state.slotState[uuid] = {
+        type: item.type,
+        state: item.state.map(n => {
+          return {
+            ...n, data: node
+          }
+        })
       }
-    })
+      return this.getChildPath(`slotState.${uuid}`)
+    } else {
+      return this.getChildPath('slot')
+    }
   }
 }
 </script>
@@ -145,11 +131,10 @@ export default class extends Mixins(BaseVue) {
   left: 50%;
   transform: translateX(-50%);
 }
-.custom-tree-node-other {
-  margin-left: 20px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  right: 10px;
+.custom-tree-node {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between
 }
 </style>
