@@ -1,9 +1,12 @@
-import { ClientResponseNode } from '@/arkfbp/nodes/clientResponseNode'
-import getTreeData from '@/utils/get-tree-data'
+import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
+import { getTreeData } from '@/utils/flow'
 
-export class ChildrenNode extends ClientResponseNode {
+export class ChildrenNode extends Fetch {
   async run() {
-    const inputs = this.inputs
-    debugger
+    const res = await super.run()
+    const data = getTreeData(res.results)
+    const com = this.inputs.com
+    const node = com.state.node
+    node.children = data
   }
 }

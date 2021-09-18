@@ -18,7 +18,7 @@ export class OptionsNode extends APINode {
       results.forEach(item => {
         state.options.push({
           value: item.value,
-          label: item.name
+          label: item.name || item.label
         })
       })
     }

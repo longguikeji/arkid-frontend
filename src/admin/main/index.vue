@@ -49,26 +49,22 @@ export default class extends Vue {
 
   async created() {
     if (this.page) {
-      await runFlowByFile('flows/initPage', { page: this.page }).then(
-        async(state) => {
-          if (state && Object.keys(state).length > 0) {
-            await AdminModule.setAdminState(state)
-          }
+      await runFlowByFile('flows/initPage', { page: this.page }).then(state => {
+        if (state && Object.keys(state).length > 0) {
+          AdminModule.setAdminState(state)
         }
-      )
+      })
     }
   }
 
-  async destroyed() {
-    await AdminModule.setAdminState(null)
+  destroyed() {
+    AdminModule.setAdminState(null)
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/group.scss";
-@import "../../styles/desktop.scss";
-@import "../../styles/contacts.scss";
+@import "../../styles/page.scss";
 
 .placeholder {
   text-align: center;

@@ -3,7 +3,6 @@ import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { UrlNode } from '@/arkfbp/nodes/urlNode'
-import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
 import { ChildrenNode } from './nodes/children'
 
 export class Main extends Flow {
@@ -15,14 +14,10 @@ export class Main extends Flow {
     }, {
       cls: UrlNode,
       id: 'url',
-      next: 'fetch'
-    }, {
-      cls: Fetch,
-      id: 'fetch',
-      next: 'tree'
+      next: 'tree-children'
     }, {
       cls: ChildrenNode,
-      id: 'tree',
+      id: 'tree-children',
       next: 'stop'
     }, {
       cls: StopNode,

@@ -131,7 +131,6 @@ export class PageNode extends FunctionNode {
     const { state, dep, page } = this.inputs
     let type = camelCase(dep.type)
     type = type.charAt(0).toUpperCase() + type.slice(1)
-    dep.type = type
     state[page] = {
       type,
       state: Page.create(type)

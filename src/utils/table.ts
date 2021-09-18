@@ -39,7 +39,8 @@ export const TABLE_COLUMN_WIDTH = {
     'description': '300'
   },
   'permission_list': {
-    'name': '300'
+    'name': '300',
+    'actions': '150'
   },
   'user': {
     'bind_info': '300',

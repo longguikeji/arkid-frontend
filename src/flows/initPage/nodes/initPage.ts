@@ -19,8 +19,6 @@ const PAGE_BASE_FLOW = {
 
 const PAGE_CUSTOM_FLOW = {
   'app': 'flows/custom/appManager/authPageBtn',
-  'group': 'flows/custom/group/group',
-  'group_user': 'flows/custom/group/groupUser',
   'maketplace': 'flows/custom/maketplace/initFilter',
   'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
   'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
@@ -31,9 +29,6 @@ const PAGE_CUSTOM_FLOW = {
   'extension.create': 'flows/custom/extension/addAction',
   'extension.update': 'flows/custom/extension/addAction',
   'device': 'flows/custom/device',
-  'contacts_group': 'flows/custom/contacts/group',
-  'contacts_user': 'flows/custom/contacts/user',
-  'contacts_switch.update': 'flows/custom/contacts/switch',
   'tenant': 'flows/custom/tenant/addButton',
   'subuser': 'flows/custom/subuser/state',
   'user_token_manage': 'flows/custom/user/token/state',

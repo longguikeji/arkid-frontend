@@ -80,7 +80,6 @@ export default class LoginButton extends Vue {
   }
 
   delayCountDown() {
-    console.log('')
     this.delayData -= 1
   }
 

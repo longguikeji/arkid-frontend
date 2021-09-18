@@ -6,9 +6,7 @@ import OpenAPI, {
   ITagPageMultiAction,
   ITagUpdateOperation,
   ITagPageOperation,
-  ITagPage
 } from '@/config/openapi'
-import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import { BasePage } from './pageNode'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { getContent } from '@/utils/schema'
@@ -73,18 +71,19 @@ export class ActionNode extends FunctionNode {
     }
     this.setImportButtonDisabledProp(response, props.data)
     // add created and fetch action
-    if (from) {
-      state.actions!.created = []
-    } else {
-      state.actions!.created.push('fetch')
-    }
     state.actions!.fetch = [
       {
-        name: 'arkfbp/flows/fetch',
+        name: from ? 'arkfbp/flows/next' : 'arkfbp/flows/fetch',
         url: path, method,
         response, request
       }
     ]
+    if (from) {
+      state.created = undefined
+      state.actions!.fetch.unshift({ name: 'arkfbp/flows/from', from })
+    } else {
+      state.actions!.created.push('fetch')
+    }
   }
 
   initFormPageCreatedAction(path: string, method: string, next?: string, from?: string) {
@@ -122,7 +121,7 @@ export class ActionNode extends FunctionNode {
       }
     ]
     if (next) {
-      Array.prototype.push.apply(state.actions!.fetch, [ { name: 'arkfbp/flows/next' }, `${next}.fetch` ])
+      Array.prototype.push.apply(state.actions!.fetch, [ `${next}.fetch` ])
     }
   }
 
@@ -156,7 +155,18 @@ export class ActionNode extends FunctionNode {
   }
 
   initPageTreeNodeAction(node: ITagPageAction) {
-    debugger
+    const { path, method, from, next } = node
+    const state = this._temp
+    state.tree!.action = 'node'
+    state.actions!.node = [
+      {
+        name: 'arkfbp/flows/children',
+        url: path, method
+      }
+    ]
+    if (next) {
+      state.actions!.node.push(`${next}.fetch`)
+    }
   }
 
   addOpenPageAction(key: string) {
@@ -255,17 +265,6 @@ export class ActionNode extends FunctionNode {
           `${parent}.fetch`
         ]
     }
-  }
-
-  addChildrenAction(state: BasePage, path: string, method: string) {
-    state.tree!.action = 'fetchTreeNode'
-    state.actions!.fetchTreeNode = [
-      {
-        name: "arkfbp/flows/fetchTreeNode",
-        url: path,
-        method: method
-      }
-    ]
   }
 
   addSortAction(action: ITagPageMultiAction) {

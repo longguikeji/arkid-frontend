@@ -48,6 +48,11 @@ export default class extends Vue {
     return getStateByPath(this.$store.state, path)
   }
 
+  getAnyPageState(page: string) {
+    const path = this.path.substring(0, this.path.indexOf('[')) + `[${page}]`
+    return getStateByPath(this.$store.state, path)
+  }
+
   created() {
     this.runAction(this.state.created)
   }
