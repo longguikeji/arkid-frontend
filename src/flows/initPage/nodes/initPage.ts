@@ -2,10 +2,13 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI from '@/config/openapi'
 
-const PAGE_SHOW_READONLY = [ 'profile', 'app.update', 'external_idp.update' ]
-const PAGE_DISABLED_TRUE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
-const EXPAND_TABLE_COLUMN = [ 'contacts_user' ]
-const PAGE_READONLY = [ 'profile', 'tenant_config' ]
+const SHOW_READONLY_PAGE = [ 'profile', 'app.update', 'external_idp.update' ]
+
+const DISABLED_PAGE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
+
+const EXPAND_TABLE_PAGE = [ 'contacts_user' ]
+
+const READONLY_PAGE = [ 'profile', 'tenant_config' ]
 
 const PAGE_BASE_FLOW = {
   'table_page': 'flows/page/basePage',
@@ -15,15 +18,36 @@ const PAGE_BASE_FLOW = {
 }
 
 const PAGE_CUSTOM_FLOW = {
-
+  'app': 'flows/custom/appManager/authPageBtn',
+  'group': 'flows/custom/group/group',
+  'group_user': 'flows/custom/group/groupUser',
+  'maketplace': 'flows/custom/maketplace/initFilter',
+  'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
+  'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
+  'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
+  'password': 'flows/custom/password/addAction',
+  'tenant_config': 'flows/custom/tenant/deleteTenant',
+  'extension': 'flows/custom/extension/addAction',
+  'extension.create': 'flows/custom/extension/addAction',
+  'extension.update': 'flows/custom/extension/addAction',
+  'device': 'flows/custom/device',
+  'contacts_group': 'flows/custom/contacts/group',
+  'contacts_user': 'flows/custom/contacts/user',
+  'contacts_switch.update': 'flows/custom/contacts/switch',
+  'tenant': 'flows/custom/tenant/addButton',
+  'subuser': 'flows/custom/subuser/state',
+  'user_token_manage': 'flows/custom/user/token/state',
+  'profile': 'flows/custom/user/profile/state',
+  'profile.update': 'flows/custom/user/profile/edit',
+  'profile_config_editfields.update': 'flows/custom/editfields/state'
 }
 
 export interface BasePageOptions {
   description?: string
   readonly?: boolean
+  disabled?: boolean
   showReadOnly?: boolean
   showWriteOnly?: boolean
-  disabled?: boolean
   tableIsExpand?: boolean
 }
 
@@ -31,16 +55,12 @@ export class InitPage extends FunctionNode {
 
   async run() {
     let { page, state } = this.inputs
-    if (!state) state = {}
+    if (!state) { state = {} }
     if (typeof page === 'string') {
-      // await this.toPerformPageFlow(page, state)
-      await this.initBasePage(state, page)
-      await this.runCustomPageFlow(state, page)
+      await this.toPerformPageFlow(page, state)
     } else {
       for (const i of page) {
-        // await this.toPerformPageFlow(i, state)
-        await this.initBasePage(state, i)
-        await this.runCustomPageFlow(state, i)
+        await this.toPerformPageFlow(i, state)
       }
     }
     return state
@@ -52,7 +72,16 @@ export class InitPage extends FunctionNode {
   }
 
   async toPerformPageBaseFlow(page: string, state: any) {
-    // ...
+    const tag = OpenAPI.instance.getOnePageTag(page)
+    if (tag) {
+      // dep 代表当前生成page所指页面的’依赖‘，来自OpenAPI描述信息
+      const { page: dep, description } = tag
+      const pageType = dep?.type
+      if (pageType) {
+        const options = this.initPageOptions(page, { description })
+        await runFlowByFile(PAGE_BASE_FLOW[pageType], { state, dep, page, options })
+      }
+    }
   }
 
   async toPerformPageCustomFlow(page: string, state: any) {
@@ -62,88 +91,11 @@ export class InitPage extends FunctionNode {
     }
   }
 
-  initPageOptions(page: string, options?: BasePageOptions) {
-    // ...
-  }
-
-  async initBasePage(state: object, currentPage: string) {
-    const info = OpenAPI.instance.getOnePageTagInfo(currentPage)
-    if (!info) return null
-    const { page: initContent, description } = info
-    if (!initContent) return
-    const options: BasePageOptions = { description, showReadOnly: false, disabled: false }
-    if (PAGE_SHOW_READONLY.includes(currentPage)) options.showReadOnly = true
-    if (PAGE_DISABLED_TRUE.includes(currentPage)) options.disabled = true
-    if (EXPAND_TABLE_COLUMN.includes(currentPage)) options.tableIsExpand = true
-    if (PAGE_READONLY.includes(currentPage)) options.readonly = true
-    let flow = 'flows/page/basePage'
-    if (initContent.type === 'dashboard_page') flow = 'flows/page/dashboardPage/init'
-    await runFlowByFile(flow, { state, initContent, currentPage, options })
-  }
-
-  async runCustomPageFlow(state: any, currentPage: string) {
-    let customFlow: string = ''
-    switch (currentPage) {
-      case 'app':
-        customFlow = 'flows/custom/appManager/authPageBtn'
-        break
-      case 'group':
-        customFlow = 'flows/custom/group/group'
-        break
-      case 'group_user':
-        customFlow = 'flows/custom/group/groupUser'
-        break
-      case 'maketplace':
-        customFlow = 'flows/custom/maketplace/initFilter'
-        break
-      case 'third_part_account':
-        customFlow = 'flows/custom/thirdPartAccount/addUnbindButton'
-        break
-      case 'login_register_config':
-        customFlow = 'flows/custom/loginRegisterConfig/addAction'
-        break
-      case 'login_register_config.update':
-        customFlow = 'flows/custom/loginRegisterConfig/options'
-        break
-      case 'password':
-        customFlow = 'flows/custom/password/addAction'
-        break
-      case 'tenant_config':
-        customFlow = 'flows/custom/tenant/deleteTenant'
-        break
-      case 'extension':
-      case 'extension.create':
-      case 'extension.update':
-        customFlow = 'flows/custom/extension/addAction'
-        break
-      case 'device':
-        customFlow = 'flows/custom/device'
-        break
-      case 'contacts_group':
-        customFlow = 'flows/custom/contacts/group'
-        break
-      case 'contacts_user':
-        customFlow = 'flows/custom/contacts/user'
-        break
-      case 'contacts_switch.update':
-        customFlow = 'flows/custom/contacts/switch'
-        break
-      case 'subuser':
-        customFlow = 'flows/custom/subuser/state'
-        break
-      case 'user_token_manage':
-        customFlow = 'flows/custom/user/token/state'
-        break
-      case 'profile':
-        customFlow = 'flows/custom/user/profile/state'
-        break
-      case 'profile.update':
-        customFlow = 'flows/custom/user/profile/edit'
-        break
-      case 'profile_config_editfields.update':
-        customFlow = 'flows/custom/editfields/state'
-        break
-    }
-    if (customFlow !== '') await runFlowByFile(customFlow, { state, page: currentPage })
+  initPageOptions(page: string, options: BasePageOptions) {
+    options.showReadOnly = SHOW_READONLY_PAGE[page] !== undefined ? true : false
+    options.disabled = DISABLED_PAGE[page] !== undefined ? true : false
+    options.readonly = READONLY_PAGE[page] !== undefined ? true : false
+    options.tableIsExpand = EXPAND_TABLE_PAGE[page] !== undefined ? true : false
+    return options
   }
 }

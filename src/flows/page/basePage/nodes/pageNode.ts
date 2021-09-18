@@ -1,7 +1,9 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { underlinedStrToUpperCamelStr } from '@/utils/common'
 import { BaseState } from '@/admin/base/BaseVue'
 import { IFlow } from '@/arkfbp'
+import { TablePage } from '@/admin/TablePage/TablePageState'
+import { FormPage } from '@/admin/FormPage/FormPageState'
+import { TreePage } from '@/admin/TreePage/TreePageState'
 import CardState from '@/admin/common/Card/CardState'
 import FormState from '@/admin/common/Form/FormState'
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
@@ -9,20 +11,12 @@ import TableState from '@/admin/common/data/Table/TableState'
 import TreeState from '@/admin/common/data/Tree/TreeState'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import PaginationState from '@/admin/common/data/Pagination/PaginationState'
-import ListItemState from '@/admin/common/data/List/ListState' 
-import { TablePage } from '@/admin/TablePage/TablePageState'
-import { FormPage } from '@/admin/FormPage/FormPageState'
-import { TreePage } from '@/admin/TreePage/TreePageState'
 import SelectState from '@/admin/common/Form/Select/SelectState'
-import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+import ListItemState from '@/admin/common/data/List/ListState' 
 import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
-
-export interface BasePageActions {
-  [name: string]: Array<string | IFlow>
-}
+import { camelCase } from 'lodash'
 
 export interface BasePage extends BaseState {
-  name?: string
   card?: CardState
   filter?: FormState
   dialogs?: { [name: string]: DialogState }
@@ -31,35 +25,34 @@ export interface BasePage extends BaseState {
   select?: SelectState
   forms?: { [value:string]: FormState }
   tree?: TreeState
-  buttons?: Array<ButtonState>
-  actions?: BasePageActions
+  buttons?: ButtonState[]
+  actions?: { [name: string]: (string | IFlow)[] }
   pagination?: PaginationState
-  data?: any
-  descriptions?: any
+  descriptions?: DescriptionsState
   readonly?: boolean
   list?: {
     header?: CardState
     data?: Array<ListItemState>
-  }
+  },
+  data?: any
 }
 
 export class Page {
 
-  static createPage(type: string, currentPage: string, options: BasePageOptions) {
+  static create(type: string) {
     const page = new this()
     switch (type) {
       case 'TablePage':
-        return this.createTablePage(page, currentPage)
+        return this.createTablePage(page)
       case 'FormPage':
-        return this.createFormPage(page, currentPage, options)
+        return this.createFormPage(page)
       case 'TreePage':
-        return this.createTreePage(page, currentPage)
+        return this.createTreePage(page)
     }
   }
 
-  private static createTablePage(page: BasePage, currentPage: string): TablePage {
+  private static createTablePage(page: BasePage): TablePage {
     return {
-      name: currentPage,
       created: page.created,
       card: page.card,
       filter: page.filter,
@@ -72,9 +65,8 @@ export class Page {
     }
   }
 
-  private static createTreePage(page: BasePage, currentPage: string): TreePage {
+  private static createTreePage(page: BasePage): TreePage {
     return {
-      name: currentPage,
       created: page.created,
       card: page.card,
       tree: page.tree,
@@ -85,18 +77,16 @@ export class Page {
     }
   }
 
-  private static createFormPage(page: BasePage, currentPage: string, options: BasePageOptions): FormPage {
+  private static createFormPage(page: BasePage): FormPage {
     return {
-      name: currentPage,
       created: page.created,
       card: page.card,
       form: page.form,
       dialogs: page.dialogs,
       actions: page.actions,
       buttons: page.buttons,
-      data: page.data,
-      readonly: options.readonly,
-      descriptions: options.readonly ? { items: {} } : undefined
+      descriptions: page.descriptions,
+      data: page.data
     }
   }
 
@@ -138,16 +128,14 @@ export class Page {
 
 export class PageNode extends FunctionNode {
   async run() {
-    const { state, initContent, currentPage, options } = this.inputs
-    const type = underlinedStrToUpperCamelStr(initContent.type)
-    state[currentPage] = this.getPageState(type, currentPage, options)
-    return this.inputs
-  }
-
-  getPageState(type: string, currentPage: string, options: BasePageOptions) {
-    return {
+    const { state, dep, page } = this.inputs
+    let type = camelCase(dep.type)
+    type = type.charAt(0).toUpperCase() + type.slice(1)
+    dep.type = type
+    state[page] = {
       type,
-      state: Page.createPage(type, currentPage, options)
+      state: Page.create(type)
     }
+    return this.inputs
   }
 }

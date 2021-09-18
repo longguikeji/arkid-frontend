@@ -1,4 +1,5 @@
 import { BaseState } from '@/admin/base/BaseVue'
+import ButtonState from '@/admin/common/Button/ButtonState'
 
 interface DescriptionsItemState {
   label?: string;
@@ -22,4 +23,5 @@ export default interface DescriptionsState extends BaseState {
   contentClassName?: string // 自定义内容类名
   labelStyle?: object // 自定义标签样式
   contentStyle?: object // 自定义内容样式
+  buttons?: ButtonState[]
 }

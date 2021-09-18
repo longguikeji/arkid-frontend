@@ -1,17 +1,3 @@
-// 将以短横线连接的字符串改为小驼峰的格式
-export function underlinedStrToUpperCamelStr(str: string): string {
-  if (str.includes('_')) {
-    str = str.toLowerCase()
-    const splitStr = str.split('_')
-    for (let i = 0; i < splitStr.length; i++) {
-      let iStr = splitStr[i]
-      splitStr[i] = iStr.charAt(0).toUpperCase() + iStr.slice(1)
-    }
-    str = splitStr.join('')
-  }
-  return str
-}
-
 // isExternal
 export function isExternal(path: string) {
   return /^(https?:|mailto:|tel:)/.test(path)

@@ -1,6 +1,4 @@
 import OpenAPI, { ISchema } from '@/config/openapi'
-import { FormItemsState } from '@/admin/common/Form/FormState'
-import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
 export function getSchemaByContent(content: { [requestBodyType: string]: {schema:ISchema}}):ISchema {
   let type = ''
@@ -46,15 +44,4 @@ export function getContent(path: string, method: string) {
     const content = responseOrRequest ? operation.responses[200].content : operation.requestBody.content
     return content
   }
-}
-
-export function isImportInputList(items: FormItemsState, inputListItems: FormItemState[]){
-  Object.keys(items).forEach((key, index) => {
-    const item = items[key]
-    if (item.type === 'FormObjectItem') {
-      isImportInputList(item.state.items, inputListItems)
-    } else if (item.type === 'InputList') {
-      inputListItems.push(item)
-    }
-  })
 }

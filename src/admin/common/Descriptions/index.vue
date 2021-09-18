@@ -6,10 +6,10 @@
     border
   >
     <template
-      v-if="state.extra"
+      v-if="state.extra || state.buttons"
       slot="extra"
     >
-      <ButtonArray :path="getChildPath('extra.buttons')" />
+      <ButtonArray :path="getChildPath('buttons')" />
     </template>
     <template v-if="items">
       <el-descriptions-item
@@ -43,7 +43,7 @@ export default class Descriptions extends Mixins(BaseVue) {
   get keys() {
     const keys: string[] = []
     let isuuid = false
-    Object.keys(this.state.items).forEach(key => {
+    Object.keys(this.state.items).forEach((key) => {
       if (key !== 'uuid') {
         keys.push(key)
       } else {

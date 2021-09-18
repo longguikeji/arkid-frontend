@@ -3,7 +3,7 @@ import OpenAPI from '@/config/openapi'
 import { isArray } from '@/utils/common'
 
 export function getApiRolesByPageName(name: string): string[] {
-  const info = OpenAPI.instance.getOnePageTagInfo(name)
+  const info = OpenAPI.instance.getOnePageTag(name)
   let roles: string[] = []
   if (info?.page?.init) {
     const { path, method } = info.page.init
