@@ -87,10 +87,10 @@ export class InitPage extends FunctionNode {
   }
 
   initPageOptions(page: string, options: BasePageOptions) {
-    options.showReadOnly = SHOW_READONLY_PAGE[page] !== undefined ? true : false
-    options.disabled = DISABLED_PAGE[page] !== undefined ? true : false
-    options.readonly = READONLY_PAGE[page] !== undefined ? true : false
-    options.tableIsExpand = EXPAND_TABLE_PAGE[page] !== undefined ? true : false
+    options.showReadOnly = SHOW_READONLY_PAGE.includes(page)
+    options.disabled = DISABLED_PAGE.includes(page)
+    options.readonly = READONLY_PAGE.includes(page)
+    options.tableIsExpand = EXPAND_TABLE_PAGE.includes(page)
     return options
   }
 }

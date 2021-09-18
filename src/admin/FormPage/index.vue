@@ -1,7 +1,7 @@
 <template>
   <div>
     <Descriptions
-      v-if="state.readonly === true"
+      v-if="state.descriptions"
       :path="getChildPath('descriptions')"
     />
     <Card

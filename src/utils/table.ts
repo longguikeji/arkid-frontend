@@ -135,6 +135,7 @@ export const TABLE_COLUMN_WIDTH = {
     'actions': '100'
   },
   'subuser': {
+    'uuid': '200',
     'account_type': '100',
     'email': '200',
     'mobile': '200',
@@ -174,5 +175,8 @@ export const TABLE_COLUMN_WIDTH = {
     
   },
   'notice': {},
-  'other_auth_factor_config': {}
+  'other_auth_factor_config': {},
+  'sub_admin_config': {
+    'actions': '150'
+  }
 }

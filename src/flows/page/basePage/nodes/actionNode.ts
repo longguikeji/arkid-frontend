@@ -119,13 +119,27 @@ export class ActionNode extends FunctionNode {
       'tree.data': props.data,
       data: props.data
     }
+    const request = {}
+    if (props.pagination) {
+      response['pagination.total'] = props.pagination
+      request['page'] = 'pagination.currentPage'
+      request['page_size'] = 'pagination.pageSize'
+      state.pagination = {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        action: 'fetch'
+      }
+    } else {
+      state.pagination = undefined
+    }
     this.setImportButtonDisabledProp(response, props.data)
     state.actions!.created.push('fetch')
     state.actions!.fetch = [
       {
         name: 'arkfbp/flows/tree',
         url: path, method,
-        response
+        response, request
       }
     ]
     if (next) {

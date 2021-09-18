@@ -5,6 +5,10 @@
       :path="getChildPath('card')"
     >
       <Tree :path="getChildPath('tree')" />
+      <Pagination
+        v-if="state.pagination"
+        :path="getChildPath('pagination')"
+      />
       <template v-if="state.dialogs">
         <Dialog
           v-for="dialogName in Object.keys(state.dialogs)"
@@ -30,6 +34,7 @@ import Tree from '@/admin/common/data/Tree/index.vue'
 import Dialog from '@/admin/common/Others/Dialog/index.vue'
 import TablePage from '@/admin/TablePage/index.vue'
 import { TreePage } from './TreePageState'
+import Pagination from '@/admin/common/data/Pagination/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
@@ -38,7 +43,8 @@ import BaseVue from '@/admin/base/BaseVue'
     Card,
     TablePage,
     Dialog,
-    Tree
+    Tree,
+    Pagination
   }
 })
 export default class extends Mixins(BaseVue) {

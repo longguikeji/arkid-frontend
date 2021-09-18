@@ -154,7 +154,7 @@ export class StateNode extends FunctionNode {
         await this.initDialogPageState(tag, key)
         button = this.getButtonState({ description, key, mode: 'open', role })
       } else {
-        const description = action.description || action['write'].description || action['read'].description
+        const description = action.description || (action['write'] && action['write'].description) || (action['read'] && action['read'].description)
         switch (key) {
           case 'import':
             this.addImportDialog(action as ITagPageAction)
@@ -264,6 +264,7 @@ export class StateNode extends FunctionNode {
     const page = this._page
     const { path, method } = (action as ITagUpdateOperation).write || action
     const schema = getSchemaByPath(path, method)
+    if (!schema) return
     adminState.password = {
       type: 'Password',
       state: {
@@ -311,11 +312,9 @@ export class StateNode extends FunctionNode {
   }
 
   addGlobalButton(button: ButtonState) {
-    const type = this._type
-    const state = this._temp
-    const page = this._page
+    const { _type: type, _temp: state, _opts: options, _page: page } = this
     if (type === 'FormPage') {
-      if (state.readonly) {
+      if (options.readonly) {
         if (!state.descriptions?.buttons) {
           state.descriptions!.buttons = []
         }
