@@ -24,13 +24,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import ListItemState, { ListState } from './ListState'
 import BaseVue from '@/admin/base/BaseVue'
-import ListItem from './ListItem/index.vue'
 import Card from '@/admin/common/Card/index.vue'
 
 @Component({
   name: 'List',
   components: {
-    ListItem,
     Card
   }
 })

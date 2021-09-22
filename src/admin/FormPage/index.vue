@@ -88,7 +88,6 @@ export default class extends Mixins(BaseVue) {
 ::v-deep .tox .tox-menubar {
   width: 1000px;
 }
-::v-deep .tui-editor-defaultUI { width: 1000px;}
 .form-page-buttons {
   display: flex;
   flex-direction: row;
