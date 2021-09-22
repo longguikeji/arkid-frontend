@@ -155,7 +155,7 @@ export const TABLE_COLUMN_WIDTH = {
     'icon': '100',
     'name': '200',
     'slug': '200',
-    'actions': '150'
+    'use_slug': '130'
   },
   'system_password_manage': {
     'is_apply': '90',

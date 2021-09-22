@@ -1,26 +1,25 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 
 export class AddButton extends FunctionNode {
 
   async run() {
     const { state, page } = this.inputs
-    const pageState: AdminComponentState = state[page]
+    const pageState = state[page].state
+
     // add logout button
-    let buttons = pageState.state.card!.buttons
-    if (!buttons) buttons = []
+    const buttons = pageState.card.buttons
     buttons.push({
       type: 'danger',
       action: 'logout',
       label: '退出登录'
     })
-    pageState.state.actions!.logout = [
+    pageState.actions!.logout = [
       {
         name: 'flows/common/logout'
       }
     ]
 
-    const columns = pageState.state.table?.columns
+    const columns = pageState.table.columns
     // fix icon column for display image
     for (let i = 0, l = columns.length; i < l; i++) {
       let column = columns[i]
@@ -41,18 +40,20 @@ export class AddButton extends FunctionNode {
     columns?.push({
       prop: 'actions',
       label: '操作',
+      width: '150',
+      fixed: 'right',
       scope: {
         type: 'ButtonArray',
         state: [
           {
             type: 'primary',
             action: 'openSwitchTenantDialog',
-            label: '切换租户'
+            label: '切换租户',
           }
         ]
       }
     })
-    pageState.state.actions!.openSwitchTenantDialog = [
+    pageState.actions!.openSwitchTenantDialog = [
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -60,7 +61,7 @@ export class AddButton extends FunctionNode {
         }
       }
     ]
-    pageState.state.actions!.closeSwitchTenantDialog = [
+    pageState.actions!.closeSwitchTenantDialog = [
       {
         name: 'arkfbp/flows/assign',
         response: {
@@ -72,30 +73,19 @@ export class AddButton extends FunctionNode {
     const switchTenantPage = {
       type: 'FormPage',
       state: {
-        name: 'tenant.switch',
         created: 'created',
         card: {
           title: '切换租户'
         },
-        form: {
+        descriptions: {
           items: {
-            uuid: {
-              type: 'InputNumber',
-              label: 'UUID',
-              prop: 'uuid',
-              state: {
-                value: '',
-                readonly: true
-              }
-            },
             name: {
-              type: 'Input',
-              label: '名字',
-              prop: 'name',
-              state: {
-                value: '',
-                readonly: true
-              }
+              label: '租户名称',
+              value: ''
+            },
+            uuid: {
+              label: 'UUID',
+              value: ''
             }
           }
         },
@@ -123,8 +113,8 @@ export class AddButton extends FunctionNode {
               url: '/api/v1/tenant/{id}/',
               method: 'get',
               response: {
-                'form.items.uuid.state.value': 'uuid',
-                'form.items.name.state.value': 'name',
+                'descriptions.items.uuid.value': 'uuid',
+                'descriptions.items.name.value': 'name',
               }
             }
           ]
@@ -132,7 +122,7 @@ export class AddButton extends FunctionNode {
       }
     }
     state['tenant.switch'] = switchTenantPage
-    pageState.state.dialogs!.switch = {
+    pageState.dialogs!.switch = {
       visible: false,
       page: 'tenant.switch'
     }

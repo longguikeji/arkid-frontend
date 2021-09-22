@@ -7,7 +7,6 @@ import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
 import { IFlow } from '@/arkfbp'
 
 export interface FormPage extends CardState {
-  name?: string
   form?: FormState
   dialogs?: { [dialogName: string]: DialogState }
   card?: CardState

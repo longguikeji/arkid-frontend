@@ -19,22 +19,22 @@ const PAGE_BASE_FLOW = {
 
 const PAGE_CUSTOM_FLOW = {
   'app': 'flows/custom/appManager/authPageBtn',
-  'maketplace': 'flows/custom/maketplace/initFilter',
-  'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
-  'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
-  'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
-  'password': 'flows/custom/password/addAction',
-  'tenant_config': 'flows/custom/tenant/deleteTenant',
+  'device': 'flows/custom/device',
   'extension': 'flows/custom/extension/addAction',
   'extension.create': 'flows/custom/extension/addAction',
   'extension.update': 'flows/custom/extension/addAction',
-  'device': 'flows/custom/device',
-  'tenant': 'flows/custom/tenant/addButton',
-  'subuser': 'flows/custom/subuser/state',
-  'user_token_manage': 'flows/custom/user/token/state',
+  'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
+  'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
+  'maketplace': 'flows/custom/maketplace/initFilter',
+  'password': 'flows/custom/password/addAction',
   'profile': 'flows/custom/user/profile/state',
   'profile.update': 'flows/custom/user/profile/edit',
-  'profile_config_editfields.update': 'flows/custom/editfields/state'
+  'profile_config_editfields.update': 'flows/custom/editfields/state',
+  'subuser': 'flows/custom/subuser/state',
+  'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
+  'tenant': 'flows/custom/tenant/addButton',
+  'tenant_config': 'flows/custom/tenant/deleteTenant',
+  'user_token_manage': 'flows/custom/user/token/state',
 }
 
 export interface BasePageOptions {

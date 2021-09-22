@@ -146,6 +146,7 @@
     color: gray;
   }
 }
+
 .form-bottom {
   display: flex;
   justify-content: space-between;

@@ -7,7 +7,6 @@ import { ListState } from '@/admin/common/data/List/ListState'
 import { IFlow } from '@/arkfbp'
 
 export interface TreePage extends BaseState {
-  name?: string
   card?: CardState
   data?: any
   tree?: TreeState
