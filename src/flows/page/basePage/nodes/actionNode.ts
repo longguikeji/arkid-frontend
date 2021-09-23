@@ -7,6 +7,7 @@ import OpenAPI, {
   ITagUpdateOperation,
   ITagPageOperation,
 } from '@/config/openapi'
+import { IFlow } from '@/arkfbp'
 import { BasePage } from './pageNode'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { getContent } from '@/utils/schema'
@@ -30,6 +31,7 @@ export class ActionNode extends FunctionNode {
     if (local) this.initPageButtonsAction(local)
     if (global) this.initPageButtonsAction(global)
     if (node) this.initPageTreeNodeAction(node)
+    if (this._temp.filter) this.initPageFilterAction()
     return this.inputs
   }
 
@@ -189,6 +191,16 @@ export class ActionNode extends FunctionNode {
     ]
     if (next) {
       state.actions!.node.push(`${next}.fetch`)
+    }
+  }
+
+  initPageFilterAction() {
+    const state = this._temp
+    const fetch = state.actions!.fetch[0] as IFlow
+    for (const key in state.filter!.items) {
+      if (key === 'action') continue
+      const mapping = `filter.items.${key}.state.value`
+      fetch.request[key] = mapping
     }
   }
 

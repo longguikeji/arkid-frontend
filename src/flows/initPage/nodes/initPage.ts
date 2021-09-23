@@ -19,13 +19,11 @@ const PAGE_BASE_FLOW = {
 
 const PAGE_CUSTOM_FLOW = {
   'app': 'flows/custom/appManager/authPageBtn',
-  'device': 'flows/custom/device',
   'extension': 'flows/custom/extension/addAction',
   'extension.create': 'flows/custom/extension/addAction',
   'extension.update': 'flows/custom/extension/addAction',
   'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
   'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
-  'maketplace': 'flows/custom/maketplace/initFilter',
   'password': 'flows/custom/password/addAction',
   'profile': 'flows/custom/user/profile/state',
   'profile.update': 'flows/custom/user/profile/edit',

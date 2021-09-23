@@ -7,7 +7,7 @@ import {
   ITagUpdateOperation,
   ITagPageOperation
 } from '@/config/openapi'
-import { getSchemaByPath } from '@/utils/schema'
+import { getSchemaByPath, getParamsByPath } from '@/utils/schema'
 import { BasePage } from './pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
@@ -59,7 +59,7 @@ export class StateNode extends FunctionNode {
     switch (this._type) {
       case 'TablePage':
         this.initTableMainState(schema)
-        this.initPageFilterState(init)
+        this.initPageFilterState(init, schema)
         break
       case 'FormPage':
         await this.initFormMainState(schema)
@@ -134,8 +134,46 @@ export class StateNode extends FunctionNode {
     return results
   }
 
-  async initPageFilterState(init: ITagPageAction) {
+  async initPageFilterState(init: ITagPageAction, schema: ISchema) {
     const { path, method } = init
+    const properties = schema.properties
+    const params = getParamsByPath(path, method)
+    if (!params || !properties) return
+    const state = this._temp
+    params.forEach(param => {
+      const point = param.in
+      const name = param.name
+      if (point === 'query' && properties[name]) {
+        if (!state.filter) {
+          state.filter = {
+            inline: true,
+            size: 'mini',
+            items: {}
+          }
+        }
+        const label = properties[name].title || name
+        state.filter.items![name] = {
+          type: 'Input',
+          isSetWidth: false,
+          label,
+          state: {
+            value: '',
+            placeholder: `请输入${label}`
+          }
+        }
+      }
+    })
+    if (state.filter) {
+      state.filter.items!.action = {
+        type: 'Button',
+        isSetWidth: false,
+        state: {
+          label: '搜索',
+          type: 'primary',
+          action: 'fetch'
+        }
+      }
+    }
   }
 
   async initPageLocalButtonState(locals: ITagPageOperation) {

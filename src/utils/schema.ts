@@ -45,3 +45,8 @@ export function getContent(path: string, method: string) {
     return content
   }
 }
+
+export function getParamsByPath(path: string, method: string) {
+  const operation = OpenAPI.instance.getOperation(path, method)
+  return operation ? operation.parameters : null
+}

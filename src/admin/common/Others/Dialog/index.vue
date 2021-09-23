@@ -75,12 +75,14 @@ export default class extends Mixins(BaseVue) {
   display: inline-block !important;
 }
 ::v-deep .el-dialog {
+  margin-top: 10vh !important;
   .el-dialog__header {
     padding-top: 0px;
     padding-bottom: 0px;
   }
   .el-dialog__body {
     padding: 0px;
+    height: 80vh;
   }
   .el-dialog__headerbtn {
     z-index: 100;
@@ -107,6 +109,14 @@ export default class extends Mixins(BaseVue) {
   }
   .el-card__body {
     padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+    position: relative;
+    .form-page-buttons {
+      position: sticky;
+      bottom: -10px;
+      background-color: #fff;
+    }
   }
 }
 </style>
