@@ -1,7 +1,7 @@
 <template>
   <div class="tree-page">
     <Card
-      :class="[{'tree-page-main': !!state.list}]"
+      :class="[{'tree-list-page': !!state.list}]"
       :path="getChildPath('card')"
     >
       <Tree :path="getChildPath('tree')" />
@@ -60,13 +60,13 @@ export default class extends Mixins(BaseVue) {
   .el-card {
     height: calc(100vh - 130px);
   }
-  .tree-page-main {
+  .tree-list-page {
     display: inline-block;
-    width: 50%;
+    width: 70%;
   }
   .tree-page-list {
     display: inline-block;
-    width: 50%;
+    width: 30%;
     vertical-align: top;
     min-height: 300px;
   }

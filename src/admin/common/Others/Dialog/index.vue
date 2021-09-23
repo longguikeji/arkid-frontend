@@ -80,7 +80,6 @@ export default class extends Mixins(BaseVue) {
   }
   .el-dialog__body {
     padding: 0px;
-    max-height: 80vh;
   }
   .el-dialog__headerbtn {
     z-index: 100;
@@ -107,8 +106,6 @@ export default class extends Mixins(BaseVue) {
   }
   .el-card__body {
     padding: 20px;
-    max-height: 70vh;
-    overflow-y: auto;
     position: relative;
     .form-page-buttons {
       position: sticky;

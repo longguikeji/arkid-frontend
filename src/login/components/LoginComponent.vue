@@ -181,12 +181,14 @@
 
   ::v-deep .el-dialog {
     margin-top: 200px !important;
+    width: 500px !important;
     .el-dialog__header {
       border-radius: 8px 8px 0 0;
       padding: 0px;
     }
     .el-dialog__body {
       border-radius: 8px;
+      padding: 56px;
     }
   }
 }

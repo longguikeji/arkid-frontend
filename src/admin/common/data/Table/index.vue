@@ -145,5 +145,6 @@ export default class extends Mixins(BaseVue) {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+  padding-left: 20px;
 }
 </style>

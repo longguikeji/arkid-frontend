@@ -121,7 +121,9 @@ export default class extends Mixins(BaseVue) {
   submitPasswordForm() {
     (this.$refs.passwordFormCom as Vue & { validate: Function }).validate(async(valid: boolean) => {
       if (valid && this.state.action) {
-        await this.runAction(this.state.action)
+        await this.runAction(this.state.action).then(_ => {
+          this.resetPasswordForm()
+        })
       }
     })
   }

@@ -71,11 +71,12 @@ export function stateFilter(strEquality: string, state: any): number | string {
 export function getTreeData(data: Array<any>) {
   const res: Array<TreeNodeProps> = []
   for (let i = 0; i < data.length; i++) {
+    const d = data[i]
     const item = {
-      id: data[i].uuid,
-      uuid: data[i].uuid,
-      label: data[i].name || '',
-      children: data[i].children ? getTreeData(data[i].children) : [],
+      id: d.uuid,
+      uuid: d.uuid,
+      label: d.name || d.username || '',
+      children: d.children ? getTreeData(d.children) : [],
     }
     res.push(item)
   }

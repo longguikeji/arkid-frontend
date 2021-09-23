@@ -81,7 +81,7 @@ export class StateNode extends FunctionNode {
       state.table!.columns!.push(columnState)
     }
     state.table!.isExpand = options?.tableIsExpand
-    state.table!.height = TABLE_HEIGHT[page] || '73vh'
+    state.table!.height = TABLE_HEIGHT[page]
   }
   
   initPageDescription() {

@@ -7,6 +7,7 @@
   >
     <table-page
       v-if="initCompleted"
+      class="tenant"
       :path="`tenant.tenantState[${page}].state`"
     />
   </el-dialog>
@@ -68,6 +69,18 @@ export default class extends Vue {
   .el-image {
     width: 40px !important;
     height: 40px !important;
+  }
+}
+
+::v-deep .tenant {
+  height: auto !important;
+  .el-card {
+    height: auto !important;
+  }
+  .el-card__body {
+    .el-table__body-wrapper {
+      height: auto;
+    }
   }
 }
 </style>

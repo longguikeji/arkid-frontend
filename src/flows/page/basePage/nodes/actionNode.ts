@@ -183,12 +183,15 @@ export class ActionNode extends FunctionNode {
     const { path, method, from, next } = node
     const state = this._temp
     state.tree!.action = 'node'
-    state.actions!.node = [
-      {
-        name: 'arkfbp/flows/children',
-        url: path, method
-      }
-    ]
+    state.actions!.node = []
+    if (path && method) {
+      state.actions!.node.push(
+        {
+          name: 'arkfbp/flows/children',
+          url: path, method
+        }
+      )
+    }
     if (next) {
       state.actions!.node.push(`${next}.fetch`)
     }
@@ -197,6 +200,9 @@ export class ActionNode extends FunctionNode {
   initPageFilterAction() {
     const state = this._temp
     const fetch = state.actions!.fetch[0] as IFlow
+    if (!fetch.request) {
+      fetch.request = {}
+    }
     for (const key in state.filter!.items) {
       if (key === 'action') continue
       const mapping = `filter.items.${key}.state.value`
@@ -336,10 +342,19 @@ export class ActionNode extends FunctionNode {
     const props = { data: '', pagination: '', next: '', previous: '' }
     if (res.properties) {
       const properties = res.properties
-      props.pagination = properties.count ? 'count' : ''
-      props.next = properties.next ? 'next' : ''
-      props.previous = properties.previous ? 'previous' : ''
-      props.data = properties.results ? 'results' : properties.data ? 'data' : ''
+      const { count, next, previous, results, data, items } = properties
+      props.pagination = count ? 'count' : ''
+      props.next = next ? 'next' : ''
+      props.previous = previous ? 'previous' : ''
+      if (results) {
+        props.data = 'results'
+      } else if (data) {
+        props.data = 'data'
+      } else if (items) {
+        props.data = 'items'
+      } else {
+        props.data = ''
+      }
     }
     return props
   }

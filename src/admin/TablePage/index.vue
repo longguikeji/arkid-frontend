@@ -2,6 +2,7 @@
   <div class="table-page">
     <Card
       :path="getChildPath('card')"
+      :class="[{'table-list-page': !!state.list}]"
     >
       <Form
         v-if="state.filter"
@@ -23,7 +24,7 @@
     </Card>
     <List
       v-if="state.list"
-      :path="getChildPath('list.data')"
+      :path="getChildPath('list')"
       class="table-page-list"
     />
   </div>
@@ -66,6 +67,9 @@ export default class extends Mixins(BaseVue) {
   .el-card {
     height: calc(100vh - 130px);
   }
+  .table-page-filter {
+    padding: 10px;
+  }
   ::v-deep .el-card__body {
     position: relative;
     .el-pagination {
@@ -92,12 +96,17 @@ export default class extends Mixins(BaseVue) {
         bottom: 10px;
       }
     }
-    .table-page-list {
-      width: 30%;
-      display: inline-block;
-      vertical-align: top;
-      min-height: 300px;
-    }
   }
+}
+
+.table-list-page {
+  display: inline-block;
+  width: 70%;
+}
+.table-page-list {
+  width: 30%;
+  display: inline-block;
+  vertical-align: top;
+  min-height: 300px;
 }
 </style>
