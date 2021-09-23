@@ -81,7 +81,7 @@ export class StateNode extends FunctionNode {
       state.table!.columns!.push(columnState)
     }
     state.table!.isExpand = options?.tableIsExpand
-    state.table!.height = TABLE_HEIGHT[page] || '78vh'
+    state.table!.height = TABLE_HEIGHT[page] || '73vh'
   }
   
   initPageDescription() {
@@ -171,7 +171,8 @@ export class StateNode extends FunctionNode {
         state: {
           label: '搜索',
           type: 'primary',
-          action: 'fetch'
+          action: 'fetch',
+          icon: 'el-icon-search'
         }
       }
     }
@@ -397,9 +398,9 @@ export class StateNode extends FunctionNode {
           prop: 'actions',
           fixed: 'right',
           label: '操作',
-          width: TABLE_COLUMN_WIDTH[page] && TABLE_COLUMN_WIDTH[page]['actions'],
+          width: '50',
           scope: {
-            type: 'ButtonArray',
+            type: 'ButtonDropdown',
             state: []
           }
         }

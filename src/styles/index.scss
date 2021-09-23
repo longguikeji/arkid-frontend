@@ -179,17 +179,21 @@ aside {
 .el-card__header {
   font-size: 16px;
   font-weight: bold;
+  border-radius: 8px 8px 0px 0px;
 }
 
 .el-card__body {
   padding: 10px;
+  border-radius: 0px 0px 8px 8px;
 }
 
 .el-descriptions__header {
-  padding: 18px 20px;
+  padding: 16px 16px;
   font-size: 16px;
   font-weight: bold;
   border-bottom: 1px solid #e6ebf5;
+  background-color: #fff;
+  margin-bottom: 0px;
 }
 
 .el-descriptions__body {

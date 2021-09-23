@@ -82,7 +82,7 @@ export default class extends Mixins(BaseVue) {
   }
   .el-dialog__body {
     padding: 0px;
-    height: 80vh;
+    max-height: 80vh;
   }
   .el-dialog__headerbtn {
     z-index: 100;

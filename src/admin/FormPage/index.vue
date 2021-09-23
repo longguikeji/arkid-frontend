@@ -1,13 +1,14 @@
 <template>
   <div>
+    <Descriptions
+      v-if="state.descriptions"
+      :path="getChildPath('descriptions')"
+    />
     <Card
+      v-else
       class="form-page"
       :path="getChildPath('card')"
     >
-      <Descriptions
-        v-if="state.descriptions"
-        :path="getChildPath('descriptions')"
-      />
       <template v-if="state.select">
         <b>{{ state.select.valueKey }}</b>
         <Select

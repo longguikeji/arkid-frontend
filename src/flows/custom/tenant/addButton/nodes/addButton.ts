@@ -11,7 +11,8 @@ export class AddButton extends FunctionNode {
     buttons.push({
       type: 'danger',
       action: 'logout',
-      label: '退出登录'
+      label: '退出登录',
+      icon: 'el-icon-right'
     })
     pageState.actions!.logout = [
       {
@@ -40,15 +41,16 @@ export class AddButton extends FunctionNode {
     columns?.push({
       prop: 'actions',
       label: '操作',
-      width: '150',
+      width: '50',
       fixed: 'right',
       scope: {
-        type: 'ButtonArray',
+        type: 'ButtonDropdown',
         state: [
           {
             type: 'primary',
             action: 'openSwitchTenantDialog',
             label: '切换租户',
+            icon: 'el-icon-open'
           }
         ]
       }
@@ -77,15 +79,23 @@ export class AddButton extends FunctionNode {
         card: {
           title: '切换租户'
         },
-        descriptions: {
+        form: {
           items: {
             name: {
+              type: 'Input',
               label: '租户名称',
-              value: ''
+              state: {
+                value: '',
+                readonly: true
+              }
             },
             uuid: {
+              type: 'Input',
               label: 'UUID',
-              value: ''
+              state: {
+                value: '',
+                readonly: true
+              }
             }
           }
         },
@@ -113,8 +123,8 @@ export class AddButton extends FunctionNode {
               url: '/api/v1/tenant/{id}/',
               method: 'get',
               response: {
-                'descriptions.items.uuid.value': 'uuid',
-                'descriptions.items.name.value': 'name',
+                'form.items.uuid.state.value': 'uuid',
+                'form.items.name.state.value': 'name',
               }
             }
           ]

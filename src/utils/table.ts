@@ -135,13 +135,11 @@ export const TABLE_COLUMN_WIDTH = {
     'actions': '100'
   },
   'subuser': {
-    'uuid': '200',
     'account_type': '100',
     'email': '200',
     'mobile': '200',
     'password': '200',
     'username': '200',
-    'actions': '300'
   },
   'contacts_user': {
     'email': '200',
@@ -182,5 +180,5 @@ export const TABLE_COLUMN_WIDTH = {
 }
 
 export const TABLE_HEIGHT = {
-  'third_part_account': '83vh',
+  'third_part_account': '83vh'
 }

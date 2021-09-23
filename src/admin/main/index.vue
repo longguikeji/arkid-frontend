@@ -7,6 +7,7 @@
       v-for="(name, index) in names"
       :key="index"
       :path="`admin.adminState[${name}]`"
+      class="admin-page"
     />
   </div>
   <div v-else-if="url">
@@ -73,6 +74,10 @@ export default class extends Vue {
 
 iframe {
   width: 100%;
-  height: calc(100vh - 90px);
+  height: calc(100vh - 86px);
+}
+
+.admin-page {
+  margin: 20px;
 }
 </style>
