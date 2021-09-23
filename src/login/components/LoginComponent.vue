@@ -7,10 +7,10 @@
     width="450px"
     :fullscreen="fullscreen"
   >
-    <div slot="title">
+    <div class="tenant-info">
       <el-image
         class="login-image"
-        :src="icon"
+        :src="icon || defaultIcon"
       />
       <h2 class="login-title">
         {{ title }}
@@ -127,23 +127,67 @@
         </el-button>
       </div>
     </el-dialog>
+    <div class="copyright">
+      Copyright © 2021 All Rights Reserved. 龙归科技 版权所有
+    </div>
   </el-dialog>
 </template>
 
 <script lang="ts" src="./LoginComponent.ts" />
 
 <style lang="scss" scoped>
+.tenant-info {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  padding-left: 20px;
+}
+
+.copyright {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #F0F2F5;
+  font-size: 12px;
+  font-family: 'PingFang SC';
+  line-height: 60px;
+  color: #909399;
+  text-align: center;
+}
+
 .login {
   text-align: center;
   margin: 0 auto;
+  background-color: #0f62ea;
+  background-image: url('../../assets/bgc.png');
+  background-size: contain;
 
   &-image {
-    width: 60px;
-    height: 60px;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
   }
 
   &-title {
-    color: gray;
+    color:#303133;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 15px;
+  }
+
+  ::v-deep .el-dialog {
+    margin-top: 200px !important;
+    .el-dialog__header {
+      border-radius: 8px 8px 0 0;
+      padding: 0px;
+    }
+    .el-dialog__body {
+      border-radius: 8px;
+    }
   }
 }
 

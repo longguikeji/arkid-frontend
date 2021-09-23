@@ -3,8 +3,14 @@
     v-if="state"
     :class="page"
   >
+    <Tabs
+      v-if="state.$tabs"
+      path="admin.adminState.$tabs"
+      class="admin-tabs-page"
+    />
     <AdminComponent
       v-for="(name, index) in names"
+      v-else
       :key="index"
       :path="`admin.adminState[${name}]`"
       class="admin-page"
@@ -77,7 +83,8 @@ iframe {
   height: calc(100vh - 86px);
 }
 
-.admin-page {
+.admin-page,
+.admin-tabs-page {
   margin: 20px;
 }
 </style>

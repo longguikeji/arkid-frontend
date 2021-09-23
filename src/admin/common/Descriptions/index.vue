@@ -17,7 +17,7 @@
         :key="index"
         :label="items[key].label"
       >
-        {{ items[key].value }}
+        {{ getItemValue(items[key], key) }}
       </el-descriptions-item>
     </template>
   </el-descriptions>
@@ -26,7 +26,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
-import DescriptionsState from './DescriptionsState'
+import DescriptionsState, { DescriptionsItemState } from './DescriptionsState'
+import { hideMobile, hideEmail } from '@/utils/rules'
 
 @Component({
   name: 'Descriptions'
@@ -52,6 +53,17 @@ export default class Descriptions extends Mixins(BaseVue) {
     })
     if (isuuid) keys.push('uuid')
     return keys
+  }
+
+  getItemValue(item: DescriptionsItemState, key: string) {
+    const value = item.value
+    if (!value) return undefined
+    if (key.includes('mobile')) {
+      return hideMobile(value)
+    } else if (key.includes('email')) {
+      return hideEmail(value)
+    }
+    return value
   }
 }
 </script>

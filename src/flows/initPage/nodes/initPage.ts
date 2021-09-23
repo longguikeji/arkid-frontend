@@ -25,7 +25,7 @@ const PAGE_CUSTOM_FLOW = {
   'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
   'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
   'password': 'flows/custom/password/addAction',
-  'profile': 'flows/custom/user/profile/state',
+  'profile': 'flows/custom/profile',
   'profile.update': 'flows/custom/user/profile/edit',
   'profile_config_editfields.update': 'flows/custom/editfields/state',
   'subuser': 'flows/custom/subuser/state',

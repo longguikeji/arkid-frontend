@@ -1,13 +1,14 @@
 import { BaseState } from '@/admin/base/BaseVue'
 import ButtonState from '@/admin/common/Button/ButtonState'
 
-interface DescriptionsItemState {
+export interface DescriptionsItemState {
   label?: string;
   span?: number;
   labelClassName?: string;
   contentClassName?: string;
   labelStyle?: object;
   contentStyle?: object;
+  value?: any
 }
 
 export default interface DescriptionsState extends BaseState {

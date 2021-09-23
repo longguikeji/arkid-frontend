@@ -57,9 +57,7 @@ export default class extends Mixins(BaseVue) {
 
   get dialogPath() {
     if (this.state.page) {
-      return this.path.includes('[')
-        ? `${this.path.substring(0, this.path.indexOf('['))}[${this.state.page}]`
-        : `${this.path.split('.').slice(0, 2).join('.')}[${this.state.page}]`
+      return `${this.path.substring(0, this.path.indexOf('['))}[${this.state.page}]`
     } else {
       return this.getChildPath('state')
     }

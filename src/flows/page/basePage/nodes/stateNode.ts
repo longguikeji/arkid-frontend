@@ -446,15 +446,17 @@ export class StateNode extends FunctionNode {
       default:
         action = key
     }
-    if (key === 'delete') type = 'danger'
+    if (key === 'delete' || key === 'logout' || key === 'logoff') type = 'danger'
     if (pageType === 'TreePage' && role === 'local') type = 'text'
+    if (key === 'import' || key === 'export') type = ''
     return {
       action,
       type,
       disabled: key === 'export' ? true : false,
       label: description,
       name: key,
-      icon
+      icon,
+      size: 'mini'
     }
   }
 }

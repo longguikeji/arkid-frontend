@@ -130,3 +130,16 @@ function regexValidator(val: any): string {
   }
   return message
 }
+
+export function hideMobile(mobile: string) {
+  if (mobile.length > 7) {
+    return mobile.substr(0, 3) + '****' + mobile.substr(7)
+  } else {
+    return `***${mobile.substring(3)}`
+  }
+}
+
+export function hideEmail(email: string) {
+  const es = email.split('@')
+  return `****@${es[1]}`
+}

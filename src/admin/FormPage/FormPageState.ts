@@ -4,6 +4,7 @@ import SelectState from '../common/Form/Select/SelectState'
 import ButtonState from '@/admin/common/Button/ButtonState' 
 import DialogState from '@/admin/common/Others/Dialog/DialogState'
 import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
+import TabsState from '@/admin/common/Navigation/Tabs/TabsState'
 import { IFlow } from '@/arkfbp'
 
 export interface FormPage extends CardState {
@@ -17,4 +18,5 @@ export interface FormPage extends CardState {
   data?: any
   readonly?: boolean // 该页面是否为只读页面，如果为只读页面，使用 Descriptions 进行展示
   descriptions?: DescriptionsState
+  tabs?: TabsState
 }

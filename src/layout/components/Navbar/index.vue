@@ -175,7 +175,7 @@ export default class extends Vue {
 
     .right-menu-item {
       display: inline-block;
-      padding: 0 8px;
+      padding-left: 15px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;
@@ -192,7 +192,7 @@ export default class extends Vue {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 15px;
 
       .avatar-wrapper {
         margin-top: 5px;

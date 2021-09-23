@@ -3,19 +3,19 @@
 .contacts_group.contacts_user,
 .group_list.gpermission,
 .app_list.apermission {
+  display: flex;
   .tree-page {
-    display: inline-block;
-    width: 30%;
-    height: calc(100vh - 90px);
+    flex: 1;
+    height: calc(100vh - 130px);
     vertical-align: top;
     ::v-deep .el-card {
       height: 100%;
     }
   }
   .table-page {
-    display: inline-block;
-    width: 70%;
-    height: 100%;
+    flex: 2;
+    height: calc(100vh - 130px);
+    margin-left: 0px;
   }
 }
 
@@ -33,5 +33,15 @@
     flex: 1;
     height: calc(100vh - 130px);
     margin-left: 0px;
+  }
+}
+
+.profile {
+  .admin-tabs-page {
+    height: calc(100vh - 130px);
+    background-color: #FFF;
+  }
+  ::v-deep .el-card {
+    border: 0px;
   }
 }
