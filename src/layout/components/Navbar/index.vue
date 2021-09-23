@@ -12,9 +12,20 @@
     />
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <header-search class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull class="right-menu-item hover-effect" />
+        <el-tooltip
+          :content="$t('navbar.search')"
+          effect="dark"
+          placement="bottom"
+        >
+          <header-search class="right-menu-item" />
+        </el-tooltip>
+        <el-tooltip
+          :content="$t('navbar.screenfull')"
+          effect="dark"
+          placement="bottom"
+        >
+          <screenfull class="right-menu-item hover-effect" />
+        </el-tooltip>
         <el-tooltip
           :content="$t('navbar.size')"
           effect="dark"
@@ -22,7 +33,13 @@
         >
           <size-select class="right-menu-item hover-effect" />
         </el-tooltip>
-        <lang-select class="right-menu-item hover-effect" />
+        <el-tooltip
+          :content="$t('navbar.lang')"
+          effect="dark"
+          placement="bottom"
+        >
+          <lang-select class="right-menu-item hover-effect" />
+        </el-tooltip>
       </template>
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"
@@ -69,7 +86,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { AppModule } from '@/store/modules/app'
 import { UserModule } from '@/store/modules/user'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
-import ErrorLog from '@/components/ErrorLog/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
@@ -81,7 +97,6 @@ import { runFlowByFile } from '@/arkfbp/index'
   name: 'Navbar',
   components: {
     Breadcrumb,
-    ErrorLog,
     Hamburger,
     HeaderSearch,
     LangSelect,

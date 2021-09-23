@@ -30,6 +30,7 @@ interface IButtonProps {
   description: string // 按钮的文本信息
   mode: ButtonMode // 按钮的模式
   role: ButtonRole // 按钮在页面中扮演的角色
+  icon?: string // 按钮的icon图标
 }
 
 export class StateNode extends FunctionNode {
@@ -189,25 +190,26 @@ export class StateNode extends FunctionNode {
       const action = actions[key]
       let button: ButtonState | null = null
       if ((action as ITagPageMapping).tag) { // point new page
-        const { tag, description } = action as ITagPageMapping
+        const { tag, description, icon } = action as ITagPageMapping
         await this.initDialogPageState(tag, key)
-        button = this.getButtonState({ description, key, mode: 'open', role })
+        button = this.getButtonState({ description, key, mode: 'open', role, icon })
       } else {
         const description = action.description || (action['write'] && action['write'].description) || (action['read'] && action['read'].description)
+        const icon = action.icon || (action['write'] && action['write'].icon) || (action['read'] && action['read'].icon)
         switch (key) {
           case 'import':
             this.addImportDialog(action as ITagPageAction)
-            button = this.getButtonState({ description, key, mode: 'open', role})
+            button = this.getButtonState({ description, key, mode: 'open', role, icon })
             break
           case 'password':
             this.addPasswordDialog(action as ITagPageAction | ITagUpdateOperation)
-            button = this.getButtonState({ description, key, mode: 'open', role})
+            button = this.getButtonState({ description, key, mode: 'open', role, icon })
             break
           case 'sort':
             this.addSortButton(action as ITagPageMultiAction)
             break
           default:
-            button = this.getButtonState({ description, key, mode: 'direct', role})
+            button = this.getButtonState({ description, key, mode: 'direct', role, icon })
         }
       }
       if (button) {
@@ -424,7 +426,7 @@ export class StateNode extends FunctionNode {
   getButtonState(props: IButtonProps, path?: string, method?: string) {
     const page = this._page
     const pageType = this._type
-    const { key, description, mode, role } = props
+    const { key, description, mode, role, icon } = props
     let available = true
     if (path && method) { // 权限
       // ...
@@ -450,7 +452,8 @@ export class StateNode extends FunctionNode {
       type,
       disabled: key === 'export' ? true : false,
       label: description,
-      name: key
+      name: key,
+      icon
     }
   }
 }

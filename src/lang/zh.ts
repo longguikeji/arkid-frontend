@@ -18,7 +18,10 @@ export default {
     github: "项目地址",
     theme: "换肤",
     size: "布局大小",
-    profile: "个人中心"
+    profile: "个人中心",
+    screenfull: '全屏',
+    search: '搜索应用',
+    lang: '切换语言'
   },
   login: {
     title: "系统登录",
@@ -39,4 +42,11 @@ export default {
     resendCode: "后重新获取",
     confirmBind: "确定绑定",
   },
+  settings: {
+    title: '设置',
+    theme: '主题颜色',
+    showTagsView: '是否显示页签',
+    sidebarTextTheme: '侧边栏文字主题',
+    showSidebarLogo: '是否显示侧边栏顶部Logo'
+  }
 }

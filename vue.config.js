@@ -1,14 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path')
 
-// If your port is set to 80,
-// use administrator privileges to execute the command line.
-// For example, on Mac: sudo npm run / sudo yarn
 const devServerPort = 9528 // TODO: get this variable from setting.ts
-const name = 'Vue Typescript Admin' // TODO: get this variable from setting.ts
+const name = 'ArkID Frontend' // TODO: get this variable from setting.ts
 
 module.exports = {
-  // publicPath: process.env.NODE_ENV === 'production' ? '/vue-typescript-admin-template/' : '/',
   publicPath: './',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
@@ -30,20 +26,6 @@ module.exports = {
       }
     },
     disableHostCheck: true
-  },
-  pwa: {
-    name: name,
-    workboxPluginMode: 'InjectManifest',
-    workboxOptions: {
-      swSrc: path.resolve(__dirname, 'src/pwa/service-worker.js')
-    },
-    iconPaths: {
-      favicon32: 'favicon.ico',
-      favicon16: 'favicon.ico',
-      appleTouchIcon: 'favicon.ico',
-      maskIcon: 'favicon.ico',
-      msTileImage: 'favicon.ico'
-    }
   },
   pluginOptions: {
     'style-resources-loader': {

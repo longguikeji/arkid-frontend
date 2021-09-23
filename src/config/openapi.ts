@@ -85,6 +85,7 @@ export interface ITagPageAction {
   description?: string
   from?: string
   next?: string
+  icon?: string
 }
 
 export interface ITagUpdateOperation {
@@ -99,6 +100,7 @@ export interface ITagPageMultiAction {
 export interface ITagPageMapping {
   tag: string
   description: string
+  icon?: string
 }
 
 export interface ITagPageOperation {
