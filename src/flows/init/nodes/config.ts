@@ -31,6 +31,8 @@ export class ConfigNode extends APINode {
       await this.setTenantConfig(tenantUUId)
       // 租户密码复杂度
       await this.setTenantPasswordComplexity(tenantUUId)
+      // 获取当前用户的权限
+      await this.getCurrentUserPermission(tenantUUId)
     }
   }
 
@@ -195,5 +197,11 @@ export class ConfigNode extends APINode {
         })
       }
     }
+  }
+
+  async getCurrentUserPermission(tenantUUId: string) {
+    // this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
+    // this.method = 'GET'
+    // const data = await super.run()
   }
 }

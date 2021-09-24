@@ -75,7 +75,7 @@ export class ActionNode extends FunctionNode {
     // add created and fetch action
     state.actions!.fetch = [
       {
-        name: from ? 'arkfbp/flows/next' : 'arkfbp/flows/fetch',
+        name: from ? 'flows/common/linkage/fetch' : 'arkfbp/flows/fetch',
         url: path, method,
         response, request
       }
@@ -97,11 +97,14 @@ export class ActionNode extends FunctionNode {
     if (method === 'get') {
       state.actions!.fetch = [
         {
-          name: 'arkfbp/flows/fetch',
+          name: from ? 'flows/common/linkage/fetch' : 'arkfbp/flows/fetch',
           url: path, method,
           response: mapping
         }
       ]
+      if (from) {
+        state.actions!.fetch.unshift({ name: 'arkfbp/flows/from', from })
+      }
     } else {
       state.actions!.fetch = [
         {
@@ -284,11 +287,14 @@ export class ActionNode extends FunctionNode {
       case 'get':
         state.actions![key] = [
           {
-            name: from ? 'arkfbp/flows/from' : 'arkfbp/flows/update',
+            name: from ? 'flows/common/linkage/update' : 'arkfbp/flows/update',
             url: path, method
           }
         ]
         if (method === 'delete') state.actions![key].push('fetch')
+        if (from) {
+          state.actions![key].unshift({ name: 'arkfbp/flows/from', from })
+        }
         break
       default:
         const { required, mapping } = getActionMapping(path, method)
@@ -298,13 +304,16 @@ export class ActionNode extends FunctionNode {
             name: 'arkfbp/flows/validate'
           },
           {
-            name: from ? 'arkfbp/flows/from' : 'arkfbp/flows/update',
+            name: from ? 'flows/common/linkage/update' : 'arkfbp/flows/update',
             url: path, method,
             request: mapping, required
           },
           `${parent}.close${upperFirst(camelCase(key))}Dialog`,
           `${parent}.fetch`
         ]
+        if (from) {
+          state.actions![key].splice(1, 0, { name: 'arkfbp/flows/from', from })
+        }
     }
   }
 

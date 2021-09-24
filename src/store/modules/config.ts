@@ -30,6 +30,10 @@ interface IPasswordComplexity {
   title: string
 }
 
+interface IUserPermission {
+  
+}
+
 export interface IConfigState {
   origin: string // ArkID平台的Location.origin
   slug: string // 当前租户的短连接标识符
