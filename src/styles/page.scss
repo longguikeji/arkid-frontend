@@ -1,0 +1,47 @@
+.user_list.upermission,
+.group.group_user,
+.contacts_group.contacts_user,
+.group_list.gpermission,
+.app_list.apermission {
+  display: flex;
+  .tree-page {
+    flex: 1;
+    height: calc(100vh - 130px);
+    vertical-align: top;
+    ::v-deep .el-card {
+      height: 100%;
+    }
+  }
+  .table-page {
+    flex: 3;
+    height: calc(100vh - 130px);
+    margin-left: 0px;
+  }
+}
+
+.desktop.notice {
+  display: flex;
+  .dashboard-page {
+    flex: 3;
+    height: calc(100vh - 130px);
+    vertical-align: top;
+    ::v-deep .el-card {
+      height: 100%;
+    }
+  }
+  .list-card {
+    flex: 1;
+    height: calc(100vh - 130px);
+    margin-left: 0px;
+  }
+}
+
+.profile {
+  .admin-tabs-page {
+    height: calc(100vh - 130px);
+    background-color: #FFF;
+  }
+  ::v-deep .el-card {
+    border: 0px;
+  }
+}

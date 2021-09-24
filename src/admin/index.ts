@@ -42,8 +42,6 @@ import Popover from '@/admin/common/Others/Popover/index.vue'
 import Tooltip from '@/admin/common/Others/Tooltip/index.vue'
 import Backtop from '@/admin/common/Others/Backtop/index.vue'
 import Rich from '@/admin/common/Rich/index.vue'
-import AMap from '@/admin/common/AMap/index.vue'
-import Markdown from '@/admin/common/Markdown/index.vue'
 import FormObjectItem from '@/admin/common/Form/FormObjectItem/index.vue'
 import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 import FormPage from '@/admin/FormPage/index.vue'
@@ -100,8 +98,6 @@ Vue.component('Popover', Popover)
 Vue.component('Tooltip', Tooltip)
 Vue.component('Backtop', Backtop)
 Vue.component('Rich', Rich)
-Vue.component('AMap', AMap)
-Vue.component('Markdown', Markdown)
 Vue.component('FormObjectItem', FormObjectItem)
 Vue.component('AdminComponent', AdminComponent)
 Vue.component('List', List)

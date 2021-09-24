@@ -7,7 +7,8 @@
   >
     <table-page
       v-if="initCompleted"
-      :path="`tenant.tenantState.${page}.state`"
+      class="tenant"
+      :path="`tenant.tenantState[${page}].state`"
     />
   </el-dialog>
 </template>
@@ -53,17 +54,10 @@ export default class extends Vue {
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
     await runFlowByFile('flows/initPage', {
-      page: this.page,
-      state: {}
+      page: this.page
     }).then(async(state) => {
-      await runFlowByFile('flows/custom/tenant/addButton', {
-        state,
-        com: this,
-        page: this.page
-      }).then(_ => {
-        TenantModule.changeState(state)
-        this.initCompleted = true
-      })
+      TenantModule.changeState(state)
+      this.initCompleted = true
     })
   }
 }
@@ -72,5 +66,21 @@ export default class extends Vue {
 <style lang="scss" scoped>
 ::v-deep .el-dialog__body {
   height: 96% !important;
+  .el-image {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
+
+::v-deep .tenant {
+  height: auto !important;
+  .el-card {
+    height: auto !important;
+  }
+  .el-card__body {
+    .el-table__body-wrapper {
+      height: auto;
+    }
+  }
 }
 </style>

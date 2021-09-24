@@ -1,27 +1,53 @@
 import axios from 'axios'
 import LoginStore from '../store/login'
 
+const toLogin = () => {
+  LoginStore.removeToken()
+  const { origin, search } = window.location
+  window.location.replace(`${origin}/login${search}`)
+}
+
+const errorCallback = (status: number) => {
+  switch (status) {
+    case 401:
+      toLogin()
+      break
+    case 403:
+      toLogin()
+      break
+  }
+}
+
 const http = axios.create({
   withCredentials: true
 })
 
 http.interceptors.request.use(
-  (config) => {
+  req => {
     const token = LoginStore.token
-    token && (config.headers.Authorization = `Token ${token}`)
-    return config
+    if (token) {
+      if (!req.headers) req.headers = {}
+      req.headers.Authorization = `Token ${token}`
+    }
+    return req
   },
-  (err) => {
+  err => {
     return Promise.reject(err)
   }
 )
 
 http.interceptors.response.use(
-  (response) => {
-    return response
+  res => {
+    return Promise.resolve(res)
   },
-  (err) => {
-    return err.response
+  err => {
+    const { response } = err
+    if (response) {
+      errorCallback(response.status)
+      return Promise.reject(response)
+    } else {
+      return Promise.reject(err)
+    }
   }
 )
 

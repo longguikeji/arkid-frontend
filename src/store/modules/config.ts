@@ -30,6 +30,11 @@ interface IPasswordComplexity {
   title: string
 }
 
+interface IUserPermission {
+  isAllShow?: boolean
+  isAllApplication?: boolean
+}
+
 export interface IConfigState {
   origin: string // ArkID平台的Location.origin
   slug: string // 当前租户的短连接标识符
@@ -66,6 +71,10 @@ class Config extends VuexModule implements IConfigState {
     regular: DEFAULT_PASSWORD_RULE.regex,
     title: DEFAULT_PASSWORD_RULE.hint
   }
+  public userPermissions: IUserPermission = {
+    isAllShow: true,
+    isAllApplication: true
+  }
 
   @Mutation
   setOrigin(origin: string = '') {
@@ -100,6 +109,11 @@ class Config extends VuexModule implements IConfigState {
   @Mutation
   setPasswordComplexify(config: IPasswordComplexity) {
     this.passwordComplexity = Object.assign(this.passwordComplexity, config)
+  }
+
+  @Mutation
+  setUserPermissions() {
+    // ...
   }
 
 }

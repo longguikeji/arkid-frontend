@@ -1,37 +1,58 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import OpenAPI, { ISchema, ITagPage, ITagPageAction, ITagPageMapping, ITagPageMultiAction, ITagUpdateOperation } from '@/config/openapi'
-import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { getContent } from '@/utils/schema'
+import OpenAPI, {
+  ISchema,
+  ITagPageAction,
+  ITagPageMapping,
+  ITagPageMultiAction,
+  ITagUpdateOperation,
+  ITagPageOperation,
+} from '@/config/openapi'
+import { IFlow } from '@/arkfbp'
 import { BasePage } from './pageNode'
+import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+import { getContent } from '@/utils/schema'
 import { getActionMapping } from '@/utils/generate-action'
 import { upperFirst, camelCase } from 'lodash'
 
 export class ActionNode extends FunctionNode {
+  private _page: string = '' // 当前需要初始化state的页面名称
+  private _temp: BasePage = {} // 当前页面临时state
+  private _type: string = '' // 当前页面的类型
+  private _opts: BasePageOptions = {}
+
   async run() {
-    const { state, initContent, currentPage } = this.inputs
-    if (initContent.init) this.initPageFetchAction(state[currentPage], initContent.init)
-    this.initPageOperationAction(state[currentPage], initContent, currentPage)
+    const { dep, state, page, options } = this.inputs
+    const { init, local, global, node } = dep
+    this._page = page
+    this._temp = state[page].state
+    this._type = state[page].type
+    this._opts = options
+    if (init) this.initPageCreatedAction(init)
+    if (local) this.initPageButtonsAction(local)
+    if (global) this.initPageButtonsAction(global)
+    if (node) this.initPageTreeNodeAction(node)
+    if (this._temp.filter) this.initPageFilterAction()
     return this.inputs
   }
 
-  initPageFetchAction(pageState: AdminComponentState, initAction: ITagPageAction) {
-    const { path, method } = initAction
-    const { state, type } = pageState
-    switch (type) {
+  initPageCreatedAction(init: ITagPageAction) {
+    const { path, method, next, from } = init
+    switch (this._type) {
       case 'TablePage':
-        this.initTablePageFetchAction(state, path, method)
+        this.initTablePageCreatedAction(path, method, next, from)
         break
       case 'FormPage':
-        this.initFormPageFetchAction(state, path, method)
+        this.initFormPageCreatedAction(path, method, next, from)
         break
       case 'TreePage':
-        this.initTreePageFetchAction(state, path, method)
+        this.initTreePageCreatedAction(path, method, next, from)
     }
   }
 
-  initTablePageFetchAction(state: BasePage, path: string, method: string) {
+  initTablePageCreatedAction(path: string, method: string, next?: string, from?: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     if (!props) return
+    const state = this._temp
     const response = {
       'table.data': props.data,
       data: props.data
@@ -47,85 +68,154 @@ export class ActionNode extends FunctionNode {
         total: 0,
         action: 'fetch'
       }
+    } else {
+      state.pagination = undefined
     }
-    this.setImportButtonDisabledProp(state, response, props.data)
-    this.addFetchAction(state, path, method, response, request)
+    this.setImportButtonDisabledProp(response, props.data)
+    // add created and fetch action
+    state.actions!.fetch = [
+      {
+        name: from ? 'flows/common/linkage/fetch' : 'arkfbp/flows/fetch',
+        url: path, method,
+        response, request
+      }
+    ]
+    if (from) {
+      state.created = undefined
+      state.actions!.fetch.unshift({ name: 'arkfbp/flows/from', from })
+    } else {
+      state.actions!.created.push('fetch')
+    }
   }
 
-  initFormPageFetchAction(state: BasePage, path: string, method: string) {
-    const response = true
-    let blank = false, flowName
-    if (method !== 'get') {
-      blank = true
-      flowName = 'arkfbp/flows/assign'
-    }
-    let { mapping } = getActionMapping(path, method, blank, response, state.readonly)
+  initFormPageCreatedAction(path: string, method: string, next?: string, from?: string) {
+    const { _opts: options, _temp: state } = this
+    const blank = method === 'get' ? false : true
+    let { mapping } = getActionMapping(path, method, blank, true, options.readonly)
     mapping = Object.assign(mapping, { data: '' })
-    this.addFetchAction(state, path, method, mapping, undefined, flowName)
+    state.actions!.created.push('fetch')
+    if (method === 'get') {
+      state.actions!.fetch = [
+        {
+          name: from ? 'flows/common/linkage/fetch' : 'arkfbp/flows/fetch',
+          url: path, method,
+          response: mapping
+        }
+      ]
+      if (from) {
+        state.actions!.fetch.unshift({ name: 'arkfbp/flows/from', from })
+      }
+    } else {
+      state.actions!.fetch = [
+        {
+          name: 'arkfbp/flows/assign',
+          url: path, method,
+          response: mapping
+        }
+      ]
+    }
   }
 
-  initTreePageFetchAction(state: BasePage, path: string, method: string) {
+  initTreePageCreatedAction(path: string, method: string, next?: string, from?: string) {
     const props = this.getFetchActionPropsBySchema(path, method)
     if (!props) return
+    const state = this._temp
     const response = {
       'tree.data': props.data,
       data: props.data
     }
-    this.setImportButtonDisabledProp(state, response, props.data)
-    this.addFetchAction(state, path, method, response, undefined, 'arkfbp/flows/fetchTree')
-  }
-
-  addFetchAction(state: BasePage, path: string, method: string, response?: any, request?: any, flowName?: string) {
+    const request = {}
+    if (props.pagination) {
+      response['pagination.total'] = props.pagination
+      request['page'] = 'pagination.currentPage'
+      request['page_size'] = 'pagination.pageSize'
+      state.pagination = {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        action: 'fetch',
+        layout: 'sizes, prev, pager, next, total'
+      }
+    } else {
+      state.pagination = undefined
+    }
+    this.setImportButtonDisabledProp(response, props.data)
     state.actions!.created.push('fetch')
     state.actions!.fetch = [
       {
-        name: flowName ? flowName : 'arkfbp/flows/fetch',
-        url: path,
-        method: method,
-        response: response,
-        request: request
+        name: 'arkfbp/flows/tree',
+        url: path, method,
+        response, request
       }
     ]
+    if (next) {
+      Array.prototype.push.apply(state.actions!.fetch, [ `${next}.fetch` ])
+    }
   }
 
-  initPageOperationAction(pageState: AdminComponentState, initContent: ITagPage, currentPage: string) {
-    const { global, local } = initContent
-    const state = pageState.state
-    const operations = Object.assign({}, global, local)
-    for (const key in operations) {
-      const operation = operations[key]
-      if ((operation as ITagPageMapping).tag) {
-        this.addOpenPageAction(state, key)
-        this.addClosePageAction(state, key)
+  initPageButtonsAction(actions: ITagPageOperation) {
+    for (const key in actions) {
+      const action = actions[key]
+      if ((action as ITagPageMapping).tag) {
+        this.addOpenPageAction(key)
+        this.addClosePageAction(key)
       } else {
-        const { path, method } = operation as ITagPageAction
         switch (key) {
           case 'export':
-            this.addExportAction(state, path, method)
+            this.addExportAction(action as ITagPageAction)
             break
           case 'import':
-            this.addOpenPageAction(state, key)
-            this.addClosePageAction(state, key)
+            this.addOpenPageAction(key)
+            this.addClosePageAction(key)
             break
           case 'password':
-            this.addPasswordAction(state, (operation as ITagPageAction | ITagUpdateOperation))
-            this.addClosePageAction(state, key)
-            break
-          case 'children':
-            this.addChildrenAction(state, path, method)
+            this.addPasswordAction(action as ITagPageAction | ITagUpdateOperation)
+            this.addClosePageAction(key)
             break
           case 'sort':
-            this.addSortAction(state, operation as ITagPageMultiAction)
+            this.addSortAction(action as ITagPageMultiAction)
             break
           default:
-            this.addDirectAction(state, path, method, key, currentPage)
+            this.addDirectAction(action as ITagPageAction, key)
         }
       }
     }
   }
 
-  addOpenPageAction(state: BasePage, key: string) {
+  initPageTreeNodeAction(node: ITagPageAction) {
+    const { path, method, from, next } = node
+    const state = this._temp
+    state.tree!.action = 'node'
+    state.actions!.node = []
+    if (path && method) {
+      state.actions!.node.push(
+        {
+          name: 'arkfbp/flows/children',
+          url: path, method
+        }
+      )
+    }
+    if (next) {
+      state.actions!.node.push(`${next}.fetch`)
+    }
+  }
+
+  initPageFilterAction() {
+    const state = this._temp
+    const fetch = state.actions!.fetch[0] as IFlow
+    if (!fetch.request) {
+      fetch.request = {}
+    }
+    for (const key in state.filter!.items) {
+      if (key === 'action') continue
+      const mapping = `filter.items.${key}.state.value`
+      fetch.request[key] = mapping
+    }
+  }
+
+  addOpenPageAction(key: string) {
     const actionName = `open${upperFirst(camelCase(key))}Dialog`
+    const state = this._temp
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/cancelValidate' 
@@ -139,8 +229,9 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addClosePageAction(state: BasePage, key: string) {
+  addClosePageAction(key: string) {
     const actionName = `close${upperFirst(camelCase(key))}Dialog`
+    const state = this._temp
     state.actions![actionName] = [
       {
         name: 'arkfbp/flows/assign',
@@ -151,7 +242,8 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addPasswordAction(state: BasePage, operation: ITagPageAction | ITagUpdateOperation) {
+  addPasswordAction(action: ITagPageAction | ITagUpdateOperation) {
+    const state = this._temp
     state.actions![`openPasswordDialog`] = [
       {
         name: 'arkfbp/flows/assign',
@@ -160,8 +252,8 @@ export class ActionNode extends FunctionNode {
         }
       }
     ]
-    if ((operation as ITagUpdateOperation).read) {
-      const { path, method } = (operation as ITagUpdateOperation).read
+    if ((action as ITagUpdateOperation).read) {
+      const { path, method } = (action as ITagUpdateOperation).read
       state.actions![`openPasswordDialog`].push(
         {
           name: 'arkfbp/flows/fetch',
@@ -175,7 +267,9 @@ export class ActionNode extends FunctionNode {
     }
   }
 
-  addExportAction(state: BasePage, path: string, method: string) {
+  addExportAction(action: ITagPageAction) {
+    const { path, method } = action
+    const state = this._temp
     state.actions!['export'] = [
       {
         name: 'arkfbp/flows/export',
@@ -185,69 +279,49 @@ export class ActionNode extends FunctionNode {
     ]
   }
 
-  addDirectAction(state: BasePage, path: string, method: string, key: string, currentPage: string, parameters?: any) {
-    let params = ''
-    if (parameters) {
-      Object.keys(parameters).forEach(key => {
-        params += `${params}&${key}=${parameters[key]}`
-      })
-      params = `?${params.substring(1)}`
-    }
+  addDirectAction(action: ITagPageAction, key: string) {
+    const { path, method, from, next } = action
+    const { _temp: state, _page: page } = this
     switch (method) {
       case 'delete':
-        state.actions![key] = [
-          {
-            name: 'arkfbp/flows/update',
-            url: `${path}${params}`,
-            method
-          },
-          'fetch'
-        ]
-        break
       case 'get':
         state.actions![key] = [
           {
-            name: 'arkfbp/flows/update',
-            url: `${path}${params}`,
-            method
+            name: from ? 'flows/common/linkage/update' : 'arkfbp/flows/update',
+            url: path, method
           }
         ]
+        if (method === 'delete') state.actions![key].push('fetch')
+        if (from) {
+          state.actions![key].unshift({ name: 'arkfbp/flows/from', from })
+        }
         break
       default:
         const { required, mapping } = getActionMapping(path, method)
-        const parent = currentPage.split('.').slice(0, -1).join('.')
+        const parent = page.split('.').slice(0, -1).join('.')
         state.actions![key] = [
           {
             name: 'arkfbp/flows/validate'
           },
           {
-            name: 'arkfbp/flows/update',
-            url: `${path}${params}`,
-            method,
-            request: mapping,
-            required
+            name: from ? 'flows/common/linkage/update' : 'arkfbp/flows/update',
+            url: path, method,
+            request: mapping, required
           },
           `${parent}.close${upperFirst(camelCase(key))}Dialog`,
           `${parent}.fetch`
         ]
+        if (from) {
+          state.actions![key].splice(1, 0, { name: 'arkfbp/flows/from', from })
+        }
     }
   }
 
-  addChildrenAction(state: BasePage, path: string, method: string) {
-    state.tree!.action = 'fetchTreeNode'
-    state.actions!.fetchTreeNode = [
-      {
-        name: "arkfbp/flows/fetchTreeNode",
-        url: path,
-        method: method
-      }
-    ]
-  }
-
-  addSortAction(state: BasePage, operation: ITagPageMultiAction) {
-    Object.keys(operation).forEach((sortName) => {
-      const url = operation[sortName].path
-      const method = operation[sortName].method
+  addSortAction(action: ITagPageMultiAction) {
+    const state = this._temp
+    Object.keys(action).forEach((sortName) => {
+      const url = action[sortName].path
+      const method = action[sortName].method
       const actionName = 'sortBy' + sortName
       state.actions![actionName] = [
         {
@@ -274,21 +348,32 @@ export class ActionNode extends FunctionNode {
     let ref = responseSchema.$ref as string
     if (responseSchema.items) { ref = (responseSchema.items as ISchema).$ref as string }
     const res = OpenAPI.instance.getSchemaByRef(ref)
-    const props = { data: '', pagination: '' }
+    const props = { data: '', pagination: '', next: '', previous: '' }
     if (res.properties) {
       const properties = res.properties
-      props.pagination = properties.count ? 'count' : ''
-      props.data = properties.results ? 'results' : properties.data ? 'data' : ''
+      const { count, next, previous, results, data, items } = properties
+      props.pagination = count ? 'count' : ''
+      props.next = next ? 'next' : ''
+      props.previous = previous ? 'previous' : ''
+      if (results) {
+        props.data = 'results'
+      } else if (data) {
+        props.data = 'data'
+      } else if (items) {
+        props.data = 'items'
+      } else {
+        props.data = ''
+      }
     }
     return props
   }
 
-  setImportButtonDisabledProp(state: BasePage, response: Object, refer: string) {
-    const btns = state.card?.buttons
+  setImportButtonDisabledProp(response: Object, refer: string) {
+    const btns = this._temp.card?.buttons
     if (btns) {
       for (let i = 0, len = btns.length; i < len; i++) {
         const btn = btns[i]
-        if (btn.label === '导出' || btn.label === 'export') {
+        if (btn.name === 'export') {
           response[`card.buttons[${i}].disabled`] = refer ? `${refer}.length` : 'length'
           break
         }

@@ -1,6 +1,6 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 
-export class Unbind extends AuthApiNode {
+export class Unbind extends APINode {
   async run() {
     const data = this.inputs.com.state.data
     this.url = data.unbind

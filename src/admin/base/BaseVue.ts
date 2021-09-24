@@ -27,6 +27,11 @@ export default class extends Vue {
     return s || {}
   }
 
+  get page(): string | null {
+    const matchs = this.path.match(/\[(.+?)\]/)
+    return matchs ? matchs[1] : null
+  }
+
   getChildPath(path: String|Number) {
     let sp = this.path
     if (typeof path === 'number') {
@@ -40,6 +45,11 @@ export default class extends Vue {
   }
 
   getAnyStateByPath(path: string) {
+    return getStateByPath(this.$store.state, path)
+  }
+
+  getAnyPageState(page: string) {
+    const path = this.path.substring(0, this.path.indexOf('[')) + `[${page}]`
     return getStateByPath(this.$store.state, path)
   }
 

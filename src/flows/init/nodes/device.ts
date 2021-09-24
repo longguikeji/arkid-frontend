@@ -1,9 +1,8 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { getDevice, getDeviceId } from '@/utils/device'
 import { UserModule } from '@/store/modules/user'
-import { ConfigModule } from '@/store/modules/config'
 
-export class DeviceNode extends AuthApiNode {
+export class DeviceNode extends APINode {
 
   async run() {
     if (window.location.pathname === '/login') {

@@ -75,21 +75,6 @@
           flex: 'none'
         }"
       >
-        <!-- <VueCropper
-          ref="cropper"
-          :src="fileUrl"
-          :can-scale="state.canScale"
-          :can-move="state.canMove"
-          :auto-crop="state.autoCrop"
-          :auto-crop-width="state.width"
-          :auto-crop-height="state.height"
-          :fixed="state.fixed"
-          :fixed-number="state.fixedNumber"
-          :fixed-box="state.fixedBox"
-          :center-box="state.centerBox"
-          :output-type="state.outputType"
-          @realTime="realTime"
-        /> -->
         <img
           :src="fileUrl"
           alt=""
@@ -164,15 +149,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UploadState from './UploadState'
-import { VueCropper } from 'vue-cropper'
 import XLSX from 'xlsx'
 import processTableData from '@/utils/readexcel'
 import BaseVue from '@/admin/base/BaseVue'
 import { xlsxValidator } from '@/utils/rules'
 
 @Component({
-  name: 'Upload',
-  components: { VueCropper }
+  name: 'Upload'
 })
 export default class extends Mixins(BaseVue) {
   btnText = '上传文件';

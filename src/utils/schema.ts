@@ -1,6 +1,4 @@
 import OpenAPI, { ISchema } from '@/config/openapi'
-import { FormItemsState } from '@/admin/common/Form/FormState'
-import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 
 export function getSchemaByContent(content: { [requestBodyType: string]: {schema:ISchema}}):ISchema {
   let type = ''
@@ -12,8 +10,8 @@ export function getSchemaByContent(content: { [requestBodyType: string]: {schema
     schema = OpenAPI.instance.getSchemaByRef(schema.$ref)
     if (schema?.properties) {
       const properties = schema.properties
-      if (properties.results?.items || properties.data?.items) {
-        const items = properties.results?.items || properties.data?.items
+      if (properties.results?.items || properties.data?.items || properties.items?.items) {
+        const items = properties.results?.items || properties.data?.items || properties.items?.items
         if ((items as ISchema).$ref) {
           const ref = (items as ISchema).$ref
           if (ref) schema = OpenAPI.instance.getSchemaByRef(ref)
@@ -48,13 +46,7 @@ export function getContent(path: string, method: string) {
   }
 }
 
-export function isImportInputList(items: FormItemsState, inputListItems: FormItemState[]){
-  Object.keys(items).forEach((key, index) => {
-    const item = items[key]
-    if (item.type === 'FormObjectItem') {
-      isImportInputList(item.state.items, inputListItems)
-    } else if (item.type === 'InputList') {
-      inputListItems.push(item)
-    }
-  })
+export function getParamsByPath(path: string, method: string) {
+  const operation = OpenAPI.instance.getOperation(path, method)
+  return operation ? operation.parameters : null
 }

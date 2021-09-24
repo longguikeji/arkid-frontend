@@ -197,7 +197,7 @@ function createInputItem(prop: string, schema: ISchema, disabled: boolean, requi
       readonly: schema.readOnly || readonly,
       placeholder: '请输入' + schema.title,
       required: required,
-      showPassword: prop.includes('password') || prop.includes('email') || prop.includes('mobile'),
+      showPassword: prop.includes('password'),
       autocomplete: 'new-password',
       format: schema.format,
       hint: schema.hint,

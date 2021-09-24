@@ -1,6 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
-import { TABLE_COLUMN_WIDTH } from '@/utils/table'
 
 export class AddUnbindButton extends FunctionNode {
   async run() {
@@ -9,14 +8,15 @@ export class AddUnbindButton extends FunctionNode {
     pageState.state.table?.columns?.push({
       label: '操作',
       prop: 'actions',
-      width: TABLE_COLUMN_WIDTH['third_part_account'].actions,
+      width: '50',
       scope: {
-        type: 'ButtonArray',
+        type: 'ButtonDropdown',
         state: [
           {
             label: '解绑',
             type: 'danger',
-            action: 'unbind'
+            action: 'unbind',
+            icon: 'el-icon-connection'
           }
         ]
       }

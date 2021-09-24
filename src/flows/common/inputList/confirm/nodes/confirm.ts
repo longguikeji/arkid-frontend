@@ -3,7 +3,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 export class Confirm extends FunctionNode {
   async run() {
     const { client: state, params, path, com } = this.inputs
-    const data = state.list.data
+    const data = state.list.items
     const parentState = com.getAnyStateByPath(path)
     parentState.options.length = 0
     if (data.length > 0) {

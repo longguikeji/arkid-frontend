@@ -13,14 +13,12 @@
       :class="{hasTagsView: showTagsView}"
       class="main-container"
     >
-      <div :class="{'fixed-header': fixedHeader}">
-        <navbar />
-        <tags-view v-if="showTagsView" />
-      </div>
+      <navbar />
       <app-main />
       <right-panel v-if="showSettings">
         <settings />
       </right-panel>
+      <tags-view v-if="showTagsView" />
     </div>
   </div>
 </template>
@@ -61,10 +59,6 @@ export default class extends mixins(ResizeMixin) {
 
   get showTagsView() {
     return SettingsModule.showTagsView
-  }
-
-  get fixedHeader() {
-    return SettingsModule.fixedHeader
   }
 
   private handleClickOutside() {
@@ -109,15 +103,6 @@ export default class extends mixins(ResizeMixin) {
   left: 0;
   z-index: 1001;
   overflow: hidden;
-}
-
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  z-index: 9;
-  width: calc(100% - #{$sideBarWidth});
-  transition: width 0.28s;
 }
 
 .hideSidebar {

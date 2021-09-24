@@ -1,8 +1,8 @@
 {
-  "name": "vue-typescript-admin-template",
-  "version": "1.0.0",
+  "name": "arkid-frontend",
+  "version": "2.0.0",
   "private": true,
-  "author": "Chong Guo <armourcy@gmail.com>",
+  "author": "longguikeji",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
@@ -16,9 +16,8 @@
     "@types/cookie": "^0.4.0",
     "@vue/compiler-sfc": "^3.0.9",
     "arkfbp": "0.0.3",
-    "axios": "^0.20.0",
+    "axios": "^0.19.0",
     "clipboard": "^2.0.6",
-    "codemirror": "^5.57.0",
     "console": "^0.7.2",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
@@ -32,34 +31,26 @@
     "jsonlint": "^1.6.3",
     "jszip": "^3.5.0",
     "lodash": "^4.17.20",
-    "mavon-editor": "^2.9.0",
-    "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "normalize.css": "^8.0.1",
     "nprogress": "^0.2.0",
     "path-to-regexp": "^6.1.0",
-    "qiniu-js": "^3.1.1",
     "register-service-worker": "^1.7.1",
     "screenfull": "^5.0.2",
     "script-loader": "^0.7.2",
     "sortablejs": "^1.10.2",
     "tinymce": "^5.4.2",
-    "tui-editor": "^1.4.10",
     "ua-parser-js": "^0.7.28",
     "vue": "^2.6.12",
-    "vue-amap": "^0.5.10",
     "vue-class-component": "^7.2.5",
     "vue-count-to": "^1.0.13",
     "vue-grid-layout": "^2.3.11",
     "vue-i18n": "^8.21.0",
     "vue-image-crop-upload": "^2.5.0",
-    "vue-jsonp": "^2.0.0",
     "vue-property-decorator": "^9.0.0",
     "vue-router": "^3.4.3",
     "vue-splitpane": "^1.0.6",
     "vue-svgicon": "^3.2.6",
-    "vue2-dropzone": "^3.6.0",
-    "vuedraggable": "^2.24.1",
     "vuex": "^3.5.1",
     "vuex-module-decorators": "^0.17.0",
     "xlsx": "^0.16.8",
@@ -67,7 +58,6 @@
   },
   "devDependencies": {
     "@types/clipboard": "^2.0.1",
-    "@types/codemirror": "^0.0.97",
     "@types/compression": "^1.7.0",
     "@types/cors": "^2.8.7",
     "@types/echarts": "^4.6.4",
@@ -116,12 +106,11 @@
     "typescript": "3.8.3",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-cli-plugin-style-resources-loader": "^0.1.4",
-    "vue-cropper": "^0.5.5",
     "vue-template-compiler": "^2.6.12",
     "webpack": "^4.44.1"
   },
   "bugs": {
-    "url": "https://github.com/armour/vue-typescript-admin-template/issues"
+    "url": "https://github.com/longguikeji/arkid-frontend/issues"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
@@ -130,7 +119,7 @@
     "vue",
     "typescript",
     "admin",
-    "template",
+    "arkid",
     "element-ui"
   ],
   "lint-staged": {
@@ -140,7 +129,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/armour/vue-typescript-admin-template.git"
+    "url": "https://github.com/longguikeji/arkid-frontend.git"
   },
   "config": {
     "commitizen": {

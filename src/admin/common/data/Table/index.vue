@@ -3,7 +3,7 @@
     ref="arkidTable"
     :row-key="rowKeyFunc"
     :data="state.data"
-    :height="'70vh'"
+    :height="state.height"
     :stripe="state.stripe"
     :border="state.border"
     :size="state.size"
@@ -145,5 +145,6 @@ export default class extends Mixins(BaseVue) {
   margin-right: 0;
   margin-bottom: 0;
   width: 50%;
+  padding-left: 20px;
 }
 </style>

@@ -7,7 +7,7 @@ export interface ITenantState {
   currentTenant: any
 }
 
-interface ITenant {
+export interface ITenant {
   uuid?: string
   name?: string
   slug?: string

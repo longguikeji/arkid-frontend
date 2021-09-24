@@ -34,32 +34,21 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .app-main {
-  /* 50= navbar  50  */
   height: calc(100vh - 50px);
   width: 100%;
   position: relative;
   overflow: auto;
 }
 
-.fixed-header+.app-main {
-  padding-top: 50px;
-  height: 100vh;
-  overflow: auto;
-}
-
-/* 84 = navbar + tags-view = 50 + 34 */
 .hasTagsView {
   .app-main {
-    height: calc(100vh - 84px);
+    height: calc(100vh - 90px);
+    background-color: #F0F2F5;
     .app-main-container {
-      min-height: calc(100vh - 84px) !important;
+      min-height: calc(100vh - 90px) !important;
       height: auto !important;
       overflow: auto;
     }
-  }
-
-  .fixed-header+.app-main {
-    padding-top: 84px;
   }
 }
 </style>

@@ -2,7 +2,6 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-// import { UrlNode } from '@/arkfbp/nodes/urlNode'
 import { OptionsNode } from './nodes/options'
 
 export class Main extends Flow {

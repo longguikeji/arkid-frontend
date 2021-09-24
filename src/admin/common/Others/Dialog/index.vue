@@ -57,9 +57,7 @@ export default class extends Mixins(BaseVue) {
 
   get dialogPath() {
     if (this.state.page) {
-      return this.path.includes('[')
-        ? `${this.path.substring(0, this.path.indexOf('['))}[${this.state.page}]`
-        : `${this.path.split('.').slice(0, 2).join('.')}[${this.state.page}]`
+      return `${this.path.substring(0, this.path.indexOf('['))}[${this.state.page}]`
     } else {
       return this.getChildPath('state')
     }
@@ -75,6 +73,7 @@ export default class extends Mixins(BaseVue) {
   display: inline-block !important;
 }
 ::v-deep .el-dialog {
+  margin-top: 10vh !important;
   .el-dialog__header {
     padding-top: 0px;
     padding-bottom: 0px;
@@ -107,6 +106,12 @@ export default class extends Mixins(BaseVue) {
   }
   .el-card__body {
     padding: 20px;
+    position: relative;
+    .form-page-buttons {
+      position: sticky;
+      bottom: -10px;
+      background-color: #fff;
+    }
   }
 }
 </style>

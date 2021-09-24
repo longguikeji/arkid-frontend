@@ -6,7 +6,7 @@ export class InitInputList extends FunctionNode {
   async run() {
     const { client: state, com } = this.inputs
     const { page, multiple, field, parent, value, options } = com.state
-    const pageState: AdminComponentState = AdminModule.adminState[page]
+    const pageState: AdminComponentState = AdminModule.adminState![page]
     const type = pageState.type
     // add action
     Object.assign(pageState.state.actions, {
@@ -37,10 +37,10 @@ export class InitInputList extends FunctionNode {
       ]
     })
     // set list inital data
-    pageState.state.list.data.length = 0
+    pageState.state.list.items.length = 0
     for (let item of options) {
       item = Object.assign(item, { action: 'delete' })
-      pageState.state.list.data.push(item)
+      pageState.state.list.items.push(item)
     }
     // set table or tree default data and execute action
     // can process multiple => extend content ...

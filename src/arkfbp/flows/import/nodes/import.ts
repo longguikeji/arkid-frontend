@@ -1,8 +1,8 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { FlowModule } from '@/store/modules/flow'
 import { error } from '@/constants/error'
 
-export class Import extends AuthApiNode {
+export class Import extends APINode {
   async run() {
     const { com, url, method, params } = this.inputs
     const data = params.data

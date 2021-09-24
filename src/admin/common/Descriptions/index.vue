@@ -6,10 +6,10 @@
     border
   >
     <template
-      v-if="state.extra"
+      v-if="state.extra || state.buttons"
       slot="extra"
     >
-      <ButtonArray :path="getChildPath('extra.buttons')" />
+      <ButtonArray :path="getChildPath('buttons')" />
     </template>
     <template v-if="items">
       <el-descriptions-item
@@ -17,7 +17,7 @@
         :key="index"
         :label="items[key].label"
       >
-        {{ items[key].value }}
+        {{ getItemValue(items[key], key) }}
       </el-descriptions-item>
     </template>
   </el-descriptions>
@@ -26,7 +26,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
-import DescriptionsState from './DescriptionsState'
+import DescriptionsState, { DescriptionsItemState } from './DescriptionsState'
+import { hideMobile, hideEmail } from '@/utils/rules'
 
 @Component({
   name: 'Descriptions'
@@ -43,7 +44,7 @@ export default class Descriptions extends Mixins(BaseVue) {
   get keys() {
     const keys: string[] = []
     let isuuid = false
-    Object.keys(this.state.items).forEach(key => {
+    Object.keys(this.state.items).forEach((key) => {
       if (key !== 'uuid') {
         keys.push(key)
       } else {
@@ -52,6 +53,17 @@ export default class Descriptions extends Mixins(BaseVue) {
     })
     if (isuuid) keys.push('uuid')
     return keys
+  }
+
+  getItemValue(item: DescriptionsItemState, key: string) {
+    const value = item.value
+    if (!value) return undefined
+    if (key.includes('mobile')) {
+      return hideMobile(value)
+    } else if (key.includes('email')) {
+      return hideEmail(value)
+    }
+    return value
   }
 }
 </script>

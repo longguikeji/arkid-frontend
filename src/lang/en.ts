@@ -18,7 +18,10 @@ export default {
     github: 'Github',
     theme: 'Theme',
     size: 'Global Size',
-    profile: 'Profile'
+    profile: 'Profile',
+    screenfull: 'Screen Full',
+    search: 'Search APP',
+    lang: 'Select Language'
   },
   login: {
     title: 'Login Form',
@@ -39,4 +42,11 @@ export default {
     resendCode: "Resend",
     confirmBind: "Confirm Binding",
   },
+  settings: {
+    title: 'Settings',
+    theme: 'Theme',
+    showTagsView: 'Show Tags',
+    sidebarTextTheme: 'Sidebar Text Theme',
+    showSidebarLogo: 'Show Sidebar Logo'
+  }
 }

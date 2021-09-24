@@ -8,20 +8,11 @@ export class AuthPageBtn extends FunctionNode {
     const pageState: AdminComponentState = state[page]
     const columns = pageState.state.table?.columns
     const actionState = columns[columns.length - 1]?.scope?.state
-    actionState[2] = {
-      form: 'dropdown',
-      value: '更多',
-      size: 'small',
-      clearable: false,
-      buttons: [ {
-        ...actionState[2],
-        plain: true
-      }, {
-        action: 'openAuthDialog',
-        label: '配置授权页面',
-        plain: true
-      } ]
-    }
+    actionState.push({
+      action: 'openAuthDialog',
+      label: '配置授权页面',
+      icon: 'el-icon-coordinate'
+    })
     pageState.state.actions!.openAuthDialog = [
       {
         name: 'arkfbp/flows/cancelValidate'

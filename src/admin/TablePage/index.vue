@@ -1,8 +1,8 @@
 <template>
   <div class="table-page">
     <Card
-      :class="[{'table-page-main': !!state.list}]"
       :path="getChildPath('card')"
+      :class="[{'table-list-page': !!state.list}]"
     >
       <Form
         v-if="state.filter"
@@ -22,13 +22,11 @@
         />
       </template>
     </Card>
-    <Card
+    <List
       v-if="state.list"
-      :path="getChildPath('list.header')"
+      :path="getChildPath('list')"
       class="table-page-list"
-    >
-      <List :path="getChildPath('list.data')" />
-    </Card>
+    />
   </div>
 </template>
 
@@ -62,54 +60,14 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.table-page {
-  height: 100%;
-  min-height: calc(100vh - 84px);
-  .table-page-main {
-    width: 70%;
-    display: inline-block;
-  }
-  ::v-deep  .el-card__body {
-    height: 100% !important;
-    .table-page-filter {
-      padding: 10px;
-    }
-    .el-table {
-      height: 90% !important;
-    }
-    .el-pagination {
-      margin: 10px;
-    }
-    .el-dialog.is-fullscreen {
-      min-height: 100% !important;
-    }
-    .el-table__body-wrapper {
-      height: auto !important;
-      overflow: auto;
-      min-height: 77vh !important;
-    }
-  }
+.table-list-page {
+  display: inline-block;
+  width: 70%;
 }
-.el-dialog {
-  .table-page {
-    height: auto !important;
-    min-height: 100% !important;
-    position: relative;
-    ::v-deep .el-card__body {
-      .el-table__body-wrapper {
-        height: auto !important;
-        min-height: auto !important;
-      }
-      .el-pagination {
-        bottom: 10px;
-      }
-    }
-    .table-page-list {
-      width: 30%;
-      display: inline-block;
-      vertical-align: top;
-      min-height: 300px;
-    }
-  }
+.table-page-list {
+  width: 30%;
+  display: inline-block;
+  vertical-align: top;
+  min-height: 300px;
 }
 </style>

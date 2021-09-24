@@ -1,4 +1,4 @@
-import { VuexModule, Module, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 
 export interface IAdminState {
@@ -7,16 +7,11 @@ export interface IAdminState {
 
 @Module({ dynamic: true, store, name: 'admin' })
 class Admin extends VuexModule implements IAdminState {
-  public adminState: any = null
+  public adminState = null
 
   @Mutation
-  public CHANGE_ADMIN(payload: any) {
-    this.adminState = payload
-  }
-
-  @Action
-  public async setAdmin(payload: any) {
-    this.CHANGE_ADMIN(payload)
+  public setAdminState(state: any) {
+    this.adminState = state
   }
 }
 

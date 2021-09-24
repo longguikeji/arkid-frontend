@@ -31,7 +31,7 @@ export default class OpenAPI {
     }
   }
 
-  public getOnePageTagInfo(name: string): ITag | undefined {
+  public getOnePageTag(name: string): ITag | undefined {
     const tags = this.config?.tags as ITag[]
     if (!tags?.length) return undefined
     return tags.find(tag => tag.name === name)
@@ -76,12 +76,16 @@ export interface ITagPage {
   init: ITagPageAction
   global?: ITagPageOperation
   local?: ITagPageOperation
+  node?: ITagPageAction
 }
 
 export interface ITagPageAction {
   path: string
   method: string
-  description: string
+  description?: string
+  from?: string
+  next?: string
+  icon?: string
 }
 
 export interface ITagUpdateOperation {
@@ -96,6 +100,7 @@ export interface ITagPageMultiAction {
 export interface ITagPageMapping {
   tag: string
   description: string
+  icon?: string
 }
 
 export interface ITagPageOperation {

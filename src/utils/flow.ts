@@ -1,4 +1,5 @@
 import { isArray, stringConvertNumber } from '@/utils/common'
+import TreeNodeProps from '@/admin/common/data/Tree/TreeNodeProps'
 
 export function proxyClientServer(clientServer: any, data?: any) {
   let proxyClientServer = {}
@@ -65,4 +66,19 @@ export function stateFilter(strEquality: string, state: any): number | string {
     }
   }
   return secondKey
+}
+
+export function getTreeData(data: Array<any>) {
+  const res: Array<TreeNodeProps> = []
+  for (let i = 0; i < data.length; i++) {
+    const d = data[i]
+    const item = {
+      id: d.uuid,
+      uuid: d.uuid,
+      label: d.name || d.username || '',
+      children: d.children ? getTreeData(d.children) : [],
+    }
+    res.push(item)
+  }
+  return res
 }

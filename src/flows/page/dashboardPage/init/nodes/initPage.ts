@@ -2,11 +2,10 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 
 export class InitPage extends FunctionNode {
   async run() {
-    const { state, currentPage } = this.inputs
-    state[currentPage] = {
+    const { state, page } = this.inputs
+    state[page] = {
       type: 'DashboardPage',
       state: {
-        name: currentPage,
         created: 'created',
         items: [],
         actions: {
@@ -18,17 +17,17 @@ export class InitPage extends FunctionNode {
       }
     }
     state['notice'] = {
-      type: 'TablePage',
+      type: 'List',
       state: {
-        name: 'notice',
-        table: {
-          data: [],
-          columns: []
+        header: {
+          title: '通知列表'
         },
-        card: {
-          title: '通知列表',
-          items: []
-        }
+        items: [
+          {
+            label: '欢迎来到ArkID',
+            value: '1'
+          }
+        ]
       }
     }
     return this.inputs

@@ -1,11 +1,11 @@
-import { AuthApiNode } from '@/arkfbp/nodes/authApiNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
 import { processUUId } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
-export class ConfigNode extends AuthApiNode {
+export class ConfigNode extends APINode {
 
   async run() {
     // 如若登录之后依旧没有租户信息，则去进行查询租户列表
@@ -31,6 +31,8 @@ export class ConfigNode extends AuthApiNode {
       await this.setTenantConfig(tenantUUId)
       // 租户密码复杂度
       await this.setTenantPasswordComplexity(tenantUUId)
+      // 获取当前用户的权限
+      await this.getCurrentUserPermission(tenantUUId)
     }
   }
 
@@ -194,6 +196,16 @@ export class ConfigNode extends AuthApiNode {
           isManualOverdueToken: data.is_manual_overdue_token
         })
       }
+    }
+  }
+
+  async getCurrentUserPermission(tenantUUId: string) {
+    this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
+    this.method = 'GET'
+    const data = await super.run()
+    const { is_all_application: isAllApplication, is_all_show: isAllShow, is_childmanager: isChildManager, permissions } = data
+    if (isChildManager) {
+      // ...
     }
   }
 }

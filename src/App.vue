@@ -1,23 +1,16 @@
 <template>
-  <div
-    id="app"
-  >
+  <div id="app">
     <router-view />
-    <service-worker-update-popup />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator'
-import ServiceWorkerUpdatePopup from './pwa/components/ServiceWorkerUpdatePopup.vue'
 import { ConfigModule } from '@/store/modules/config'
 import { removeToken } from '@/utils/auth'
 
 @Component({
-  name: 'App',
-  components: {
-    ServiceWorkerUpdatePopup
-  }
+  name: 'App'
 })
 export default class extends Vue {
   private beforeUnloadTime
