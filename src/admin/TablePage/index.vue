@@ -60,45 +60,6 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.table-page {
-  height: calc(100vh - 130px);
-  box-sizing: border-box;
-  overflow: hidden;
-  .el-card {
-    height: calc(100vh - 130px);
-  }
-  .table-page-filter {
-    padding: 10px;
-  }
-  ::v-deep .el-card__body {
-    position: relative;
-    .el-pagination {
-      margin: 10px;
-      bottom: 50px;
-      box-sizing: border-box;
-    }
-    .el-dialog.is-fullscreen {
-      min-height: 100% !important;
-    }
-  }
-}
-.el-dialog {
-  .table-page {
-    height: auto !important;
-    min-height: 100% !important;
-    position: relative;
-    ::v-deep .el-card__body {
-      .el-table__body-wrapper {
-        height: auto !important;
-        min-height: auto !important;
-      }
-      .el-pagination {
-        bottom: 10px;
-      }
-    }
-  }
-}
-
 .table-list-page {
   display: inline-block;
   width: 70%;

@@ -12,7 +12,8 @@ export class AddButton extends FunctionNode {
       type: 'danger',
       action: 'logout',
       label: '退出登录',
-      icon: 'el-icon-right'
+      icon: 'el-icon-right',
+      size: 'mini'
     })
     pageState.actions!.logout = [
       {

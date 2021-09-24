@@ -200,8 +200,12 @@ export class ConfigNode extends APINode {
   }
 
   async getCurrentUserPermission(tenantUUId: string) {
-    // this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
-    // this.method = 'GET'
-    // const data = await super.run()
+    this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
+    this.method = 'GET'
+    const data = await super.run()
+    const { is_all_application: isAllApplication, is_all_show: isAllShow, is_childmanager: isChildManager, permissions } = data
+    if (isChildManager) {
+      // ...
+    }
   }
 }
