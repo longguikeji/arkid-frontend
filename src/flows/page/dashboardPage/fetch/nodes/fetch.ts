@@ -2,12 +2,16 @@ import { APINode } from '@/arkfbp/nodes/apiNode'
 
 export class Fetch extends APINode {
   async run() {
-    this.url = this.inputs.url
-    this.method = this.inputs.method
+    const { url, method, page, client } = this.inputs
+    this.url = url
+    this.method = method
     const outputs = await super.run()
     this.$state.commit(state => {
-      state.client = this.inputs.client
+      state.client = client
       state.results = outputs.results
+      state.outputs = outputs
+      state.page = page
     })
+    return this.inputs
   }
 }

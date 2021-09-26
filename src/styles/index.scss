@@ -201,7 +201,8 @@ aside {
 }
 
 .app-main {
-  .table-page {
+  .table-page,
+  .dashboard-page {
     height: calc(100vh - 130px);
     box-sizing: border-box;
     overflow: hidden;

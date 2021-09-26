@@ -145,7 +145,7 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .dashboard-page-grid {
-  height: calc(100vh - 84px) !important;
+  height: calc(100vh - 130px) !important;
   overflow: auto;
   .single-app-page {
     width: 100%;
