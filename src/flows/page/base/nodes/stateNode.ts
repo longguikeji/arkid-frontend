@@ -70,18 +70,36 @@ export class StateNode extends FunctionNode {
 
   initTableMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
+    state.table!.isExpand = options?.tableIsExpand
+    state.table!.height = TABLE_HEIGHT[page]
+    state.table!.isDetail = true
+    state.table!.detail = {
+      visible: false,
+      state: {
+        type: 'Descriptions',
+        state: {
+          title: '详情',
+          items: {}
+        }
+      }
+    }
+    const items = state.table!.detail.state.state.items
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
+      const title = iprop.title
       const columnState: TableColumnState = {
-        label: iprop.title,
+        label: title,
         prop: prop,
         width: TABLE_COLUMN_WIDTH[page] && TABLE_COLUMN_WIDTH[page][prop],
         showOverflowTooltip: true
       }
       state.table!.columns!.push(columnState)
+      items[prop] = {
+        label: title,
+        value: ''
+      }
     }
-    state.table!.isExpand = options?.tableIsExpand
-    state.table!.height = TABLE_HEIGHT[page]
+    
   }
   
   initPageDescription() {
