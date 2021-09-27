@@ -97,7 +97,9 @@ export class Page {
     columns: [],
     data: [],
     selection: undefined,
-    border: true
+    border: true,
+    index: true,
+    indexWidth: '50'
   }
   form: FormState = {
     items: {},

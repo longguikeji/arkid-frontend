@@ -44,9 +44,9 @@
       align="center"
     />
     <el-table-column
-      v-if="state.index || true"
+      v-if="state.index"
       type="index"
-      :width="state.indexWidth || '60'"
+      :width="state.indexWidth"
       label="#"
       fixed="left"
       align="center"

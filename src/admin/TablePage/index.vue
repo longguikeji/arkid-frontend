@@ -10,10 +10,6 @@
         class="table-page-filter"
       />
       <Table :path="getChildPath('table')" />
-      <Pagination
-        v-if="state.pagination"
-        :path="getChildPath('pagination')"
-      />
       <template v-if="state.dialogs">
         <Dialog
           v-for="dialogName in Object.keys(state.dialogs)"
@@ -22,6 +18,10 @@
         />
       </template>
     </Card>
+    <Pagination
+      v-if="state.pagination"
+      :path="getChildPath('pagination')"
+    />
     <List
       v-if="state.list"
       :path="getChildPath('list')"

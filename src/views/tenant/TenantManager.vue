@@ -65,21 +65,28 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 ::v-deep .el-dialog__body {
-  height: 96% !important;
+  height: 93% !important;
   .el-image {
     width: 40px !important;
     height: 40px !important;
   }
-}
-
-::v-deep .tenant {
-  height: auto !important;
-  .el-card {
-    height: auto !important;
-  }
-  .el-card__body {
-    .el-table__body-wrapper {
-      height: auto;
+  .tenant {
+    height: 100%;
+    .el-card {
+      height: 100%;
+      position: relative;
+    }
+    .el-card__body {
+      position: relative;
+      height: calc(100% - 55px);
+      overflow: auto;
+      .el-table {
+        min-height: calc(100% - 32px);
+        overflow: auto;
+      }
+    }
+    .el-pagination {
+      padding-top: 10px;
     }
   }
 }
