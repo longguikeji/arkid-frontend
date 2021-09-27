@@ -11,10 +11,16 @@ const EXPAND_TABLE_PAGE = [ 'contacts_user' ]
 const READONLY_PAGE = [ 'profile', 'tenant_config' ]
 
 const PAGE_BASE_FLOW = {
-  'table_page': 'flows/page/basePage',
-  'form_page': 'flows/page/basePage',
-  'tree_page': 'flows/page/basePage',
-  'dashboard_page': 'flows/page/dashboardPage/init'
+  'table_page': 'flows/page/base',
+  'form_page': 'flows/page/base',
+  'tree_page': 'flows/page/base'
+}
+
+const DASHBOARD_PAGE_FLOW = {
+  'desktop': 'flows/page/dashboard/desktop',
+  'notice': 'flows/page/dashboard/desktop',
+  'backlog': 'flows/page/dashboard/desktop',
+  'statistics': 'flows/page/dashboard/statistics'
 }
 
 const PAGE_CUSTOM_FLOW = {
@@ -70,9 +76,11 @@ export class InitPage extends FunctionNode {
       // dep 代表当前生成page所指页面的’依赖‘，来自OpenAPI描述信息
       const { page: dep, description } = tag
       const pageType = dep?.type
-      if (pageType) {
-        const options = this.initPageOptions(page, { description })
+      const options = this.initPageOptions(page, { description })
+      if (pageType && PAGE_BASE_FLOW[pageType]) {
         await runFlowByFile(PAGE_BASE_FLOW[pageType], { state, dep, page, options })
+      } else if (DASHBOARD_PAGE_FLOW[page]) {
+        await runFlowByFile(DASHBOARD_PAGE_FLOW[page], { state, dep, page, options })
       }
     }
   }

@@ -16,7 +16,6 @@ export interface FormPage extends CardState {
   buttons?: Array<ButtonState>
   actions?: { [name: string]: (IFlow | string)[] }
   data?: any
-  readonly?: boolean // 该页面是否为只读页面，如果为只读页面，使用 Descriptions 进行展示
   descriptions?: DescriptionsState
   tabs?: TabsState
 }

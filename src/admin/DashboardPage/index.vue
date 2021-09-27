@@ -31,6 +31,13 @@
         />
       </grid-item>
     </grid-layout>
+    <template v-if="state.dialogs">
+      <Dialog
+        v-for="dialogName in Object.keys(state.dialogs)"
+        :key="dialogName"
+        :path="getChildPath('dialogs.' + dialogName)"
+      />
+    </template>
   </Card>
 </template>
 
@@ -46,6 +53,7 @@ import { ConfigModule } from '@/store/modules/config'
 import { getToken } from '@/utils/auth'
 import { runFlowByFile } from '@/arkfbp'
 import Card from '@/admin/common/Card/index.vue'
+import Dialog from '@/admin/common/Others/Dialog/index.vue'
 
 @Component({
   name: 'DashboardPage',
@@ -53,7 +61,8 @@ import Card from '@/admin/common/Card/index.vue'
     DashboardItem,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
-    Card
+    Card,
+    Dialog
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -112,7 +121,7 @@ export default class extends Mixins(BaseVue) {
         uuid: item.state.uuid
       }
     })
-    await runFlowByFile('flows/page/dashboardPage/adjust', { items })
+    await runFlowByFile('flows/custom/desktop/adjust', { items })
   }
 
   updateDesktopPage() {
@@ -153,6 +162,8 @@ export default class extends Mixins(BaseVue) {
   }
   ::v-deep .vue-grid-item {
     touch-action: none;
+    width: 307px !important;
+    height: 100px !important;
   }
 }
 </style>

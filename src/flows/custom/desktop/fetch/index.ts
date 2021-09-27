@@ -4,8 +4,7 @@ import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { UrlNode } from '@/arkfbp/nodes/urlNode'
 import { Fetch } from './nodes/fetch'
-import { Position } from './nodes/position'
-import { ChangeState } from './nodes/changeState'
+import { ChangeStateNode } from './nodes/change'
 
 export class Main extends Flow {
   createNodes() {
@@ -20,14 +19,10 @@ export class Main extends Flow {
     }, {
       cls: Fetch,
       id: 'fetch',
-      next: 'position'
+      next: 'change-dashboard'
     }, {
-      cls: Position,
-      id: 'position',
-      next: 'change-dashboard-item'
-    }, {
-      cls: ChangeState,
-      id: 'change-dashboard-item',
+      cls: ChangeStateNode,
+      id: 'change-dashboard',
       next: 'stop'
     }, {
       cls: StopNode,

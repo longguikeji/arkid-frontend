@@ -13,7 +13,7 @@
       v-else
       :key="index"
       :path="`admin.adminState[${name}]`"
-      class="admin-page"
+      :class="`admin-page admin-${name}-page`"
     />
   </div>
   <div v-else-if="url">

@@ -8,15 +8,36 @@
         v-for="(item, index) in state.items"
         :key="index"
         :title="item.label"
+        :class="{'is-pointer': item.type === 'link' || item.type === 'detail'}"
       >
-        {{ getLabel(item) }}
+        <el-badge
+          v-if="item.badge"
+          :value="item.badge.value"
+        >
+          <div @click="handleClick(item)">
+            {{ getLabel(item) }}
+          </div>
+        </el-badge>
+        <div
+          v-else
+          @click="handleClick(item)"
+        >
+          {{ getLabel(item) }}
+        </div>
         <i
           v-if="state.clearable"
           class="el-icon-delete"
-          @click="handleClick(item)"
+          @click="clearItem(item)"
         />
       </li>
     </ul>
+    <el-dialog
+      v-if="item"
+      :visible.sync="visible"
+      :title="item.label"
+    >
+      {{ item.value }}
+    </el-dialog>
   </Card>
 </template>
 
@@ -33,6 +54,9 @@ import Card from '@/admin/common/Card/index.vue'
   }
 })
 export default class extends Mixins(BaseVue) {
+  private visible = false
+  private item: ListItemState | null = null
+
   get state(): ListState {
     return this.$state as ListState
   }
@@ -42,6 +66,16 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleClick(item: ListItemState) {
+    const { type, value } = item
+    if (type === 'link' && value) {
+      window.open(value, '_blank')
+    } else if (type === 'detail' && value) {
+      this.item = item
+      this.visible = true
+    }
+  }
+
+  clearItem(item: ListItemState) {
     this.runAction(item.action)
   }
 }
@@ -54,10 +88,14 @@ ul {
   padding: 0;
   li {
     width: 100%;
-    padding: 3px;
+    padding: 10px;
     box-sizing: border-box;
+    &.is-pointer {
+      cursor: pointer;
+    }
     &:hover {
       background-color: #f5f6f8;
+      border-radius: 10px;
     }
     .el-icon-delete {
       float: right;
@@ -66,5 +104,12 @@ ul {
       }
     }
   }
+}
+::v-deep .el-badge__content.is-fixed {
+  right: 0px;
+}
+::v-deep .el-dialog__title {
+  font-size: 16px;
+  font-weight: bold;
 }
 </style>
