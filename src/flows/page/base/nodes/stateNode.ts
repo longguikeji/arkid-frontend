@@ -18,7 +18,7 @@ import { addInputListDialog } from '@/utils/dialogs'
 import hasPermission from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import { FormItemsState } from '@/admin/common/Form/FormState'
-import { TABLE_COLUMN_WIDTH, TABLE_HEIGHT } from '@/utils/table'
+import { TABLE_COLUMN_WIDTH } from '@/utils/table'
 import { upperFirst, camelCase } from 'lodash'
 
 type ButtonRole = 'global' | 'local'
@@ -71,7 +71,6 @@ export class StateNode extends FunctionNode {
   initTableMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
     state.table!.isExpand = options?.tableIsExpand
-    state.table!.height = TABLE_HEIGHT[page]
     state.table!.isDetail = true
     state.table!.detail = {
       visible: false,

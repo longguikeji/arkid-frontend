@@ -160,24 +160,3 @@ export const TABLE_COLUMN_WIDTH = {
   'sub_admin_config': {
   }
 }
-
-export const TABLE_HEIGHT = {
-  'third_part_account': '73vh',
-  'extension': '78vh',
-  'user.custom_fields': '65vh',
-  'user': '60vh',
-  'group_user': '60vh',
-  'permission_list': '73vh',
-  'sub_admin_config': '73vh',
-  'contacts_user_config': '73vh',
-  'subuser': '73vh',
-  'app': '65vh',
-  'auth_rules': '73vh',
-  'device': '60vh',
-  'apermission': '65vh',
-  'authorization_server': '73vh',
-  'authorization_agent': '73vh',
-  'external_idp': '73vh',
-  'webhook': '73vh',
-  'maketplace': '70vh'
-}

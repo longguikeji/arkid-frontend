@@ -5,4 +5,5 @@ export default interface CardState extends BaseState {
   title?: string
   buttons?: Array<ButtonState>
   showHeader?: boolean
+  shadow?: string
 }

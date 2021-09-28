@@ -70,4 +70,19 @@ export default class extends Mixins(BaseVue) {
   vertical-align: top;
   min-height: 300px;
 }
+.table-page {
+  .el-card {
+    border-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  .el-pagination {
+    background: white;
+    border: 1px solid #e6ebf5;
+    border-top: 0px;
+    padding: 5px 5px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+}
 </style>

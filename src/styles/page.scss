@@ -57,3 +57,32 @@
     background-color: #FFF;
   }
 }
+
+.third_part_account {
+  ::v-deep .el-card__body {
+    position: relative;
+    height: calc(100% - 55px);
+    overflow: auto;
+    .el-table {
+      min-height: calc(100%);
+      overflow: auto;
+    }
+  }
+}
+
+.subuser {
+  .table-page {
+    height: calc(100vh - 125px) !important;
+  }
+  ::v-deep .el-card {
+    height: calc(100vh - 165px) !important;
+  }
+  ::v-deep .el-card__body {
+    position: relative;
+    height: calc(100% - 55px);
+    overflow: auto;
+    .el-table {
+      overflow: auto;
+    }
+  }
+}

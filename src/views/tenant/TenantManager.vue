@@ -85,9 +85,6 @@ export default class extends Vue {
         overflow: auto;
       }
     }
-    .el-pagination {
-      padding-top: 10px;
-    }
   }
 }
 </style>
