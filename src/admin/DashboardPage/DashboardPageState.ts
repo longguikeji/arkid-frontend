@@ -9,4 +9,5 @@ export interface DashboardPage extends BaseState {
   actions?: { [name: string]: Array<IFlow | string> }
   card?: CardState
   dialogs?: { [dialogName: string]: DialogState }
+  isDraggable?: boolean
 }

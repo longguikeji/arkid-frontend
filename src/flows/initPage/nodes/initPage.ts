@@ -4,7 +4,7 @@ import OpenAPI from '@/config/openapi'
 
 const SHOW_READONLY_PAGE = [ 'profile', 'app.update', 'external_idp.update' ]
 
-const DISABLED_PAGE = [ 'profile_config', 'login_register_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
+const DISABLED_PAGE = [ 'profile_config', 'login_register_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'log_config' ]
 
 const EXPAND_TABLE_PAGE = [ 'contacts_user' ]
 
@@ -38,7 +38,8 @@ const PAGE_CUSTOM_FLOW = {
   'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
   'tenant': 'flows/custom/tenant/addButton',
   'tenant_config': 'flows/custom/tenant/deleteTenant',
-  'user_token_manage': 'flows/custom/user/token/state'
+  'user_token_manage': 'flows/custom/user/token/state',
+  'contacts_switch': 'flows/custom/contactsConfig'
 }
 
 export interface BasePageOptions {

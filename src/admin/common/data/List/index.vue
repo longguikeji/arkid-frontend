@@ -31,6 +31,12 @@
         />
       </li>
     </ul>
+    <div
+      v-else
+      class="placeholder"
+    >
+      暂无数据
+    </div>
     <el-dialog
       v-if="item"
       :visible.sync="visible"
@@ -105,9 +111,19 @@ ul {
     }
   }
 }
+
+.placeholder {
+  height: 100px;
+  text-align: center;
+  line-height: 100px;
+  font-size: 14px;
+  color: #C0C4CC;
+}
+
 ::v-deep .el-badge__content.is-fixed {
   right: 0px;
 }
+
 ::v-deep .el-dialog__title {
   font-size: 16px;
   font-weight: bold;

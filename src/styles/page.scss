@@ -41,7 +41,8 @@
   }
 }
 
-.profile {
+.profile,
+.contacts_switch {
   .admin-tabs-page {
     height: calc(100vh - 130px);
     background-color: #FFF;
@@ -58,19 +59,33 @@
   }
 }
 
-.third_part_account {
+.third_part_account,
+.extension,
+.maketplace {
   ::v-deep .el-card__body {
     position: relative;
     height: calc(100% - 55px);
     overflow: auto;
     .el-table {
-      min-height: calc(100%);
       overflow: auto;
     }
   }
 }
 
-.subuser {
+.subuser,
+.sub_admin_config,
+.app,
+.user,
+.admin-group_user-page,
+.device,
+.permission_list,
+.admin-apermission-page,
+.authorization_server,
+.authorization_agent,
+.external_idp,
+.webhook,
+.user_log,
+.admin_log {
   .table-page {
     height: calc(100vh - 125px) !important;
   }

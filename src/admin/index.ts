@@ -53,6 +53,7 @@ import TreePage from '@/admin/TreePage/index.vue'
 import DashboardPage from '@/admin/DashboardPage/index.vue'
 import Password from '@/admin/common/Password/index.vue'
 import Descriptions from '@/admin/common/Descriptions/index.vue'
+import Chart from '@/admin/common/echart/Chart/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -107,3 +108,4 @@ Vue.component('TreePage', TreePage)
 Vue.component('DashboardPage', DashboardPage)
 Vue.component('Password', Password)
 Vue.component('Descriptions', Descriptions)
+Vue.component('Chart', Chart)

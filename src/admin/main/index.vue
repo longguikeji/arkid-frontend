@@ -51,7 +51,7 @@ export default class extends Vue {
   }
 
   private get names(): string[] {
-    return typeof this.page === 'string' ? [this.page] : this.page
+    return (this.state && this.state!.$pages) || (typeof this.page === 'string' ? [this.page] : this.page)
   }
 
   async created() {

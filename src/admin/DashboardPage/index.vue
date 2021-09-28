@@ -85,7 +85,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   get isMove() {
-    return ConfigModule.desktop.resize || false
+    return (this.state.isDraggable === false) || ConfigModule.desktop.resize || false
   }
 
   @Watch('items', { immediate: true })

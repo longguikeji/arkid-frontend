@@ -2,7 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { StatisticsNode } from './nodes/statistics'
+import { ChangeContactsConfigPageStateNode } from './nodes/contactsConfig'
 
 export class Main extends Flow {
   createNodes() {
@@ -10,10 +10,10 @@ export class Main extends Flow {
       {
         cls: StartNode,
         id: 'start',
-        next: 'statistics'
+        next: 'change-contacts-config-page-state'
       }, {
-        cls: StatisticsNode,
-        id: 'statistics',
+        cls: ChangeContactsConfigPageStateNode,
+        id: 'change-contacts-config-page-state',
         next: 'stop'
       }, {
         cls: StopNode,
