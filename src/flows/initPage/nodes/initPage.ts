@@ -4,7 +4,7 @@ import OpenAPI from '@/config/openapi'
 
 const SHOW_READONLY_PAGE = [ 'profile', 'app.update', 'external_idp.update' ]
 
-const DISABLED_PAGE = [ 'profile', 'desktop_config', 'profile_config', 'login_register_config', 'tenant_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'contacts_switch' ]
+const DISABLED_PAGE = [ 'profile_config', 'login_register_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice' ]
 
 const EXPAND_TABLE_PAGE = [ 'contacts_user' ]
 

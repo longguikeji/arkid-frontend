@@ -14,5 +14,6 @@ export default interface SwitchState extends BaseState {
     inactiveColor: string; //switch 关闭时的背景色
     name: string; //switch 对应的 name 属性
     validateEvent: string; //改变 switch 状态时是否触发表单的校验
+    action?: string | Function; // 改变 switch 状态是触发的操作
   }
   

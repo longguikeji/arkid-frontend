@@ -10,6 +10,7 @@ import OpenAPI, {
 import { IFlow } from '@/arkfbp'
 import { BasePage } from './pageNode'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
+import { FormItemsState } from '@/admin/common/Form/FormState'
 import { getContent } from '@/utils/schema'
 import { getActionMapping } from '@/utils/generate-action'
 import { upperFirst, camelCase } from 'lodash'
@@ -175,6 +176,9 @@ export class ActionNode extends FunctionNode {
           case 'sort':
             this.addSortAction(action as ITagPageMultiAction)
             break
+          case 'item':
+            this.addFormItemAction(action as ITagPageAction)
+            break
           default:
             this.addDirectAction(action as ITagPageAction, key)
         }
@@ -337,6 +341,37 @@ export class ActionNode extends FunctionNode {
         },
         'fetch'
       ]
+    })
+  }
+
+  addFormItemAction(action: ITagPageAction) {
+    const { path, method } = action
+    const items = this._temp.form?.items
+    if (items) {
+      this.addFormItemActionState(items, path, method)
+    }
+  }
+
+  addFormItemActionState(items: FormItemsState, path: string, method: string, prefix: string = '') {
+    const actions = this._temp.actions
+    Object.keys(items).forEach(key => {
+      const item = items[key]
+      if (item.type === 'FormObjectItem') {
+        const objectItems = item.state.items
+        this.addFormItemActionState(objectItems, path, method, key)
+      } else {
+        item.state.action = key
+        actions![key] = [
+          {
+            name: 'arkfbp/flows/update',
+            url: path, method,
+            request: {
+              [prefix || key]: prefix ? `form.items.${prefix}.state.value` : `form.items.${key}.state.value`
+            }
+          },
+          'fetch'
+        ]
+      }
     })
   }
 

@@ -16,6 +16,9 @@ export class ConfigNode extends APINode {
 
     // 配置当前用户个人信息 昵称...
     await this.setCurrentUserInfo()
+
+    // 获取平台租户开关是否打开
+    await this.setTenantSwitch()
     
     const tenantUUId = TenantModule.currentTenant.uuid
     // 配置当前登录账号角色
@@ -53,6 +56,14 @@ export class ConfigNode extends APINode {
     if (outputs) {
       UserModule.setUserInfo(outputs)
     }
+  }
+
+  async setTenantSwitch() {
+    this.url = '/api/v1/tenant_switch/'
+    this.method = 'GET'
+    const outputs = await super.run()
+    const data = outputs.switch
+    TenantModule.setTenantSwitch(data)
   }
 
   async setCurrentUserRole(tenantUUId: string | undefined) {

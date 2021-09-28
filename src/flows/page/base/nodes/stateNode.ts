@@ -197,7 +197,9 @@ export class StateNode extends FunctionNode {
   }
 
   async initPageLocalButtonState(locals: ITagPageOperation) {
-    await this.initPageButtonState(locals, 'local')
+    if (this._type !== 'FormPage') {
+      await this.initPageButtonState(locals, 'local')
+    }
   }
 
   async initPageGlobalButtonState(globals: ITagPageOperation) {

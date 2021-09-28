@@ -14,6 +14,7 @@
     :inactive-color="state.inactiveColor"
     :name="state.name"
     :validate-event="state.validateEvent"
+    @change="switchChange"
   />
 </template>
 
@@ -29,6 +30,12 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   get state(): SwitchState {
     return this.$state as SwitchState
+  }
+
+  switchChange() {
+    if (this.state.action) {
+      this.runAction(this.state.action)
+    }
   }
 }
 </script>
