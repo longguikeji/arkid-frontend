@@ -10,9 +10,9 @@
     fit
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow"
-    :row-class-name="rowClassName"
+    :cell-class-name="cellClassName"
     @row-click="handleRowClick"
-    @row-dblclick="handleRowDblClick"
+    @cell-click="handleCellClick"
     @select="handleRowSelect"
     @select-all="handleSelectAll"
   >
@@ -122,8 +122,12 @@ export default class extends Mixins(BaseVue) {
     return row.uuid || row.id || row.username
   }
 
-  rowClassName() {
-    return this.state.isDetail ? 'is-detail' : ''
+  cellClassName({ row, column, rowIndex, columnIndex }) {
+    if (columnIndex === 0 || (column && column.type === 'index')) {
+      return 'is-detail'
+    } else {
+      return ''
+    }
   }
 
   handleRowClick(row, column, event) {
@@ -134,10 +138,12 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  handleRowDblClick(row) {
-    const isDetail = this.state.isDetail
-    if (isDetail) {
-      this.lookRowDetail(row)
+  handleCellClick(row, column) {
+    if (column && column.type === 'index') {
+      const isDetail = this.state.isDetail
+      if (isDetail) {
+        this.lookRowDetail(row)
+      }
     }
   }
 
@@ -181,7 +187,12 @@ export default class extends Mixins(BaseVue) {
   width: 50%;
   padding-left: 20px;
 }
-::v-deep .el-table__row.is-detail {
-  cursor: pointer;
+::v-deep .el-table__row {
+  .is-detail {
+    color: #409eff;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 </style>

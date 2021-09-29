@@ -9,13 +9,13 @@ export class StatisticsNode extends APINode {
       this.url = url
       this.method = method
       const outputs = await super.run()
+      const _pages: string[] = []
       if (outputs) {
-        state.$pages = []
         for (let i = 0, l = outputs.length; i < l; i++) {
           const item = outputs[i]
           const type = item.type || 'chart'
           const key = `${type}${i}`
-          state.$pages.push(key)
+          _pages.push(key)
           const { title, data } = item
           const { text, subtext } = title
           if (item.type === 'list') {
@@ -23,25 +23,37 @@ export class StatisticsNode extends APINode {
               type: 'List',
               state: {
                 header: {
-                  title: `${text}`,
+                  title: `${text} - ${subtext}`,
                 },
                 items: data
               }
             }
           } else {
             state[key] = {
-              type: 'Chart',
+              type: 'DashboardPage',
               state: {
-                id: key,
-                chart: item,
                 card: {
-                  title: `${text}`,
-                }
+                  title: `${text} - ${subtext}`,
+                },
+                items: [
+                  {
+                    type: 'Chart',
+                    state: item,
+                    position: {
+                      x: 1,
+                      y: 1,
+                      w: 12,
+                      h: 3,
+                      i: 0
+                    }
+                  }
+                ]
               }
             }
           }
         }
       }
+      state.pages = _pages
     }
   }
 

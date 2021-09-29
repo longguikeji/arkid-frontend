@@ -41,8 +41,27 @@
   }
 }
 
+.desktop {
+  ::v-deep .dashboard-page-grid {
+    height: calc(100vh - 130px) !important;
+    overflow: auto;
+    .vue-grid-item {
+      touch-action: none;
+      width: 307px !important;
+      height: 100px !important;
+    }
+  }
+}
+
+.statistics {
+  .dashboard-page {
+    height: 500px !important;
+  }
+}
+
 .profile,
-.contacts_switch {
+.contacts_switch,
+.login_register_extension_config {
   .admin-tabs-page {
     height: calc(100vh - 130px);
     background-color: #FFF;
@@ -85,7 +104,8 @@
 .external_idp,
 .webhook,
 .user_log,
-.admin_log {
+.admin_log,
+.admin-contacts_user-page {
   .table-page {
     height: calc(100vh - 125px) !important;
   }

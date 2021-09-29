@@ -92,6 +92,16 @@ export class StateNode extends FunctionNode {
         width: TABLE_COLUMN_WIDTH[page] && TABLE_COLUMN_WIDTH[page][prop],
         showOverflowTooltip: true
       }
+      if (prop === 'url' || iprop.format === 'uri') {
+        columnState.scope = {
+          type: 'Link',
+          state: {
+            value: '',
+            displayContent: 'link',
+            type: 'primary'
+          }
+        }
+      }
       state.table!.columns!.push(columnState)
       items[prop] = {
         label: title,

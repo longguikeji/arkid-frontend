@@ -7,15 +7,14 @@
 import DashboardItemState from '@/admin/DashboardPage/DashboardItem/DashboardItemState'
 import { Component, Mixins } from 'vue-property-decorator'
 import CardPanel from '@/admin/common/panel/CardPanel/index.vue'
-import LineChart from '@/admin/common/echart/LineChart/index.vue'
-import PieChart from '@/admin/common/echart/PieChart/index.vue'
+import Chart from '@/admin/common/Chart/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 
 @Component({
   name: 'DashboardItem',
   components: {
     CardPanel,
-    LineChart
+    Chart
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -27,8 +26,7 @@ export default class extends Mixins(BaseVue) {
     return {
       components: {
         CardPanel,
-        LineChart,
-        PieChart
+        Chart
       },
       render: (h:Function) => {
         return h(

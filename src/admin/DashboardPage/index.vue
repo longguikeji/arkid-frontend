@@ -151,19 +151,3 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.dashboard-page-grid {
-  height: calc(100vh - 130px) !important;
-  overflow: auto;
-  .single-app-page {
-    width: 100%;
-    height: 100%;
-  }
-  ::v-deep .vue-grid-item {
-    touch-action: none;
-    width: 307px !important;
-    height: 100px !important;
-  }
-}
-</style>
