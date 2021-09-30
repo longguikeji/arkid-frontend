@@ -353,7 +353,7 @@ export class StateNode extends FunctionNode {
         url: path,
         method
       },
-      'closePasswordDialog'
+      `${page}.closePasswordDialog`
     ]
   }
 
