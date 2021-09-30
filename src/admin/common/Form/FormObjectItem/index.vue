@@ -1,5 +1,8 @@
 <template>
-  <el-card class="card">
+  <el-card
+    class="card"
+    shadow="never"
+  >
     <el-button
       v-if="state.isAddItem"
       type="primary"

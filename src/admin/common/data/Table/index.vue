@@ -10,7 +10,9 @@
     fit
     :show-header="state.showHeader"
     :highlight-current-row="state.highlightCurrentRow"
+    :cell-class-name="cellClassName"
     @row-click="handleRowClick"
+    @cell-click="handleCellClick"
     @select="handleRowSelect"
     @select-all="handleSelectAll"
   >
@@ -44,9 +46,9 @@
       align="center"
     />
     <el-table-column
-      v-if="state.index || true"
+      v-if="state.index"
       type="index"
-      :width="state.indexWidth || '60'"
+      :width="state.indexWidth"
       label="#"
       fixed="left"
       align="center"
@@ -58,6 +60,9 @@
         :path="getChildPath('columns[' + index + ']')"
       />
     </template>
+    <template v-if="state.isDetail">
+      <Dialog :path="getChildPath('detail')" />
+    </template>
   </el-table>
 </template>
 
@@ -65,17 +70,21 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TableState, { SelectionState } from './TableState'
 import TableColumn from './TableColumn/index.vue'
-
+import Dialog from '@/admin/common/Others/Dialog/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 import Sortable from 'sortablejs'
 
 @Component({
   name: 'Table',
   components: {
-    TableColumn
+    TableColumn,
+    Dialog
   }
 })
 export default class extends Mixins(BaseVue) {
+  private visible = false
+  private detailPath = ''
+
   get state(): TableState {
     return this.$state as TableState
   }
@@ -113,9 +122,40 @@ export default class extends Mixins(BaseVue) {
     return row.uuid || row.id || row.username
   }
 
+  cellClassName({ row, column, rowIndex, columnIndex }) {
+    if (columnIndex === 0 || (column && column.type === 'index')) {
+      return 'is-detail'
+    } else {
+      return ''
+    }
+  }
+
   handleRowClick(row, column, event) {
     this.state.row = row
-    this.runAction(this.state.rowClickAction)
+    const action = this.state.rowClickAction
+    if (action) {
+      this.runAction(action)
+    }
+  }
+
+  handleCellClick(row, column) {
+    if (column && column.type === 'index') {
+      const isDetail = this.state.isDetail
+      if (isDetail) {
+        this.lookRowDetail(row)
+      }
+    }
+  }
+
+  lookRowDetail(row) {
+    const detail = this.state.detail
+    const items = detail.state.state.items
+    Object.keys(row).forEach(key => {
+      if (items[key]) {
+        items[key].value = row[key]
+      }
+    })
+    detail.visible = true
   }
 
   initSelection() {
@@ -146,5 +186,13 @@ export default class extends Mixins(BaseVue) {
   margin-bottom: 0;
   width: 50%;
   padding-left: 20px;
+}
+::v-deep .el-table__row {
+  .is-detail {
+    color: #409eff;
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 </style>

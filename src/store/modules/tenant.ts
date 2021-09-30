@@ -19,6 +19,7 @@ export interface ITenant {
 class Tenant extends VuexModule implements ITenantState {
   tenantState: AdminComponentState = {}
   currentTenant: ITenant = {}
+  tenantSwitch: boolean = true
 
   @Mutation
   public changeState(payload: any) {
@@ -28,6 +29,11 @@ class Tenant extends VuexModule implements ITenantState {
   @Mutation
   public changeCurrentTenant(payload: any) {
     this.currentTenant = payload
+  }
+
+  @Mutation
+  public setTenantSwitch(value: boolean) {
+    this.tenantSwitch = value
   }
   
 }

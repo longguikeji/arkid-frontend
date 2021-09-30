@@ -12,9 +12,9 @@
         class="login-image"
         :src="icon || defaultIcon"
       />
-      <h2 class="login-title">
+      <span class="login-title">
         {{ title }}
-      </h2>
+      </span>
     </div>
     <el-tabs
       v-if="pageConfig"
@@ -136,25 +136,27 @@
 <script lang="ts" src="./LoginComponent.ts" />
 
 <style lang="scss" scoped>
-.tenant-info {
+.tenant-info,
+.copyright {
   position: fixed;
-  top: 0;
   left: 0;
   width: 100%;
+  height: 60px;
+  font-family: 'PingFang SC';
+  line-height: 60px;
+}
+
+.tenant-info {
+  top: 0;
   background-color: #fff;
   padding-left: 20px;
 }
 
 .copyright {
-  position: fixed;
   bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
   background-color: #F0F2F5;
   font-size: 12px;
   font-family: 'PingFang SC';
-  line-height: 60px;
   color: #909399;
   text-align: center;
 }
@@ -173,10 +175,13 @@
   }
 
   &-title {
-    color:#303133;
+    color: #303133;
     display: inline-block;
     vertical-align: middle;
     margin-left: 15px;
+    font-size: 20px;
+    font-family: PingFang SC;
+    font-weight: 800;
   }
 
   ::v-deep .el-dialog {

@@ -10,10 +10,6 @@
         class="table-page-filter"
       />
       <Table :path="getChildPath('table')" />
-      <Pagination
-        v-if="state.pagination"
-        :path="getChildPath('pagination')"
-      />
       <template v-if="state.dialogs">
         <Dialog
           v-for="dialogName in Object.keys(state.dialogs)"
@@ -22,6 +18,11 @@
         />
       </template>
     </Card>
+    <Pagination
+      v-if="state.pagination"
+      :path="getChildPath('pagination')"
+      :class="[{'table-list-pagination': !!state.list}]"
+    />
     <List
       v-if="state.list"
       :path="getChildPath('list')"
@@ -60,14 +61,35 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.table-list-page {
-  display: inline-block;
-  width: 70%;
+.table-page {
+  .table-list-page,
+  .table-list-pagination {
+    display: inline-block;
+    width: 70%;
+  }
+  .table-page-list {
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+    min-height: 300px;
+    position: absolute;
+    top: 0px;
+  }
 }
-.table-page-list {
-  width: 30%;
-  display: inline-block;
-  vertical-align: top;
-  min-height: 300px;
+.table-page {
+  .el-card {
+    border-bottom: 0px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  .el-pagination {
+    background: white;
+    border: 1px solid #e6ebf5;
+    border-top: 0px;
+    padding: 5px 5px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    box-sizing: border-box;
+  }
 }
 </style>

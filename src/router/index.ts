@@ -95,7 +95,7 @@ router.beforeEach((to, from, next) => {
         nextUrl = '/desktop'
       }
     } else if (to.path === '/tenant') {
-      if (role === UserRole.User) {
+      if (role === UserRole.User || TenantModule.tenantSwitch === false) {
         if (!isVisibleDesktop) {
           nextUrl = '/mine/profile'
         } else {
@@ -104,8 +104,6 @@ router.beforeEach((to, from, next) => {
       } else {
         next()
       }
-    } else if (!tenantUUId) {
-      nextUrl = '/tenant'
     } else if (to.path === '/desktop') {
       if (!isVisibleDesktop) {
         nextUrl = '/mine/profile'

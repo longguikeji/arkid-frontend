@@ -175,7 +175,8 @@ export default class extends Vue {
 
     .right-menu-item {
       display: inline-block;
-      padding-left: 15px;
+      padding-left: 10px;
+      padding-right: 10px;
       height: 100%;
       font-size: 18px;
       color: #5a5e66;

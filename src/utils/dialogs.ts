@@ -1,4 +1,4 @@
-import { BasePage } from '@/flows/page/basePage/nodes/pageNode'
+import { BasePage } from '@/flows/page/base/nodes/pageNode'
 
 export function addInputListDialog(state: BasePage, page: string) {
   state.dialogs![page] = {

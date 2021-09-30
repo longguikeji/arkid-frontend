@@ -30,3 +30,10 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.el-link {
+  color: #409EFF;
+  font-weight: 400 !important;
+}
+</style>

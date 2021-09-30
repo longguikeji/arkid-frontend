@@ -13,7 +13,7 @@
       v-else
       :key="index"
       :path="`admin.adminState[${name}]`"
-      class="admin-page"
+      :class="`admin-page admin-${name}-page`"
     />
   </div>
   <div v-else-if="url">
@@ -38,6 +38,8 @@ import { runFlowByFile } from '@/arkfbp/index'
   components: {}
 })
 export default class extends Vue {
+  private pages: string[] | null = null
+
   private get state() {
     return AdminModule.adminState
   }
@@ -51,13 +53,17 @@ export default class extends Vue {
   }
 
   private get names(): string[] {
-    return typeof this.page === 'string' ? [this.page] : this.page
+    return this.pages || (typeof this.page === 'string' ? [this.page] : this.page)
   }
 
   async created() {
     if (this.page) {
       await runFlowByFile('flows/initPage', { page: this.page }).then(state => {
         if (state && Object.keys(state).length > 0) {
+          if (state.pages) {
+            this.pages = state.pages
+            delete state.pages
+          }
           AdminModule.setAdminState(state)
         }
       })
@@ -72,6 +78,7 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 @import "../../styles/page.scss";
+@import "../../styles/element.scss";
 
 .placeholder {
   text-align: center;

@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card :shadow="state.shadow || 'never'">
     <div
       v-if="state.title || state.buttons || state.showHeader"
       slot="header"

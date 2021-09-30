@@ -19,29 +19,105 @@
   }
 }
 
-.desktop.notice {
+.desktop.notice.backlog {
+  position: relative;
   display: flex;
   .dashboard-page {
-    flex: 3;
+    position: absolute;
+    width: 70%;
     height: calc(100vh - 130px);
-    vertical-align: top;
-    ::v-deep .el-card {
-      height: 100%;
-    }
   }
   .list-card {
-    flex: 1;
-    height: calc(100vh - 130px);
-    margin-left: 0px;
+    position: absolute;
+    width: 26%;
+    right: 0;
+    display: inline;
+    margin-left: 20px;
+    height: calc(50vh - 75px);
+    overflow: auto;
+  }
+  .admin-backlog-page {
+    bottom: 0;
   }
 }
 
-.profile {
+.desktop {
+  ::v-deep .dashboard-page-grid {
+    height: calc(100vh - 130px) !important;
+    overflow: auto;
+    .vue-grid-item {
+      touch-action: none;
+      width: 307px !important;
+      height: 100px !important;
+    }
+  }
+}
+
+.statistics {
+  .dashboard-page {
+    height: 500px !important;
+  }
+}
+
+.profile,
+.contacts_switch,
+.login_register_extension_config {
   .admin-tabs-page {
     height: calc(100vh - 130px);
     background-color: #FFF;
   }
   ::v-deep .el-card {
     border: 0px;
+  }
+}
+
+.statistics {
+  .admin-tabs-page {
+    height: calc(100vh - 130px);
+    background-color: #FFF;
+  }
+}
+
+.third_part_account,
+.extension,
+.maketplace {
+  ::v-deep .el-card__body {
+    position: relative;
+    height: calc(100% - 55px);
+    overflow: auto;
+    .el-table {
+      overflow: auto;
+    }
+  }
+}
+
+.subuser,
+.sub_admin_config,
+.app,
+.user,
+.admin-group_user-page,
+.device,
+.permission_list,
+.admin-apermission-page,
+.authorization_server,
+.authorization_agent,
+.external_idp,
+.webhook,
+.user_log,
+.admin_log,
+.admin-contacts_user-page {
+  .table-page {
+    height: calc(100vh - 125px) !important;
+  }
+  ::v-deep .el-card {
+    height: calc(100vh - 165px) !important;
+  }
+  ::v-deep .el-card__body {
+    position: relative;
+    height: calc(100% - 55px);
+    overflow: auto;
+    .el-table {
+      overflow: auto;
+    }
   }
 }
