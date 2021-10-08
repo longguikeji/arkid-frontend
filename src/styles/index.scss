@@ -48,7 +48,7 @@ label {
 }
 
 .app-container {
-  padding: 20px;
+  padding: 1rem;
 }
 
 .components-container {
@@ -203,14 +203,11 @@ aside {
 .app-main {
   .table-page,
   .dashboard-page {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 86px - 2rem);
     box-sizing: border-box;
     overflow: hidden;
     .el-card {
-      height: calc(100vh - 130px);
-    }
-    .table-page-filter {
-      padding: 10px;
+      height: calc(100vh - 86px - 2rem);
     }
     ::v-deep .el-card__body {
       position: relative;

@@ -6,7 +6,7 @@
   display: flex;
   .tree-page {
     flex: 1;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 86px - 2rem);
     vertical-align: top;
     ::v-deep .el-card {
       height: 100%;
@@ -14,30 +14,35 @@
   }
   .table-page {
     flex: 3;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 86px - 2rem);
     margin-left: 0px;
   }
 }
 
 .desktop.notice.backlog {
   position: relative;
-  display: flex;
+  padding: 1rem;
+  height: calc(100vh - 86px);
+  overflow: hidden;
+  box-sizing: border-box;
+
   .dashboard-page {
-    position: absolute;
-    width: 70%;
-    height: calc(100vh - 130px);
+    float: left;
+    width: 73.5%;
+    height: 100%;
+    margin: 0px;
   }
   .list-card {
+    width: 25%;
     position: absolute;
-    width: 26%;
-    right: 0;
     display: inline;
-    margin-left: 20px;
-    height: calc(50vh - 75px);
+    height: calc(50vh - 70px);
     overflow: auto;
+    margin: 0px;
+    margin-left: 1rem;
   }
   .admin-backlog-page {
-    bottom: 0;
+    bottom: 1rem;
   }
 }
 
@@ -49,6 +54,7 @@
       touch-action: none;
       width: 307px !important;
       height: 100px !important;
+      margin: 12px;
     }
   }
 }
@@ -63,7 +69,7 @@
 .contacts_switch,
 .login_register_extension_config {
   .admin-tabs-page {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 86px - 2rem);
     background-color: #FFF;
   }
   ::v-deep .el-card {
@@ -73,7 +79,7 @@
 
 .statistics {
   .admin-tabs-page {
-    height: calc(100vh - 130px);
+    height: calc(100vh - 86px - 2rem);
     background-color: #FFF;
   }
 }
@@ -107,10 +113,10 @@
 .admin_log,
 .admin-contacts_user-page {
   .table-page {
-    height: calc(100vh - 125px) !important;
+    height: calc(100vh - 86px - 2rem);
   }
   ::v-deep .el-card {
-    height: calc(100vh - 165px) !important;
+    height: calc(100% - 39px) !important;
   }
   ::v-deep .el-card__body {
     position: relative;
