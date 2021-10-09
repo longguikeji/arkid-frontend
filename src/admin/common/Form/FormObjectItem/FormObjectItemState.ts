@@ -25,7 +25,7 @@ export default class FormObjectItemState implements FormState {
     if (!this.items) return data
     for (const prop in items) {
       const item = items[prop]
-      data[item.prop] = item.type === 'FormObjectItem' ? this.getValue(item.state.items) : item.state.value
+      data[item.prop] = item.type === 'FormObjectItem' ? this.getValue(item.state.items) : item.state.value || item.state.default
     }
     return data
   }
