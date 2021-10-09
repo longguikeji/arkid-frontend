@@ -8,7 +8,7 @@ export class StatisticsNode extends APINode {
     if (dep && dep.init) {
       const { path: url, method } = dep.init
       const uuid = TenantModule.currentTenant.uuid
-      this.url = url.replace(/(\{tenant_uuid\})/g, uuid)
+      this.url = url.replace(/(\{parent_lookup_tenant\}|\{tenant_uuid\})/g, uuid)
       this.method = method
       const outputs = await super.run()
       const _pages: string[] = []
