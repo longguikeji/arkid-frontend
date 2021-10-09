@@ -127,3 +127,11 @@
     }
   }
 }
+
+.log_config {
+  ::v-deep .el-card__body {
+    .row {
+      display: block !important;
+    }
+  }
+}
