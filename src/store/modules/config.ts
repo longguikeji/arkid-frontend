@@ -30,9 +30,10 @@ interface IPasswordComplexity {
   title: string
 }
 
-interface IUserPermission {
+interface IChildManagerPermission {
   isAllShow?: boolean
   isAllApplication?: boolean
+  visibleSidebarItems?: string[]
 }
 
 export interface IConfigState {
@@ -71,9 +72,10 @@ class Config extends VuexModule implements IConfigState {
     regular: DEFAULT_PASSWORD_RULE.regex,
     title: DEFAULT_PASSWORD_RULE.hint
   }
-  public userPermissions: IUserPermission = {
+  public childManagerPermissions: IChildManagerPermission = {
     isAllShow: true,
-    isAllApplication: true
+    isAllApplication: true,
+    visibleSidebarItems: []
   }
 
   @Mutation
@@ -112,8 +114,18 @@ class Config extends VuexModule implements IConfigState {
   }
 
   @Mutation
-  setUserPermissions() {
-    // ...
+  setChildManagerIsAllShow(value: boolean) {
+    this.childManagerPermissions.isAllShow = value
+  }
+
+  @Mutation
+  setChildManagerIsAllApplication(value: boolean) {
+    this.childManagerPermissions.isAllApplication = value
+  }
+
+  @Mutation
+  setChildManagerVisibleSidebarItems(value: string[]) {
+    this.childManagerPermissions.visibleSidebarItems = value
   }
 
 }

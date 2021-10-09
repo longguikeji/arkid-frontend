@@ -21,20 +21,20 @@ export function getDynamicRoutes() {
   const openAPI: ISpec | undefined = OpenAPI.instance.config
   if (!openAPI?.info?.routers) return []
   const openAPIRoutes = openAPI.info.routers
-  let routes: RouteConfig[] = processOpenAPIRoutes(openAPIRoutes)
-  // staged code
+  let routes: RouteConfig[] = generateRoutesByOpenAPI(openAPIRoutes)
   routes = filterRoutes(routes)
   return routes
 }
 
-function processOpenAPIRoutes(routes: IOpenAPIRouter[]): RouteConfig[] {
-  const realRoutes: RouteConfig[] = []
-  for (let i = 0, len = routes.length; i < len; i++) {
-    const router = generateRoute(routes[i])
-    if (!router) continue
-    realRoutes.push(router)
+function generateRoutesByOpenAPI(routes: IOpenAPIRouter[]): RouteConfig[] {
+  const rs: RouteConfig[] = []
+  for (const route of routes) {
+    const r = generateRoute(route)
+    if (r) {
+      rs.push(r)
+    }
   }
-  return realRoutes
+  return rs
 }
 
 function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
@@ -65,16 +65,16 @@ function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
 function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true): RouteConfig[] {
   const childRoutes: RouteConfig[] = []
   if (routes) {
-    for (let i = 0, len = routes.length; i < len; i++) {
-      const page = routes[i].page
+    for (const route of routes) {
+      const { page, name, children, path } = route
+      if (name && hiddenChildManagerRoute(name, children)) continue
       if (page && !hasPermission(page)) continue
-      const { path, children } = routes[i]
       const childRoute = {
         path: path,
         name: path,
         component: isAdmin ? Admin : undefined,
         children: children ? generateChildRoutes(children, false) : undefined,
-        meta: getRouteMeta(routes[i])
+        meta: getRouteMeta(route)
       }
       if (children) {
         const childrenRoutes = generateChildRoutes(children, false)
@@ -98,7 +98,6 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
   return meta
 }
 
-// extra function - only staged code
 function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   const role = UserModule.role
   let roleRoutes = routes
@@ -112,6 +111,32 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
     })
   }
   return roleRoutes
+}
+
+function hiddenChildManagerRoute(name: string, children?: IOpenAPIRouter[]): boolean {
+  const { isAllShow, isAllApplication, visibleSidebarItems } = ConfigModule.childManagerPermissions
+  let isHidden = true
+  if (visibleSidebarItems?.length === 0) {
+    if (isAllShow) {
+      isHidden = false
+    } else if (isAllApplication && name === '应用管理') {
+      isHidden = false
+    } else {
+      isHidden = true
+    }
+  } else {
+    if (children) {
+      for (const child of children) {
+        if (visibleSidebarItems?.includes(child.name)) {
+          isHidden = false
+          break
+        }
+      }
+    } else if (visibleSidebarItems?.includes(name)) {
+      isHidden = false
+    }
+  }
+  return isHidden
 }
 
 function hiddenRoute(path: string): boolean {
