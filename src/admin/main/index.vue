@@ -38,7 +38,7 @@ import { runFlowByFile } from '@/arkfbp/index'
   components: {}
 })
 export default class extends Vue {
-  private pages: string[] | null = null
+  private pages: string[] | null = null;
 
   private get state() {
     return AdminModule.adminState
@@ -53,20 +53,24 @@ export default class extends Vue {
   }
 
   private get names(): string[] {
-    return this.pages || (typeof this.page === 'string' ? [this.page] : this.page)
+    return (
+      this.pages || (typeof this.page === 'string' ? [this.page] : this.page)
+    )
   }
 
   async created() {
     if (this.page) {
-      await runFlowByFile('flows/initPage', { page: this.page }).then(state => {
-        if (state && Object.keys(state).length > 0) {
-          if (state.pages) {
-            this.pages = state.pages
-            delete state.pages
+      await runFlowByFile('flows/initPage', { page: this.page }).then(
+        (state) => {
+          if (state && Object.keys(state).length > 0) {
+            if (state.pages) {
+              this.pages = state.pages
+              delete state.pages
+            }
+            AdminModule.setAdminState(state)
           }
-          AdminModule.setAdminState(state)
         }
-      })
+      )
     }
   }
 
@@ -92,6 +96,6 @@ iframe {
 
 .admin-page,
 .admin-tabs-page {
-  margin: 20px;
+  margin: 1rem;
 }
 </style>

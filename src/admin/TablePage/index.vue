@@ -79,8 +79,7 @@ export default class extends Mixins(BaseVue) {
 .table-page {
   .el-card {
     border-bottom: 0px;
-    border-bottom-left-radius: 0px;
-    border-bottom-right-radius: 0px;
+    padding-bottom: 10px;
   }
   .el-pagination {
     background: white;

@@ -13,6 +13,7 @@
       :vertical-compact="true"
       :margin="[0, 0]"
       :use-css-transforms="true"
+      :prevent-collision="true"
     >
       <grid-item
         v-for="item in layout"

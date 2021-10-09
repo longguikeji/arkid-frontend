@@ -42,11 +42,10 @@ export default class extends Vue {
 
 .hasTagsView {
   .app-main {
-    height: calc(100vh - 84px);
+    height: calc(100vh - 86px);
     background-color: #F0F2F5;
     .app-main-container {
-      min-height: calc(100vh - 90px) !important;
-      height: auto !important;
+      height: auto;
       overflow: auto;
     }
   }

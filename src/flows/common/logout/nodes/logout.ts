@@ -15,9 +15,6 @@ export class Logout extends APINode {
     const outputs = await super.run()
     if (outputs.is_succeed) {
       removeToken()
-      if (ConfigModule.slug === '') {
-        TenantModule.changeCurrentTenant({})
-      }
       if (currentPage === 'tenant_config') {
         window.location.href = originUrl + getBaseUrl() + '/login'
       } else {

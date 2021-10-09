@@ -105,7 +105,7 @@ export default class extends Mixins(BaseVue) {
     }
   }
   .el-card__body {
-    padding: 20px;
+    padding: 1rem;
     position: relative;
     .form-page-buttons {
       position: sticky;

@@ -1,4 +1,5 @@
 import { APINode } from '@/arkfbp/nodes/apiNode'
+import { TenantModule } from '@/store/modules/tenant'
 
 export class StatisticsNode extends APINode {
 
@@ -6,7 +7,8 @@ export class StatisticsNode extends APINode {
     const { state, dep } = this.inputs
     if (dep && dep.init) {
       const { path: url, method } = dep.init
-      this.url = url
+      const uuid = TenantModule.currentTenant.uuid
+      this.url = url.replace(/(\{tenant_uuid\})/g, uuid)
       this.method = method
       const outputs = await super.run()
       const _pages: string[] = []
@@ -25,7 +27,7 @@ export class StatisticsNode extends APINode {
                 header: {
                   title: `${text} - ${subtext}`,
                 },
-                items: data
+                items: data.map(d => { return { value: d, label: d } })
               }
             }
           } else {
