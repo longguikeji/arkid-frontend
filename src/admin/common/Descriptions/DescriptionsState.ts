@@ -11,8 +11,16 @@ export interface DescriptionsItemState {
   value?: any
 }
 
+export interface DescriptionsItemsState {
+  [key: string]: DescriptionsItemState | DescriptionsObjectItemsState
+}
+
+export interface DescriptionsObjectItemsState extends DescriptionsState {
+  label?: string
+}
+
 export default interface DescriptionsState extends BaseState {
-  items: { [key: string]: DescriptionsItemState } // items state
+  items: DescriptionsItemsState // items state
   border?: boolean // 是否带有边框
   column?: number // 一行 Descriptions Item 的数量
   direction?: string // 排列的方向
@@ -24,5 +32,5 @@ export default interface DescriptionsState extends BaseState {
   contentClassName?: string // 自定义内容类名
   labelStyle?: object // 自定义标签样式
   contentStyle?: object // 自定义内容样式
-  buttons?: ButtonState[]
+  buttons?: ButtonState[] // 按钮操作
 }

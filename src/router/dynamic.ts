@@ -69,6 +69,9 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
       const page = routes[i].page
       if (page && !hasPermission(page)) continue
       const { path, children } = routes[i]
+      if (UserModule.role !== UserRole.Global && path === 'tenant_list') {
+        continue
+      }
       const childRoute = {
         path: path,
         name: path,

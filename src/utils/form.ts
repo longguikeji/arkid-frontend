@@ -92,9 +92,7 @@ function createLinkItem(prop: string, schema: ISchema, readonly: boolean = false
       label: schema.title,
       prop: prop,
       state: {
-        value: schema.default,
-        displayContent: 'link',
-        readonly: readonly
+        value: schema.default
       }
     }
   }
