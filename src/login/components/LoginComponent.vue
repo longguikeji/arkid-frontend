@@ -38,7 +38,6 @@
               v-if="item.type !== 'hidden'"
               :key="itemIndex"
               :prop="item.name"
-              :class="{'authcode': isNeedImageCode(item)}"
             >
               <el-input
                 v-model="form[item.name]"

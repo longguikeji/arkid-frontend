@@ -76,7 +76,6 @@ export default class extends Vue {
   }
 
   private pathCompile(path: string) {
-    // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
     const { params } = this.$route
     const toPath = compile(path)
     return toPath(params)
@@ -86,20 +85,13 @@ export default class extends Vue {
     const { redirect, path } = item
     if (redirect) {
       this.$router.push(redirect).catch(err => {
-        // Throw Error "NavigationDuplicated"
-        // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
-        console.warn(err)
+        console.log(err)
       })
       return
     }
     if (path === '/desktop') {
       this.$router.push(path)
     }
-    // this.$router.push(this.pathCompile(path)).catch(err => {
-    //   // Throw Error "NavigationDuplicated"
-    //   // https://github.com/vuejs/vue-router/issues/2872#issuecomment-522341874
-    //   console.warn(err)
-    // })
   }
 }
 </script>

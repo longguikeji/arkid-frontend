@@ -15,7 +15,6 @@
       :label="state.label"
       :disabled="state.disabled"
       :placeholder="state.placeholder"
-      @change="actionHandler(state.value)"
     />
     <svg-icon
       v-if="state.required"
@@ -39,10 +38,6 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   get state(): InputNumberState {
     return this.$state as InputNumberState
-  }
-
-  actionHandler(actionName: string) {
-    // console.log(actionName);
   }
 }
 </script>
