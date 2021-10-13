@@ -138,24 +138,12 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
-  handleCellClick(row, column) {
-    if (column && column.type === 'index') {
-      const isDetail = this.state.isDetail
-      if (isDetail) {
-        this.lookRowDetail(row)
-      }
+  async handleCellClick(row, column) {
+    this.state.row = row
+    const action = this.state.detailAction
+    if (action && column && column.type === 'index') {
+      await this.runAction(action)
     }
-  }
-
-  lookRowDetail(row) {
-    const detail = this.state.detail
-    const items = detail.state.state.items
-    Object.keys(row).forEach(key => {
-      if (items[key]) {
-        items[key].value = row[key]
-      }
-    })
-    detail.visible = true
   }
 
   initSelection() {

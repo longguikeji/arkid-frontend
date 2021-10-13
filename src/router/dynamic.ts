@@ -39,8 +39,13 @@ function processOpenAPIRoutes(routes: IOpenAPIRouter[]): RouteConfig[] {
 
 function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
   const { path, children, page } = route
-  if (path && hiddenRoute(path)) return undefined
-  if (page && !hasPermission(page)) return undefined
+  const isHidden = hiddenRoute(path)
+  if (isHidden) {
+    return undefined
+  }
+  if (page && !hasPermission(page)) {
+    return undefined
+  }
   const newRoute: RouteConfig = {
     path: '/' + path,
     name: path,
@@ -69,6 +74,9 @@ function generateChildRoutes(routes: IOpenAPIRouter[], isAdmin: boolean = true):
       const page = routes[i].page
       if (page && !hasPermission(page)) continue
       const { path, children } = routes[i]
+      if (UserModule.role !== UserRole.Global && path === 'tenant_list') {
+        continue
+      }
       const childRoute = {
         path: path,
         name: path,
@@ -102,7 +110,7 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
 function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   const role = UserModule.role
   let roleRoutes = routes
-  if (role === UserRole.User) {
+  if (role === UserRole.User || role === UserRole.Platform) {
     roleRoutes = routes.filter((route) => {
       return route.path === '/contacts' || route.path === '/mine' || route.path === '/desktop'
     })

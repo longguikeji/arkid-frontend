@@ -83,6 +83,8 @@ export default class extends Mixins(BaseVue) {
   }
   .el-dialog__headerbtn {
     z-index: 100;
+    top: 10px !important;
+    right: 10px !important;
   }
   .el-dialog__close {
     z-index: 100;

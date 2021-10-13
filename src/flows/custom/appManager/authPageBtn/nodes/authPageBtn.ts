@@ -11,7 +11,8 @@ export class AuthPageBtn extends FunctionNode {
     actionState.push({
       action: 'openAuthDialog',
       label: '配置授权页面',
-      icon: 'el-icon-coordinate'
+      icon: 'el-icon-coordinate',
+      type: 'primary'
     })
     pageState.state.actions!.openAuthDialog = [
       {

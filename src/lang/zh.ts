@@ -3,7 +3,6 @@ export default {
     dashboard: "主页",
     desktop: '主页',
     api: "API",
-    aliyun: "阿里云",
     app: "应用管理",
     extension: '插件',
     externalIdp: "externalIdp",

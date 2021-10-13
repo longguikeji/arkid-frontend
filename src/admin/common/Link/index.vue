@@ -7,11 +7,7 @@
     :icon="state.icon"
     target="_blank"
   >
-    <span v-if="state.displayContent === 'link'">{{ state.value }}</span>
-    <i
-      v-else
-      class="el-icon-document"
-    />
+    {{ state.value }}
   </el-link>
 </template>
 
