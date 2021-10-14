@@ -30,6 +30,9 @@
     flex: 3;
     height: 100%;
     margin: 0px;
+    ::v-deep .el-card__body {
+      padding: 0px !important;
+    }
   }
   .notice-modules {
     flex: 1;
@@ -41,20 +44,6 @@
       &:nth-child(1) {
         margin-top: 0px;
       }
-
-    }
-  }
-}
-
-.desktop {
-  ::v-deep .dashboard-page-grid {
-    height: calc(100vh - 130px) !important;
-    overflow: auto;
-    .vue-grid-item {
-      touch-action: none;
-      width: 307px !important;
-      height: 100px !important;
-      margin: 12px;
     }
   }
 }

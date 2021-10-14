@@ -19,7 +19,10 @@ export class DesktopNode extends FunctionNode {
         type: 'DashboardPage',
         state: {
           created: 'created',
-          items: [],
+          board: {
+            list: [],
+            options: {}
+          },
           actions: {
             created: [ 'fetch' ],
             fetch: [
@@ -97,23 +100,6 @@ export class DesktopNode extends FunctionNode {
         }
       }
     } else {
-      // state[page] = {
-      //   type: 'List',
-      //   state: {
-      //     title: description,
-      //     items: [],
-      //     created: 'created',
-      //     actions: {
-      //       created: [ 'fetch' ],
-      //       fetch: [
-      //         {
-      //           name: 'arkfbp/flows/list',
-      //           url, method
-      //         }
-      //       ]
-      //     }
-      //   }
-      // }
       if (!state.notice) {
         state.notice = {
           type: 'Notice',

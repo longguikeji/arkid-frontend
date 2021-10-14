@@ -35,6 +35,7 @@ import DashboardPage from '@/admin/DashboardPage/index.vue'
 import Password from '@/admin/common/Password/index.vue'
 import Descriptions from '@/admin/common/Descriptions/index.vue'
 import Notice from '@/admin/common/Notice/index.vue'
+import DragBoard from '@/admin/common/Others/DragBoard/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -71,3 +72,4 @@ Vue.component('DashboardPage', DashboardPage)
 Vue.component('Password', Password)
 Vue.component('Descriptions', Descriptions)
 Vue.component('Notice', Notice)
+Vue.component('DragBoard', DragBoard)

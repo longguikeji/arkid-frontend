@@ -130,6 +130,10 @@ export default class extends Vue {
   color: $subMenuActiveText !important;
 }
 
+.el-submenu__icon-arrow {
+  margin-top: -5px !important;
+}
+
 .full-mode {
   .nest-menu .el-submenu>.el-submenu__title,
   .el-submenu .el-menu-item {
