@@ -58,7 +58,9 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
   let item: FormItemState | null = null
   if (!showReadOnly && schema.readOnly) return item
   if (!showWriteOnly && schema.writeOnly) return item
-  if (schema.format === 'download_url') {
+  if (schema.format === 'date-time') {
+    item = createDateTimeItem(prop, schema)
+  } else if (schema.format === 'download_url') {
     item = createLinkItem(prop, schema, readonly)
   } else if (schema.page && schema.type !== 'object') {
     item = createInputListItem(prop, schema, disabled, required)
@@ -78,6 +80,25 @@ function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boole
     item = createCombineItem(prop, schema, showReadOnly, showWriteOnly, disabled, required)
   }
   return item
+}
+
+function createDateTimeItem(prop: string, schema: ISchema, readonly: boolean = false) {
+  if (readonly) {
+    return {
+      label: schema.title,
+      value: schema.default
+    }
+  } else {
+    return {
+      type: 'DatePicker',
+      label: schema.title,
+      prop,
+      state: {
+        value: '',
+        placeholder: `请输入${schema.title}`,
+      }
+    }
+  }
 }
 
 function createLinkItem(prop: string, schema: ISchema, readonly: boolean = false) {

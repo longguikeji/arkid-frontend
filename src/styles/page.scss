@@ -19,30 +19,30 @@
   }
 }
 
-.desktop.notice.backlog {
-  position: relative;
+.desktop.notice {
+  display: flex;
   padding: 1rem;
-  height: calc(100vh - 86px);
+  height: calc(100vh - 86px) !important;
   overflow: hidden;
   box-sizing: border-box;
 
   .dashboard-page {
-    float: left;
-    width: 73.5%;
+    flex: 3;
     height: 100%;
     margin: 0px;
   }
-  .list-card {
-    width: 25%;
-    position: absolute;
-    display: inline;
-    height: calc(50vh - 70px);
-    overflow: auto;
+  .notice-modules {
+    flex: 1;
     margin: 0px;
     margin-left: 1rem;
-  }
-  .admin-backlog-page {
-    bottom: 1rem;
+    ::v-deep .collapse-list {
+      flex: 1;
+      margin-top: 1rem;
+      &:nth-child(1) {
+        margin-top: 0px;
+      }
+
+    }
   }
 }
 
@@ -67,7 +67,8 @@
 
 .profile,
 .contacts_switch,
-.login_register_extension_config {
+.login_register_extension_config,
+.notice_manage {
   .admin-tabs-page {
     height: calc(100vh - 86px - 2rem);
     background-color: #FFF;

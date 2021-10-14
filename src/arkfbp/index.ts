@@ -154,8 +154,12 @@ function getStateByStringConfig(state: any, str: string) {
 }
 
 function getCurrentPageState(com: BaseVue, page: string) {
-  const path = com.path
-  const pagePath = `${path.substring(0, path.indexOf('['))}[${page}].state`
-  const state = com.getAnyStateByPath(pagePath)
-  return state
+  if (com.state['actions']) {
+    return com.state
+  } else {
+    const path = com.path
+    const pagePath = `${path.substring(0, path.indexOf('['))}[${page}].state`
+    const state = com.getAnyStateByPath(pagePath)
+    return state
+  }
 }

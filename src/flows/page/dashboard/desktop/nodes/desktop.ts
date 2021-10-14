@@ -96,50 +96,41 @@ export class DesktopNode extends FunctionNode {
           }
         }
       }
-    }
-
-    if (page === 'notice') {
-      state[page] = {
-        type: 'List',
-        state: {
-          header: {
-            title: description
-          },
-          items: [
-            {
-              label: '1. 欢迎使用ArkID一账通',
-              value: '1',
-              badge: {
-                value: 'new'
-              }
-            },
-            {
-              label: '2. 有关任何问题，欢迎留言',
-              value: 'https://github.com/longguikeji/arkid/issues',
-              type: 'link'
-            },
-            {
-              label: '3. ArkID简介',
-              type: 'detail',
-              value: '一账通是一款开源的统一身份认证授权管理解决方案，支持多种标准协议(LDAP, OAuth2, SAML, OpenID)，细粒度权限控制，完整的WEB管理功能，钉钉、企业微信集成等'
-            }
-          ]
+    } else {
+      // state[page] = {
+      //   type: 'List',
+      //   state: {
+      //     title: description,
+      //     items: [],
+      //     created: 'created',
+      //     actions: {
+      //       created: [ 'fetch' ],
+      //       fetch: [
+      //         {
+      //           name: 'arkfbp/flows/list',
+      //           url, method
+      //         }
+      //       ]
+      //     }
+      //   }
+      // }
+      if (!state.notice) {
+        state.notice = {
+          type: 'Notice',
+          state: {}
         }
       }
-    }
-
-    if (page === 'backlog') {
-      state[page] = {
-        type: 'List',
-        state: {
-          header: {
-            title: description
-          },
-          items: [
+      const noticeState = state.notice.state
+      noticeState[page] = {
+        title: description,
+        items: [],
+        created: 'created',
+        actions: {
+          created: [ 'fetch' ],
+          fetch: [
             {
-              label: '1. 查阅开发进度',
-              value: 'https://github.com/longguikeji/arkid/projects',
-              type: 'link'
+              name: 'arkfbp/flows/list',
+              url, method
             }
           ]
         }
