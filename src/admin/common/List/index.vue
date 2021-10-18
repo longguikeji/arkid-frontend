@@ -12,6 +12,12 @@
       >
         <template slot="title">
           <span>{{ state.title }}</span>
+          <span
+            v-if="state.buttons"
+            class="list-buttons"
+          >
+            <ButtonArray :path="getChildPath('buttons')" />
+          </span>
         </template>
         <div
           v-for="(item, index) in items"
@@ -20,6 +26,11 @@
           @click="handleClick(item)"
         >
           {{ item.label }}
+          <i
+            v-if="state.clearable"
+            class="el-icon-delete"
+            @click="handleClear(index)"
+          />
         </div>
       </el-collapse-item>
     </el-collapse>
@@ -77,6 +88,11 @@ export default class extends Mixins(BaseVue) {
     }
   }
 
+  handleClear(index: number) {
+    const items = this.state.items
+    items!.splice(index, 1)
+  }
+
   created() {
     this.initActiveStatus()
   }
@@ -99,6 +115,12 @@ export default class extends Mixins(BaseVue) {
   border-bottom: 1px solid #e6ebf5;
   height: 55px;
   font-weight: bold;
+}
+
+.list-buttons {
+  position: absolute;
+  right: 40px;
+  top: 3px;
 }
 
 ::v-deep .collapse-list-item {

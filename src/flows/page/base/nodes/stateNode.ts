@@ -296,17 +296,19 @@ export class StateNode extends FunctionNode {
     if (pageState) return
     await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
     const list = {
-      header: {
-        title: '已选数据列表',
-        buttons: [
-          {
-            label: '确认所选',
-            type: 'primary',
-            action: 'confirm'
-          }
-        ]
-      },
-      items: []
+      title: '已选数据列表',
+      buttons: [
+        {
+          label: '确认所选',
+          type: 'primary',
+          action: 'confirm',
+          size: 'mini'
+        }
+      ],
+      items: [],
+      isActive: true,
+      disabled: true,
+      clearable: true
     }
     this.inputs.state[listPage].state.list = list
   }

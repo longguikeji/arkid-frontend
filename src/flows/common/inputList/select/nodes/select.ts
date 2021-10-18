@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import ListItemState from '@/admin/common/data/List/ListState'
+import { ListItemState } from '@/admin/common/List/ListState'
 import { processUUId } from '@/utils/common'
 
 export class SelectNode extends FunctionNode {
@@ -11,8 +11,7 @@ export class SelectNode extends FunctionNode {
     if (!data || !data[field]) return
     const item = {
       label: data.label || data.name || data.username || '',
-      value: data[field],
-      action: 'delete'
+      value: data[field]
     }
     if (listData.length === 0) {
       listData.push(item)
