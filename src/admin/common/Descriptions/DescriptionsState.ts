@@ -26,7 +26,6 @@ export default interface DescriptionsState extends BaseState {
   direction?: string // 排列的方向
   size?: string // 列表的尺寸
   title?: string // 标题文本，显示在左上方
-  extra?: string // 操作区文本，显示在右上方
   colon?: boolean // 是否显示冒号	
   labelClassName?: string // 自定义标签类名
   contentClassName?: string // 自定义内容类名

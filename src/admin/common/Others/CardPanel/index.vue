@@ -1,7 +1,13 @@
 <template>
   <div class="card-panel">
-    <img :src="logo">
-    <div class="card-panel-text">
+    <img
+      :src="logo"
+      @click="handleClick"
+    >
+    <div
+      class="card-panel-text"
+      @click="handleClick"
+    >
       <div class="name">
         {{ state.name }}
       </div>
@@ -28,6 +34,19 @@ export default class extends Mixins(BaseVue) {
 
   get state(): CardPanelState {
     return this.$state as CardPanelState
+  }
+
+  handleClick() {
+    const url = this.state.url
+    if (url) {
+      window.open(url, '_blank')
+    } else {
+      this.$message({
+        message: '该应用未设置调转路径',
+        type: 'info',
+        showClose: true
+      })
+    }
   }
 }
 </script>

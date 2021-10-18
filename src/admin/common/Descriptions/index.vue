@@ -7,7 +7,7 @@
     border
   >
     <template
-      v-if="state.extra || state.buttons"
+      v-if="state.buttons"
       slot="extra"
     >
       <ButtonArray :path="getChildPath('buttons')" />

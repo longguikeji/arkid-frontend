@@ -1,7 +1,8 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { getSchemaByPath } from '@/utils/schema'
+import generateForm from '@/utils/form'
 
 export class DesktopNode extends FunctionNode {
-
   async run() {
     const { state, page, dep, options } = this.inputs
     let url, method, description
@@ -106,16 +107,30 @@ export class DesktopNode extends FunctionNode {
           state: {}
         }
       }
-      const noticeState = state.notice.state
-      noticeState[page] = {
+      const noticeLists = state.notice.state
+      const schema = getSchemaByPath(url, method)
+      const { form } = generateForm(schema, false, true, false, true)
+      noticeLists[page] = {
+        created: 'created',
         title: description,
         items: [],
-        created: 'created',
+        isActive: true,
+        detail: {
+          visible: false,
+          state: {
+            type: 'Descriptions',
+            state: {
+              items: form ? form.items : undefined,
+              border: true,
+              column: 1
+            }
+          }
+        },
         actions: {
           created: [ 'fetch' ],
           fetch: [
             {
-              name: 'arkfbp/flows/list',
+              name: 'flows/common/list',
               url, method
             }
           ]
@@ -123,5 +138,4 @@ export class DesktopNode extends FunctionNode {
       }
     }
   }
-
 }

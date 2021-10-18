@@ -1,20 +1,18 @@
 import BaseState from '@/admin/base/BaseVue'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import DescriptionsState from '@/admin/common/Descriptions/DescriptionsState'
 
 export interface ListItemState {
   label: string
   value: string
-  action?: string | Function
-  index?: number
-  type?: string // 默认为 text(文本) link(外链) detail(详情)
-  detail?: DescriptionsState | string
+  data?: any
 }
 
 export default interface ListState extends BaseState {
-  title?: string
-  items?: ListItemState[]
-  clearable?: boolean
-  isExpand?: boolean
-  buttons?: ButtonState[]
+  title?: string // 标题
+  items?: ListItemState[] // 条目
+  clearable?: boolean // 是否可以删除
+  disabled?: boolean // 是否禁用
+  isActive?: boolean // 是否默认展开 - 只有 isExpand 为 true 是才能生效
+  buttons?: ButtonState[] // 全局按钮操作
+  detail?: any // 详情弹框
 }
