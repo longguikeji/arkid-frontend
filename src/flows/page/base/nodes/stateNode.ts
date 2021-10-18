@@ -71,18 +71,6 @@ export class StateNode extends FunctionNode {
   initTableMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
     state.table!.isExpand = options?.tableIsExpand
-    state.table!.isDetail = true
-    state.table!.detail = {
-      visible: false,
-      state: {
-        type: 'Descriptions',
-        state: {
-          title: '详情',
-          items: {}
-        }
-      }
-    }
-    const items = state.table!.detail.state.state.items
     for (const prop in schema.properties) {
       const iprop = schema.properties[prop]
       const title = iprop.title
@@ -103,12 +91,52 @@ export class StateNode extends FunctionNode {
         }
       }
       state.table!.columns!.push(columnState)
-      items[prop] = {
+      this.initTableRowDetailState(prop, iprop)
+    }
+  }
+
+  initTableRowDetailState(propName: string, propSchema: ISchema) {
+    const { dialogs, actions, table } = this._temp
+    const { title, type } = propSchema
+    if (!dialogs!.detail) {
+      dialogs!.detail = {
+        visible: false,
+        state: {
+          type: 'Descriptions',
+          state: {
+            items: {},
+            border: true,
+            direction: 'vertical',
+          }
+        }
+      }
+      table!.detailAction = 'detail'
+      actions!.detail = [
+        {
+          name: 'arkfbp/flows/detail'
+        },
+        {
+          name: 'arkfbp/flows/assign',
+          response: {
+            'dialogs.detail.visible': true
+          }
+        }
+      ]
+    }
+    const items = dialogs!.detail.state.state.items
+    if (type === 'object') {
+      items[propName] = {
+        items: {},
+        border: true,
+        column: 1,
+        direction: 'vertical'
+      }
+    } else {
+      items[propName] = {
         label: title,
         value: ''
       }
     }
-    
   }
   
   initPageDescription() {
@@ -222,9 +250,11 @@ export class StateNode extends FunctionNode {
       if ((action as ITagPageMapping).tag) { // point new page
         const { tag, description, icon } = action as ITagPageMapping
         await this.initDialogPageState(tag, key)
+        if (!description) continue
         button = this.getButtonState({ description, key, mode: 'open', role, icon })
       } else {
         const description = action.description || (action['write'] && action['write'].description) || (action['read'] && action['read'].description)
+        if (!description) continue
         const icon = action.icon || (action['write'] && action['write'].icon) || (action['read'] && action['read'].icon)
         switch (key) {
           case 'import':

@@ -126,19 +126,6 @@ export class ActionNode extends FunctionNode {
       data: props.data
     }
     const request = {}
-    // if (props.pagination) {
-    //   response['pagination.total'] = props.pagination
-    //   request['page'] = 'pagination.currentPage'
-    //   request['page_size'] = 'pagination.pageSize'
-    //   state.pagination = {
-    //     currentPage: 1,
-    //     pageSize: 10,
-    //     total: 0,
-    //     action: 'fetch',
-    //     layout: 'sizes, prev, pager, next, total'
-    //   }
-    // } else {
-    // }
     state.pagination = undefined
     this.setImportButtonDisabledProp(response, props.data)
     state.actions!.created.push('fetch')

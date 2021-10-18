@@ -8,13 +8,14 @@
       path="admin.adminState.$tabs"
       class="admin-tabs-page"
     />
-    <AdminComponent
-      v-for="(name, index) in names"
-      v-else
-      :key="index"
-      :path="`admin.adminState[${name}]`"
-      :class="`admin-page admin-${name}-page`"
-    />
+    <template v-else>
+      <AdminComponent
+        v-for="(name, index) in names"
+        :key="index"
+        :path="`admin.adminState[${name}]`"
+        :class="`admin-page admin-${name}-page`"
+      />
+    </template>
   </div>
   <div v-else-if="url">
     <iframe :src="url" />

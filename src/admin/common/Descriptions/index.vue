@@ -3,10 +3,11 @@
     :title="state.title"
     :column="state.column"
     :size="state.size"
+    :direction="state.direction"
     border
   >
     <template
-      v-if="state.extra || state.buttons"
+      v-if="state.buttons"
       slot="extra"
     >
       <ButtonArray :path="getChildPath('buttons')" />
@@ -17,7 +18,10 @@
         :key="index"
         :label="items[key].label"
       >
-        {{ getItemValue(items[key], key) }}
+        <template v-if="items[key].items">
+          <Descriptions :path="getChildPath(`items.${key}`)" />
+        </template>
+        <span v-else>{{ getItemValue(items[key], key) }}</span>
       </el-descriptions-item>
     </template>
   </el-descriptions>
@@ -67,3 +71,9 @@ export default class Descriptions extends Mixins(BaseVue) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+::v-deep .el-descriptions-item__cell {
+  height: 42px;
+}
+</style>

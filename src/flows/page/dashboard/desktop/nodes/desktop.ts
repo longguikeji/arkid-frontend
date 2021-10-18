@@ -1,7 +1,8 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { getSchemaByPath } from '@/utils/schema'
+import generateForm from '@/utils/form'
 
 export class DesktopNode extends FunctionNode {
-
   async run() {
     const { state, page, dep, options } = this.inputs
     let url, method, description
@@ -19,7 +20,11 @@ export class DesktopNode extends FunctionNode {
         type: 'DashboardPage',
         state: {
           created: 'created',
-          items: [],
+          board: {
+            list: [],
+            options: {},
+            endAction: 'keepAppPosition'
+          },
           actions: {
             created: [ 'fetch' ],
             fetch: [
@@ -38,10 +43,15 @@ export class DesktopNode extends FunctionNode {
             ],
             closeAppManagerDialog: [
               {
-                name: "arkfbp/flows/assign",
+                name: 'arkfbp/flows/assign',
                 response: {
                   'dialogs.manager.visible': false
                 }
+              }
+            ],
+            keepAppPosition: [
+              {
+                name: 'flows/custom/desktop/adjust'
               }
             ]
           },
@@ -96,55 +106,42 @@ export class DesktopNode extends FunctionNode {
           }
         }
       }
-    }
-
-    if (page === 'notice') {
-      state[page] = {
-        type: 'List',
-        state: {
-          header: {
-            title: description
-          },
-          items: [
-            {
-              label: '1. 欢迎使用ArkID一账通',
-              value: '1',
-              badge: {
-                value: 'new'
-              }
-            },
-            {
-              label: '2. 有关任何问题，欢迎留言',
-              value: 'https://github.com/longguikeji/arkid/issues',
-              type: 'link'
-            },
-            {
-              label: '3. ArkID简介',
-              type: 'detail',
-              value: '一账通是一款开源的统一身份认证授权管理解决方案，支持多种标准协议(LDAP, OAuth2, SAML, OpenID)，细粒度权限控制，完整的WEB管理功能，钉钉、企业微信集成等'
-            }
-          ]
+    } else {
+      if (!state.notice) {
+        state.notice = {
+          type: 'Notice',
+          state: {}
         }
       }
-    }
-
-    if (page === 'backlog') {
-      state[page] = {
-        type: 'List',
-        state: {
-          header: {
-            title: description
-          },
-          items: [
+      const noticeLists = state.notice.state
+      const schema = getSchemaByPath(url, method)
+      const { form } = generateForm(schema, false, true, false, true)
+      noticeLists[page] = {
+        created: 'created',
+        title: description,
+        items: [],
+        isActive: true,
+        detail: {
+          visible: false,
+          state: {
+            type: 'Descriptions',
+            state: {
+              items: form ? form.items : undefined,
+              border: true,
+              column: 1
+            }
+          }
+        },
+        actions: {
+          created: [ 'fetch' ],
+          fetch: [
             {
-              label: '1. 查阅开发进度',
-              value: 'https://github.com/longguikeji/arkid/projects',
-              type: 'link'
+              name: 'flows/common/list',
+              url, method
             }
           ]
         }
       }
     }
   }
-
 }

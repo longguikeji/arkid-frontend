@@ -16,19 +16,6 @@ export default class ThirdPartCallback extends Vue {
   }
 
   mounted() {
-    // 根据返回的值判断是否需要绑定用户，需要打开绑定界面，两种情况，注册或登录
-    // const tokenAPI = this.$route.query.token_api
-    // const code = this.$route.query.code
-    // const next = this.$route.query.next
-
-    // const params = {
-    //   url: tokenAPI,
-    //   method: 'get',
-    //   data: 'code=' + code + '&'
-    // }
-    // jsonp<string>('api/v1/jsonp/', params, 600000).then((response:any) => {
-    // console.log('jsonp.response', response)
-
     const response = this.$route.query
 
     if (response.token && typeof response.token === 'string') { // 已经登录，直接跳界面
@@ -59,7 +46,6 @@ export default class ThirdPartCallback extends Vue {
         }
       })
     }
-    // })
   }
 }
 </script>
