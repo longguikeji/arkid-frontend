@@ -3,6 +3,7 @@
     :list="state.list"
     :options="state.options"
     class="drag-board"
+    @end="end"
   >
     <transition-group>
       <template v-for="(item, index) in state.list">
@@ -36,6 +37,12 @@ export default class extends Mixins(BaseVue) {
   }
 
   // action operation
+  end() {
+    const action = this.state.endAction
+    if (action) {
+      this.runAction(action)
+    }
+  }
 }
 </script>
 

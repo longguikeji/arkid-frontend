@@ -22,7 +22,8 @@ export class DesktopNode extends FunctionNode {
           created: 'created',
           board: {
             list: [],
-            options: {}
+            options: {},
+            endAction: 'keepAppPosition'
           },
           actions: {
             created: [ 'fetch' ],
@@ -42,10 +43,15 @@ export class DesktopNode extends FunctionNode {
             ],
             closeAppManagerDialog: [
               {
-                name: "arkfbp/flows/assign",
+                name: 'arkfbp/flows/assign',
                 response: {
                   'dialogs.manager.visible': false
                 }
+              }
+            ],
+            keepAppPosition: [
+              {
+                name: 'flows/custom/desktop/adjust'
               }
             ]
           },

@@ -4,9 +4,16 @@ export class AdjustDashboardNode extends APINode {
   async run() {
     this.url = '/api/v1/user/appdata/'
     this.method = 'PUT'
-    this.params = {
-      data: this.inputs.items
+    const list = this.inputs.client.board.list
+    if (list) {
+      const data = new Array()
+      list.forEach(item => {
+        data.push(item.uuid)
+      })
+      this.params = {
+        data
+      }
+      await super.run()
     }
-    await super.run()
   }
 }
