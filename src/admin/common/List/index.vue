@@ -53,10 +53,20 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleClick(item: ListItemState) {
+    const data = item.data
+    if (data) {
+      if (data.url) {
+        window.open(data.url, '_blank')
+      } else {
+        this.showDetail(data)
+      }
+    }
+  }
+
+  showDetail(data: any) {
     const detail = this.state.detail
     if (detail) {
       const items = detail.state.state.items
-      const data = item.data
       Object.keys(items).forEach(key => {
         const i = items[key]
         if (data && data[key]) {
@@ -95,6 +105,9 @@ export default class extends Mixins(BaseVue) {
   padding: 10px;
   cursor: pointer;
   font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
   &:hover {
     background-color: #f5f6f8;
   }
