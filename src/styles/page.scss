@@ -23,7 +23,7 @@
   display: flex;
   padding: 1rem;
   height: calc(100vh - 86px) !important;
-  overflow: hidden;
+  overflow: hidden !important;
   box-sizing: border-box;
 
   .dashboard-page {
@@ -37,14 +37,9 @@
   .notice-modules {
     flex: 1;
     margin: 0px;
+    height: 100%;
     margin-left: 1rem;
-    ::v-deep .notice-modules-list {
-      flex: 1;
-      margin-top: 1rem;
-      &:nth-child(1) {
-        margin-top: 0px;
-      }
-    }
+    overflow: auto;
   }
 }
 
@@ -101,9 +96,13 @@
 .webhook,
 .user_log,
 .admin_log,
-.admin-contacts_user-page {
+.admin-contacts_user-page,
+.notice_manage {
   .table-page {
     height: calc(100vh - 86px - 2rem);
+  }
+  ::v-deep .el-pagination {
+    border: 0px !important;
   }
   ::v-deep .el-card {
     height: calc(100% - 39px) !important;
