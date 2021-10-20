@@ -5,15 +5,13 @@
     class="drag-board"
     @end="end"
   >
-    <transition-group>
-      <template v-for="(item, index) in state.list">
-        <CardPanel
-          :key="index"
-          :path="getChildPath(`list[${index}]`)"
-          class="item"
-        />
-      </template>
-    </transition-group>
+    <template v-for="(item, index) in state.list">
+      <CardPanel
+        :key="index"
+        :path="getChildPath(`list[${index}]`)"
+        class="item"
+      />
+    </template>
   </draggable>
 </template>
 

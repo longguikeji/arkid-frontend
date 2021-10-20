@@ -1,6 +1,8 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { getSchemaByPath } from '@/utils/schema'
-import generateForm from '@/utils/form'
+// import { getSchemaByPath } from '@/utils/schema'
+// import generateForm from '@/utils/form'
+import notice from '@/config/notice/notice.json'
+import ticket from '@/config/notice/ticket.json'
 
 export class DesktopNode extends FunctionNode {
   async run() {
@@ -114,26 +116,33 @@ export class DesktopNode extends FunctionNode {
         }
       }
       const noticeLists = state.notice.state
-      const schema = getSchemaByPath(url, method)
-      const { form } = generateForm(schema, false, true, false, true)
+      // const schema = getSchemaByPath(url, method)
+      // const { form } = generateForm(schema, false, true, false, true)
       noticeLists[page] = {
         created: 'created',
-        title: description,
-        items: [],
+        // title: description,
+        title: page === 'notice' ? '通知列表' : '代办提醒',
+        items: page === 'notice' ? notice : ticket,
         isActive: true,
         detail: {
           visible: false,
           state: {
             type: 'Descriptions',
             state: {
-              items: form ? form.items : undefined,
+              // items: form ? form.items : undefined,
+              items: {
+                content: {
+                  label: '详情',
+                  value: ''
+                }
+              },
               border: true,
               column: 1
             }
           }
         },
         actions: {
-          created: [ 'fetch' ],
+          created: [],
           fetch: [
             {
               name: 'flows/common/list',
