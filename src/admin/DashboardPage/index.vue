@@ -16,21 +16,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import DashboardItem from './DashboardItem/index.vue'
-import { DashboardPage } from './DashboardPageState'
-import DashboardItemState from './DashboardItem/DashboardItemState'
 import BaseVue from '@/admin/base/BaseVue'
-import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
-import { ConfigModule } from '@/store/modules/config'
-import { getToken } from '@/utils/auth'
-import { runFlowByFile } from '@/arkfbp'
+import { DashboardPage } from './DashboardPageState'
 import Card from '@/admin/common/Card/index.vue'
-import Dialog from '@/admin/common/Others/Dialog/index.vue'
+import Dialog from '@/admin/common/Dialog/index.vue'
 
 @Component({
   name: 'DashboardPage',
   components: {
-    DashboardItem,
     Card,
     Dialog
   }

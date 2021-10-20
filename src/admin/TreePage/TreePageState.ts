@@ -1,7 +1,7 @@
 import { BaseState } from '../base/BaseVue'
 import TreeState from '../common/data/Tree/TreeState'
 import CardState from '../common/Card/CardState'
-import DialogState from '../common/Others/Dialog/DialogState'
+import DialogState from '@/admin/common/Dialog/DialogState'
 import PaginationState from '../common/data/Pagination/PaginationState'
 import ListState from '@/admin/common/List/ListState' 
 import { IFlow } from '@/arkfbp'

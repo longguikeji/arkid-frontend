@@ -7,7 +7,6 @@ import Link from '@/admin/common/Link/index.vue'
 import Input from '@/admin/common/Form/Input/index.vue'
 import InputList from '@/admin/common/Form/InputList/index.vue'
 import Select from '@/admin/common/Form/Select/index.vue'
-import Avator from '@/admin/common/data/Avator/index.vue'
 import Tree from '@/admin/common/data/Tree/index.vue'
 import Tabs from '@/admin/common/Navigation/Tabs/index.vue'
 import RadioGroup from '@/admin/common/Form/Radio/index.vue'
@@ -16,11 +15,9 @@ import InputNumber from '@/admin/common/Form/InputNumber/index.vue'
 import SwitchForm from '@/admin/common/Form/Switch/index.vue'
 import Time from '@/admin/common/Form/TimePicker/index.vue'
 import DatePicker from '@/admin/common/Form/DatePicker/index.vue'
-import ColorPicker from '@/admin/common/Form/ColorPicker/index.vue'
 import Tag from '@/admin/common/data/Tag/index.vue'
 import Upload from '@/admin/common/Form/Upload/index.vue'
 import ImageBox from '@/admin/common/Others/Image/index.vue'
-import Divider from '@/admin/common/Others/Divider/index.vue'
 import Tooltip from '@/admin/common/Others/Tooltip/index.vue'
 import Rich from '@/admin/common/Rich/index.vue'
 import FormObjectItem from '@/admin/common/Form/FormObjectItem/index.vue'
@@ -46,7 +43,6 @@ Vue.component('Link', Link)
 Vue.component('Input', Input)
 Vue.component('InputList', InputList)
 Vue.component('Select', Select)
-Vue.component('Avator', Avator)
 Vue.component('Tree', Tree)
 Vue.component('Tabs', Tabs)
 Vue.component('RadioGroup', RadioGroup)
@@ -55,11 +51,9 @@ Vue.component('InputNumber', InputNumber)
 Vue.component('SwitchForm', SwitchForm)
 Vue.component('Time', Time)
 Vue.component('DatePicker', DatePicker)
-Vue.component('ColorPicker', ColorPicker)
 Vue.component('Tag', Tag)
 Vue.component('Upload', Upload)
 Vue.component('ImageBox', ImageBox)
-Vue.component('Divider', Divider)
 Vue.component('Tooltip', Tooltip)
 Vue.component('Rich', Rich)
 Vue.component('FormObjectItem', FormObjectItem)

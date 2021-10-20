@@ -29,7 +29,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import Card from '@/admin/common/Card/index.vue'
 import Tree from '@/admin/common/data/Tree/index.vue'
-import Dialog from '@/admin/common/Others/Dialog/index.vue'
+import Dialog from '@/admin/common/Dialog/index.vue'
 import TablePage from '@/admin/TablePage/index.vue'
 import { TreePage } from './TreePageState'
 import Pagination from '@/admin/common/data/Pagination/index.vue'
