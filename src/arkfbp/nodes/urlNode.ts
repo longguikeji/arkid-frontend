@@ -58,7 +58,7 @@ export class UrlNode extends FunctionNode {
         const page = this._pages[i]
         const state = this._com.getAnyPageState(page)
         const data = state.data
-        this._url = this._url.slice(0, this._url.indexOf('{')) + data?.uuid + this._url.slice(this._url.indexOf('}') + 1) 
+        this._url = this._url.slice(0, this._url.indexOf('{')) + data?.uuid + this._url.slice(this._url.indexOf('}') + 1)
       }
     }
     this._count = this._count - 1
@@ -69,6 +69,7 @@ export class UrlNode extends FunctionNode {
     while (this.condition()) {
       this.process()
     }
+    if (this._url.includes('undefined')) return null
     this.inputs.url = this._url
     return this.inputs
   }
