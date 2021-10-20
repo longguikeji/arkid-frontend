@@ -28,10 +28,11 @@ export class ChangeStateNode extends APINode {
     if (data) {
       const firstArr = new Array()
       const secondArr = new Array()
-      data.forEach(uuid => {
-        const app = results.filter(result => result.uuid === uuid)[0]
-        if (app) {
-          firstArr.push(app)
+      results.forEach(app => {
+        const uuid = app.uuid
+        const index = data.indexOf(uuid)
+        if (index !== -1) {
+          firstArr[index] = app
         } else {
           secondArr.push(app)
         }

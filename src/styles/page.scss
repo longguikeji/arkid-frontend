@@ -31,7 +31,12 @@
     height: 100%;
     margin: 0px;
     ::v-deep .el-card__body {
-      padding: 0px !important;
+      padding: 0px;
+      height: calc(100% - 55px);
+      overflow: auto;
+    }
+    ::v-deep .drag-board {
+      padding-bottom: 10px;
     }
   }
   .notice-modules {
