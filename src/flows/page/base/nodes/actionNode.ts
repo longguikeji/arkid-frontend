@@ -173,24 +173,22 @@ export class ActionNode extends FunctionNode {
 
   initPageTreeNodeAction(node: ITagPageAction) {
     const { path, method, next } = node
+    const state = this._temp
+    state.tree!.action = 'node'
+    const actions = state.actions!
+    actions!.node = [
+      {
+        name: 'arkfbp/flows/node'
+      }
+    ]
     if (path && method) {
-      const state = this._temp
-      state.tree!.action = 'node'
-      const actions = state.actions!
-      actions!.node = [
-        {
-          name: 'arkfbp/flows/node'
-        }
-      ]
-      if (path && method) {
-        actions!.node.push({
-          name: 'arkfbp/flows/children',
-          url: path, method
-        })
-      }
-      if (next) {
-        actions!.node.push(`${next}.fetch`)
-      }
+      actions!.node.push({
+        name: 'arkfbp/flows/children',
+        url: path, method
+      })
+    }
+    if (next) {
+      actions!.node.push(`${next}.fetch`)
     }
   }
 

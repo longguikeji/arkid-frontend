@@ -43,7 +43,9 @@ export class ClientResponseNode extends FunctionNode {
           if (vmap.indexOf('[') >= 0) {
             const firstVMap = vmap.slice(0, vmap.indexOf('['))
             const secondVMap = vmap.slice(vmap.indexOf('[')+1, vmap.indexOf(']'))
-            resp = resp[firstVMap][secondVMap]
+            resp = firstVMap === '' ? resp[secondVMap] : resp[firstVMap][secondVMap]
+          } else if (vmap === '') {
+            resp = resp
           } else {
             resp = resp[vmap]
           }
