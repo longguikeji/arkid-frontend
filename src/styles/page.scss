@@ -1,5 +1,5 @@
 .user_list.upermission,
-.group.group_user,
+.group,
 .contacts_group.contacts_user,
 .group_list.gpermission,
 .app_list.apermission {
@@ -97,22 +97,23 @@
 .user_log,
 .admin_log,
 .admin-contacts_user-page,
-.notice_manage {
+.notice_manage,
+.group {
   .table-page {
     height: calc(100vh - 86px - 2rem);
-  }
-  ::v-deep .el-pagination {
-    border: 0px !important;
-  }
-  ::v-deep .el-card {
-    height: calc(100% - 39px) !important;
-  }
-  ::v-deep .el-card__body {
-    position: relative;
-    height: calc(100% - 55px);
-    overflow: auto;
-    .el-table {
+    ::v-deep .el-pagination {
+      border: 0px !important;
+    }
+    ::v-deep .el-card {
+      height: calc(100% - 39px) !important;
+    }
+    ::v-deep .el-card__body {
+      position: relative;
+      height: calc(100% - 55px);
       overflow: auto;
+      .el-table {
+        overflow: auto;
+      }
     }
   }
 }

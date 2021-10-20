@@ -3,13 +3,11 @@ import store from '@/store'
 
 export interface IFlowState {
   run: boolean
-  data: { [ page: string ]: object }
 }
 
 @Module({ dynamic: true, store, name: 'flow' })
 class Flow extends VuexModule implements IFlowState {
   public run = true
-  public data = {}
 
   @Mutation
   stopRunFlow() {
@@ -19,11 +17,6 @@ class Flow extends VuexModule implements IFlowState {
   @Mutation
   startRunFlow() {
     this.run = true
-  }
-
-  @Mutation
-  addPageData({ page, data }) {
-    this.data[page] = data
   }
 
 }
