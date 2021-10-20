@@ -1,11 +1,20 @@
 <template>
-  <div />
+  <el-card>
+    <div
+      slot="header"
+      class="chart-title"
+    >
+      <span>{{ state.title }}</span>
+    </div>
+    <div ref="chart" />
+  </el-card>
 </template>
 
 <script lang="ts">
 import echarts, { EChartOption } from 'echarts'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
+import ChartState from './ChartState'
 
 @Component({
   name: 'Chart'
@@ -13,11 +22,15 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   private chart
 
-  get state() {
-    return this.$state
+  get state(): ChartState {
+    return this.$state as ChartState
   }
 
-  @Watch('state', { deep: true })
+  get options() {
+    return this.state.options
+  }
+
+  @Watch('options', { deep: true })
   onChartStateChange(options) {
     this.setOptions(options)
   }
@@ -37,8 +50,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   private initChart() {
-    this.chart = echarts.init(this.$el as HTMLDivElement, 'macarons')
-    this.setOptions(this.state)
+    this.chart = echarts.init(this.$refs.chart as HTMLDivElement, 'macarons')
   }
 
   setOptions(options) {
@@ -48,3 +60,10 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.chart-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+</style>

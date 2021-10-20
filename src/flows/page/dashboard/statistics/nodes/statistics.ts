@@ -32,24 +32,10 @@ export class StatisticsNode extends APINode {
             }
           } else {
             state[key] = {
-              type: 'DashboardPage',
+              type: 'Chart',
               state: {
-                card: {
-                  title: `${text} - ${subtext}`,
-                },
-                items: [
-                  {
-                    type: 'Chart',
-                    state: item,
-                    position: {
-                      x: 1,
-                      y: 1,
-                      w: 12,
-                      h: 3,
-                      i: 0
-                    }
-                  }
-                ]
+                title: `${text} - ${subtext}`,
+                options: item
               }
             }
           }
