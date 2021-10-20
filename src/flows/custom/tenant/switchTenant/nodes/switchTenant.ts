@@ -3,9 +3,8 @@ import { switchTenantBySlug, switchTenantByUUID } from '@/utils/url'
 
 export class SwitchTenant extends FunctionNode {
   async run() {
-    const { com } = this.inputs
-    const data = com.state.data
-    const tenant = data['tenant']
+    const { client } = this.inputs
+    const tenant = client.data
     if (tenant) {
       const { slug, use_slug } = tenant
       if (slug && use_slug) {

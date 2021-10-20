@@ -210,6 +210,9 @@ export class ActionNode extends FunctionNode {
     const state = this._temp
     state.actions![actionName] = [
       {
+        name: 'arkfbp/flows/data'
+      },
+      {
         name: 'arkfbp/flows/cancelValidate' 
       },
       {
