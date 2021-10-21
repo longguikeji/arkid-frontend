@@ -22,7 +22,7 @@ import './EditUserPerm.less'
             <h3 class="title">权限结果列表:</h3>
             <Checkbox @on-change="selectAll">全选</Checkbox>
           </div>
-          <Input v-model='searchUser' search clearable placeholder="搜索账号" class="search" @on-change="onUserSearchChange"/>
+          <Input v-model='searchUser' icon="ios-search" placeholder="搜索账号" class="search" @on-click="onUserSearchClick" @on-change="onUserSearchChange" />
           <CheckboxGroup v-if="currentPerm" v-model="checkedUsers" :style="{'margin-top': '20px'}">
             <CellGroup>
               <Cell
@@ -223,15 +223,22 @@ export default class Perm extends Vue {
     this.showUserModal = true
   }
 
-  onUserSearchChange() {
-    this.userList.map(o => {
-      if(o.name.includes(this.searchUser)) {
-        o.hide = false
-      }
-      else {
-        o.hide = true
-      }
-    })
+  async onUserSearchClick() {
+    const keyword = this.searchUser
+    if (keyword !== '') {
+      const data = await api.User.list({page: 1, pageSize:1000000, keyword})
+      data.results.map((o: any) => o.hide = false)
+      this.userList = data.results
+    }
+  }
+
+  async onUserSearchChange() {
+    const keyword = this.searchUser
+    if (keyword === '') {
+      const data = await api.User.list({page: 1, pageSize:1000000})
+      data.results.map((o: any) => o.hide = false)
+      this.userList = data.results
+    }
   }
 
   async onSelectUser(uid: string) {
