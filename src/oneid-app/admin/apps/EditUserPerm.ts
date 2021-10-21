@@ -55,6 +55,19 @@ import './EditUserPerm.less'
           </ul>
         </div>
       </div>
+      <div class="page-wrapper">
+        <Page
+          v-if="userList.length"
+          :total="pagination.total"
+          :page-size="pagination.pageSize"
+          :page-size-opts="pagination.pageSizeOpts"
+          @on-change="onPageChange"
+          @on-page-size-change="onPageSizeChange"
+          show-total
+          show-sizer
+          class="page flex-row"
+        />
+      </div>
     </Modal>
 
     <Modal
@@ -135,6 +148,12 @@ export default class Perm extends Vue {
   userId = ''
   defaultMetaNode: Node|null = null
   customMetaNode: Node|null = null
+  pagination = {
+    total: 0,
+    page: 1,
+    pageSize: 10,
+    pageSizeOpts: [10, 20, 40, 60, 80, 100],
+  }
 
   get checkedUsers() {
     const users = this.checkedUserList.map(o => o.username)
@@ -208,9 +227,10 @@ export default class Perm extends Vue {
       page_size: 1000000,
       status: columnName.includes('白名单') ? 1 : -1,
     })
-    const resultData = await api.User.list({page: 1, pageSize:1000000})
+    const resultData = await api.User.list({page: 1, pageSize:this.pagination.pageSize})
     resultData.results.map(o => o.hide = false)
     this.userList = resultData.results
+    this.pagination.total = resultData.count
     this.userEditTitle = '账号' + columnName
     if (columnName.includes('白名单')) {
       this.currentPerm.permit_owners = owners.data
@@ -236,6 +256,20 @@ export default class Perm extends Vue {
     const keyword = this.searchUser
     if (keyword === '') {
       const data = await api.User.list({page: 1, pageSize:1000000})
+      data.results.map((o: any) => o.hide = false)
+      this.userList = data.results
+    }
+  }
+
+  async onPageChange(page: number) {
+    const data = await api.User.list({page, pageSize: this.pagination.pageSize})
+    data.results.map((o: any) => o.hide = false)
+    this.userList = data.results
+  }
+
+  async onPageSizeChange(pageSize: number) {
+    if (pageSize !== this.pagination.pageSize) {
+      const data = await api.User.list({page: this.pagination.page, pageSize})
       data.results.map((o: any) => o.hide = false)
       this.userList = data.results
     }
