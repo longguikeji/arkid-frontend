@@ -5,7 +5,6 @@ import DragBoardState from '@/admin/common/Others/DragBoard/DragBoardState'
 import { IFlow } from '@/arkfbp'
 
 export interface DashboardPage extends BaseState {
-  items?: any[]
   actions?: { [name: string]: Array<IFlow | string> }
   card?: CardState
   dialogs?: { [dialogName: string]: DialogState }

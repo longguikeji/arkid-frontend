@@ -49,8 +49,24 @@
 }
 
 .statistics {
-  .dashboard-page {
-    height: 500px !important;
+  .el-card {
+    background-color: transparent;
+    border: 0px;
+    height: auto;
+    overflow: auto;
+    ::v-deep .el-card__body {
+      padding: 0px;
+    }
+    ::v-deep .drag-board {
+      .item {
+        max-height: 500px;
+        width: 100%;
+        margin-bottom: 10px;
+        .el-card__header {
+          cursor: move !important;
+        }
+      }
+    }
   }
 }
 
@@ -103,7 +119,8 @@
 .admin_log,
 .admin-contacts_user-page,
 .notice_manage,
-.group {
+.group,
+.contacts_group {
   .table-page {
     height: calc(100vh - 86px - 2rem);
     ::v-deep .el-pagination {

@@ -33,6 +33,8 @@ import Password from '@/admin/common/Password/index.vue'
 import Descriptions from '@/admin/common/Descriptions/index.vue'
 import Notice from '@/admin/common/Notice/index.vue'
 import DragBoard from '@/admin/common/Others/DragBoard/index.vue'
+import Chart from '@/admin/common/Chart/index.vue'
+import CardPanel from '@/admin/common/Others/CardPanel/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -67,3 +69,5 @@ Vue.component('Password', Password)
 Vue.component('Descriptions', Descriptions)
 Vue.component('Notice', Notice)
 Vue.component('DragBoard', DragBoard)
+Vue.component('Chart', Chart)
+Vue.component('CardPanel', CardPanel)

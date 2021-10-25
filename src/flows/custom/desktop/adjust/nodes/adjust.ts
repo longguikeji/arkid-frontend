@@ -8,7 +8,7 @@ export class AdjustDashboardNode extends APINode {
     if (list) {
       const data = new Array()
       list.forEach(item => {
-        data.push(item.uuid)
+        data.push(item.state.uuid)
       })
       this.params = {
         data

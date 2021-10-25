@@ -35,12 +35,9 @@ import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
-  name: 'Admin',
-  components: {}
+  name: 'Admin'
 })
 export default class extends Vue {
-  private pages: string[] | null = null;
-
   private get state() {
     return AdminModule.adminState
   }
@@ -54,9 +51,7 @@ export default class extends Vue {
   }
 
   private get names(): string[] {
-    return (
-      this.pages || (typeof this.page === 'string' ? [this.page] : this.page)
-    )
+    return typeof this.page === 'string' ? [this.page] : this.page
   }
 
   async created() {
@@ -64,10 +59,6 @@ export default class extends Vue {
       await runFlowByFile('flows/initPage', { page: this.page }).then(
         (state) => {
           if (state && Object.keys(state).length > 0) {
-            if (state.pages) {
-              this.pages = state.pages
-              delete state.pages
-            }
             AdminModule.setAdminState(state)
           }
         }

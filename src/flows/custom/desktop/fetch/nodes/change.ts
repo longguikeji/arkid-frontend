@@ -11,7 +11,7 @@ export class ChangeStateNode extends APINode {
     this.url = '/api/v1/user/appdata/'
     this.method = 'GET'
     const res = await super.run()
-    const data = res.data
+    const data = res.data || []
 
     // save for headers search function
     UserModule.setUserApps(results)
@@ -25,22 +25,23 @@ export class ChangeStateNode extends APINode {
     }
 
     // set desktop apps panel -- cardpanel
-    if (data) {
-      const firstArr = new Array()
-      const secondArr = new Array()
-      results.forEach(app => {
-        const uuid = app.uuid
-        const index = data.indexOf(uuid)
-        if (index !== -1) {
-          firstArr[index] = app
-        } else {
-          secondArr.push(app)
+    const firstArr = new Array()
+    const secondArr = new Array()
+    results.forEach(app => {
+      const uuid = app.uuid
+      const index = data.indexOf(uuid)
+      if (index !== -1) {
+        firstArr[index] = {
+          type: 'CardPanel',
+          state: app
         }
-      })
-      client.board.list = firstArr.concat(secondArr)
-    } else {
-      client.board.list = results
-    }
-    
+      } else {
+        secondArr.push({
+          type: 'CardPanel',
+          state: app
+        })
+      }
+    })
+    client.board.list = firstArr.concat(secondArr)
   }
 }

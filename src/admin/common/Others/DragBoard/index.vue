@@ -6,7 +6,7 @@
     @end="end"
   >
     <template v-for="(item, index) in state.list">
-      <CardPanel
+      <AdminComponent
         :key="index"
         :path="getChildPath(`list[${index}]`)"
         class="item"
@@ -20,13 +20,11 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
 import BaseVue from '@/admin/base/BaseVue'
 import DragBoardState from './DragBoardState'
-import CardPanel from '../CardPanel/index.vue'
 
 @Component({
   name: 'DragBoard',
   components: {
-    draggable,
-    CardPanel
+    draggable
   }
 })
 export default class extends Mixins(BaseVue) {
