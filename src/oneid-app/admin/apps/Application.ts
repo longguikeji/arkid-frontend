@@ -186,7 +186,6 @@ export default class Application extends Vue {
       this.showAddApp = true
       this.$nextTick(() => this.$refs.addApp.showModal(null))
     })
-
   }
 
   edit(app) {
