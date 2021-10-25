@@ -167,17 +167,28 @@ export default class Perm extends Vue {
 
   set checkedUsers(userNames: string[]) {
     const currentPageCheckedUsers = this.userList.filter((o: User) => userNames.includes(o.username))
+    const currentPageCancelUsers = this.userList.filter((o: User) => !userNames.includes(o.username))
     if (currentPageCheckedUsers.length > 0) {
-      currentPageCheckedUsers.forEach((user: User) => {
+      for (let i = 0, len = currentPageCheckedUsers.length; i < len; i++) {
+        const o: User = currentPageCheckedUsers[i]
         const item = {
           subject: 'user',
-          name: user.name,
-          uid: user.username,
+          name: o.name,
+          uid: o.username,
         }
-        if (this.checkedUserIDs.indexOf(user.username) === -1) {
+        if (this.checkedUserIDs.indexOf(o.username) === -1) {
           this.checkedUserList.push(item)
+          break
         }
-      })
+      }
+    }
+    if (currentPageCancelUsers.length > 0) {
+      for (let i = 0, len = currentPageCancelUsers.length; i < len; i++) {
+        const o: User = currentPageCancelUsers[i]
+        if (this.checkedUserIDs.indexOf(o.username) !== -1) {
+          this.deleteCheckedUser(o.username)
+        }
+      }
     }
   }
 
@@ -207,16 +218,20 @@ export default class Perm extends Vue {
         }
       } else {
         if (ids.includes(o.username)) {
-          for (let i = 0, len = this.checkedUserList.length; i < len; i++) {
-            const user = this.checkedUserList[i]
-            if (user.uid === o.username) {
-              this.checkedUserList.splice(i, 1)
-              break
-            }
-          }
+          this.deleteCheckedUser(o.username)
         }
       }
     })
+  }
+
+  deleteCheckedUser(id: string) {
+    for (let i = 0, len = this.checkedUserList.length; i < len; i++) {
+      const user = this.checkedUserList[i]
+      if (user.uid === id) {
+        this.checkedUserList.splice(i, 1)
+        break
+      }
+    }
   }
 
   async onSaveUser() {
