@@ -221,6 +221,12 @@ export default class Perm extends Vue {
 
   async onSaveUser() {
     const users = this.checkedUserList.map(o => ({ uid: o.uid, status: this.columnName.includes('白名单') ? 1 : -1}))
+    const originCheckedUsers = this.columnName.includes('白名单') ? this.currentPerm!.permit_owners : this.currentPerm!.reject_owners
+    originCheckedUsers.map(o => {
+      if (users.filter(item => item.uid === o.uid).length === 0) {
+        users.push({uid: o.uid, status: 0})
+      }
+    })
     const params = {
       user_perm_status: users,
     }
@@ -267,11 +273,10 @@ export default class Perm extends Vue {
     this.userList = resultData.results
     this.pagination.total = resultData.count
     this.userEditTitle = '账号' + columnName
-    this.checkedUserList = owners.data
+    this.checkedUserList = Array.prototype.concat([], owners.data)
     if (columnName.includes('白名单')) {
       this.currentPerm.permit_owners = owners.data || []
-    }
-    else {
+    } else {
       this.currentPerm.reject_owners = owners.data || []
     }
     this.showUserModal = true
