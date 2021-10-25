@@ -1,4 +1,4 @@
-import { Node, Permission } from '@/models/oneid'
+import { Node, Permission, User } from '@/models/oneid'
 import * as api from '@/services/oneid'
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import './EditUserPerm.less'
@@ -20,7 +20,7 @@ import './EditUserPerm.less'
         <div class="ui-choose-base--left">
           <div class="select-all flex-row">
             <h3 class="title">权限结果列表:</h3>
-            <Checkbox @on-change="selectAll">全选</Checkbox>
+            <Checkbox @on-change="selectAll" v-model="isSelectAll">全选</Checkbox>
           </div>
           <Input v-model='searchUser' icon="ios-search" placeholder="搜索账号" class="search" @on-click="onUserSearchClick" @on-change="onUserSearchChange" />
           <CheckboxGroup v-if="currentPerm" v-model="checkedUsers" :style="{'margin-top': '20px'}">
@@ -31,7 +31,7 @@ import './EditUserPerm.less'
                 class="check-li flex-row"
               >
                 <span>{{ item.name }}</span>
-                <Checkbox :key="item.id" :label="item.username" :disabled="getDisableStatus(item)" class="flex-row" >
+                <Checkbox :key="item.id" :label="item.username" :disabled="getDisableStatus(item)" class="flex-row">
                   <span></span>
                 </Checkbox>
               </Cell>
@@ -44,8 +44,8 @@ import './EditUserPerm.less'
             <a @click="clearCheckList">全部清除</a>
           </div>
           <ul class="selection">
-            <li v-for="item in checkedUserList"
-              :key="item.username"
+            <li v-for="(item, index) in checkedUserList"
+              :key="index"
               @click="unCheckOrUnSelect(item)"
               class="nameline flex-row"
             >
@@ -55,7 +55,7 @@ import './EditUserPerm.less'
           </ul>
         </div>
       </div>
-      <div class="page-wrapper">
+      <div class="page-wrapper" v-if="showUserModal">
         <Page
           v-if="userList.length"
           :total="pagination.total"
@@ -141,7 +141,8 @@ export default class Perm extends Vue {
   showUserModal = false
   userFullInfo = null
   userList = []
-  checkedUserList = []
+  checkedUserList: any[] = []
+  isSelectAll: boolean = false
   columnName = ''
   searchUser = ''
   userEditTitle = ''
@@ -155,49 +156,80 @@ export default class Perm extends Vue {
     pageSizeOpts: [10, 20, 40, 60, 80, 100],
   }
 
-  get checkedUsers() {
-    const users = this.checkedUserList.map(o => o.username)
-    return users
+  get checkedUserIDs(): string[] {
+    return this.checkedUserList.map(o => o.uid)
   }
 
-  set checkedUsers(userNames: string) {
-    this.checkedUserList = this.userList.filter(
-      o => userNames.includes(o.username),
-    )
+  get checkedUsers(): string[] {
+    const users = this.checkedUserList.map(o => o.uid)
+    return users || []
   }
 
-  selectAll(flag: boolean) {
-    if (!flag) {
-      this.checkedUserList = []
+  set checkedUsers(userNames: string[]) {
+    const currentPageCheckedUsers = this.userList.filter((o: User) => userNames.includes(o.username))
+    if (currentPageCheckedUsers.length > 0) {
+      currentPageCheckedUsers.forEach((user: User) => {
+        const item = {
+          subject: 'user',
+          name: user.name,
+          uid: user.username,
+        }
+        if (this.checkedUserIDs.indexOf(user.username) === -1) {
+          this.checkedUserList.push(item)
+        }
+      })
     }
-    else {
-    this.checkedUserList = this.userList.filter(o =>
-      this.columnName.includes('白名单')?
-      (!this.currentPerm!.reject_owners.map(u => u.uid).includes(o.username)) :
-      (!this.currentPerm!.permit_owners.map(u => u.uid).includes(o.username)))
-    }
+  }
+
+  get owners() {
+    const ids = this.columnName.includes('白名单') ? this.currentPerm!.reject_owners.map(u => u.uid) : this.currentPerm!.permit_owners.map(u => u.uid)
+    return ids || []
+  }
+
+  resetPagination() {
+    this.pagination.page = 1
+    this.pagination.pageSize = 10
+  }
+
+  selectAll(value: boolean) {
+    const users = this.userList
+    const ids = this.checkedUserIDs
+    const owners = this.owners
+    users.forEach((o: User) => {
+      const item = {
+        subject: 'user',
+        name: o.name,
+        uid: o.username,
+      }
+      if (value) {
+        if (!ids.includes(o.username) && !owners.includes(o.username)) {
+          this.checkedUserList.push(item)
+        }
+      } else {
+        if (ids.includes(o.username)) {
+          for (let i = 0, len = this.checkedUserList.length; i < len; i++) {
+            const user = this.checkedUserList[i]
+            if (user.uid === o.username) {
+              this.checkedUserList.splice(i, 1)
+              break
+            }
+          }
+        }
+      }
+    })
   }
 
   async onSaveUser() {
-    // tslint:disable:variable-name
-    const users_status = this.checkedUserList.map(o =>({uid: o.username, status: this.columnName.includes('白名单')?1:-1}))
-    const origin_checked_users = this.columnName.includes('白名单')?this.currentPerm!.permit_owners: this.currentPerm!.reject_owners
-    origin_checked_users.map(o => {
-      if(users_status.filter(item => item.uid === o.uid).length === 0) {
-        users_status.push({uid: o.uid, status: 0})
-      }
-    })
-
+    const users = this.checkedUserList.map(o => ({ uid: o.uid, status: this.columnName.includes('白名单') ? 1 : -1}))
     const params = {
-      user_perm_status: users_status,
+      user_perm_status: users,
     }
     await api.Perm.partialUpdateOwnersStatus(this.currentPerm!.uid, this.currentPerm!.subject, params)
     this.$emit('on-save')
   }
 
-  getDisableStatus(item) {
-    return this.columnName.includes('白名单')?
-    this.currentPerm!.reject_owners.map(o => o.uid).includes(item.username) : this.currentPerm!.permit_owners.map(o => o.uid).includes(item.username)
+  getDisableStatus(item: any) {
+    return this.owners.includes(item.username)
   }
 
   onOk() {
@@ -205,6 +237,7 @@ export default class Perm extends Vue {
   }
 
   clearCheckList() {
+    this.isSelectAll = false
     this.checkedUserList = []
   }
 
@@ -222,23 +255,24 @@ export default class Perm extends Vue {
   async showEdit(columnName: string, perm: Permission) {
     this.currentPerm = perm
     this.columnName = columnName
+    this.resetPagination()
+    this.isSelectAll = false
     const owners = await api.Perm.permResultList(perm.uid, {
       owner_subject: 'user',
       page_size: 1000000,
       status: columnName.includes('白名单') ? 1 : -1,
     })
     const resultData = await api.User.list({page: 1, pageSize:this.pagination.pageSize})
-    resultData.results.map(o => o.hide = false)
+    resultData.results.map((o: any) => o.hide = false)
     this.userList = resultData.results
     this.pagination.total = resultData.count
     this.userEditTitle = '账号' + columnName
+    this.checkedUserList = owners.data
     if (columnName.includes('白名单')) {
-      this.currentPerm.permit_owners = owners.data
-      this.checkedUserList = this.userList.filter(o => this.currentPerm!.permit_owners.map(p => p.uid).includes(o.username))
+      this.currentPerm.permit_owners = owners.data || []
     }
     else {
-      this.currentPerm.reject_owners = owners.data
-      this.checkedUserList = this.userList.filter(o => this.currentPerm!.reject_owners.map(p => p.uid).includes(o.username))
+      this.currentPerm.reject_owners = owners.data || []
     }
     this.showUserModal = true
   }
@@ -262,16 +296,20 @@ export default class Perm extends Vue {
   }
 
   async onPageChange(page: number) {
+    this.pagination.page = page
     const data = await api.User.list({page, pageSize: this.pagination.pageSize})
     data.results.map((o: any) => o.hide = false)
     this.userList = data.results
+    this.isSelectAll = false
   }
 
   async onPageSizeChange(pageSize: number) {
     if (pageSize !== this.pagination.pageSize) {
+      this.pagination.pageSize = pageSize
       const data = await api.User.list({page: this.pagination.page, pageSize})
       data.results.map((o: any) => o.hide = false)
       this.userList = data.results
+      this.isSelectAll = false
     }
   }
 
