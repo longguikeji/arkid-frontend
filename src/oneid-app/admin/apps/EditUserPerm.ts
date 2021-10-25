@@ -300,33 +300,37 @@ export default class Perm extends Vue {
   async onUserSearchClick() {
     const keyword = this.searchUser
     if (keyword !== '') {
-      const data = await api.User.list({page: 1, pageSize:1000000, keyword})
+      const data = await api.User.list({page: 1, pageSize: this.pagination.pageSize, keyword})
       data.results.map((o: any) => o.hide = false)
       this.userList = data.results
+      this.pagination.total = data.count
     }
   }
 
   async onUserSearchChange() {
     const keyword = this.searchUser
     if (keyword === '') {
-      const data = await api.User.list({page: 1, pageSize:1000000})
+      const data = await api.User.list({page: 1, pageSize: this.pagination.pageSize})
       data.results.map((o: any) => o.hide = false)
       this.userList = data.results
+      this.pagination.total = data.count
     }
   }
 
   async onPageChange(page: number) {
     this.pagination.page = page
-    const data = await api.User.list({page, pageSize: this.pagination.pageSize})
+    const keyword = this.searchUser
+    const data = await api.User.list({page, pageSize: this.pagination.pageSize, keyword})
     data.results.map((o: any) => o.hide = false)
     this.userList = data.results
     this.isSelectAll = false
   }
 
   async onPageSizeChange(pageSize: number) {
+    const keyword = this.searchUser
     if (pageSize !== this.pagination.pageSize) {
       this.pagination.pageSize = pageSize
-      const data = await api.User.list({page: this.pagination.page, pageSize})
+      const data = await api.User.list({page: this.pagination.page, pageSize, keyword})
       data.results.map((o: any) => o.hide = false)
       this.userList = data.results
       this.isSelectAll = false
