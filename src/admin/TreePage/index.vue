@@ -74,6 +74,7 @@ export default class extends Mixins(BaseVue) {
     .el-card__body {
       height: calc(100vh - 86px - 2rem);
       position: relative;
+      overflow: auto;
       .el-pagination {
         position: absolute;
         bottom: 70px;
