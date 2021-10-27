@@ -19,7 +19,7 @@
   }
 }
 
-.desktop.notice {
+.desktop {
   display: flex;
   padding: 1rem;
   height: calc(100vh - 86px) !important;
@@ -37,6 +37,9 @@
     }
     ::v-deep .drag-board {
       padding-bottom: 10px;
+      .item {
+        display: inline-block;
+      }
     }
   }
   .notice-modules {
