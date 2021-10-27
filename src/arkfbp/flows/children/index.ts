@@ -14,10 +14,10 @@ export class Main extends Flow {
     }, {
       cls: UrlNode,
       id: 'url',
-      next: 'tree-children'
+      next: 'children'
     }, {
       cls: ChildrenNode,
-      id: 'tree-children',
+      id: 'children',
       next: 'stop'
     }, {
       cls: StopNode,

@@ -29,18 +29,13 @@ export class InitInputList extends FunctionNode {
             field
           }
         }
-      ],
-      delete: [
-        {
-          name: 'flows/common/inputList/delete'
-        }
       ]
     })
+    const items = pageState.state.list.items
     // set list inital data
-    pageState.state.list.items.length = 0
+    items.length = 0
     for (let item of options) {
-      item = Object.assign(item, { action: 'delete' })
-      pageState.state.list.items.push(item)
+      items.push(item)
     }
     // set table or tree default data and execute action
     // can process multiple => extend content ...

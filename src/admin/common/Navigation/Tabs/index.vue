@@ -17,7 +17,9 @@
       :disabled="item.disabled"
       :closable="item.closable"
     >
-      <AdminComponent :path="tabPath" />
+      <template v-if="item.name === state.value">
+        <AdminComponent :path="getTabPath(item)" />
+      </template>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -39,6 +41,14 @@ export default class extends Mixins(BaseVue) {
 
   get tabPath() {
     return `admin.adminState[${this.state.value}]`
+  }
+
+  get prefix() {
+    return this.path.substring(0, this.path.indexOf('.$tabs'))
+  }
+
+  getTabPath(item: TabPaneState) {
+    return `${this.prefix}[${item.name}]`
   }
 }
 </script>

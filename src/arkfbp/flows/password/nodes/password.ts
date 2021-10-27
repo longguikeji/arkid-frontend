@@ -1,21 +1,13 @@
 import { Update } from '@/arkfbp/flows/update/nodes/update'
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
-import { FlowModule } from '@/store/modules/flow'
 
 export class Password extends Update {
   async run() {
-    const { url, method, com } = this.inputs
-    const data = FlowModule.data
+    const { url, method, com, client } = this.inputs
+    const data = client.data
     const submitData = com.formData
-    let uuid = UserModule.uuid
-    const action = com.state.action
-    if (action) {
-      const page = action.split('.')[0]
-      if (data[page]?.uuid) {
-        uuid = data[page].uuid
-      }
-    }
+    const uuid = data && data.uuid ? data.uuid : UserModule.uuid
     const params = {
       old_password: submitData.oldPassword,
       password: submitData.password,

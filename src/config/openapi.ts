@@ -76,16 +76,14 @@ export interface ITagPage {
   init: ITagPageAction
   global?: ITagPageOperation
   local?: ITagPageOperation
-  node?: ITagPageAction
 }
 
 export interface ITagPageAction {
   path: string
   method: string
   description?: string
-  from?: string
-  next?: string
   icon?: string
+  next?: string
 }
 
 export interface ITagUpdateOperation {

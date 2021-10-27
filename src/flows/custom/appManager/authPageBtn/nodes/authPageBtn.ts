@@ -16,6 +16,9 @@ export class AuthPageBtn extends FunctionNode {
     })
     pageState.state.actions!.openAuthDialog = [
       {
+        name: 'arkfbp/flows/data'
+      },
+      {
         name: 'arkfbp/flows/cancelValidate'
       },
       {

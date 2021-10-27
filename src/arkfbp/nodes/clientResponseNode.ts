@@ -35,16 +35,25 @@ export class ClientResponseNode extends FunctionNode {
       const lastKey = splitKeys[splitLength]
       if (data) {
         const valueMapping = clientServer[key].split('.')
-        let tempS = data
-        const valueMappinglength = valueMapping.length - 1
+        let resp = data
+        const valueMappinglength = valueMapping.length
         for (let k = 0; k < valueMappinglength; k++) {
-          if (!tempS) break
-          tempS = tempS[valueMapping[k]]
+          if (!resp) break
+          const vmap = valueMapping[k]
+          if (vmap.indexOf('[') >= 0) {
+            const firstVMap = vmap.slice(0, vmap.indexOf('['))
+            const secondVMap = vmap.slice(vmap.indexOf('[')+1, vmap.indexOf(']'))
+            resp = firstVMap === '' ? resp[secondVMap] : resp[firstVMap][secondVMap]
+          } else if (vmap === '') {
+            resp = resp
+          } else {
+            resp = resp[vmap]
+          }
         }
-        let value = tempS ? tempS[valueMapping[valueMappinglength]] : undefined
+        let value = resp !== undefined ? resp : undefined
         if (value === undefined) {
           if (lastKey !== 'value' && lastKey !== 'data') { value = clientServer[key] }
-          if (lastKey === 'data') { value = tempS }
+          if (lastKey === 'data') { value = resp }
         }
         tempC[lastKey] = lastKey === 'disabled' ? !value : value
         if (tempC.options && tempC.page) setOptions(tempC)

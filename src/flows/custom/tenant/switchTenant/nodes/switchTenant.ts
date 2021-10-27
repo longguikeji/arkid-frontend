@@ -1,11 +1,10 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { switchTenantBySlug, switchTenantByUUID } from '@/utils/url'
-import { FlowModule } from '@/store/modules/flow'
 
 export class SwitchTenant extends FunctionNode {
   async run() {
-    const data = FlowModule.data
-    const tenant = data['tenant']
+    const { client } = this.inputs
+    const tenant = client.data
     if (tenant) {
       const { slug, use_slug } = tenant
       if (slug && use_slug) {

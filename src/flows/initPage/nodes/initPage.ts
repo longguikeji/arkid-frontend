@@ -21,7 +21,9 @@ const PAGE_BASE_FLOW = {
 const DASHBOARD_PAGE_FLOW = {
   'desktop': 'flows/page/dashboard/desktop',
   'notice': 'flows/page/dashboard/desktop',
-  'backlog': 'flows/page/dashboard/desktop',
+  'ticket': 'flows/page/dashboard/desktop',
+  'article': 'flows/page/dashboard/desktop',
+  'announcement': 'flows/page/dashboard/desktop',
   'statistics': 'flows/page/dashboard/statistics'
 }
 

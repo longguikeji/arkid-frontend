@@ -64,6 +64,9 @@ export class AddButton extends FunctionNode {
       })
       pageState.actions!.openSwitchTenantDialog = [
         {
+          name: 'arkfbp/flows/data'
+        },
+        {
           name: 'arkfbp/flows/assign',
           response: {
             'dialogs.switch.visible': true
@@ -132,6 +135,7 @@ export class AddButton extends FunctionNode {
                 response: {
                   'form.items.uuid.state.value': 'uuid',
                   'form.items.name.state.value': 'name',
+                  'data': ''
                 }
               }
             ]

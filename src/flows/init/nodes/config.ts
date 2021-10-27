@@ -214,9 +214,21 @@ export class ConfigNode extends APINode {
     this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
     this.method = 'GET'
     const data = await super.run()
-    const { is_all_application: isAllApplication, is_all_show: isAllShow, is_childmanager: isChildManager, permissions } = data
-    if (isChildManager) {
-      // ...
+    if (data && data.is_childmanager) {
+      UserModule.setUserRole(UserRole.Tenant)
+      ConfigModule.setChildManagerIsAllShow(data.is_all_show)
+      ConfigModule.setChildManagerIsAllApplication(data.is_all_application)
+      const permissions = data.permissions
+      if (permissions) {
+        const items: string[] = []
+        permissions.forEach(p => {
+          const { is_system_permission, codename, permission_category, name } = p
+          if (is_system_permission && permission_category === '入口' && codename.substring(0, 5) === 'enter') {
+            items.push(name)
+          }
+        })
+        ConfigModule.setChildManagerVisibleSidebarItems(items)
+      }
     }
   }
 }

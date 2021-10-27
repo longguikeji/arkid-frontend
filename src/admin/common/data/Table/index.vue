@@ -70,7 +70,7 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TableState, { SelectionState } from './TableState'
 import TableColumn from './TableColumn/index.vue'
-import Dialog from '@/admin/common/Others/Dialog/index.vue'
+import Dialog from '@/admin/common/Dialog/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
 import Sortable from 'sortablejs'
 

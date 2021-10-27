@@ -15,7 +15,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { addInputListDialog } from '@/utils/dialogs'
-import hasPermission from '@/utils/role'
+import { hasPermissionByPath } from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import { FormItemsState } from '@/admin/common/Form/FormState'
 import { TABLE_COLUMN_WIDTH } from '@/utils/table'
@@ -227,7 +227,8 @@ export class StateNode extends FunctionNode {
           label: '搜索',
           type: 'primary',
           action: 'fetch',
-          icon: 'el-icon-search'
+          icon: 'el-icon-search',
+          size: 'mini'
         }
       }
     }
@@ -245,6 +246,7 @@ export class StateNode extends FunctionNode {
 
   async initPageButtonState(actions: ITagPageOperation, role: ButtonRole) {
     for (const key in actions) {
+      if (key === 'node') continue
       const action = actions[key]
       let button: ButtonState | null = null
       if ((action as ITagPageMapping).tag) { // point new page
@@ -296,17 +298,19 @@ export class StateNode extends FunctionNode {
     if (pageState) return
     await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
     const list = {
-      header: {
-        title: '已选数据列表',
-        buttons: [
-          {
-            label: '确认所选',
-            type: 'primary',
-            action: 'confirm'
-          }
-        ]
-      },
-      items: []
+      title: '已选数据列表',
+      buttons: [
+        {
+          label: '确认所选',
+          type: 'primary',
+          action: 'confirm',
+          size: 'mini'
+        }
+      ],
+      items: [],
+      isActive: true,
+      disabled: true,
+      clearable: true
     }
     this.inputs.state[listPage].state.list = list
   }
@@ -484,14 +488,11 @@ export class StateNode extends FunctionNode {
   }
 
   getButtonState(props: IButtonProps, path?: string, method?: string) {
-    const page = this._page
     const pageType = this._type
     const { key, description, mode, role, icon } = props
     let available = true
-    if (path && method) { // 权限
-      // ...
-    } else if (page) {
-      // ...
+    if (path && method) { // Permission Button Action
+      if (!hasPermissionByPath(path, method)) return null
     }
     if (!available) return null
     let action = '', type = 'primary'

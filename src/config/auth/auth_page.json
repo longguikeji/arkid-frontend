@@ -171,13 +171,13 @@
     },
     "buttons": [
       {
+        "action": "app.closeAuthDialog",
+        "label": "取消"
+      },
+      {
         "type": "primary",
         "action": "save",
-        "icon": "el-icon-folder-add",
-        "tip": {
-          "content": "保存"
-        },
-        "circle": true
+        "label": "确定"
       }
     ],
     "actions": {

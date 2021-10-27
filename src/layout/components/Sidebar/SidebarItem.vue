@@ -63,8 +63,6 @@ import { isExternal } from '@/utils/common'
 import SidebarItemLink from './SidebarItemLink.vue'
 
 @Component({
-  // Set 'name' here to prevent uglifyjs from causing recursive component not work
-  // See https://medium.com/haiiro-io/element-component-name-with-vue-class-component-f3b435656561 for detail
   name: 'SidebarItem',
   components: {
     SidebarItemLink
@@ -108,8 +106,6 @@ export default class extends Vue {
         }
       }
     }
-    // If there is no children, return itself with path removed,
-    // because this.basePath already conatins item's path information
     return { ...this.item, path: '' }
   }
 
@@ -128,6 +124,10 @@ export default class extends Vue {
 <style lang="scss">
 .el-submenu.is-active > .el-submenu__title {
   color: $subMenuActiveText !important;
+}
+
+.el-submenu__icon-arrow {
+  margin-top: -5px !important;
 }
 
 .full-mode {
@@ -174,7 +174,8 @@ export default class extends Vue {
 
 <style lang="scss" scoped>
 .svg-icon {
-  margin-right: 16px;
+  margin-right: 15px;
+  vertical-align: middle;
 }
 
 .simple-mode {
