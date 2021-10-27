@@ -1,14 +1,18 @@
 <template>
-  <div />
+  <el-card />
 </template>
 
 <script lang="ts">
 import echarts, { EChartOption } from 'echarts'
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
+import Card from '@/admin/common/Card/index.vue'
 
 @Component({
-  name: 'Chart'
+  name: 'Chart',
+  components: {
+    Card
+  }
 })
 export default class extends Mixins(BaseVue) {
   private chart: echarts.ECharts | null = null
@@ -18,8 +22,8 @@ export default class extends Mixins(BaseVue) {
   }
 
   @Watch('state')
-  onChartStateChange(state) {
-    this.setChartOption(state)
+  onChartStateChange() {
+    this.setChartOption()
   }
 
   mounted() {
@@ -38,11 +42,20 @@ export default class extends Mixins(BaseVue) {
 
   private initChart() {
     this.chart = echarts.init(this.$el as HTMLDivElement)
-    this.setChartOption(this.state as EChartOption)
+    this.setChartOption()
   }
 
-  setChartOption(option: EChartOption) {
-    this.chart!.setOption(option)
+  setChartOption() {
+    const option = this.state as EChartOption
+    if (this.chart && option) {
+      option.title = {
+        ...option.title,
+        textStyle: {
+          fontSize: 16
+        }
+      }
+      this.chart!.setOption(option)
+    }
   }
 }
 </script>

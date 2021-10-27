@@ -42,6 +42,6 @@ export class ChangeStateNode extends APINode {
         })
       }
     })
-    client.board.list = firstArr.concat(secondArr)
+    client.items = firstArr.concat(secondArr)
   }
 }

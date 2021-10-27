@@ -23,6 +23,7 @@ export default class extends Mixins(BaseVue) {
     return {
       render: (h: Function) => {
         return h(state.type, {
+          class: 'full',
           props: {
             path: this.getChildPath('state')
           }
@@ -34,6 +35,11 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
+.full {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
 ::v-deep .el-badge__content.is-fixed {
   z-index: 100 !important;
 }

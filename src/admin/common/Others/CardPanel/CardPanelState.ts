@@ -4,4 +4,5 @@ export default interface CardPanelState {
   logo?: string
   url?: string
   uuid?: string
+  class?: string // custom class for styles
 }

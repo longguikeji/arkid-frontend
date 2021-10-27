@@ -22,11 +22,9 @@ export class DesktopNode extends FunctionNode {
         type: 'DashboardPage',
         state: {
           created: 'created',
-          board: {
-            list: [],
-            options: {},
-            endAction: 'keepAppPosition'
-          },
+          items: [],
+          options: {},
+          endAction: 'keepAppPosition',
           actions: {
             created: [ 'fetch' ],
             fetch: [

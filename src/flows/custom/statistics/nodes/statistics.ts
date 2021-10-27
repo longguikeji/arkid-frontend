@@ -6,9 +6,9 @@ export class StatisticsNode extends APINode {
     this.url = url
     this.method = method
     const outputs = await super.run()
-    const list = client.board.list
+    const list = client.items
     if (outputs && outputs.length > 0) {
-      outputs.forEach((item: any) => {
+      outputs.forEach((item: any, index: number) => {
         const { type, data, title } = item
         const text = title ? title.text : ''
         const subtext = title ? title.subtext : ''
