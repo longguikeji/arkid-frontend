@@ -10,7 +10,7 @@ const EXPAND_TABLE_PAGE = [ 'contacts_user' ]
 
 const READONLY_PAGE = [ 'profile', 'tenant_config' ]
 
-const TABS_PAGE = [ 'profile', 'third_part_account', 'subuser', 'user_token_manage', 'login_register_extension_config', 'tenant_register_privacy_notice', 'login_register_config', 'notice_manage', 'ticket_manage' ]
+const TABS_PAGE = [ 'profile', 'third_part_account', 'subuser', 'user_token_manage', 'login_register_extension_config', 'tenant_register_privacy_notice', 'login_register_config' ]
 
 const PAGE_BASE_FLOW = {
   'table_page': 'flows/page/base',
@@ -22,6 +22,8 @@ const DASHBOARD_PAGE_FLOW = {
   'desktop': 'flows/page/dashboard/desktop',
   'notice': 'flows/page/dashboard/desktop',
   'ticket': 'flows/page/dashboard/desktop',
+  'article': 'flows/page/dashboard/desktop',
+  'announcement': 'flows/page/dashboard/desktop',
   'statistics': 'flows/page/dashboard/statistics'
 }
 

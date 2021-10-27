@@ -1,8 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-// import { getSchemaByPath } from '@/utils/schema'
-// import generateForm from '@/utils/form'
-import notice from '@/config/notice/notice.json'
-import ticket from '@/config/notice/ticket.json'
+import { getSchemaByPath } from '@/utils/schema'
+import generateForm from '@/utils/form'
 
 export class DesktopNode extends FunctionNode {
   async run() {
@@ -114,26 +112,25 @@ export class DesktopNode extends FunctionNode {
         }
       }
       const noticeLists = state.notice.state
-      // const schema = getSchemaByPath(url, method)
-      // const { form } = generateForm(schema, false, true, false, true)
+      let items
+      if (url && method) {
+        const schema = getSchemaByPath(url, method)
+        if (schema) {
+          const { form } = generateForm(schema, false, true, false, true)
+          items = form?.items
+        }
+      }
       noticeLists[page] = {
         created: 'created',
-        // title: description,
-        title: page === 'notice' ? '通知列表' : '代办提醒',
-        items: page === 'notice' ? notice : ticket,
+        title: description || '消息列表',
+        items: [],
         isActive: true,
         detail: {
           visible: false,
           state: {
             type: 'Descriptions',
             state: {
-              // items: form ? form.items : undefined,
-              items: {
-                content: {
-                  label: '详情',
-                  value: ''
-                }
-              },
+              items: items,
               border: true,
               column: 1
             }
@@ -148,6 +145,10 @@ export class DesktopNode extends FunctionNode {
             }
           ]
         }
+      }
+      const actions = noticeLists[page].actions
+      if (url && method) {
+        actions.created.push('fetch')
       }
     }
   }
