@@ -21,7 +21,6 @@ export class Update extends APINode {
       }
       lackRequiredParams = isLackRequiredParams(this.params, requiredSet)
     }
-
     if (lackRequiredParams) {
       FlowModule.stopRunFlow()
       com.$message({
@@ -33,8 +32,7 @@ export class Update extends APINode {
     }
 
     const outputs = await super.run()
-
-    if (outputs.error) {
+    if (outputs && outputs.error) {
       FlowModule.stopRunFlow()
       com.$message({
         message: error[outputs.error],
@@ -42,7 +40,6 @@ export class Update extends APINode {
         showClose: true
       })
     }
-    
     return outputs
   }
 }

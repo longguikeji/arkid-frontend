@@ -241,6 +241,9 @@ export class ActionNode extends FunctionNode {
     const state = this._temp
     state.actions![`openPasswordDialog`] = [
       {
+        name: 'arkfbp/flows/data'
+      },
+      {
         name: 'arkfbp/flows/assign',
         response: {
           'dialogs.password.visible': true,
@@ -281,6 +284,9 @@ export class ActionNode extends FunctionNode {
       case 'delete':
       case 'get':
         state.actions![key] = [
+          {
+            name: 'arkfbp/flows/data'
+          },
           {
             name: 'arkfbp/flows/update',
             url: path, method
