@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { getSchemaByPath } from '@/utils/schema'
 import generateForm from '@/utils/form'
+import OpenAPI, { ITagPageAction } from '@/config/openapi'
 
 export class DesktopNode extends FunctionNode {
   async run() {
@@ -31,22 +32,6 @@ export class DesktopNode extends FunctionNode {
                 url, method
               }
             ],
-            openAppManagerDialog: [
-              {
-                name: 'arkfbp/flows/assign',
-                response: {
-                  'dialogs.manager.visible': true
-                }
-              }
-            ],
-            closeAppManagerDialog: [
-              {
-                name: 'arkfbp/flows/assign',
-                response: {
-                  'dialogs.manager.visible': false
-                }
-              }
-            ],
             keepAppPosition: [
               {
                 name: 'flows/custom/desktop/adjust'
@@ -55,52 +40,76 @@ export class DesktopNode extends FunctionNode {
           },
           card: {
             title: description,
-            buttons: [
-              {
-                label: '管理应用',
-                action: 'openAppManagerDialog',
-                disabled: false,
-                size: 'mini',
-                icon: 'el-icon-edit'
-              }
-            ]
+            buttons: []
           },
-          dialogs: {
-            manager: {
-              page: 'manager',
-              visible: false
-            }
-          }
+          dialogs: {}
         }
       }
-      state.manager = {
-        type: 'FormPage',
-        state: {
-          card: {
-            title: '管理应用'
-          },
-          buttons: [
-            {
-              label: '取消',
-              action: 'desktop.closeAppManagerDialog',
-              size: 'mini'
-            },
-            {
-              label: '确定',
-              action: 'manager',
-              size: 'mini',
-              type: 'primary'
-            }
-          ],
-          actions: {
-            manager: [
-              {
-                name: 'flows/custom/desktop/manager'
+      if (dep.global) {
+        const { tag: manageTag } = dep.global.manage
+        if (manageTag) {
+          const info = OpenAPI.instance.getOnePageTag(manageTag)
+          if (info) {
+            const { page: manageDep, description: manageDescription, name: manageName } = info
+            if (manageDep) {
+              const { init: manageInit, local: manageLocal } = manageDep
+              const desktopState = state[page].state
+              desktopState.dialogs[manageName] = {
+                page: manageName,
+                visible: false
               }
-            ]
-          },
-          form: {
-            items: {}
+              desktopState.actions = Object.assign(desktopState.actions, {
+                openAppManageDialog: [
+                  {
+                    name: 'arkfbp/flows/assign',
+                    response: {
+                      [`dialogs.${manageName}.visible`]: true
+                    }
+                  }
+                ]
+              })
+              desktopState.card.buttons.push(
+                {
+                  label: manageDescription,
+                  action: 'openAppManageDialog',
+                  disabled: false,
+                  size: 'mini',
+                  icon: 'el-icon-edit'
+                }
+              )
+              state[manageName] = {
+                type: 'FormPage',
+                state: {
+                  created: 'created',
+                  card: {
+                    title: manageDescription
+                  },
+                  actions: {
+                    created: [ 'fetch' ],
+                    fetch: [
+                      {
+                        name: 'flows/custom/desktop/manage',
+                        url: manageInit.path, method: manageInit.method
+                      }
+                    ],
+                    subscribe: [
+                      {
+                        name: 'arkfbp/flows/data'
+                      },
+                      {
+                        name: 'flows/custom/desktop/subscribe',
+                        url: (manageLocal as ITagPageAction).path,
+                        method: (manageLocal as ITagPageAction).method
+                      },
+                      'desktop.fetch'
+                    ]
+                  },
+                  form: {
+                    items: {}
+                  }
+                }
+              }
+            }
           }
         }
       }

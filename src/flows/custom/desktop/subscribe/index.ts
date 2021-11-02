@@ -2,17 +2,22 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { DesktopAppManagerNode } from './nodes/manager'
+import { UrlNode } from '@/arkfbp/nodes/urlNode'
+import { AppSubscribeNode } from './nodes/subscribe'
 
 export class Main extends Flow {
   createNodes() {
     return [{
       cls: StartNode,
       id: 'start',
-      next: 'desktop-app-manager'
+      next: 'url'
     }, {
-      cls: DesktopAppManagerNode,
-      id: 'desktop-app-manager',
+      cls: UrlNode,
+      id: 'url',
+      next: 'app-subscribe'
+    }, {
+      cls: AppSubscribeNode,
+      id: 'app-subscribe',
       next: 'stop'
     }, {
       cls: StopNode,
