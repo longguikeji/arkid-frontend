@@ -6,6 +6,7 @@
   ul,
   li {
     list-style: none;
+    cursor: text !important;
   }
 
   .subtitle {
@@ -25,6 +26,21 @@
       background: @primary-color;
       content: '';
     }
+  }
+
+  .node-sort-btn {
+    margin-left: 20px;
+  }
+
+  .node-sort-icon {
+    width: 35px;
+    text-align: center;
+  }
+
+  .node-sort-icon,
+  .cur-node-children-name,
+  .cur-node-children-select-icon {
+    cursor: pointer;
   }
 
   .tree-no-data,

@@ -110,6 +110,11 @@ export class Node {
     const resp = await http.get(url, data)
     return resp.data
   }
+  static async sortTree(id: string | number, deptIds: Array<string | number>) {
+    const url = `${this.baseUrl}/${id}/tree_sort/`
+    const data = { dept_ids: deptIds }
+    await http.put(url, data)
+  }
   static async node(id: string) {
     const url = `${this.baseUrl}/${id}/node/`
     const resp = await http.get(url)
