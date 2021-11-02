@@ -7,7 +7,7 @@ export class Fetch extends APINode {
     this.method = method
     const outputs = await super.run()
     return {
-      results: outputs.results,
+      results: outputs.results || outputs.data,
       source: this.inputs
     }
   }

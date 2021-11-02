@@ -14,34 +14,28 @@ export class ChangeStateNode extends APINode {
     const data = res.data || []
 
     // save for headers search function
-    UserModule.setUserApps(results)
-
-    // set manager button
-    const button = client.card.buttons[0]
-    if (results && results.length > 0) {
-      button.disable = false
-    } else {
-      button.disable = true
-    }
+    UserModule.setUserApps(results || [])
 
     // set desktop apps panel -- cardpanel
-    const firstArr = new Array()
-    const secondArr = new Array()
-    results.forEach(app => {
-      const uuid = app.uuid
-      const index = data.indexOf(uuid)
-      if (index !== -1) {
-        firstArr[index] = {
-          type: 'CardPanel',
-          state: app
+    if (results && results.length) {
+      const firstArr = new Array()
+      const secondArr = new Array()
+      results.forEach(app => {
+        const uuid = app.uuid
+        const index = data.indexOf(uuid)
+        if (index !== -1) {
+          firstArr[index] = {
+            type: 'CardPanel',
+            state: app
+          }
+        } else {
+          secondArr.push({
+            type: 'CardPanel',
+            state: app
+          })
         }
-      } else {
-        secondArr.push({
-          type: 'CardPanel',
-          state: app
-        })
-      }
-    })
-    client.items = firstArr.concat(secondArr)
+      })
+      client.items = firstArr.concat(secondArr)
+    }
   }
 }

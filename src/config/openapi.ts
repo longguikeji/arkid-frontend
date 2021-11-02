@@ -75,7 +75,7 @@ export interface ITagPage {
   type: string
   init: ITagPageAction
   global?: ITagPageOperation
-  local?: ITagPageOperation
+  local?: ITagPageOperation | ITagPageAction
 }
 
 export interface ITagPageAction {
