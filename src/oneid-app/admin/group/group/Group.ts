@@ -201,9 +201,11 @@ export default class Group extends Vue {
 
   async toConfirmNodeSort() {
     const { dept_id: id, children } = this.curNode!
-    const deptIds = children.map(c => c.dept_id) || []
-    this.isNodeSortable = false
-    await api.Node.sortTree(id, deptIds)
+    if (id !== undefined && id !== -1) {
+      const deptIds = children.map(c => c.dept_id) || []
+      await api.Node.sortTree(id, deptIds)
+      this.isNodeSortable = false
+    }
   }
 
   async loadData() {
