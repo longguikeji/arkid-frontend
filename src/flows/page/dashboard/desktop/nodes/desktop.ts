@@ -85,13 +85,6 @@ export class DesktopNode extends FunctionNode {
                     title: manageDescription
                   },
                   actions: {
-                    created: [ 'fetch' ],
-                    fetch: [
-                      {
-                        name: 'flows/custom/desktop/manage',
-                        url: manageInit.path, method: manageInit.method
-                      }
-                    ],
                     subscribe: [
                       {
                         name: 'arkfbp/flows/data'
@@ -109,6 +102,14 @@ export class DesktopNode extends FunctionNode {
                   }
                 }
               }
+              const actions = state[page].state.actions
+              actions.manage = [
+                {
+                  name: 'flows/custom/desktop/manage',
+                  url: manageInit.path, method: manageInit.method
+                }
+              ]
+              actions.created.push('manage')
             }
           }
         }
