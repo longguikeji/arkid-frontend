@@ -262,6 +262,7 @@ interface NodeHierarchyData {
     node_uid: string;
     remark: string;
     uid: string;
+    dept_id: number
   }
   name?: string
   node_subject?: string
@@ -280,6 +281,8 @@ interface NodeHierarchyData {
   nodes: NodeHierarchyData[]
   headcount?: number
   users?: UserData[]
+
+  dept_id?: number
 }
 
 export class Node {
@@ -289,7 +292,6 @@ export class Node {
       return obj
     }
 
-
     obj.nodeSubject = data.info ? data.info.node_subject : data.node_subject!
     obj.headcount = data.headcount!
     obj.name = data.info ? data.info.name : data.name!
@@ -297,6 +299,7 @@ export class Node {
     obj.id = data.info ? data.info.node_uid : data.node_uid!
     obj.custom = data.custom && data.custom.data ? data.custom.data : {}
 
+    obj.dept_id = data.info ? data.info.dept_id : -1
 
     obj.visibility = data.visibility
     obj.nodeScope = data.node_scope || []
@@ -326,6 +329,7 @@ export class Node {
   users: User[] = []
   nodeSubject = ''
   headcount = -1
+  dept_id = -1
 
   visibility?: number
   nodeScope: string[] = []

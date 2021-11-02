@@ -1,6 +1,7 @@
 import {Node, TreeNode} from '@/models/oneid'
 import GroupTree from '@/oneid-app/comps/GroupTree'
 import * as api from '@/services/oneid'
+import { cloneDeep } from 'lodash'
 import {Component, Prop, Vue, Watch} from 'vue-property-decorator'
 import UserList from '../user/UserList'
 import Edit from './Edit'
@@ -67,15 +68,29 @@ import './Group.less'
         </div>
         <div class="ui-group-page-detail-content flex-col">
           <div class="group-list-block flex-col">
-            <h4 class="subtitle">下级{{ nodeTypeName }}</h4>
+            <h4 class="subtitle">
+              下级{{ nodeTypeName }}
+              <div v-if="curNode.children && curNode.children.length > 1">
+                <div v-if="isNodeSortable">
+                  <Button class="node-sort-btn" @click="toCancelNodeSort">取消</Button>
+                  <Button class="node-sort-btn" type="primary" @click="toConfirmNodeSort">确认排序</Button>
+                </div>
+                <div v-else>
+                  <Button class="node-sort-btn" @click="toNodeSort">调整排序</Button>
+                </div>
+              </div>
+            </h4>
             <ul class="flex-col flex-auto" v-if="curNode.children.length > 0">
               <li
-                v-for="item in curNode.children"
-                @click="$refs.tree.select(item.id);"
+                v-for="(item, index) in curNode.children"
                 class="flex-row"
               >
-                <span>{{ item.name }}</span>
-                <Icon type="ios-arrow-forward" color="#D8D8D8"></Icon>
+                <div class="node-sort-icon" v-if="isNodeSortable && curNode.children.length > 1">
+                  <Icon v-if="index !== 0" type="md-arrow-round-up" color="#D8D8D8" @click="toNodeSortUp(index)"></Icon>
+                  <Icon v-if="index !== curNode.children.length-1" type="md-arrow-round-down" color="#D8D8D8" @click="toNodeSortDown(index)"></Icon>
+                </div>
+                <span class="cur-node-children-name" @click="$refs.tree.select(item.id)">{{ item.name }}</span>
+                <Icon class="cur-node-children-select-icon" type="ios-arrow-forward" color="#D8D8D8" @click="$refs.tree.select(item.id)"></Icon>
               </li>
             </ul>
             <span v-else>没有下级{{ nodeTypeName }}</span>
@@ -114,6 +129,13 @@ export default class Group extends Vue {
       ? this.metaNode!.name
       : '分组'
   }
+
+  isNodeSortable: boolean = false
+
+  isNodeSorted: boolean = false
+
+  curNodeChildren: Node[] | undefined = undefined
+
   metaNodeId: string|null = null
   metaNode: Node|null = null
   tree: TreeNode|null = null
@@ -136,6 +158,54 @@ export default class Group extends Vue {
   onMetaNodeIdChange() {
     this.tree = null
     this.$nextTick(() => this.loadData())
+  }
+
+  @Watch('curNode.name')
+  onCurNodeChange() {
+    this.isNodeSortable = false
+  }
+
+  toNodeSort() {
+    this.isNodeSortable = true
+    this.curNodeChildren = cloneDeep(this.curNode!.children)
+  }
+
+  toCancelNodeSort() {
+    this.isNodeSortable = false
+    if (this.isNodeSorted) {
+      this.curNode!.children = this.curNodeChildren!
+    }
+  }
+
+  toNodeSortUp(index: number) {
+    const children = this.curNode!.children
+    const len = children.length || 0
+    if (len > 0 && index !== 0) {
+      this.isNodeSorted = true
+      const data = [ children[index], children[index - 1] ]
+      this.$set(children, index, data[1])
+      this.$set(children, index-1, data[0])
+    }
+  }
+
+  toNodeSortDown(index: number) {
+    const children = this.curNode!.children
+    const len = children.length || 0
+    if (len && index !== len-1) {
+      this.isNodeSorted = true
+      const data = [ children[index], children[index + 1] ]
+      this.$set(children, index, data[1])
+      this.$set(children, index+1, data[0])
+    }
+  }
+
+  async toConfirmNodeSort() {
+    const { dept_id: id, children } = this.curNode!
+    if (id !== undefined && id !== -1) {
+      const deptIds = children.map(c => c.dept_id) || []
+      await api.Node.sortTree(id, deptIds)
+      this.isNodeSortable = false
+    }
   }
 
   async loadData() {
