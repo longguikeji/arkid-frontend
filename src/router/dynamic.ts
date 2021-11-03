@@ -103,7 +103,7 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   let roleRoutes = routes
   if (role === UserRole.User) {
     roleRoutes = routes.filter((route) => {
-      return route.path === '/contacts' || route.path === '/mine' || route.path === '/desktop'
+      return route.path !== '/system' && route.path !== '/tmanage'
     })
   } else if (role === UserRole.Tenant) {
     roleRoutes = routes.filter((route) => {
