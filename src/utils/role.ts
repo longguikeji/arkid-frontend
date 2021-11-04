@@ -17,8 +17,7 @@ export function getApiRolesByPageName(name: string): string[] {
 
 export function getApiRolesByPath(path: string, method: string) {
   const operation = OpenAPI.instance.getOperation(path, method)
-  if (!operation) return []
-  return operation.roles || []
+  return operation ? operation.roles || [] : []
 }
 
 export function hasPermissionByPath(path: string, method: string) {
@@ -29,9 +28,7 @@ export function hasPermissionByPath(path: string, method: string) {
 
 export default function hasPermission(page: string | string[]) {
   let currentRole = UserModule.role
-  if (currentRole === UserRole.Platform) {
-    return true
-  }
+  if (currentRole === UserRole.Platform) return true
   let roles: string[] = []
   if (isArray(page)) {
     for (const p of page) {
