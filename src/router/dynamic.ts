@@ -39,8 +39,13 @@ function generateRoutesByOpenAPI(routes: IOpenAPIRouter[]): RouteConfig[] {
 
 function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
   const { path, children, page } = route
-  if (path && hiddenRoute(path)) return undefined
-  if (page && !hasPermission(page)) return undefined
+  const isHidden = hiddenRoute(path)
+  if (isHidden) {
+    return undefined
+  }
+  if (page && !hasPermission(page)) {
+    return undefined
+  }
   const newRoute: RouteConfig = {
     path: '/' + path,
     name: path,
