@@ -101,7 +101,7 @@ function getRouteMeta(route: IOpenAPIRouter, affix?: boolean): RouteMeta {
 function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   const role = UserModule.role
   let roleRoutes = routes
-  if (role === UserRole.User) {
+  if (role === UserRole.User || role === UserRole.Platform) {
     roleRoutes = routes.filter((route) => {
       return route.path !== '/system' && route.path !== '/tmanage'
     })
