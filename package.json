@@ -14,7 +14,6 @@
     "@fingerprintjs/fingerprintjs": "^3.3.0",
     "@tinymce/tinymce-vue": "^3.2.2",
     "@types/cookie": "^0.4.0",
-    "@vue/compiler-sfc": "^3.0.9",
     "arkfbp": "0.0.3",
     "axios": "^0.19.0",
     "core-js": "^3.6.5",
@@ -26,7 +25,6 @@
     "normalize.css": "^8.0.1",
     "path-to-regexp": "^6.2.0",
     "screenfull": "^5.0.2",
-    "script-loader": "^0.7.2",
     "sortablejs": "^1.10.2",
     "tinymce": "^5.4.2",
     "ua-parser-js": "^0.7.28",
@@ -45,7 +43,6 @@
   },
   "devDependencies": {
     "@types/echarts": "^4.6.4",
-    "@types/express": "^4.17.7",
     "@types/js-cookie": "^2.2.6",
     "@types/lodash": "^4.14.160",
     "@types/node": "^14.6.0",
@@ -68,7 +65,6 @@
     "@vue/test-utils": "^1.0.4",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
-    "concurrently": "^5.3.0",
     "eslint": "^7.7.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
@@ -98,7 +94,8 @@
     "typescript",
     "admin",
     "arkid",
-    "element-ui"
+    "element-ui",
+    "arkid-frontend"
   ],
   "lint-staged": {
     "*.{js,vue}": [

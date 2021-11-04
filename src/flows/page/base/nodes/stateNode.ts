@@ -15,7 +15,7 @@ import ButtonState from '@/admin/common/Button/ButtonState'
 import { runFlowByFile } from '@/arkfbp/index'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { addInputListDialog } from '@/utils/dialogs'
-import { hasPermissionByPath } from '@/utils/role'
+import hasPermission, { hasPermissionByPath } from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import { FormItemsState } from '@/admin/common/Form/FormState'
 import { TABLE_COLUMN_WIDTH } from '@/utils/table'
@@ -31,6 +31,9 @@ interface IButtonProps {
   mode: ButtonMode // 按钮的模式
   role: ButtonRole // 按钮在页面中扮演的角色
   icon?: string // 按钮的icon图标
+  tag?: string // 页面指向
+  path?: string // 执行操作的路径
+  method?: string // 执行操作的方式
 }
 
 export class StateNode extends FunctionNode {
@@ -253,7 +256,7 @@ export class StateNode extends FunctionNode {
         const { tag, description, icon } = action as ITagPageMapping
         await this.initDialogPageState(tag, key)
         if (!description) continue
-        button = this.getButtonState({ description, key, mode: 'open', role, icon })
+        button = this.getButtonState({ description, key, mode: 'open', role, icon, tag })
       } else {
         const description = action.description || (action['write'] && action['write'].description) || (action['read'] && action['read'].description)
         if (!description) continue
@@ -271,7 +274,7 @@ export class StateNode extends FunctionNode {
             this.addSortButton(action as ITagPageMultiAction)
             break
           default:
-            button = this.getButtonState({ description, key, mode: 'direct', role, icon })
+            button = this.getButtonState({ description, key, mode: 'direct', role, icon, path: action['path'], method: action['method'] })
         }
       }
       if (button) {
@@ -452,7 +455,6 @@ export class StateNode extends FunctionNode {
 
   addTableLocalButton(button: ButtonState) {
     const state = this._temp
-    const page = this._page
     const columns = state.table!.columns
     const len = columns?.length as number
     if (columns![len - 1].prop !== 'actions') {
@@ -487,12 +489,14 @@ export class StateNode extends FunctionNode {
     state.tree!.slot.buttons.state.push(button)
   }
 
-  getButtonState(props: IButtonProps, path?: string, method?: string) {
+  getButtonState(props: IButtonProps) {
     const pageType = this._type
-    const { key, description, mode, role, icon } = props
+    const { key, description, mode, role, icon, tag, path, method } = props
     let available = true
-    if (path && method) { // Permission Button Action
+    if (path && method) { // Permission
       if (!hasPermissionByPath(path, method)) return null
+    } else if (tag) {
+      if (!hasPermission(tag)) return null
     }
     if (!available) return null
     let action = '', type = 'primary'
