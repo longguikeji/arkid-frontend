@@ -27,22 +27,6 @@ export class AddButton extends FunctionNode {
     ]
 
     const columns = pageState.table.columns
-    // fix icon column for display image
-    for (let i = 0, l = columns.length; i < l; i++) {
-      let column = columns[i]
-      if (column.prop === 'icon') {
-        columns[i] = {
-          ...column,
-          scope: {
-            type: 'ImageBox',
-            state: {
-              value: ''
-            }
-          }
-        }
-        break
-      }
-    }
     // add switch tenant button (table every row)
     if (tenantSwitch) {
       columns?.push({
