@@ -93,6 +93,14 @@ export class StateNode extends FunctionNode {
           }
         }
       }
+      if (prop === 'logo' || prop === 'icon') {
+        columnState.scope = {
+          type: 'ImageBox',
+          state: {
+            value: ''
+          }
+        }
+      }
       state.table!.columns!.push(columnState)
       this.initTableRowDetailState(prop, iprop)
     }
