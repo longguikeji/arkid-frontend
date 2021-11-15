@@ -1,9 +1,8 @@
 import { APINode } from "arkfbp/lib/apiNode"
 import { TenantModule } from '@/store/modules/tenant'
-import { getSlug } from '@/utils/url'
+import { getSlug, getUrlParamByName } from '@/utils/url'
 import getBaseUrl from '@/utils/get-base-url'
 import { processUUId } from '@/utils/common'
-import { getUrlParamByName } from '@/utils/url'
 import { ConfigModule } from '@/store/modules/config'
 
 export class TenantNode extends APINode {
