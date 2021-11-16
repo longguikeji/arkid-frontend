@@ -48,13 +48,13 @@ export class StateNode extends FunctionNode {
     this._temp = state[page].state
     this._type = state[page].type
     this._opts = options
-    if (init) await this.initPageMainState(init)
+    if (init) this.initPageMainState(init)
     if (local) this.initPageLocalButtonState(local)
     if (global) this.initPageGlobalButtonState(global)
     return this.inputs
   }
 
-  async initPageMainState(init: ITagPageAction) {
+  initPageMainState(init: ITagPageAction) {
     const { path, method } = init
     const schema = getSchemaByPath(path, method)
     if (!schema) return
@@ -65,7 +65,7 @@ export class StateNode extends FunctionNode {
         this.initPageFilterState(init, schema)
         break
       case 'FormPage':
-        await this.initFormMainState(schema)
+        this.initFormMainState(schema)
         break
     }
   }
@@ -164,7 +164,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initFormMainState(schema: ISchema) {
+  initFormMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
     const { showReadOnly, showWriteOnly, disabled, readonly } = options
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled, readonly)
@@ -176,8 +176,8 @@ export class StateNode extends FunctionNode {
       if (items) {
         const results = this.getInputListItems(items)
         if (results.length > 0) {
-          results.forEach(async (item) => {
-            await this.initInputList(item)
+          results.forEach(item => {
+            this.initInputList(item)
           })
         }
       }
@@ -200,7 +200,7 @@ export class StateNode extends FunctionNode {
     return results
   }
 
-  async initPageFilterState(init: ITagPageAction, schema: ISchema) {
+  initPageFilterState(init: ITagPageAction, schema: ISchema) {
     const { path, method } = init
     const properties = schema.properties
     const params = getParamsByPath(path, method)
@@ -302,7 +302,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initInputList(item: FormItemState) {
+  initInputList(item: FormItemState) {
     const { _temp: state, _page: page } = this
     item.state.parent = page
     const listPage = item.state.page
