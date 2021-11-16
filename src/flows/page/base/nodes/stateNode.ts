@@ -50,8 +50,8 @@ export class StateNode extends FunctionNode {
     this._type = state[page].type
     this._opts = options
     if (init) await this.initPageMainState(init)
-    if (local) await this.initPageLocalButtonState(local)
-    if (global) await this.initPageGlobalButtonState(global)
+    if (local) this.initPageLocalButtonState(local)
+    if (global) this.initPageGlobalButtonState(global)
     return this.inputs
   }
 
@@ -245,24 +245,24 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initPageLocalButtonState(locals: ITagPageOperation) {
+  initPageLocalButtonState(locals: ITagPageOperation) {
     if (this._type !== 'FormPage') {
-      await this.initPageButtonState(locals, 'local')
+      this.initPageButtonState(locals, 'local')
     }
   }
 
-  async initPageGlobalButtonState(globals: ITagPageOperation) {
-    await this.initPageButtonState(globals, 'global')
+  initPageGlobalButtonState(globals: ITagPageOperation) {
+    this.initPageButtonState(globals, 'global')
   }
 
-  async initPageButtonState(actions: ITagPageOperation, role: ButtonRole) {
+  initPageButtonState(actions: ITagPageOperation, role: ButtonRole) {
     for (const key in actions) {
       if (key === 'node') continue
       const action = actions[key]
       let button: ButtonState | null = null
       if ((action as ITagPageMapping).tag) { // point new page
         const { tag, description, icon } = action as ITagPageMapping
-        await this.initDialogPageState(tag, key)
+        this.initDialogPageState(tag, key)
         if (!description) continue
         button = this.getButtonState({ description, key, mode: 'open', role, icon, tag })
       } else {
@@ -291,13 +291,16 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initDialogPageState(tag: string, key: string) {
-    await runFlowByFile('flows/initPage', { page: tag, state: this.inputs.state }).then(_ => {
+  initDialogPageState(tag: string, key: string) {
+    const state = this.inputs.state
+    const pages = state._pages_
+    if (pages.indexOf(tag) === -1) {
+      state._pages_.push(tag)
       this._temp.dialogs![key] = {
         visible: false,
         page: tag
       }
-    })
+    }
   }
 
   async initInputList(item: FormItemState) {
@@ -305,25 +308,10 @@ export class StateNode extends FunctionNode {
     item.state.parent = page
     const listPage = item.state.page
     addInputListDialog(state, listPage)
-    const pageState = this.inputs.state[listPage]
-    if (pageState) return
-    await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
-    const list = {
-      title: '已选数据列表',
-      buttons: [
-        {
-          label: '确认所选',
-          type: 'primary',
-          action: 'confirm',
-          size: 'mini'
-        }
-      ],
-      items: [],
-      isActive: true,
-      disabled: true,
-      clearable: true
+    const pages = this.inputs.state._pages_
+    if (pages.indexOf(listPage) === -1 ) {
+      pages.push(listPage)
     }
-    this.inputs.state[listPage].state.list = list
   }
 
   addImportDialog(action: ITagPageAction) {

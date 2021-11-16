@@ -28,6 +28,8 @@ import BaseVue from '@/admin/base/BaseVue'
   components: {}
 })
 export default class extends Mixins(BaseVue) {
+  private active = false
+
   get logo() {
     return this.state.logo || require('@/assets/app.png')
   }
@@ -37,12 +39,14 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleClick() {
-    const url = this.state.url
-    if (url) {
+    const { clickAction: action, url } = this.state
+    if (action) {
+      this.runAction(action)
+    } else if (url) {
       window.open(url, '_blank')
     } else {
       this.$message({
-        message: '该应用未设置调转路径',
+        message: '该应用未设置相关点击操作',
         type: 'info',
         showClose: true
       })
@@ -63,9 +67,9 @@ export default class extends Mixins(BaseVue) {
   margin-top: 12px;
   margin-left: 12px;
   &:hover {
-    cursor: move;
     box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
   }
+
   img {
     width: 40px;
     height: 40px;

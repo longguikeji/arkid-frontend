@@ -7,7 +7,7 @@
       v-if="state.items && state.items.length > 0"
       :list="state.items"
       :options="state.options"
-      class="drag-board"
+      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board']"
       @end="end"
     >
       <AdminComponent
@@ -17,6 +17,10 @@
         class="item"
       />
     </draggable>
+    <Pagination
+      v-if="state.pagination"
+      :path="getChildPath('pagination')"
+    />
     <template v-if="state.dialogs">
       <Dialog
         v-for="dialogName in Object.keys(state.dialogs)"
@@ -33,6 +37,7 @@ import BaseVue from '@/admin/base/BaseVue'
 import { DashboardPage } from './DashboardPageState'
 import Card from '@/admin/common/Card/index.vue'
 import Dialog from '@/admin/common/Dialog/index.vue'
+import Pagination from '@/admin/common/data/Pagination/index.vue'
 import draggable from 'vuedraggable'
 
 @Component({
@@ -40,7 +45,8 @@ import draggable from 'vuedraggable'
   components: {
     Card,
     Dialog,
-    draggable
+    draggable,
+    Pagination
   }
 })
 export default class extends Mixins(BaseVue) {
@@ -56,3 +62,13 @@ export default class extends Mixins(BaseVue) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.drag-board {
+  .item {
+    &:hover {
+      cursor: move;
+    }
+  }
+}
+</style>

@@ -81,7 +81,7 @@ export class ActionNode extends FunctionNode {
         response, request
       }
     ]
-    if (page.indexOf('.') === -1) {
+    if (page.indexOf('.') === -1 || this.inputs.state._cards_.indexOf(page) === -1) {
       actions.created.push('fetch')
     }
   }

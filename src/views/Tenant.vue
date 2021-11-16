@@ -5,7 +5,7 @@
     fullscreen
     @closed="goHome"
   >
-    <table-page
+    <dashboard-page
       v-if="initCompleted"
       class="tenant"
       :path="`tenant.tenantState[${page}].state`"
@@ -53,9 +53,8 @@ export default class extends Vue {
     this.isShow = true
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
-    await runFlowByFile('flows/initPage', {
-      page: this.page
-    }).then(async(state) => {
+    const state = Object.create({ _pages_: [this.page] })
+    await runFlowByFile('flows/initPage', { state }).then(_ => {
       TenantModule.changeState(state)
       this.initCompleted = true
     })
@@ -80,9 +79,12 @@ export default class extends Vue {
       position: relative;
       height: calc(100% - 55px);
       overflow: auto;
-      .el-table {
+      .no-drag-board {
         min-height: calc(100% - 32px);
         overflow: auto;
+        .item {
+          display: inline-block;
+        }
       }
     }
   }

@@ -14,5 +14,6 @@ export interface DashboardPage extends BaseState {
   moveAction?: string | Function
   startAction?: string | Function
   endAction?: string | Function
+  action?: string | Function // ... operation ...
   data?: any
 }

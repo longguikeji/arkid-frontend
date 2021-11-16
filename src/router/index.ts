@@ -53,7 +53,7 @@ export const menuRoutes: RouteConfig[] = [
   },
   {
     path: '/tenant',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/tenant/TenantManager.vue'),
+    component: () => import(/* webpackChunkName: "login" */ '@/views/Tenant.vue'),
     meta: { hidden: true, page: 'tenant' }
   },
   ...getDynamicRoutes()
