@@ -6,4 +6,5 @@ export default interface CardPanelState {
   uuid?: string
   class?: string // custom class for styles
   clickAction?: string | Function // display more operations
+  data?: any
 }

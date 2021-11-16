@@ -22,7 +22,7 @@ import { UserRole, UserModule } from '@/store/modules/user'
 import { ConfigModule } from '@/store/modules/config'
 
 @Component({
-  name: 'TenantManager'
+  name: 'Tenant'
 })
 export default class extends Vue {
   isShow = false

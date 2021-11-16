@@ -11,6 +11,7 @@ export class TenantFetch extends APINode {
       const { count, results } = outputs
       if (results && results.length) {
         const list = client.items
+        client.pagination.total = count
         list.length = 0
         for (const item of results) {
           list.push({
@@ -19,7 +20,8 @@ export class TenantFetch extends APINode {
               name: item.name,
               logo: item.icon,
               description: dateParser(item.created, 'YYYY-MM-DD HH:mm:ss'),
-              clickAction: 'switch'
+              clickAction: 'switch',
+              data: item
             }
           })
         }
