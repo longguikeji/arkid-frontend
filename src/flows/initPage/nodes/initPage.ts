@@ -25,7 +25,8 @@ const DASHBOARD_PAGE_FLOW = {
   'article': 'flows/page/dashboard/desktop',
   'announcement': 'flows/page/dashboard/desktop',
   'statistics': 'flows/page/dashboard/statistics',
-  'tenant': 'flows/page/dashboard/tenant'
+  'tenant': 'flows/page/dashboard/tenant',
+  'marketplace': 'flows/page/dashboard/marketplace'
 }
 
 const PAGE_CUSTOM_FLOW = {

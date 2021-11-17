@@ -28,8 +28,6 @@ import BaseVue from '@/admin/base/BaseVue'
   components: {}
 })
 export default class extends Mixins(BaseVue) {
-  private active = false
-
   get logo() {
     return this.state.logo || require('@/assets/app.png')
   }
