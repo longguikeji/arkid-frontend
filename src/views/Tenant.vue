@@ -86,6 +86,12 @@ export default class extends Vue {
           display: inline-block;
         }
       }
+      .el-pagination {
+        position: fixed;
+        width: 95%;
+        left: 20px;
+        bottom: 20px;
+      }
     }
   }
 }

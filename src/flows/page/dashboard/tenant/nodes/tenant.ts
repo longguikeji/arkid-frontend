@@ -43,7 +43,11 @@ export class Tenant extends FunctionNode {
           fetch: [{
             name: 'flows/custom/tenant/fetch',
             url: init.path,
-            method: init.method
+            method: init.method,
+            request: {
+              'page': 'pagination.currentPage',
+              'page_size': 'pagination.pageSize'
+            }
           }],
           switch: [
             {

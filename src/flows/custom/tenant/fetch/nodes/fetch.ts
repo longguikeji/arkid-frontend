@@ -3,9 +3,10 @@ import { dateParser } from '@/utils/common'
 
 export class TenantFetch extends APINode {
   async run() {
-    const { url, method, client } = this.inputs
+    const { url, method, params, client } = this.inputs
     this.url = url
     this.method = method
+    this.params = params
     const outputs = await super.run()
     if (outputs) {
       const { count, results } = outputs
