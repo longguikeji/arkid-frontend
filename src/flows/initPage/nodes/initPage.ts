@@ -26,14 +26,12 @@ const DASHBOARD_PAGE_FLOW = {
   'announcement': 'flows/page/dashboard/desktop',
   'statistics': 'flows/page/dashboard/statistics',
   'tenant': 'flows/page/dashboard/tenant',
-  'marketplace': 'flows/page/dashboard/marketplace'
+  'marketplace': 'flows/page/dashboard/marketplace',
+  'extension': 'flows/page/dashboard/extension'
 }
 
 const PAGE_CUSTOM_FLOW = {
   'app': 'flows/custom/appManager/authPageBtn',
-  'extension': 'flows/custom/extension/addAction',
-  'extension.create': 'flows/custom/extension/addAction',
-  'extension.update': 'flows/custom/extension/addAction',
   'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
   'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
   'password': 'flows/custom/password/addAction',

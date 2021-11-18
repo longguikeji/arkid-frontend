@@ -27,17 +27,17 @@
           版本 : <span class="text">{{ state.version }}</span>
         </b>
       </div>
-      <el-button
-        size="mini"
-        plain
+      <div
+        v-if="state.buttons"
+        class="buttons"
       >
-        点击安装
-      </el-button>
+        <ButtonArray :path="getChildPath('buttons')" />
+      </div>
     </div>
     <div class="footer">
       <span class="tag">
         类型:
-        <el-tag type="info">{{ state.type }}</el-tag>
+        <el-tag type="info">{{ state.scope }}</el-tag>
       </span>
       <span class="tag">
         标签:
@@ -68,7 +68,7 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .extension-panel {
-  width: 510px !important;
+  width: 500px !important;
   height: 210px !important;
   display: inline-block;
   margin: 10px 0 0 10px;
@@ -122,7 +122,7 @@ export default class extends Mixins(BaseVue) {
         margin-top: 5px;
       }
     }
-    button {
+    .buttons {
       position: absolute;
       right: 10px;
       top: 10px;

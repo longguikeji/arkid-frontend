@@ -32,10 +32,11 @@ export default class extends Mixins(BaseVue) {
   }
 
   private async clickHandler() {
-    if (this.state.type === 'warning' || this.state.type === 'danger') {
+    const { type, hint, label, to, action } = this.state
+    if (type === 'warning' || type === 'danger') {
       let headMessage = ''
       let confirmType: any
-      switch (this.state.type) {
+      switch (type) {
         case 'danger':
           headMessage = '警告'
           confirmType = 'error'
@@ -45,12 +46,12 @@ export default class extends Mixins(BaseVue) {
           confirmType = 'warning'
           break
       }
-      this.$confirm(this.state.hint || `确定执行${this.state.label}操作吗？`, headMessage, {
-        confirmButtonText: this.state.label,
+      this.$confirm(hint || `确定执行${label}操作吗？`, headMessage, {
+        confirmButtonText: label,
         cancelButtonText: '取消',
         type: confirmType
       }).then(async() => {
-        await this.runAction(this.state.action)
+        await this.runAction(action)
       }).catch((err) => {
         this.$message({
           message: err,
@@ -59,7 +60,14 @@ export default class extends Mixins(BaseVue) {
         })
       })
     } else {
-      await this.runAction(this.state.action)
+      if (action) {
+        await this.runAction(action)
+      } else if (to) {
+        this.$router.push({
+          name: to,
+          query: this.$route.query
+        })
+      }
     }
   }
 }

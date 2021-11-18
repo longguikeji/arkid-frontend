@@ -9,6 +9,7 @@ export interface DashboardPage extends BaseState {
   card?: CardState
   dialogs?: { [dialogName: string]: DialogState }
   items?: AdminComponentState[]
+  itemActions?: { [name: string]: any }
   options?: any
   changeAction?: string | Function
   moveAction?: string | Function

@@ -4,7 +4,7 @@ import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
 import { UrlNode } from '@/arkfbp/nodes/urlNode'
 import { Fetch } from '@/arkfbp/flows/fetch/nodes/fetch'
-import { Marketplace } from './nodes/marketplace'
+import { Response } from './nodes/response'
 
 export class Main extends Flow {
   createNodes() {
@@ -20,10 +20,10 @@ export class Main extends Flow {
       }, {
         cls: Fetch,
         id: 'fetch',
-        next: 'marketplace'
+        next: 'response'
       }, {
-        cls: Marketplace,
-        id: 'marketplace',
+        cls: Response,
+        id: 'response',
         next: 'stop'
       }, {
         cls: StopNode,
