@@ -59,7 +59,7 @@ export default class extends Mixins(BaseVue) {
 .fullwidth {
   width: 100%;
 }
-.table-page-filter {
+.table-page-filter, .dashboard-page-filter {
   .row {
     ::v-deep .el-form-item {
       .el-form-item__content {

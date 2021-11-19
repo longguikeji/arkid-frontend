@@ -7,6 +7,7 @@ export class Response extends FunctionNode {
     if (results && results.length) {
       const client = state.inputs.client  
       const items = client.items
+      items.length = 0
       for (let i = 0, len = results.length; i < len; i++) {
         const item = results[i]
         items.push({
@@ -14,23 +15,23 @@ export class Response extends FunctionNode {
           state: {
             ...item,
             data: item,
-            buttons: item.is_install ? [
+            buttons: item.installed === '已安装' ? [
               {
-                label: '编辑',
-                // action: 'openUpdateDialog',
+                label: `编辑`,
+                action: 'openUpdateDialog',
                 size: 'mini',
                 type: 'info'
               },
               {
                 label: '卸载',
-                // action: 'delete',
+                action: 'delete',
                 size: 'mini',
                 type: 'danger'
               }
             ] : [
               {
                 label: '点击安装',
-                // action: 'install',
+                action: 'install',
                 size: 'mini',
                 type: 'primary'
               }

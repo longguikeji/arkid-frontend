@@ -3,6 +3,11 @@
     :path="getChildPath('card')"
     class="dashboard-page"
   >
+    <Form
+      v-if="state.filter"
+      :path="getChildPath('filter')"
+      class="dashboard-page-filter"
+    />
     <draggable
       v-if="state.items && state.items.length > 0"
       :list="state.items"
@@ -38,6 +43,7 @@ import { DashboardPage } from './DashboardPageState'
 import Card from '@/admin/common/Card/index.vue'
 import Dialog from '@/admin/common/Dialog/index.vue'
 import Pagination from '@/admin/common/data/Pagination/index.vue'
+import Form from '@/admin/common/Form/index.vue'
 import draggable from 'vuedraggable'
 
 @Component({
@@ -46,7 +52,8 @@ import draggable from 'vuedraggable'
     Card,
     Dialog,
     draggable,
-    Pagination
+    Pagination,
+    Form
   }
 })
 export default class extends Mixins(BaseVue) {

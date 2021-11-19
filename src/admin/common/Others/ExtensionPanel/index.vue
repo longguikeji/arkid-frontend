@@ -12,11 +12,17 @@
         alt=""
       >
       <div class="content">
-        <a
-          class="name"
-          :href="state.homepage"
-          target="_blank"
-        >{{ state.name }}</a>
+        <el-tooltip
+          effect="dark"
+          :content="state.name"
+          placement="top"
+        >
+          <a
+            class="name"
+            :href="state.homepage"
+            target="_blank"
+          >{{ state.name }}</a>
+        </el-tooltip>
         <div class="description">
           {{ state.description }}
         </div>
@@ -35,13 +41,20 @@
       </div>
     </div>
     <div class="footer">
-      <span class="tag">
-        类型:
-        <el-tag type="info">{{ state.scope }}</el-tag>
+      <span>
+        类型 :
+        <el-tag>{{ state.scope }}</el-tag>
       </span>
-      <span class="tag">
-        标签:
-        <el-tag>{{ state.tags }}</el-tag>
+      <span>
+        标签  :
+        <el-tag
+          v-for="(item, index) in tags"
+          :key="index"
+        >{{ item }}</el-tag>
+      </span>
+      <span>
+        状态 :
+        <el-tag>{{ status }}</el-tag>
       </span>
     </div>
   </el-card>
@@ -62,6 +75,15 @@ export default class extends Mixins(BaseVue) {
 
   get state(): ExtensionPanelState {
     return this.$state as ExtensionPanelState
+  }
+
+  get status() {
+    return this.state.installed === '已安装' ? this.state.enalbed : this.state.installed
+  }
+
+  get tags() {
+    const tags = this.state.tags
+    return typeof tags === 'string' ? [tags] : tags
   }
 }
 </script>
@@ -93,11 +115,14 @@ export default class extends Mixins(BaseVue) {
       vertical-align: middle;
     }
     .content {
+      width: 260px;
       height: 100%;
       vertical-align: middle;
       margin-left: 10px;
       display: inline-block;
       font-weight: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
       .name {
         font-size: 25px;
         font-weight: bold;
@@ -110,13 +135,15 @@ export default class extends Mixins(BaseVue) {
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .maintainer, .version {
+      .maintainer, .version, .status {
         font-size: 15px;
-        display: block;
         font-style: italic;
         .text {
           color: #1272d1;
         }
+      }
+      .maintainer {
+        display: block;
       }
       .version {
         margin-top: 5px;
@@ -124,8 +151,12 @@ export default class extends Mixins(BaseVue) {
     }
     .buttons {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 5px;
+      top: 0px;
+      ::v-deep .el-button {
+        display: block;
+        margin: 5px 0 0 0;
+      }
     }
   }
 
@@ -136,11 +167,9 @@ export default class extends Mixins(BaseVue) {
     background-color: #fbfbfb;
     overflow-y: hidden;
     overflow-x: auto;
-    .tag {
-      margin-left: 10px;
-      line-height: 60px;
-      display: inline-block;
-    }
+    line-height: 60px;
+    padding-left: 10px;
+    font-weight: bold;
   }
 }
 </style>

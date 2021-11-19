@@ -114,6 +114,7 @@ export interface IBaseParameter {
   in: string
   required?: boolean
   description?: string
+  schema?: ISchema
 }
 
 export interface IBodyParameter extends IBaseParameter {
