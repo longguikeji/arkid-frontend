@@ -20,20 +20,23 @@ export class Response extends FunctionNode {
                 label: `编辑`,
                 action: 'openUpdateDialog',
                 size: 'mini',
-                type: 'info'
+                type: 'info',
+                data: item
               },
               {
                 label: '卸载',
                 action: 'delete',
                 size: 'mini',
-                type: 'danger'
+                type: 'danger',
+                data: item
               }
             ] : [
               {
                 label: '点击安装',
                 action: 'install',
                 size: 'mini',
-                type: 'primary'
+                type: 'primary',
+                data: item
               }
             ]
           }

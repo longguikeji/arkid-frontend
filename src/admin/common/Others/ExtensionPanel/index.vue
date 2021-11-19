@@ -78,7 +78,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   get status() {
-    return this.state.installed === '已安装' ? this.state.enalbed : this.state.installed
+    return this.state.installed === '已安装' ? this.state.enabled : this.state.installed
   }
 
   get tags() {

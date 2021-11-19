@@ -107,6 +107,9 @@ export class Extension extends FunctionNode {
       }
       actions.openUpdateDialog = [
         {
+          name: 'arkfbp/flows/data'
+        },
+        {
           name: 'arkfbp/flows/assign',
           response: {
             'dialogs.update.visible': true
@@ -123,9 +126,13 @@ export class Extension extends FunctionNode {
       ]
       actions.delete = [
         {
+          name: 'arkfbp/flows/data'
+        },
+        {
           name: 'arkfbp/flows/update',
           url: d.path, method: d.method
-        }
+        },
+        'fetch'
       ]
     }
   }

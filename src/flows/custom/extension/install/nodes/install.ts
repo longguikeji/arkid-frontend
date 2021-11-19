@@ -1,8 +1,14 @@
-import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { APINode } from '@/arkfbp/nodes/apiNode'
 
-export class Install extends FunctionNode {
+export class Install extends APINode {
   async run() {
-    const results = this.inputs
-    // ... todo
+    const { com, url, method } = this.inputs
+    const data = com.state.data
+    this.params = {
+      type: data.name
+    }
+    this.url = url
+    this.method = method
+    await super.run()
   }
 }

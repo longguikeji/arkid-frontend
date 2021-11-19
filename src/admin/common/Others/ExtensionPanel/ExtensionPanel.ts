@@ -11,7 +11,7 @@ export default interface ExtensionPanelState {
   version?: string
   type?: string
   installed?: string
-  enalbed?: string
+  enabled?: string
   buttons?: ButtonState[]
   data?: any
 }
