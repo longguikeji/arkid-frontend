@@ -22,7 +22,8 @@ export class Extension extends FunctionNode {
             isSetWidth: false,
             state: {
               value: '',
-              placeholder: `请输入${d || n}`
+              placeholder: `请输入${d || n}`,
+              clearable: true
             }
           }
           if (s && s.enum) {
