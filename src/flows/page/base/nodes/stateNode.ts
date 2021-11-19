@@ -224,7 +224,8 @@ export class StateNode extends FunctionNode {
           label,
           state: {
             value: '',
-            placeholder: `请输入${label}`
+            placeholder: `请输入${label}`,
+            clearable: true
           }
         }
       }
