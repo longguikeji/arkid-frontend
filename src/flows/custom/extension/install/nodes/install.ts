@@ -9,6 +9,12 @@ export class Install extends APINode {
     }
     this.url = url
     this.method = method
-    await super.run()
+    await super.run().then(() => {
+      com.$message({
+        message: '安装成功',
+        type: 'success',
+        showClose: true,
+      })
+    })
   }
 }

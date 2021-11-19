@@ -76,6 +76,9 @@ export class Extension extends FunctionNode {
               url: init.path,
               method: init.method,
               request: {}
+            },
+            {
+              name: 'flows/common/updateOpenAPI'
             }
           ]
         }
@@ -98,7 +101,8 @@ export class Extension extends FunctionNode {
           name: 'flows/custom/extension/install',
           url: i.path,
           method: i.method
-        }
+        },
+        'fetch'
       ]
       state._pages_.push(u.tag)
       dialogs.update = {
