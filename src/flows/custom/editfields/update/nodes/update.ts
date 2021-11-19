@@ -13,20 +13,17 @@ export class UpdateEditFieldsNode extends Update {
         selected.map(s => {
           const name = s.name || s.en_name
           if (name) {
-            selectedData[name] = s
+            selectedData[name] = { ...s, is_select: true }
           }
         })
       }
+      const params: any[] = []
       data.forEach(item => {
         const name = item.name || item.en_name
-        if (selectedData[name]) {
-          item = selectedData[name]
-        } else {
-          item = Object.assign(item, { is_select: false })
-        }
+        selectedData[name] ? params.push(selectedData[name]) : params.push({ ...item, is_select: false })
       })
       this.inputs.params = {
-        results: data
+        results: params
       }
       await super.run()
     }

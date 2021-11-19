@@ -34,6 +34,7 @@ import Descriptions from '@/admin/common/Descriptions/index.vue'
 import Notice from '@/admin/common/Notice/index.vue'
 import CardPanel from "@/admin/common/Others/CardPanel/index.vue"
 import Chart from '@/admin/common/Others/Chart/index.vue'
+import ExtensionPanel from '@/admin/common/Others/ExtensionPanel/index.vue'
 
 Vue.component('FormPage', FormPage)
 Vue.component('FormItem', FormItem)
@@ -69,3 +70,4 @@ Vue.component('Descriptions', Descriptions)
 Vue.component('Notice', Notice)
 Vue.component('CardPanel', CardPanel)
 Vue.component('Chart', Chart)
+Vue.component('ExtensionPanel', ExtensionPanel)

@@ -7,9 +7,10 @@ export class AdjustDashboardNode extends APINode {
     const list = this.inputs.client.items
     if (list) {
       const data = new Array()
-      list.forEach(item => {
-        data.push(item.state.uuid)
-      })
+      for (let i = 0, len = list.length; i < len; i++) {
+        const item = list[i].state
+        data.push(item.uuid)
+      }
       this.params = {
         data
       }

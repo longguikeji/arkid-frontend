@@ -51,6 +51,16 @@
   }
 }
 
+.marketplace {
+  .dashboard-page {
+    ::v-deep .el-card__body {
+      padding: 0px 0 10px 0;
+      height: calc(100% - 55px);
+      overflow: auto;
+    }
+  }
+}
+
 .statistics {
   .el-card {
     background-color: transparent;

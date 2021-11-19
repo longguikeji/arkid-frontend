@@ -10,10 +10,10 @@
     />
     <template v-else>
       <AdminComponent
-        v-for="(name, index) in names"
+        v-for="(card, index) in cards"
         :key="index"
-        :path="`admin.adminState[${name}]`"
-        :class="`admin-page admin-${name}-page`"
+        :path="`admin.adminState[${card}]`"
+        :class="`admin-page admin-${card}-page`"
       />
     </template>
   </div>
@@ -50,19 +50,16 @@ export default class extends Vue {
     return this.$route.meta.url
   }
 
-  private get names(): string[] {
+  private get cards(): string[] {
     return typeof this.page === 'string' ? [this.page] : this.page
   }
 
   async created() {
     if (this.page) {
-      await runFlowByFile('flows/initPage', { page: this.page }).then(
-        (state) => {
-          if (state && Object.keys(state).length > 0) {
-            AdminModule.setAdminState(state)
-          }
-        }
-      )
+      const state = Object.create({ _pages_: [...this.cards], _cards_: this.cards, _tabs_: [] })
+      await runFlowByFile('flows/initPage', { state }).then(_ => {
+        AdminModule.setAdminState(state)
+      })
     }
   }
 

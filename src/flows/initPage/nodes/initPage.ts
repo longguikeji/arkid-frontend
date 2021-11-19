@@ -24,14 +24,14 @@ const DASHBOARD_PAGE_FLOW = {
   'ticket': 'flows/page/dashboard/desktop',
   'article': 'flows/page/dashboard/desktop',
   'announcement': 'flows/page/dashboard/desktop',
-  'statistics': 'flows/page/dashboard/statistics'
+  'statistics': 'flows/page/dashboard/statistics',
+  'tenant': 'flows/page/dashboard/tenant',
+  'marketplace': 'flows/page/dashboard/marketplace',
+  'extension': 'flows/page/dashboard/extension'
 }
 
 const PAGE_CUSTOM_FLOW = {
   'app': 'flows/custom/appManager/authPageBtn',
-  'extension': 'flows/custom/extension/addAction',
-  'extension.create': 'flows/custom/extension/addAction',
-  'extension.update': 'flows/custom/extension/addAction',
   'login_register_config': 'flows/custom/loginRegisterConfig/addAction',
   'login_register_config.update': 'flows/custom/loginRegisterConfig/options',
   'password': 'flows/custom/password/addAction',
@@ -39,7 +39,6 @@ const PAGE_CUSTOM_FLOW = {
   'profile_config_editfields.update': 'flows/custom/editfields/state',
   'subuser': 'flows/custom/subuser/state',
   'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
-  'tenant': 'flows/custom/tenant/addButton',
   'tenant_config': 'flows/custom/tenant/deleteTenant',
   'user_token_manage': 'flows/custom/user/token/state',
   'contacts_switch': 'flows/custom/contactsConfig'
@@ -58,16 +57,13 @@ export interface BasePageOptions {
 export class InitPage extends FunctionNode {
 
   async run() {
-    let { page, state } = this.inputs
-    if (!state) { state = {} }
-    if (typeof page === 'string') {
-      await this.toPerformPageFlow(page, state)
-    } else {
-      for (const i of page) {
-        await this.toPerformPageFlow(i, state)
+    const state = this.inputs.state
+    for (const page of state._pages_) {
+      if (state[page]) {
+        continue
       }
+      await this.toPerformPageFlow(page, state)
     }
-    return state
   }
 
   async toPerformPageFlow(page: string, state: any) {

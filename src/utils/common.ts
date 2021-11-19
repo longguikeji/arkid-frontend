@@ -1,3 +1,9 @@
+import dayjs from 'dayjs'
+
+export function dateParser(date: string, format: string = '') {
+  return format ? dayjs(date).format(format) : dayjs(date)
+}
+
 // isExternal
 export function isExternal(path: string) {
   return /^(https?:|mailto:|tel:)/.test(path)

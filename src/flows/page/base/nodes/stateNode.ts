@@ -12,7 +12,6 @@ import { BasePage } from './pageNode'
 import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnState'
 import generateForm from '@/utils/form'
 import ButtonState from '@/admin/common/Button/ButtonState'
-import { runFlowByFile } from '@/arkfbp/index'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { addInputListDialog } from '@/utils/dialogs'
 import hasPermission, { hasPermissionByPath } from '@/utils/role'
@@ -49,13 +48,13 @@ export class StateNode extends FunctionNode {
     this._temp = state[page].state
     this._type = state[page].type
     this._opts = options
-    if (init) await this.initPageMainState(init)
-    if (local) await this.initPageLocalButtonState(local)
-    if (global) await this.initPageGlobalButtonState(global)
+    if (init) this.initPageMainState(init)
+    if (local) this.initPageLocalButtonState(local)
+    if (global) this.initPageGlobalButtonState(global)
     return this.inputs
   }
 
-  async initPageMainState(init: ITagPageAction) {
+  initPageMainState(init: ITagPageAction) {
     const { path, method } = init
     const schema = getSchemaByPath(path, method)
     if (!schema) return
@@ -66,7 +65,7 @@ export class StateNode extends FunctionNode {
         this.initPageFilterState(init, schema)
         break
       case 'FormPage':
-        await this.initFormMainState(schema)
+        this.initFormMainState(schema)
         break
     }
   }
@@ -165,7 +164,7 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initFormMainState(schema: ISchema) {
+  initFormMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
     const { showReadOnly, showWriteOnly, disabled, readonly } = options
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled, readonly)
@@ -177,8 +176,8 @@ export class StateNode extends FunctionNode {
       if (items) {
         const results = this.getInputListItems(items)
         if (results.length > 0) {
-          results.forEach(async (item) => {
-            await this.initInputList(item)
+          results.forEach(item => {
+            this.initInputList(item)
           })
         }
       }
@@ -201,7 +200,7 @@ export class StateNode extends FunctionNode {
     return results
   }
 
-  async initPageFilterState(init: ITagPageAction, schema: ISchema) {
+  initPageFilterState(init: ITagPageAction, schema: ISchema) {
     const { path, method } = init
     const properties = schema.properties
     const params = getParamsByPath(path, method)
@@ -245,24 +244,24 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initPageLocalButtonState(locals: ITagPageOperation) {
+  initPageLocalButtonState(locals: ITagPageOperation) {
     if (this._type !== 'FormPage') {
-      await this.initPageButtonState(locals, 'local')
+      this.initPageButtonState(locals, 'local')
     }
   }
 
-  async initPageGlobalButtonState(globals: ITagPageOperation) {
-    await this.initPageButtonState(globals, 'global')
+  initPageGlobalButtonState(globals: ITagPageOperation) {
+    this.initPageButtonState(globals, 'global')
   }
 
-  async initPageButtonState(actions: ITagPageOperation, role: ButtonRole) {
+  initPageButtonState(actions: ITagPageOperation, role: ButtonRole) {
     for (const key in actions) {
       if (key === 'node') continue
       const action = actions[key]
       let button: ButtonState | null = null
       if ((action as ITagPageMapping).tag) { // point new page
         const { tag, description, icon } = action as ITagPageMapping
-        await this.initDialogPageState(tag, key)
+        this.initDialogPageState(tag, key)
         if (!description) continue
         button = this.getButtonState({ description, key, mode: 'open', role, icon, tag })
       } else {
@@ -291,39 +290,27 @@ export class StateNode extends FunctionNode {
     }
   }
 
-  async initDialogPageState(tag: string, key: string) {
-    await runFlowByFile('flows/initPage', { page: tag, state: this.inputs.state }).then(_ => {
+  initDialogPageState(tag: string, key: string) {
+    const state = this.inputs.state
+    const pages = state._pages_
+    if (pages.indexOf(tag) === -1) {
+      state._pages_.push(tag)
       this._temp.dialogs![key] = {
         visible: false,
         page: tag
       }
-    })
+    }
   }
 
-  async initInputList(item: FormItemState) {
+  initInputList(item: FormItemState) {
     const { _temp: state, _page: page } = this
     item.state.parent = page
     const listPage = item.state.page
     addInputListDialog(state, listPage)
-    const pageState = this.inputs.state[listPage]
-    if (pageState) return
-    await runFlowByFile('flows/initPage', { page: listPage, state: this.inputs.state })
-    const list = {
-      title: '已选数据列表',
-      buttons: [
-        {
-          label: '确认所选',
-          type: 'primary',
-          action: 'confirm',
-          size: 'mini'
-        }
-      ],
-      items: [],
-      isActive: true,
-      disabled: true,
-      clearable: true
+    const pages = this.inputs.state._pages_
+    if (pages.indexOf(listPage) === -1 ) {
+      pages.push(listPage)
     }
-    this.inputs.state[listPage].state.list = list
   }
 
   addImportDialog(action: ITagPageAction) {

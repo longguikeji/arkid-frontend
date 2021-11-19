@@ -28,5 +28,10 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-
+.notice-modules-list {
+  margin-top: 15px;
+  &:nth-child(1) {
+    margin-top: 0px;
+  }
+}
 </style>
