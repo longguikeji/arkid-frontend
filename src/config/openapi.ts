@@ -36,6 +36,14 @@ export default class OpenAPI {
     if (!tags?.length) return undefined
     return tags.find(tag => tag.name === name)
   }
+
+  public hasOperation(path: string, method: string): Boolean {
+    const paths = this.config?.paths
+    if (!paths) return false
+    if (!paths[path]) return false
+    if (!paths[path][method]) return false
+    return true
+  }
 }
 
 export interface Info {
