@@ -50,8 +50,9 @@ export default class FormObjectItemState implements FormState {
         }
       } 
     } else {
-      for (const prop in items) {
+      for (let prop in items) {
         const item = items[prop]
+        prop = item.state.link || prop
         let v = typeof value === 'object' ? value[prop] : value
         if (item.type === 'FormObjectItem') {
           this.setValue(v, item.state.items)

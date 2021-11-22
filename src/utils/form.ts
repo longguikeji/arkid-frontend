@@ -133,7 +133,8 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
       options: [],
       action: 'initInputList',
       page: schema.page,
-      field: schema.field
+      field: schema.field,
+      link: schema.link
     }
   }
 }
