@@ -2,7 +2,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { runFlowByFile } from '@/arkfbp/index'
 import OpenAPI from '@/config/openapi'
 
-const SHOW_READONLY_PAGE = [ 'profile', 'app.update', 'external_idp.update', 'log_config', 'data_sync.update' ]
+const SHOW_READONLY_PAGE = [ 'profile', 'app.update', 'external_idp.update', 'log_config' ]
 
 const DISABLED_PAGE = [ 'profile_config', 'login_register_config', 'tenant_register_privacy_notice', 'system_config', 'system_register_privacy_notice', 'log_config' ]
 
