@@ -326,11 +326,11 @@ export class StateNode extends FunctionNode {
       visible: false,
       page: listPage
     }
-    state.actions![`close${page}`] = [
+    state.actions![`close${listPage}`] = [
       {
         name: 'arkfbp/flows/assign',
         response: {
-          [`dialogs.${page}.visible`]: false
+          [`dialogs.${listPage}.visible`]: false
         }
       }
     ]
