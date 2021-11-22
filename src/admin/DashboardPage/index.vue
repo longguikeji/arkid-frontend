@@ -9,10 +9,11 @@
       class="dashboard-page-filter"
     />
     <draggable
-      v-if="state.items && state.items.length > 0"
+      id="draggable-panel"
+      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board']"
       :list="state.items"
       :options="state.options"
-      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board', 'draggable-panel']"
+      :style="{}"
       @end="end"
     >
       <AdminComponent

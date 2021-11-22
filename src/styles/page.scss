@@ -36,10 +36,11 @@
       overflow: auto;
     }
     ::v-deep .drag-board {
-      padding-bottom: 10px;
-      .item {
-        display: inline-block;
-      }
+      width: auto !important;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-around;
     }
   }
   .notice-modules {

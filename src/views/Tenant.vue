@@ -82,6 +82,10 @@ export default class extends Vue {
       .no-drag-board {
         min-height: calc(100% - 32px);
         overflow: auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
         .item {
           display: inline-block;
         }
