@@ -79,7 +79,7 @@ export class Extension extends FunctionNode {
               request: {}
             },
             {
-              name: 'flows/common/updateOpenAPI'
+              name: 'arkfbp/flows/openapi'
             }
           ]
         }

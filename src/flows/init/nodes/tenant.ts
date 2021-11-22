@@ -7,6 +7,7 @@ import { ConfigModule } from '@/store/modules/config'
 
 export class TenantNode extends APINode {
   async run() {
+
     let uuid = '', tenantSwitch = true
     this.url = '/api/v1/tenant_switchinfo/'
     this.method = 'GET'

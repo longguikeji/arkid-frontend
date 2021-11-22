@@ -14,9 +14,6 @@ Router.prototype.push = function push (location: any) {
 
 Vue.use(Router)
 
-/**
-  MenuRoutes
-*/
 export const menuRoutes: RouteConfig[] = [
   {
     path: '/login',
@@ -53,57 +50,42 @@ const router = createRouter()
 
 router.beforeEach((to, from, next) => {
   const isLogin = getToken()  
-  const tenantUUId = TenantModule.currentTenant.uuid
+  const uuid = TenantModule.currentTenant.uuid
   const role = UserModule.role
   const isVisibleDesktop = ConfigModule.desktop.visible
+  const tenantSwitch = TenantModule.tenantSwitch
   let nextUrl = ''
+  const { query, path } = to
   if (isLogin) {
-    if (to.query.next) {
-      next()
-    } else if (to.path === '/login' || to.path === '/third_part_callback') {
-      if (!isVisibleDesktop) {
-        nextUrl = '/mine/profile'
-      } else {
-        nextUrl = '/desktop'
+    if (query && query.next) {
+      nextUrl = ''
+    } else {
+      const t = isVisibleDesktop ? ( path === '/desktop' ? '' : '/desktop' ) : '/mine/profile'
+      const flag = (role === UserRole.Platform && tenantSwitch === true) 
+      switch(path) {
+        case '/third_part_callback':
+        case '/desktop':
+          nextUrl = t
+          break
+        case '/tenant':
+          nextUrl = flag || role !== UserRole.User ? '' : t
+          break
+        case '/login':
+        case '/':
+          nextUrl = flag ? '/tenant' : t
+          break
+        default:
+          nextUrl = ''
       }
-    } else if (to.path === '/tenant') {
-      if (role === UserRole.User || TenantModule.tenantSwitch === false) {
-        if (!isVisibleDesktop) {
-          nextUrl = '/mine/profile'
-        } else {
-          nextUrl = '/desktop'
-        }
-      } else {
-        next()
-      }
-    } else if (to.path === '/desktop') {
-      if (!isVisibleDesktop) {
-        nextUrl = '/mine/profile'
-      } else {
-        nextUrl = ''
-      }
-    } else if (to.path === '/') {
-      nextUrl = '/desktop'
     }
   } else {
-    if (tenantUUId) {
-      to.query.tenant = tenantUUId
-    }
-    if (to.path !== '/login' && to.path !== '/third_part_callback') {
+    if (uuid) query.tenant = uuid
+    if (path !== '/login' && path !== '/third_part_callback') {
       nextUrl = '/login'
     }
   }
 
-  if (nextUrl === '') {
-    next()
-  } else {
-    next(nextUrl)
-  }
+  nextUrl === '' ? next() : next(nextUrl)
 })
-
-export function resetRouter() {
-  const newRouter = createRouter();
-  (router as any).matcher = (newRouter as any).matcher // reset router
-}
 
 export default router
