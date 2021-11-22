@@ -12,7 +12,7 @@
       v-if="state.items && state.items.length > 0"
       :list="state.items"
       :options="state.options"
-      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board']"
+      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board', 'draggable-panel']"
       @end="end"
     >
       <AdminComponent
