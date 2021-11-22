@@ -36,17 +36,19 @@ export default class FormObjectItemState implements FormState {
     if (!items) return
     const keys = Object.keys(items)
     const valueKeys = Object.keys(value)
-    if (valueKeys.length && !keys.length) {
-      for (const key of valueKeys) {
-        Vue.set(items, key, {
-          prop: key,
-          label: key,
-          type: 'Input',
-          state: {
-            value: value[key]
-          }
-        })
-      }
+    if (this.isAddItem) {
+      if (valueKeys.length && !keys.length) {
+        for (const key of valueKeys) {
+          Vue.set(items, key, {
+            prop: key,
+            label: key,
+            type: 'Input',
+            state: {
+              value: value[key]
+            }
+          })
+        }
+      } 
     } else {
       for (const prop in items) {
         const item = items[prop]

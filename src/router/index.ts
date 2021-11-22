@@ -61,7 +61,7 @@ router.beforeEach((to, from, next) => {
       nextUrl = ''
     } else {
       const t = isVisibleDesktop ? ( path === '/desktop' ? '' : '/desktop' ) : '/mine/profile'
-      const flag = (role === UserRole.Platform && tenantSwitch === true) 
+      const flag = role === UserRole.Platform && tenantSwitch === true 
       switch(path) {
         case '/third_part_callback':
         case '/desktop':

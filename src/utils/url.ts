@@ -39,7 +39,7 @@ export function switchTenantBySlug(tenant: ITenant) {
     })
   } else {
     TenantModule.changeCurrentTenant(tenant)
-    const path = ConfigModule.desktop.visible ? '/' : '/mine/profile'
+    const path = ConfigModule.desktop.visible ? '/desktop' : '/mine/profile'
     ConfigModule.setSlug(slug)
     const host = ConfigModule.origin
     const newHost = host?.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.')
@@ -59,7 +59,7 @@ export function switchTenantByUUID(tenant: ITenant) {
     })
   } else {
     TenantModule.changeCurrentTenant(tenant)
-    const path = ConfigModule.desktop.visible ? '/' : '/mine/profile'
+    const path = ConfigModule.desktop.visible ? '/desktop' : '/mine/profile'
     ConfigModule.setSlug()
     const url = ConfigModule.origin + path + getBaseUrl() + `?tenant=${uuid}&token=${getToken()}`
     window.location.replace(url)
