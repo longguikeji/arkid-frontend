@@ -5,7 +5,8 @@ import { setToken, getToken } from '@/utils/auth'
 export class TokenNode extends IFNode {
 
   interceptToken() {
-    if (window.location.pathname === '/' && window.location.search.includes('token')) {
+    const flag = (window.location.pathname === '/' || window.location.pathname === '/desktop') && window.location.search.includes('token') 
+    if (flag) {
       const token = getUrlParamByName('token') as string
       setToken(token)
     }
