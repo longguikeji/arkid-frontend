@@ -20,7 +20,8 @@ export default {
     profile: "个人中心",
     screenfull: '全屏',
     search: '搜索应用',
-    lang: '切换语言'
+    lang: '切换语言',
+    notice: '通知公告'
   },
   login: {
     title: "系统登录",

@@ -40,6 +40,13 @@
         >
           <lang-select class="right-menu-item hover-effect" />
         </el-tooltip>
+        <el-tooltip
+          :content="$t('navbar.notice')"
+          effect="dark"
+          placement="bottom"
+        >
+          <notice-center />
+        </el-tooltip>
       </template>
       <el-dropdown
         class="avatar-container right-menu-item hover-effect"
@@ -91,6 +98,7 @@ import HeaderSearch from '@/components/HeaderSearch/index.vue'
 import LangSelect from '@/components/LangSelect/index.vue'
 import Screenfull from '@/components/Screenfull/index.vue'
 import SizeSelect from '@/components/SizeSelect/index.vue'
+import NoticeCenter from '@/components/NoticeCenter/index.vue'
 import { runFlowByFile } from '@/arkfbp/index'
 
 @Component({
@@ -101,7 +109,8 @@ import { runFlowByFile } from '@/arkfbp/index'
     HeaderSearch,
     LangSelect,
     Screenfull,
-    SizeSelect
+    SizeSelect,
+    NoticeCenter
   }
 })
 export default class extends Vue {

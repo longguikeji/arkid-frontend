@@ -1,6 +1,6 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { getSchemaByPath } from '@/utils/schema'
-import generateForm from '@/utils/form'
+// import { getSchemaByPath } from '@/utils/schema'
+// import generateForm from '@/utils/form'
 import OpenAPI, { ITagPageAction } from '@/config/openapi'
 
 export class DesktopNode extends FunctionNode {
@@ -113,52 +113,6 @@ export class DesktopNode extends FunctionNode {
             }
           }
         }
-      }
-    } else {
-      if (!state.notice) {
-        state.notice = {
-          type: 'Notice',
-          state: {}
-        }
-      }
-      const noticeLists = state.notice.state
-      let items
-      if (url && method) {
-        const schema = getSchemaByPath(url, method)
-        if (schema) {
-          const { form } = generateForm(schema, false, true, false, true)
-          items = form?.items
-        }
-      }
-      noticeLists[page] = {
-        created: 'created',
-        title: description || '消息列表',
-        items: [],
-        isActive: true,
-        detail: {
-          visible: false,
-          state: {
-            type: 'Descriptions',
-            state: {
-              items: items,
-              border: true,
-              column: 1
-            }
-          }
-        },
-        actions: {
-          created: [],
-          fetch: [
-            {
-              name: 'flows/common/list',
-              url, method
-            }
-          ]
-        }
-      }
-      const actions = noticeLists[page].actions
-      if (url && method) {
-        actions.created.push('fetch')
       }
     }
   }
