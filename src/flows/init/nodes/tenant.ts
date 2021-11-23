@@ -7,10 +7,13 @@ import { ConfigModule } from '@/store/modules/config'
 
 export class TenantNode extends APINode {
   async run() {
+
+    let uuid = '', tenantSwitch = true
     this.url = '/api/v1/tenant_switchinfo/'
     this.method = 'GET'
     const data = await super.run()
-    const { platform_tenant_uuid: uuid, switch: tenantSwitch } = data
+    uuid = data.platform_tenant_uuid
+    tenantSwitch = data.switch
     TenantModule.setTenantSwitch(tenantSwitch)
     const slug = getSlug()
     if (slug === '') {

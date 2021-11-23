@@ -2,7 +2,8 @@
 .group,
 .contacts_group,
 .group_list,
-.app_list {
+.app_list,
+.permission_group {
   display: flex;
   .tree-page {
     flex: 1;
@@ -36,7 +37,7 @@
       overflow: auto;
     }
     ::v-deep .drag-board {
-      padding-bottom: 10px;
+      width: auto !important;
       .item {
         display: inline-block;
       }
@@ -86,7 +87,8 @@
 .profile,
 .contacts_switch,
 .login_register_extension_config,
-.notice_manage {
+.notice_manage,
+.profile_config_editfields {
   .admin-tabs-page {
     height: calc(100vh - 86px - 2rem);
     background-color: #FFF;

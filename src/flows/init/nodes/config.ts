@@ -2,7 +2,6 @@ import { APINode } from '@/arkfbp/nodes/apiNode'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
-import { processUUId } from '@/utils/common'
 import OpenAPI from '@/config/openapi'
 
 export class ConfigNode extends APINode {
@@ -77,14 +76,7 @@ export class ConfigNode extends APINode {
       if (isGlobalAdmin) {
         UserModule.setUserRole(UserRole.Global)
       } else if (manageTenants?.length) {
-        for (let i = 0, len = manageTenants.length; i < len; i++) {
-          let uuid = manageTenants[i]
-          uuid = processUUId(uuid)
-          if (uuid === tenantUUId) {
-            UserModule.setUserRole(UserRole.Tenant)
-            break
-          }
-        }
+        UserModule.setUserRole(UserRole.Tenant)
       } else if (isPlatformUser) {
         UserModule.setUserRole(UserRole.Platform)
       } else {

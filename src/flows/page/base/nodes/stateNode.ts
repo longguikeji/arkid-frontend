@@ -13,7 +13,6 @@ import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnS
 import generateForm from '@/utils/form'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import { addInputListDialog } from '@/utils/dialogs'
 import hasPermission, { hasPermissionByPath } from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import { FormItemsState } from '@/admin/common/Form/FormState'
@@ -185,6 +184,17 @@ export class StateNode extends FunctionNode {
       state.forms = forms
       state.select = select
       state.form = undefined
+      Object.keys(forms).forEach(key => {
+        const items = forms[key].items
+        if (items) {
+          const inputListItems = this.getInputListItems(items)
+          if (inputListItems && inputListItems.length > 0) {
+            inputListItems.forEach(item => {
+              this.initInputList(item)
+            })
+          }
+        }
+      })
     }
   }
 
@@ -307,11 +317,28 @@ export class StateNode extends FunctionNode {
     const { _temp: state, _page: page } = this
     item.state.parent = page
     const listPage = item.state.page
-    addInputListDialog(state, listPage)
     const pages = this.inputs.state._pages_
     if (pages.indexOf(listPage) === -1 ) {
       pages.push(listPage)
     }
+    // add init inputlist state
+    state.dialogs![listPage] = {
+      visible: false,
+      page: listPage
+    }
+    state.actions![`close${listPage}`] = [
+      {
+        name: 'arkfbp/flows/assign',
+        response: {
+          [`dialogs.${listPage}.visible`]: false
+        }
+      }
+    ]
+    state.actions!.initInputList = [
+      {
+        name: 'flows/common/inputList/init'
+      }
+    ]
   }
 
   addImportDialog(action: ITagPageAction) {

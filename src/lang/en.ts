@@ -20,7 +20,8 @@ export default {
     profile: 'Profile',
     screenfull: 'Screen Full',
     search: 'Search APP',
-    lang: 'Select Language'
+    lang: 'Select Language',
+    notice: 'Notice'
   },
   login: {
     title: 'Login Form',

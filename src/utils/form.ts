@@ -6,7 +6,7 @@ import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
 
-export default function generateForm(schema: ISchema, showReadOnly: boolean = true, showWriteOnly: boolean = true, disabled: boolean = false, readonly: boolean = false) {
+export default function generateForm(schema: ISchema, showReadOnly: boolean = false, showWriteOnly: boolean = true, disabled: boolean = false, readonly: boolean = false) {
   const formPageState: FormPage = {}
   if (schema.discriminator && schema.oneOf) {
     const propertyName = schema.discriminator.propertyName
@@ -55,9 +55,9 @@ function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: b
 }
 
 function createItemByPropSchema(prop:string, schema: ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, required: boolean, readonly: boolean = false) {
+  if (!showReadOnly && schema.readOnly) return null
+  if (!showWriteOnly && schema.writeOnly) return null
   let item: FormItemState | null = null
-  if (!showReadOnly && schema.readOnly) return item
-  if (!showWriteOnly && schema.writeOnly) return item
   if (schema.format === 'date-time') {
     item = createDateTimeItem(prop, schema)
   } else if (schema.format === 'download_url') {
@@ -133,7 +133,8 @@ function createInputListItem(prop: string, schema: ISchema, disabled: boolean, r
       options: [],
       action: 'initInputList',
       page: schema.page,
-      field: schema.field
+      field: schema.field,
+      link: schema.link
     }
   }
 }

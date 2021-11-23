@@ -32,7 +32,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { AppModule } from '@/store/modules/app'
 
 @Component({
-  name: 'Login'
+  name: 'LangSelect'
 })
 export default class extends Vue {
   get language() {

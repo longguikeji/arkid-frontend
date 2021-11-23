@@ -77,7 +77,7 @@ export default class extends Vue {
     }
     .el-card__body {
       position: relative;
-      height: calc(100% - 55px);
+      height: auto;
       overflow: auto;
       .no-drag-board {
         min-height: calc(100% - 32px);

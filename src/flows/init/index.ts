@@ -5,7 +5,7 @@ import { StopNode } from 'arkfbp/lib/stopNode'
 import { Entrance } from './nodes/entrance'
 import { TenantNode } from './nodes/tenant'
 import { TokenNode } from './nodes/token'
-import { OpenapiNode } from './nodes/openapi'
+import { OpenapiNode } from '@/arkfbp/flows/openapi/nodes/openapi'
 import { ConfigNode } from './nodes/config'
 import { DeviceNode } from './nodes/device'
 
