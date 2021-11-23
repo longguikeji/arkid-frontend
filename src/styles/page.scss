@@ -38,10 +38,9 @@
     }
     ::v-deep .drag-board {
       width: auto !important;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: space-around;
+      .item {
+        display: inline-block;
+      }
     }
   }
   .notice-modules {
