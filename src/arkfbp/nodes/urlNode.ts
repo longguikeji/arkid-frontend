@@ -1,6 +1,7 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
 import { TenantModule } from '@/store/modules/tenant'
 import { UserModule } from '@/store/modules/user'
+import { FlowModule } from '@/store/modules/flow'
 import { getToken } from '@/utils/auth'
 
 export class UrlNode extends FunctionNode {
@@ -34,7 +35,7 @@ export class UrlNode extends FunctionNode {
   }
 
   condition() {
-    return this._url.includes('{') || this._count === 0
+    return this._url.includes('{') && this._count > 0
   }
 
   process() {
@@ -72,8 +73,12 @@ export class UrlNode extends FunctionNode {
     while (this.condition()) {
       this.process()
     }
-    this.inputs.url = this._url
-    return this.inputs
+    if (this._url.includes('{')) {
+      FlowModule.stopRunFlow()
+    } else {
+      this.inputs.url = this._url
+      return this.inputs
+    }
   }
 
 }
