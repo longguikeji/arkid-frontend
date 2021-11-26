@@ -2,7 +2,8 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 
 export class Response extends FunctionNode {
   async run() {
-    const results = this.inputs
+    const data = this.inputs
+    const results = data && data.results
     const state = this.$state.fetch()
     if (results && results.length) {
       const client = state.inputs.client  
