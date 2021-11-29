@@ -176,16 +176,18 @@ aside {
   }
 }
 
+.el-card {
+  border-radius: 4px 4px 0px 0px;
+}
+
 .el-card__header {
   font-size: 16px;
   font-weight: bold;
-  border-radius: 8px 8px 0px 0px;
   padding: 18px 10px;
 }
 
 .el-card__body {
   padding: 10px;
-  border-radius: 0px 0px 8px 8px;
 }
 
 .el-descriptions__header {
@@ -222,4 +224,8 @@ aside {
       }
     }
   }
+}
+
+.el-pagination {
+  border: 1px solid #e6ebf5;
 }

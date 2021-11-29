@@ -6,7 +6,8 @@ export class Response extends FunctionNode {
     const results = data && data.results
     const state = this.$state.fetch()
     if (results && results.length) {
-      const client = state.inputs.client  
+      const client = state.inputs.client
+      client.pagination.total = data.count 
       const items = client.items
       items.length = 0
       for (let i = 0, len = results.length; i < len; i++) {
