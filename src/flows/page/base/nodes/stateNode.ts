@@ -217,9 +217,10 @@ export class StateNode extends FunctionNode {
     if (!params || !properties) return
     const state = this._temp
     params.forEach(param => {
-      const point = param.in
-      const name = param.name
-      if (point === 'query' && properties[name]) {
+      const { in: i, name: n, schema: s, description: d } = param
+      const title = properties[n] && properties[n].title
+      const flag = n === 'page' || n === 'page_size'
+      if (i === 'query' && !flag) {
         if (!state.filter) {
           state.filter = {
             inline: true,
@@ -227,9 +228,10 @@ export class StateNode extends FunctionNode {
             items: {}
           }
         }
-        const label = properties[name].title || name
-        state.filter.items![name] = {
-          type: 'Input',
+        const label = d || title || n
+        const type = s && s.format === 'date-time' ? 'DatePicker' : 'Input'
+        state.filter.items![n] = {
+          type,
           isSetWidth: false,
           label,
           state: {
