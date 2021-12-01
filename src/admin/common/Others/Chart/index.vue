@@ -1,5 +1,5 @@
 <template>
-  <el-card />
+  <el-container />
 </template>
 
 <script lang="ts">
@@ -51,7 +51,7 @@ export default class extends Mixins(BaseVue) {
       option.title = {
         ...option.title,
         textStyle: {
-          fontSize: 16
+          fontSize: 12
         }
       }
       this.chart!.setOption(option)
