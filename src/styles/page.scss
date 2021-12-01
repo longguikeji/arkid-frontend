@@ -127,7 +127,8 @@
 .admin-contacts_user-page,
 .notice_manage,
 .group,
-.contacts_group {
+.contacts_group,
+.all_tenant {
   .table-page {
     height: calc(100vh - 86px - 2rem);
     ::v-deep .el-card {
