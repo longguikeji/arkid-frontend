@@ -51,7 +51,7 @@ export default class extends Mixins(BaseVue) {
       option.title = {
         ...option.title,
         textStyle: {
-          fontSize: 12
+          fontSize: 16
         }
       }
       this.chart!.setOption(option)
