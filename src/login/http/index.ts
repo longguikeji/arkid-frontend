@@ -1,5 +1,7 @@
 import axios from 'axios'
 import LoginStore from '../store/login'
+import { Message } from 'element-ui'
+import { error } from '@/constants/error'
 
 const toLogin = () => {
   LoginStore.removeToken()
@@ -42,6 +44,14 @@ http.interceptors.response.use(
   },
   err => {
     const { response } = err
+    const data = response && response.data
+    if (data) {
+      Message({
+        message: error[data.error] || data.message || 'error',
+        type: 'error',
+        showClose: true
+      })
+    }
     if (response) {
       errorCallback(response.status)
       return Promise.reject(response)
