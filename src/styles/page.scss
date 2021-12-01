@@ -52,16 +52,6 @@
   }
 }
 
-.marketplace {
-  .dashboard-page {
-    ::v-deep .el-card__body {
-      padding: 0px 0 10px 0;
-      height: calc(100% - 55px);
-      overflow: auto;
-    }
-  }
-}
-
 .statistics {
   .el-card {
     background-color: transparent;
@@ -105,15 +95,34 @@
   }
 }
 
-.third_part_account,
-.extension,
-.maketplace {
+.third_part_account {
   ::v-deep .el-card__body {
     position: relative;
     height: calc(100% - 55px);
     overflow: auto;
     .el-table {
       overflow: auto;
+    }
+  }
+}
+
+.extension {
+  ::v-deep .dashboard-page {
+    height: calc(100vh - 86px - 2rem);
+    .el-card {
+      height: calc(100% - 32px);
+    }
+    .el-card__body {
+      position: relative;
+      height: calc(100% - 55px);
+      overflow: auto;
+      .el-table {
+        overflow: auto;
+      }
+    }
+    .el-pagination {
+      background-color: #fff;
+      border-top: 0px;
     }
   }
 }
@@ -138,9 +147,6 @@
 .contacts_group {
   .table-page {
     height: calc(100vh - 86px - 2rem);
-    ::v-deep .el-pagination {
-      border: 0px !important;
-    }
     ::v-deep .el-card {
       height: calc(100% - 39px) !important;
     }

@@ -1,40 +1,42 @@
 <template>
-  <Card
-    :path="getChildPath('card')"
-    class="dashboard-page"
-  >
-    <Form
-      v-if="state.filter"
-      :path="getChildPath('filter')"
-      class="dashboard-page-filter"
-    />
-    <draggable
-      id="draggable-panel"
-      :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board']"
-      :list="state.items"
-      :options="state.options"
-      :style="{}"
-      @end="end"
+  <div class="dashboard-page">
+    <Card
+      :path="getChildPath('card')"
     >
-      <AdminComponent
-        v-for="(item, index) in state.items"
-        :key="index"
-        :path="getChildPath(`items[${index}]`)"
-        class="item"
+      <Form
+        v-if="state.filter"
+        :path="getChildPath('filter')"
+        class="dashboard-page-filter"
       />
-    </draggable>
+      <draggable
+        id="draggable-panel"
+        :class="[state.options && state.options.disabled ? 'no-drag-board' : 'drag-board']"
+        :list="state.items"
+        :options="state.options"
+        :style="{}"
+        @end="end"
+      >
+        <AdminComponent
+          v-for="(item, index) in state.items"
+          :key="index"
+          :path="getChildPath(`items[${index}]`)"
+          class="item"
+        />
+      </draggable>
+      <template v-if="state.dialogs">
+        <Dialog
+          v-for="dialogName in Object.keys(state.dialogs)"
+          :key="dialogName"
+          :path="getChildPath('dialogs.' + dialogName)"
+        />
+      </template>
+    </Card>
     <Pagination
       v-if="state.pagination"
       :path="getChildPath('pagination')"
+      class="dashboard-page-pagination"
     />
-    <template v-if="state.dialogs">
-      <Dialog
-        v-for="dialogName in Object.keys(state.dialogs)"
-        :key="dialogName"
-        :path="getChildPath('dialogs.' + dialogName)"
-      />
-    </template>
-  </Card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -78,5 +80,9 @@ export default class extends Mixins(BaseVue) {
       cursor: move;
     }
   }
+}
+.dashboard-page-pagination {
+  background-color: #fff;
+  border: 1px solid #e6ebf5;
 }
 </style>

@@ -69,6 +69,12 @@ export class Extension extends FunctionNode {
         filter: this.initFilter(init.path, init.method),
         items: [],
         dialogs: {},
+        pagination: {
+          total: 0,
+          pageSize: 10,
+          currentPage: 1,
+          action: 'fetch'
+        },
         actions: {
           created: [ 'fetch' ],
           fetch: [
@@ -76,7 +82,10 @@ export class Extension extends FunctionNode {
               name: 'flows/custom/extension/response',
               url: init.path,
               method: init.method,
-              request: {}
+              request: {
+                page: 'pagination.currentPage',
+                page_size: 'pagination.pageSize',
+              }
             },
             {
               name: 'arkfbp/flows/openapi'

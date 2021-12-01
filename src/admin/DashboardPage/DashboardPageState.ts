@@ -4,6 +4,7 @@ import DialogState from '@/admin/common/Dialog/DialogState'
 import { IFlow } from '@/arkfbp'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
 import FormState from '../common/Form/FormState'
+import PaginationState from '../common/data/Pagination/PaginationState'
 
 export interface DashboardPage extends BaseState {
   filter?: FormState
@@ -19,4 +20,5 @@ export interface DashboardPage extends BaseState {
   endAction?: string | Function
   action?: string | Function // ... operation ...
   data?: any
+  pagination?: PaginationState
 }

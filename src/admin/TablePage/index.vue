@@ -83,7 +83,6 @@ export default class extends Mixins(BaseVue) {
   }
   .el-pagination {
     background: white;
-    border: 1px solid #e6ebf5;
     border-top: 0px;
     padding: 5px 5px;
     border-bottom-left-radius: 4px;
