@@ -249,11 +249,17 @@ export class StateNode extends FunctionNode {
         state: {
           label: '搜索',
           type: 'primary',
-          action: 'fetch',
+          action: 'toFilter',
           icon: 'el-icon-search',
           size: 'mini'
         }
       }
+      state.actions!.toFilter = [
+        {
+          name: 'arkfbp/flows/resetPagination'
+        },
+        'fetch'
+      ]
     }
   }
 
