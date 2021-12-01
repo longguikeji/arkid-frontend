@@ -1,5 +1,5 @@
 <template>
-  <el-card />
+  <el-container />
 </template>
 
 <script lang="ts">

@@ -53,22 +53,12 @@
 }
 
 .statistics {
-  .el-card {
-    background-color: transparent;
-    border: 0px;
-    height: auto;
-    overflow: auto;
-    ::v-deep .el-card__body {
-      padding: 0px;
-    }
-    ::v-deep .drag-board {
+  .admin-statistics-page {
+    ::v-deep .el-card {
+      overflow-y: auto;
       .item {
-        max-height: 500px;
         width: 100%;
-        margin-bottom: 10px;
-        .el-card__header {
-          cursor: move !important;
-        }
+        height: 500px;
       }
     }
   }
@@ -85,13 +75,6 @@
   }
   ::v-deep .el-card {
     border: 0px;
-  }
-}
-
-.statistics {
-  .admin-tabs-page {
-    height: calc(100vh - 86px - 2rem);
-    background-color: #FFF;
   }
 }
 
