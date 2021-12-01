@@ -3,7 +3,7 @@ import { FunctionNode } from 'arkfbp/lib/functionNode'
 export class DeleteTenant extends FunctionNode {
   async run() {
     const { state, page } = this.inputs
-    const pageState = state[page]
+    const pageState = state[page].state
     const inputSlugPage = {
       type: 'FormPage',
       state: {
@@ -39,7 +39,7 @@ export class DeleteTenant extends FunctionNode {
                 slug: 'form.items.slug.state.value'
               }
             },
-            pageState.state.actions.delete[0],
+            pageState.actions.delete[1],
             {
               name: 'flows/common/logout'
             }
@@ -47,12 +47,15 @@ export class DeleteTenant extends FunctionNode {
         }
       }
     }
-    pageState.state.dialogs!.inputSlug = {
+    pageState.dialogs!.inputSlug = {
       visible: false,
       page: `${page}.inputSlug`
     }
     state[`${page}.inputSlug`] = inputSlugPage
-    pageState.state.actions.delete = [
+    pageState.actions.delete = [
+      {
+        name: 'arkfbp/flows/data'
+      },
       {
         name: 'arkfbp/flows/assign',
         response: {
