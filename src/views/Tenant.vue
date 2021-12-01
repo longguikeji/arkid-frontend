@@ -74,6 +74,7 @@ export default class extends Vue {
     .el-card {
       height: 100%;
       position: relative;
+      overflow: auto;
     }
     .el-card__body {
       position: relative;
