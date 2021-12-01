@@ -266,6 +266,11 @@ export default class LoginComponent extends Vue {
     const data = response.data
     if (data.error === '0') {
       if (this.btn.delay) {
+        this.$message({
+          message: '验证码发送成功，请注意查收',
+          type: 'success',
+          showClose: true
+        })
         this.isChangeDelay = true
       } else if (this.btn.gopage) {
         this.$message({
