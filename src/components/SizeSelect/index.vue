@@ -60,7 +60,7 @@ export default class extends Vue {
     const { fullPath } = this.$route
     this.$nextTick(() => {
       this.$router.replace({
-        path: '/redirect' + fullPath
+        path: fullPath
       })
     })
   }
