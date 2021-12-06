@@ -1,4 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
+import { UserModule } from '@/store/modules/user'
 
 export class Switch extends FunctionNode {
   async run() {
@@ -8,7 +9,7 @@ export class Switch extends FunctionNode {
     state.data = data
     const items = state.form.items
     for (const key in items) {
-      items[key].state.value = data[key]
+      items[key].state.value = key === 'role' ? UserModule.roleName : data[key]
     }
     client.dialogs.switch.visible = true
   }
