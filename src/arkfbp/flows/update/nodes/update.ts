@@ -35,7 +35,7 @@ export class Update extends APINode {
     if (outputs && outputs.error) {
       FlowModule.stopRunFlow()
       com.$message({
-        message: error[outputs.error],
+        message: error[outputs.error]  || outputs.message || 'Error',
         type: 'error',
         showClose: true
       })
