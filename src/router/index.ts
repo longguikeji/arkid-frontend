@@ -68,7 +68,7 @@ router.beforeEach((to, from, next) => {
           nextUrl = t
           break
         case '/tenant':
-          nextUrl = flag || role !== UserRole.User ? '' : t
+          nextUrl = tenantSwitch ? '' : t
           break
         case '/login':
         case '/':
