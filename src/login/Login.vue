@@ -53,9 +53,6 @@ export default class Login extends Vue {
     // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
     const query = this.$route.query
     let next: any = query && query.next
-    if (typeof next !== 'string') {
-      next = next[0]
-    }
     if (next) {
       const keys = Object.keys(query)
       for (const key of keys) {
