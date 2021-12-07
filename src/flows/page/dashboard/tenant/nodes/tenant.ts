@@ -109,6 +109,13 @@ export class Tenant extends FunctionNode {
                 value: '',
                 disabled: true
               }
+            },
+            role: {
+              type: 'Tag',
+              label: '用户角色',
+              state: {
+                value: ''
+              }
             }
           }
         },

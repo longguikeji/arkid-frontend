@@ -294,8 +294,10 @@ export default class LoginComponent extends Vue {
           LoginStore.ThirdUserID = ''
         }
         // next url
-        if (LoginStore.NextUrl) {
-          window.location.href = LoginStore.NextUrl + '&token=' + LoginStore.token
+        const next = LoginStore.NextUrl
+        if (next) {
+          const prefix = next.includes('?') ? '&' : '?'
+          window.location.href = next + `${prefix}token=` + LoginStore.token
           LoginStore.NextUrl = ''
         } else {
           window.location.reload()

@@ -24,10 +24,10 @@ export class ChangePageStateNode extends FunctionNode {
     pageState.actions.token.push({
       name: 'flows/custom/user/token/refresh'
     })
-    // danger type
-    pageState.buttons[0].type = 'danger'
-    if (!isManualOverdueToken) {
-      pageState.buttons[0].disabled = true
+    const button = pageState.buttons[0]
+    if (button) {
+      button.type = 'danger'
+      if (!isManualOverdueToken) button.disabled = true
     }
   }
 
