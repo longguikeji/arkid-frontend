@@ -52,17 +52,20 @@ export default class Login extends Vue {
   private async getLoginPage() {
     // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
     const query = this.$route.query
-    if (query.next) {
-      let nextUrl = query.next
-      Object.keys(query).forEach(key => {
-        if (key !== 'next' && key !== 'tenant') {
-          nextUrl += ('&' + key + '=' + query[key])
-        }
-      })
-      nextUrl = window.location.origin + nextUrl
-      LoginStore.NextUrl = nextUrl
+    let next = query && query.next
+    if (next) {
+      const params = ''
+      const keys = Object.keys(query)
+      for (const key of keys) {
+        if (key === 'next') continue
+        next += `&${key}=${query[key]}`
+      }
+      next = next.replace('&', '?')
+      next = window.location.origin + next
+      LoginStore.NextUrl = next
       if (LoginStore.token) {
-        window.location.replace(nextUrl + '&token=' + LoginStore.token)
+        const prefix = next.includes('?') ? '&' : '?'
+        window.location.replace(next + `${prefix}token=` + LoginStore.token)
       }
     }
 
