@@ -78,16 +78,11 @@ export class ConfigNode extends APINode {
         UserModule.setUserRole(UserRole.Global)
       } else if (manageTenants?.length) {
         const uuid = TenantModule.currentTenant.uuid
-        let isTenantManager = false
-        if (uuid) {
-          for (let tenant of manageTenants) {
-            if (processUUId(tenant) === processUUId(uuid)) {
-              isTenantManager = true
-              break
-            }
-          }
-        }
-        if (isTenantManager) {
+        const tenantManager = uuid && manageTenants.find((item) => {
+          item = processUUId(item)
+          return item === processUUId(uuid)
+        })
+        if (tenantManager) {
           UserModule.setUserRole(UserRole.Tenant)
         } else {
           isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
