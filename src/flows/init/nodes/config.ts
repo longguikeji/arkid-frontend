@@ -76,7 +76,12 @@ export class ConfigNode extends APINode {
       if (isGlobalAdmin) {
         UserModule.setUserRole(UserRole.Global)
       } else if (manageTenants?.length) {
-        UserModule.setUserRole(UserRole.Tenant)
+        const uuid = TenantModule.currentTenant.uuid
+        if (manageTenants.includes(uuid)) {
+          UserModule.setUserRole(UserRole.Tenant)
+        } else {
+          isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
+        }
       } else if (isPlatformUser) {
         UserModule.setUserRole(UserRole.Platform)
       } else {
