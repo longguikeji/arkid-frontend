@@ -2,7 +2,8 @@ import { APINode } from '@/arkfbp/nodes/apiNode'
 
 export class Fetch extends APINode {
   async run() {
-    const { url, method, params } = this.inputs
+    const { url, method, params } = this.inputs || {}
+    if (!url || !method) return
     this.url = url
     this.method = method
     this.params = params

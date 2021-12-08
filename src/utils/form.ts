@@ -5,7 +5,7 @@ import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
-// import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 
 export default function generateForm(schema: ISchema, showReadOnly: boolean = false, showWriteOnly: boolean = true, disabled: boolean = false, readonly: boolean = false) {
   const formPageState: FormPage = {}
@@ -42,15 +42,17 @@ export default function generateForm(schema: ISchema, showReadOnly: boolean = fa
 
 function getItemsBySchema(schema:ISchema, showReadOnly:boolean, showWriteOnly: boolean, disabled: boolean, skipProp = '', readonly: boolean = false) {
   const tempItems:{[prop:string]:FormItemState} = {}
-  const requiredSchema = schema.required
-  for (const prop in schema.properties) {
-    if (prop === skipProp) {
-      continue
+  const { required, properties } = schema
+  if (properties) {
+    for (const prop in properties) {
+      if (prop === skipProp) {
+        continue
+      }
+      const propSchema = properties[prop]
+      const isRequired = required ? required.includes(prop) : false
+      const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired, readonly)
+      if (item) tempItems[prop] = item
     }
-    const propSchema = schema.properties[prop]
-    const isRequired = requiredSchema ? requiredSchema.includes(prop) : false
-    const item = createItemByPropSchema(prop, propSchema, showReadOnly, showWriteOnly, disabled, isRequired, readonly)
-    if (item) tempItems[prop] = item
   }
   return tempItems
 }

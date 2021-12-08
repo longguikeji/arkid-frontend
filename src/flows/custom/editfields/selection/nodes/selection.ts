@@ -9,6 +9,7 @@ export class InitEditFieldsSelectionNode extends FunctionNode {
       results.forEach(result => {
         if (result.is_select) {
           selection.default.push(result)
+          selection.values.push(result)
         }
       })
     }

@@ -72,8 +72,10 @@ export class StateNode extends FunctionNode {
   initTableMainState(schema: ISchema) {
     const { _temp: state, _opts: options, _page: page } = this
     state.table!.isExpand = options?.tableIsExpand
-    for (const prop in schema.properties) {
-      const iprop = schema.properties[prop]
+    const properties = schema.properties
+    if (!properties) return
+    for (const prop in properties) {
+      const iprop = properties[prop]
       const title = iprop.title
       const columnState: TableColumnState = {
         label: title,
@@ -164,7 +166,7 @@ export class StateNode extends FunctionNode {
   }
 
   initFormMainState(schema: ISchema) {
-    const { _temp: state, _opts: options, _page: page } = this
+    const { _temp: state, _opts: options } = this
     const { showReadOnly, showWriteOnly, disabled, readonly } = options
     const { form, forms, select } = generateForm(schema, showReadOnly, showWriteOnly, disabled, readonly)
     if (readonly && form?.items) {
@@ -185,8 +187,9 @@ export class StateNode extends FunctionNode {
       state.select = select
       state.form = undefined
       Object.keys(forms).forEach(key => {
-        const items = forms[key].items
-        if (items) {
+        const items = forms[key].items || {}
+        const keys = Object.keys(items)
+        if (keys.length) {
           const inputListItems = this.getInputListItems(items)
           if (inputListItems && inputListItems.length > 0) {
             inputListItems.forEach(item => {
@@ -213,8 +216,9 @@ export class StateNode extends FunctionNode {
   initPageFilterState(init: ITagPageAction, schema: ISchema) {
     const { path, method } = init
     const properties = schema.properties
+    if (!properties) return
     const params = getParamsByPath(path, method)
-    if (!params || !properties) return
+    if (!params) return
     const state = this._temp
     params.forEach(param => {
       const { in: i, name: n, schema: s, description: d } = param
@@ -541,7 +545,7 @@ export class StateNode extends FunctionNode {
       default:
         action = key
     }
-    if (key === 'delete' || key === 'logout' || key === 'logoff') type = 'danger'
+    if (key === 'delete' || key === 'logout' || key === 'logoff' || key === 'token') type = 'danger'
     if (pageType === 'TreePage' && role === 'local') type = 'text'
     if (key === 'import' || key === 'export') type = ''
     return {

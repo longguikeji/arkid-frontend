@@ -5,17 +5,16 @@ export function getSchemaByContent(content: { [requestBodyType: string]: {schema
   for (type in content) { // 任意获取一个key
     break
   }
-  let schema = content[type].schema
+  let schema = content[type] && content[type].schema
+  if (!schema) return {}
   if (schema.$ref) {
     schema = OpenAPI.instance.getSchemaByRef(schema.$ref)
-    if (schema?.properties) {
-      const properties = schema.properties
-      if (properties.results?.items || properties.data?.items || properties.items?.items) {
-        const items = properties.results?.items || properties.data?.items || properties.items?.items
-        if ((items as ISchema).$ref) {
-          const ref = (items as ISchema).$ref
-          if (ref) schema = OpenAPI.instance.getSchemaByRef(ref)
-        }
+    const properties = schema && schema.properties
+    if (properties) {
+      const items = properties.results?.items || properties.data?.items || properties.items?.items
+      if (items && (items as ISchema).$ref) {
+        const ref = (items as ISchema).$ref
+        if (ref) schema = OpenAPI.instance.getSchemaByRef(ref)
       }
     }
   }
