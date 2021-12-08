@@ -370,7 +370,8 @@ export class ActionNode extends FunctionNode {
     const content = getContent(path, method)
     if (!content) return
     const type = Object.keys(content)[0]
-    const responseSchema = content[type].schema
+    const responseSchema = content && content[type] && content[type].schema
+    if (!responseSchema) return null
     let ref = responseSchema.$ref as string
     if (responseSchema.items) { ref = (responseSchema.items as ISchema).$ref as string }
     const res = OpenAPI.instance.getSchemaByRef(ref)
