@@ -3,6 +3,7 @@ import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
 import OpenAPI from '@/config/openapi'
+import { processUUId } from '@/utils/common'
 
 export class ConfigNode extends APINode {
 
@@ -77,7 +78,11 @@ export class ConfigNode extends APINode {
         UserModule.setUserRole(UserRole.Global)
       } else if (manageTenants?.length) {
         const uuid = TenantModule.currentTenant.uuid
-        if (manageTenants.includes(uuid)) {
+        const tenantManager = uuid && manageTenants.find((item) => {
+          item = processUUId(item)
+          return item === processUUId(uuid)
+        })
+        if (tenantManager) {
           UserModule.setUserRole(UserRole.Tenant)
         } else {
           isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
