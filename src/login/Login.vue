@@ -59,7 +59,7 @@ export default class Login extends Vue {
         if (key === 'next') continue
         next += `&${key}=${query[key]}`
       }
-      next = next.replace('&', '?')
+      if (next.indexOf('?') === -1) next = next.replace('&', '?')
       next = window.location.origin + next
       LoginStore.NextUrl = next
       if (LoginStore.token) {
