@@ -34,6 +34,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import CardPanelState from './CardPanelState'
 import BaseVue from '@/admin/base/BaseVue'
+import { getToken } from '@/utils/auth'
 
 @Component({
   name: 'CardPanel',
@@ -48,11 +49,16 @@ export default class extends Mixins(BaseVue) {
     return this.$state as CardPanelState
   }
 
+  get token() {
+    return getToken()
+  }
+
   handleClick() {
-    const { clickAction: action, url } = this.state
+    let { clickAction: action, url } = this.state
     if (action) {
       this.runAction(action)
     } else if (url) {
+      if (this.token) url = url.replace(/\{token\}/g, this.token)
       window.open(url, '_blank')
     } else {
       this.$message({
