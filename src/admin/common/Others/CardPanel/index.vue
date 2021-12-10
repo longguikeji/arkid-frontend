@@ -14,6 +14,18 @@
       <div class="description">
         {{ state.description }}
       </div>
+      <div
+        v-if="state.tags"
+        class="tags"
+      >
+        <span
+          v-for="(tag, index) in state.tags"
+          :key="index"
+        >
+          <span>{{ tag.label }}</span> :
+          <el-tag size="mini">{{ tag.value }}</el-tag>
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -94,6 +106,9 @@ export default class extends Mixins(BaseVue) {
     .description {
       font-weight: 400;
       color: #909399;
+    }
+    .tags {
+      display: flex;
     }
   }
 }
