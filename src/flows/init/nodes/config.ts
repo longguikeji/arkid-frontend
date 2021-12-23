@@ -8,98 +8,68 @@ import { processUUId } from '@/utils/common'
 export class ConfigNode extends APINode {
 
   async run() {
-    // 如若登录之后依旧没有租户信息，则去进行查询租户列表
-    // 如果租户列表只有一个租户，则自动将该租户设置为当前登录租户
-    if (!TenantModule.currentTenant.uuid) {
-      await this.setCurrentTenantInfo()
-    }
+    // get method
+    this.method = 'get'
 
-    // 配置当前用户个人信息 昵称...
+    // config current login user info
     await this.setCurrentUserInfo()
 
-    // 获取平台租户开关是否打开
-    await this.setTenantSwitch()
+    // config current login user role
+    await this.setCurrentUserRole()
     
-    const tenantUUId = TenantModule.currentTenant.uuid
-    // 配置当前登录账号角色
-    await this.setCurrentUserRole(tenantUUId)
-    if (tenantUUId) {
+    const uuid = TenantModule.currentTenant.uuid
+    if (uuid) {
       // 桌面配置信息
-      await this.setDesktopConfig(tenantUUId)
+      await this.setDesktopConfig(uuid)
       // 通讯录配置信息
-      await this.setContactsConfig(tenantUUId)
+      await this.setContactsConfig(uuid)
       // 用户配置信息
-      await this.setUserConfig(tenantUUId)
+      await this.setUserConfig(uuid)
       // 租户配置信息
-      await this.setTenantConfig(tenantUUId)
+      await this.setTenantConfig(uuid)
       // 租户密码复杂度
-      await this.setTenantPasswordComplexity(tenantUUId)
+      await this.setTenantPasswordComplexity(uuid)
       // 获取当前用户的权限
-      await this.getCurrentUserPermission(tenantUUId)
-    }
-  }
-
-  async setCurrentTenantInfo() {
-    this.url = '/api/v1/tenant/'
-    this.method = 'GET'
-    const outputs = await super.run()
-    const res = outputs?.results
-    if (res?.length === 1) {
-      TenantModule.changeCurrentTenant(res[0])
+      await this.getCurrentUserPermission(uuid)
     }
   }
 
   async setCurrentUserInfo() {
     this.url = '/api/v1/user/info/'
-    this.method = 'GET'
     const outputs = await super.run()
     if (outputs) {
       UserModule.setUserInfo(outputs)
     }
   }
 
-  async setTenantSwitch() {
-    this.url = '/api/v1/tenant_switch/'
-    this.method = 'GET'
+  async setCurrentUserRole() {
+    this.url = '/api/v1/user/manage_tenants/'
     const outputs = await super.run()
-    const data = outputs.switch
-    TenantModule.setTenantSwitch(data)
-  }
-
-  async setCurrentUserRole(tenantUUId: string | undefined) {
-    if (tenantUUId) {
-      this.url = '/api/v1/user/manage_tenants/'
-      this.method = 'GET'
-      const outputs = await super.run()
-      const isGlobalAdmin = outputs?.is_global_admin
-      const isPlatformUser = outputs?.is_platform_user
-      const manageTenants = outputs?.manage_tenants
-      if (isGlobalAdmin) {
-        UserModule.setUserRole(UserRole.Global)
-      } else if (manageTenants?.length) {
-        const uuid = TenantModule.currentTenant.uuid
-        const tenantManager = uuid && manageTenants.find((item) => {
-          item = processUUId(item)
-          return item === processUUId(uuid)
-        })
-        if (tenantManager) {
-          UserModule.setUserRole(UserRole.Tenant)
-        } else {
-          isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
-        }
-      } else if (isPlatformUser) {
-        UserModule.setUserRole(UserRole.Platform)
+    const isGlobalAdmin = outputs?.is_global_admin
+    const isPlatformUser = outputs?.is_platform_user
+    const manageTenants = outputs?.manage_tenants
+    if (isGlobalAdmin) {
+      UserModule.setUserRole(UserRole.Global)
+    } else if (manageTenants?.length) {
+      const uuid = TenantModule.currentTenant.uuid
+      const tenantManager = uuid && manageTenants.find((item) => {
+        item = processUUId(item)
+        return item === processUUId(uuid)
+      })
+      if (tenantManager) {
+        UserModule.setUserRole(UserRole.Tenant)
       } else {
-        UserModule.setUserRole(UserRole.User)
+        isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
       }
-    } else {
+    } else if (isPlatformUser) {
       UserModule.setUserRole(UserRole.Platform)
+    } else {
+      UserModule.setUserRole(UserRole.User)
     }
   }
 
-  async setDesktopConfig(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/desktopconfig/`
-    this.method = 'GET'
+  async setDesktopConfig(uuid: string) {
+    this.url = `/api/v1/tenant/${uuid}/desktopconfig/`
     const outputs = await super.run()
     const data = outputs?.data
     if (data) {
@@ -110,8 +80,8 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setContactsConfig(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/contactsconfig/function_switch/`
+  async setContactsConfig(uuid: string) {
+    this.url = `/api/v1/tenant/${uuid}/contactsconfig/function_switch/`
     this.method = 'GET'
     const outputs = await super.run()
     const data = outputs?.data
@@ -122,15 +92,15 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setUserConfig(tenantUUId: string) {
-    await this.setUserConfigLogging(tenantUUId)
-    await this.setUserConfigLogout(tenantUUId)
-    await this.setUserConfigEditFields(tenantUUId)
-    await this.setUserConfigToken(tenantUUId)
+  async setUserConfig(uuid: string) {
+    await this.setUserConfigLogging(uuid)
+    await this.setUserConfigLogout(uuid)
+    await this.setUserConfigEditFields(uuid)
+    await this.setUserConfigToken(uuid)
   }
 
-  async setTenantConfig(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/config/login_register/`
+  async setTenantConfig(uuid: string) {
+    this.url = `/api/v1/tenant/${uuid}/config/login_register/`
     this.method = 'GET'
     const outputs = await super.run()
     const data = outputs?.data
@@ -142,8 +112,8 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setTenantPasswordComplexity(tenantUUId: string) {
-    this.url = `/api/v1/config/current_password_complexity/?tenant=${tenantUUId}`
+  async setTenantPasswordComplexity(uuid: string) {
+    this.url = `/api/v1/config/current_password_complexity/?tenant=${uuid}`
     this.method = 'GET'
     const outputs = await super.run()
     const data = outputs?.data
@@ -155,9 +125,9 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setUserConfigLogging(tenantUUId: string) {
+  async setUserConfigLogging(uuid: string) {
     if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logging', 'get')) {
-      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/logging`
+      this.url = `/api/v1/tenant/${uuid}/userconfig/logging`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
@@ -169,9 +139,9 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setUserConfigLogout(tenantUUId: string) {
+  async setUserConfigLogout(uuid: string) {
     if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logout', 'get')) {
-      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/logout`
+      this.url = `/api/v1/tenant/${uuid}/userconfig/logout`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
@@ -182,9 +152,9 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setUserConfigEditFields(tenantUUId: string) {
+  async setUserConfigEditFields(uuid: string) {
     if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/editfields', 'get')) {
-      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/editfields`
+      this.url = `/api/v1/tenant/${uuid}/userconfig/editfields`
       this.method = 'GET'
       const data = await super.run()
       if (data?.results) {
@@ -198,9 +168,9 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async setUserConfigToken(tenantUUId: string) {
+  async setUserConfigToken(uuid: string) {
     if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/token', 'get')) {
-      this.url = `/api/v1/tenant/${tenantUUId}/userconfig/token`
+      this.url = `/api/v1/tenant/${uuid}/userconfig/token`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
@@ -212,8 +182,8 @@ export class ConfigNode extends APINode {
     }
   }
 
-  async getCurrentUserPermission(tenantUUId: string) {
-    this.url = `/api/v1/tenant/${tenantUUId}/check_permission/`
+  async getCurrentUserPermission(uuid: string) {
+    this.url = `/api/v1/tenant/${uuid}/check_permission/`
     this.method = 'GET'
     const data = await super.run()
     if (data && data.is_childmanager) {

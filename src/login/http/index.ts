@@ -54,7 +54,7 @@ http.interceptors.response.use(
     }
     if (response) {
       errorCallback(response.status)
-      return Promise.reject(response)
+      return response
     } else {
       return Promise.reject(err)
     }

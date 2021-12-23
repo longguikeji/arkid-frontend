@@ -60,19 +60,20 @@ router.beforeEach((to, from, next) => {
     if (query && query.next) {
       nextUrl = ''
     } else {
-      const t = isVisibleDesktop ? ( path === '/desktop' ? '' : '/desktop' ) : '/mine/profile'
-      const flag = role === UserRole.Platform && tenantSwitch === true 
+      const t = isVisibleDesktop ? ( path === '/desktop' ? '' : '/desktop' ) : '/mine'
       switch(path) {
         case '/third_part_callback':
         case '/desktop':
           nextUrl = t
           break
         case '/tenant':
-          nextUrl = flag || role !== UserRole.User ? '' : t
+          nextUrl = tenantSwitch === true ? (
+            role === UserRole.Platform || role !== UserRole.User ? '' : t
+          ) : t
           break
         case '/login':
         case '/':
-          nextUrl = flag ? '/tenant' : t
+          nextUrl = (role === UserRole.Platform && tenantSwitch === true) ? '/tenant' : t
           break
         default:
           nextUrl = ''

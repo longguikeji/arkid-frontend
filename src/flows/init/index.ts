@@ -2,7 +2,7 @@ import { Flow } from 'arkfbp/lib/flow'
 import { Graph } from 'arkfbp/lib/graph'
 import { StartNode } from 'arkfbp/lib/startNode'
 import { StopNode } from 'arkfbp/lib/stopNode'
-import { Entrance } from './nodes/entrance'
+import { EntranceNode } from './nodes/entrance'
 import { TenantNode } from './nodes/tenant'
 import { TokenNode } from './nodes/token'
 import { OpenapiNode } from '@/arkfbp/flows/openapi/nodes/openapi'
@@ -16,7 +16,7 @@ export class Main extends Flow {
       id: 'start',
       next: 'entrance'
     }, {
-      cls: Entrance,
+      cls: EntranceNode,
       id: 'entrance',
       next: 'tenant'
     }, {

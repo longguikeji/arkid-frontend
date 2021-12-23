@@ -11,7 +11,7 @@ import { IFlow } from '@/arkfbp'
 import { BasePage } from './pageNode'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
 import { FormItemsState } from '@/admin/common/Form/FormState'
-import { getContent } from '@/utils/schema'
+import { getContent, getParamsByPath } from '@/utils/schema'
 import { getActionMapping } from '@/utils/generate-action'
 import { upperFirst, camelCase } from 'lodash'
 
@@ -283,16 +283,28 @@ export class ActionNode extends FunctionNode {
     switch (method) {
       case 'delete':
       case 'get':
+        const params = getParamsByPath(path, method)
+        let request
+        if (params && (this._page === 'group_list.permission' || this._page === 'user_list.permission')) {
+          request = {}
+          for (const param of params) {
+            const { in: i, name } = param
+            if (i !== 'query') continue
+            request[name] = `data.${name}`        
+          }
+        }
         state.actions![key] = [
           {
             name: 'arkfbp/flows/data'
           },
           {
             name: 'arkfbp/flows/update',
-            url: path, method
+            url: path, method,
+            request
           }
         ]
         if (method === 'delete') state.actions![key].push('fetch')
+        if (request) state.actions![key].push('fetch')
         break
       default:
         const { required, mapping } = getActionMapping(path, method)

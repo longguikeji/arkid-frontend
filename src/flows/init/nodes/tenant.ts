@@ -1,52 +1,47 @@
-import { APINode } from "arkfbp/lib/apiNode"
+import { APINode } from "@/arkfbp/nodes/apiNode"
 import { TenantModule } from '@/store/modules/tenant'
-import { getSlug, getUrlParamByName } from '@/utils/url'
-import getBaseUrl from '@/utils/get-base-url'
-import { processUUId } from '@/utils/common'
+import { getSlug, getUrlParamByName, isIPAddress } from '@/utils/url'
 import { ConfigModule } from '@/store/modules/config'
 
 export class TenantNode extends APINode {
   async run() {
+    // current tenant uuid and tenant switch info
+    let uuid = ''
 
-    let uuid = '', tenantSwitch = true
+    // get method
+    this.method = 'get'
+
+    // get platform uuid and tenant switch info
     this.url = '/api/v1/tenant_switchinfo/'
-    this.method = 'GET'
-    const data = await super.run()
-    uuid = data.platform_tenant_uuid
-    tenantSwitch = data.switch
-    TenantModule.setTenantSwitch(tenantSwitch)
+    const outputs = await super.run()
+    if (outputs) {
+      uuid = outputs.platform_tenant_uuid
+      TenantModule.setTenantSwitch(outputs.switch)
+    }
+
+    // get current slug    
     const slug = getSlug()
-    if (slug === '') {
-      TenantModule.changeCurrentTenant({ uuid })
-      let platformUUId = uuid || getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid')
-      if (platformUUId) {
-        platformUUId = processUUId(platformUUId)
-        this.url = '/api/v1/tenant/' + platformUUId + '/'
-        this.method = 'GET'
-        const outputs = await super.run()
-        if (outputs?.uuid) {
-          TenantModule.changeCurrentTenant(outputs)
+    if (slug === '' || isIPAddress()) {
+      uuid = getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid') || uuid
+      if (uuid) {
+        uuid = uuid.replace(/-/g, '')
+        this.url = `/api/v1/tenant/${uuid}/`
+        const res = await super.run()
+        if (res?.uuid) {
+          TenantModule.changeCurrentTenant(res)
+        } else {
+          TenantModule.changeCurrentTenant({ uuid })
         }
       }
     } else {
-      if (tenantSwitch === false) {
-        this.toPlatform()
+      this.url = `/api/v1/tenant/${slug}/slug/`
+      const data = await super.run()
+      if (data?.uuid) {
+        ConfigModule.setSlug(slug)
+        TenantModule.changeCurrentTenant(data)
       } else {
-        this.url = `/api/v1/tenant/${slug}/slug/`
-        this.method = 'GET'
-        const res = await super.run()
-        if (res.uuid) {
-          ConfigModule.setSlug(slug)
-          TenantModule.changeCurrentTenant(res)
-        } else {
-          this.toPlatform()
-        }
+        TenantModule.changeCurrentTenant({ uuid })
       }
     }
-  }
-
-  toPlatform() {
-    const origin = ConfigModule.origin
-    window.location.href = `${origin}/${getBaseUrl()}`
   }
 }

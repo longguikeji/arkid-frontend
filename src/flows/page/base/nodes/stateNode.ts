@@ -76,14 +76,15 @@ export class StateNode extends FunctionNode {
     if (!properties) return
     for (const prop in properties) {
       const iprop = properties[prop]
-      const title = iprop.title
+      const { title, format, type } = iprop
+      if (prop === 'uuid' || type === 'object') continue
       const columnState: TableColumnState = {
         label: title,
         prop: prop,
         width: TABLE_COLUMN_WIDTH[page] && TABLE_COLUMN_WIDTH[page][prop],
         showOverflowTooltip: true
       }
-      if (prop === 'url' || iprop.format === 'uri') {
+      if (prop === 'url' || format === 'uri') {
         columnState.scope = {
           type: 'Link',
           state: {

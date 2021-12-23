@@ -86,9 +86,6 @@ export class Extension extends FunctionNode {
                 page: 'pagination.currentPage',
                 page_size: 'pagination.pageSize',
               }
-            },
-            {
-              name: 'arkfbp/flows/openapi'
             }
           ],
           toFilter: [
@@ -152,7 +149,10 @@ export class Extension extends FunctionNode {
           name: 'arkfbp/flows/update',
           url: d.path, method: d.method
         },
-        'fetch'
+        'fetch',
+        {
+          name: 'arkfbp/flows/openapi'
+        }
       ]
     }
   }
