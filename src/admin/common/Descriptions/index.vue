@@ -21,7 +21,7 @@
         <template v-if="items[key].items">
           <Descriptions :path="getChildPath(`items.${key}`)" />
         </template>
-        <span v-else>{{ getItemValue(items[key], key) }}</span>
+        <span v-else>{{ items[key].value }}</span>
       </el-descriptions-item>
     </template>
   </el-descriptions>
@@ -31,7 +31,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import BaseVue from '@/admin/base/BaseVue'
 import DescriptionsState, { DescriptionsItemState } from './DescriptionsState'
-import { hideMobile, hideEmail } from '@/utils/rules'
+// import { hideMobile, hideEmail } from '@/utils/rules'
 
 @Component({
   name: 'Descriptions'
@@ -59,16 +59,16 @@ export default class Descriptions extends Mixins(BaseVue) {
     return keys
   }
 
-  getItemValue(item: DescriptionsItemState, key: string) {
-    const value = item.value
-    if (!value) return undefined
-    if (key.includes('mobile')) {
-      return hideMobile(value)
-    } else if (key.includes('email')) {
-      return hideEmail(value)
-    }
-    return value
-  }
+  // getItemValue(item: DescriptionsItemState, key: string) {
+  //   const value = item.value
+  //   if (!value) return undefined
+  //   if (key.includes('mobile')) {
+  //     return hideMobile(value)
+  //   } else if (key.includes('email')) {
+  //     return hideEmail(value)
+  //   }
+  //   return value
+  // }
 }
 </script>
 
