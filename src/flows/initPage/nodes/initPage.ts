@@ -41,7 +41,8 @@ const PAGE_CUSTOM_FLOW = {
   'third_part_account': 'flows/custom/thirdPartAccount/addUnbindButton',
   'tenant_config': 'flows/custom/tenant/deleteTenant',
   'user_token_manage': 'flows/custom/user/token/state',
-  'contacts_switch': 'flows/custom/contactsConfig'
+  'contacts_switch': 'flows/custom/contactsConfig',
+  'extension.update': 'flows/custom/extension/state',
 }
 
 export interface BasePageOptions {
