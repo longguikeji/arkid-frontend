@@ -1,4 +1,5 @@
 import { ConfigModule } from '@/store/modules/config'
+import isIp from 'is-ip'
 
 export function getUrlParamByName(name: string) {
   const urlParams = window.location.search.substring(1).split('&')
@@ -22,4 +23,12 @@ export function getSlug(): string {
     }
   }
   return slug
+}
+
+export function isIPAddress() {
+  let { host, port } = window.location
+  if (port !== '') {
+    host = host.substring(0, host.lastIndexOf(':'))
+  }
+  return isIp(host)
 }
