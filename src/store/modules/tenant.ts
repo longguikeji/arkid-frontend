@@ -4,7 +4,8 @@ import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentSta
 
 export interface ITenantState {
   tenantState: AdminComponentState
-  currentTenant: any
+  currentTenant: ITenant
+  isPlatformTenant: boolean
 }
 
 export interface ITenant {
@@ -20,6 +21,7 @@ class Tenant extends VuexModule implements ITenantState {
   tenantState: AdminComponentState = {}
   currentTenant: ITenant = {}
   tenantSwitch: boolean = true
+  isPlatformTenant: boolean = true
 
   @Mutation
   public changeState(payload: any) {
@@ -34,6 +36,11 @@ class Tenant extends VuexModule implements ITenantState {
   @Mutation
   public setTenantSwitch(value: boolean) {
     this.tenantSwitch = value
+  }
+
+  @Mutation
+  public setTenantIsPlatform(value: boolean) {
+    this.isPlatformTenant = value;
   }
   
 }
