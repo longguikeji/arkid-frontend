@@ -54,6 +54,7 @@ router.beforeEach((to, from, next) => {
   const role = UserModule.role
   const isVisibleDesktop = ConfigModule.desktop.visible
   const tenantSwitch = TenantModule.tenantSwitch
+  const isPlatformTenant = TenantModule.isPlatformTenant
   let nextUrl = ''
   const { query, path } = to
   if (isLogin) {
@@ -73,7 +74,7 @@ router.beforeEach((to, from, next) => {
           break
         case '/login':
         case '/':
-          nextUrl = (role === UserRole.Platform && tenantSwitch === true) ? '/tenant' : t
+          nextUrl = ((role === UserRole.Platform || isPlatformTenant) && tenantSwitch === true) ? '/tenant' : t
           break
         default:
           nextUrl = ''

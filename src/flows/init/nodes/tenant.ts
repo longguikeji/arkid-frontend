@@ -28,6 +28,7 @@ export class TenantNode extends APINode {
         this.url = `/api/v1/tenant/${uuid}/`
         const res = await super.run()
         if (res?.uuid) {
+          TenantModule.setTenantIsPlatform(res.uuid === uuid)
           TenantModule.changeCurrentTenant(res)
         } else {
           TenantModule.changeCurrentTenant({ uuid })
@@ -37,6 +38,7 @@ export class TenantNode extends APINode {
       this.url = `/api/v1/tenant/${slug}/slug/`
       const data = await super.run()
       if (data?.uuid) {
+        TenantModule.setTenantIsPlatform(data.uuid === uuid)
         ConfigModule.setSlug(slug)
         TenantModule.changeCurrentTenant(data)
       } else {
