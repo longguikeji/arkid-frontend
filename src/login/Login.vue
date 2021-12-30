@@ -28,6 +28,7 @@ export default class Login extends Vue {
   private tenant: LoginTenant = {}
 
   async mounted() {
+    await this.backendAuth()
     await this.getLoginPage()
   }
 
@@ -46,6 +47,18 @@ export default class Login extends Vue {
       }
     } else {
       return null
+    }
+  }
+
+  private async backendAuth() {
+    const data = await http.get('/api/v1/backend_auth')
+    const token = data.data?.token
+    if (token) {
+      LoginStore.token = token
+      this.$router.push({
+        path: '/',
+        query: this.$route.query
+      })
     }
   }
 
