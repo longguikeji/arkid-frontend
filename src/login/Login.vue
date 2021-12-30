@@ -29,7 +29,6 @@ export default class Login extends Vue {
 
   async mounted() {
     await this.backendAuth()
-    await this.backendLogin()
     await this.getLoginPage()
   }
 
@@ -61,11 +60,6 @@ export default class Login extends Vue {
         query: this.$route.query
       })
     }
-  }
-
-  private async backendLogin() {
-    const url = `/api/v1/backend_login?tenant=${this.tenantUUID}`
-    return await http.get(url)
   }
 
   private async getLoginPage() {
