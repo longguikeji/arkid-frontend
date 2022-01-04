@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity } from '../interface'
+import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity, LoginTenant } from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../http'
@@ -14,10 +14,8 @@ import { error } from '@/constants/error'
   }
 })
 export default class LoginComponent extends Vue {
-  @Prop({ required: true }) title?:string
-  @Prop({ required: true }) icon?:string
+  @Prop({ required: false }) tenant?: LoginTenant
   @Prop({ required: true }) config?:LoginPagesConfig
-  @Prop({ required: true }) complexity?: TenantPasswordComplexity
 
   imageCodeSrc: string = ''
   forms: object = {}
@@ -28,6 +26,33 @@ export default class LoginComponent extends Vue {
   btn: ButtonConfig = {}
   isChangeDelay: boolean = false
   defaultIcon = require('../../assets/arkid.png')
+  defaultBgImg = require('../../assets/bgc.png')
+
+  get name() {
+    return this.tenant?.name
+  }
+
+  get icon() {
+    return this.tenant?.icon || this.defaultIcon
+  }
+
+  get complexity() {
+    return this.tenant?.password_complexity
+  }
+
+  get loginBgStyle() {
+    const bgUrl = this.tenant?.background_url
+    return bgUrl ? {
+      backgroundImage: `url(${bgUrl})`
+    } : {
+      backgroundImage: `url(${this.defaultBgImg})`,
+      backgroundColor: '#0f62ea'
+    }
+  }
+
+  get copyright() {
+    return this.tenant?.copyright_text
+  }
 
   get fullscreen(): boolean {
     return document.body.clientWidth < 600
