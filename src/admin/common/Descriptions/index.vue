@@ -1,10 +1,11 @@
 <template>
   <el-descriptions
     :title="state.title"
-    :column="state.column"
+    :column="2"
     :size="state.size"
     :direction="state.direction"
     border
+    content-class-name="descriptions-item-container"
   >
     <template
       v-if="state.buttons"
@@ -75,5 +76,10 @@ export default class Descriptions extends Mixins(BaseVue) {
 <style lang="scss" scoped>
 ::v-deep .el-descriptions-item__cell {
   height: 42px;
+}
+
+::v-deep .el-descriptions--medium.is-bordered .el-descriptions-item__cell {
+  max-width: 500px;
+  overflow: hidden;
 }
 </style>

@@ -56,6 +56,8 @@ export interface LoginTenant {
   icon?: string
   created?: string
   password_complexity?: TenantPasswordComplexity
+  copyright_text?: string
+  background_url?: string
 }
 
 export interface TenantPasswordComplexity {

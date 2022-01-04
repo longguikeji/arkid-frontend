@@ -1,10 +1,8 @@
 <template>
   <login-component
     v-if="isRenderLoginPage"
-    :title="tenant ? tenant.name : ''"
-    :icon="tenant ? tenant.icon : ''"
+    :tenant="tenant"
     :config="config"
-    :complexity="tenant ? tenant.password_complexity : undefined"
   />
 </template>
 <script lang="ts">

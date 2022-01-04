@@ -6,14 +6,15 @@
     center
     width="450px"
     :fullscreen="fullscreen"
+    :style="loginBgStyle"
   >
     <div class="tenant-info">
       <el-image
         class="login-image"
-        :src="icon || defaultIcon"
+        :src="icon"
       />
       <span class="login-title">
-        {{ title }}
+        {{ name }}
       </span>
     </div>
     <el-tabs
@@ -126,8 +127,11 @@
         </el-button>
       </div>
     </el-dialog>
-    <div class="copyright">
-      Copyright © 2021 All Rights Reserved. 龙归科技 版权所有
+    <div
+      v-if="copyright"
+      class="copyright"
+    >
+      {{ copyright }}
     </div>
   </el-dialog>
 </template>
@@ -163,9 +167,8 @@
 .login {
   text-align: center;
   margin: 0 auto;
-  background-color: #0f62ea;
-  background-image: url('../../assets/bgc.png');
-  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: cover;
 
   &-image {
     width: 32px;

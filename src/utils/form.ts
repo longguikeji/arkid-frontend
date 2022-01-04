@@ -226,7 +226,7 @@ function createInputItem(prop: string, schema: ISchema, disabled: boolean, requi
       hint: schema.hint,
       disabled: disabled,
       name: prop,
-      type: prop === 'icon' || prop === 'logo' || schema.format === 'upload_file' ? 'link' : undefined,
+      type: prop === 'icon' || prop === 'logo' || schema.format === 'upload_file' || schema.format === 'upload_img' ? 'link' : undefined,
       pattern: schema.pattern
     }
   }
