@@ -8,14 +8,15 @@
     :fullscreen="fullscreen"
     :style="loginBgStyle"
   >
-    <div class="tenant-info">
-      <el-image
-        class="login-image"
+    <div
+      slot="title"
+      class="login-title"
+    >
+      <img
         :src="icon"
-      />
-      <span class="login-title">
-        {{ name }}
-      </span>
+        alt=""
+      >
+      <div>{{ name }}</div>
     </div>
     <el-tabs
       v-if="pageConfig"
@@ -139,51 +140,29 @@
 <script lang="ts" src="./LoginComponent.ts" />
 
 <style lang="scss" scoped>
-.tenant-info,
-.copyright {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  font-family: 'PingFang SC';
-  line-height: 60px;
-}
-
-.tenant-info {
-  top: 0;
-  background-color: #fff;
-  padding-left: 20px;
-}
-
-.copyright {
-  bottom: 0;
-  background-color: #F0F2F5;
-  font-size: 12px;
-  font-family: 'PingFang SC';
-  color: #909399;
-  text-align: center;
-}
-
 .login {
   text-align: center;
   margin: 0 auto;
   background-repeat: no-repeat;
   background-size: cover;
 
-  &-image {
-    width: 32px;
-    height: 32px;
-    vertical-align: middle;
-  }
-
   &-title {
-    color: #303133;
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 15px;
-    font-size: 20px;
-    font-family: PingFang SC;
-    font-weight: 800;
+    padding: 50px 0 10px 50px;
+    text-align: left;
+
+    img {
+      width: 48px;
+      height: 48px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    div {
+      color: #303133;
+      font-size: 24px;
+      font-family: PingFang SC;
+      font-weight: bold;
+    }
   }
 
   ::v-deep .el-dialog {
@@ -195,7 +174,7 @@
     }
     .el-dialog__body {
       border-radius: 8px;
-      padding: 56px;
+      padding: 0 50px 50px 50px;
     }
   }
 }
@@ -215,6 +194,20 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.copyright {
+  width: 100%;
+  height: 56px;
+  line-height: 56px;
+  font-size: 12px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  font-family: 'PingFang SC';
+  background-color: #F0F2F5;
+  color: #909399;
+  text-align: center;
 }
 
 ::v-deep .el-form-item.authcode {

@@ -1,7 +1,7 @@
 <template>
   <el-descriptions
     :title="state.title"
-    :column="2"
+    :column="state.column || 2"
     :size="state.size"
     :direction="state.direction"
     border
