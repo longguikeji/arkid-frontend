@@ -144,12 +144,13 @@
   position: fixed;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 56px;
   font-family: 'PingFang SC';
-  line-height: 60px;
+  line-height: 56px;
 }
 
 .tenant-info {
+  position: absolute;
   top: 0;
   background-color: #fff;
   padding-left: 20px;
