@@ -57,7 +57,7 @@ export default class extends Vue {
   async created() {
     if (this.page) {
       const state = Object.create({ _pages_: [...this.cards], _cards_: this.cards, _tabs_: [] })
-      await runFlowByFile('flows/initPage', { state }).then(_ => {
+      await runFlowByFile('flows/initPage', { state }).then(() => {
         AdminModule.setAdminState(state)
       })
     }

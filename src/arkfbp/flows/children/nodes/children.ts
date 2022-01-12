@@ -6,7 +6,10 @@ export class ChildrenNode extends Fetch {
     const { com } = this.inputs
     const res = await super.run()
     const data = getTreeData(res.results)
-    const node = com.state.node
-    node.children = data
+    if (data && data.length > 0) {
+      const node = com.state.node
+      node.children.splice(0, node.children.length)
+      node.children = data
+    }
   }
 }

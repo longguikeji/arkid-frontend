@@ -25,7 +25,7 @@ export default class LoginComponent extends Vue {
   agreementVisible: boolean = false
   btn: ButtonConfig = {}
   isChangeDelay: boolean = false
-  defaultIcon = require('../../assets/arkid.png')
+  defaultIcon = require('../../assets/logo.png')
   defaultBgImg = require('../../assets/bgc.png')
 
   get name() {

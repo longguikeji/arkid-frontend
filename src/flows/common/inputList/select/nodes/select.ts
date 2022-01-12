@@ -27,7 +27,7 @@ export class SelectNode extends FunctionNode {
       }
       if (!isExistThisValue) listData.push(item)
     } else {
-      listData[0] = item
+      listData.splice(0, 1, item)
     }
   }
 }
