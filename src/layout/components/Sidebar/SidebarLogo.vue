@@ -11,7 +11,7 @@
         :to="to"
       >
         <img
-          :src="currentTenantContent.icon ? currentTenantContent.icon : 'favicon.ico'"
+          :src="currentTenantContent.icon ? currentTenantContent.icon : logo"
           class="sidebar-logo"
         >
       </router-link>
@@ -22,7 +22,7 @@
         :to="to"
       >
         <img
-          :src="currentTenantContent.icon ? currentTenantContent.icon : 'favicon.ico'"
+          :src="currentTenantContent.icon ? currentTenantContent.icon : logo"
           class="sidebar-logo"
         >
         <h1 class="sidebar-title">
@@ -44,6 +44,7 @@ export default class extends Vue {
   @Prop({ required: true }) private collapse!: boolean
 
   private title = '北京龙归科技有限公司'
+  private logo = require('@/assets/logo.png')
 
   get currentTenantContent() {
     return TenantModule.currentTenant

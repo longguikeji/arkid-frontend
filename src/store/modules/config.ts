@@ -57,7 +57,7 @@ class Config extends VuexModule implements IConfigState {
     isOpen: true
   }
   public user: IUserConfig = {
-    isEditFields: [],
+    isEditFields: undefined,
     isLoggingDevice: true,
     isLoggingIp: true,
     isLogout: true,
