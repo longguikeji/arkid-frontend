@@ -176,19 +176,19 @@ export class ActionNode extends FunctionNode {
     const state = this._temp
     state.tree!.action = 'node'
     const actions = state.actions!
-    actions!.node = [
+    actions.node = [
       {
         name: 'arkfbp/flows/node'
       }
     ]
     if (path && method) {
-      actions!.node.push({
+      actions.node.push({
         name: 'arkfbp/flows/children',
         url: path, method
       })
     }
     if (next) {
-      actions!.node.push(`${next}.fetch`)
+      actions.node.push(`${next}.fetch`)
     }
   }
 

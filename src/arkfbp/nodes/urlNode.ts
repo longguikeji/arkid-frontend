@@ -75,6 +75,7 @@ export class UrlNode extends FunctionNode {
     }
     if (this._url.includes('{')) {
       FlowModule.stopRunFlow()
+      return null
     } else {
       this.inputs.url = this._url
       return this.inputs

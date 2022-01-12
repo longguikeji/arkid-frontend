@@ -92,13 +92,13 @@ export default class extends Mixins(BaseVue) {
     return true
   }
 
-  handleNodeClick(data: TreeNodeProps) {
+  async handleNodeClick(data: TreeNodeProps) {
     this.state.node = data
     if (this.state.action) {
-      this.runAction(this.state.action)
+      await this.runAction(this.state.action)
     }
     if (this.state.nodeClickAction) {
-      this.runAction(this.state.nodeClickAction)
+      await this.runAction(this.state.nodeClickAction)
     }
   }
 
