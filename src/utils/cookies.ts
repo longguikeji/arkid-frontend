@@ -12,3 +12,6 @@ export const setLanguage = (language: string) => Cookies.set(languageKey, langua
 const sizeKey = 'size'
 export const getSize = () => Cookies.get(sizeKey)
 export const setSize = (size: string) => Cookies.set(sizeKey, size)
+
+const uuidKey = 'CURRENT_TENANT'
+export const setTenant = (uuid: string) => localStorage.setItem(uuidKey, uuid)
