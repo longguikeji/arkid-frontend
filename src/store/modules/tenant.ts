@@ -1,6 +1,7 @@
 import { VuexModule, Module, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
 import AdminComponentState from '@/admin/common/AdminComponent/AdminComponentState'
+import { setTenant } from '@/utils/cookies'
 
 export interface ITenantState {
   tenantState: AdminComponentState
@@ -31,6 +32,9 @@ class Tenant extends VuexModule implements ITenantState {
   @Mutation
   public changeCurrentTenant(payload: any) {
     this.currentTenant = payload
+    if (payload?.uuid) {
+      setTenant(payload.uuid)
+    }
   }
 
   @Mutation
