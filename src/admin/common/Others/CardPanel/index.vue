@@ -57,7 +57,7 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleClick() {
-    let { clickAction: action, url } = this.state
+    let { action, url } = this.state
     if (action) {
       this.runAction(action)
     } else if (url) {
@@ -100,6 +100,7 @@ export default class extends Mixins(BaseVue) {
     top: 50%;
     transform: translateY(-50%);
   }
+
   .card-panel-text {
     position: absolute;
     cursor: pointer;

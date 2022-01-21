@@ -45,6 +45,9 @@ export class DesktopNode extends FunctionNode {
           dialogs: {}
         }
       }
+      const desktopState = state[page].state
+
+      // global manage app list
       if (dep.global) {
         const { tag: manageTag } = dep.global.manage
         if (manageTag) {
@@ -53,7 +56,6 @@ export class DesktopNode extends FunctionNode {
             const { page: manageDep, description: manageDescription, name: manageName } = info
             if (manageDep) {
               const { init: manageInit, local: manageLocal } = manageDep
-              const desktopState = state[page].state
               desktopState.dialogs[manageName] = {
                 page: manageName,
                 visible: false
@@ -114,6 +116,46 @@ export class DesktopNode extends FunctionNode {
           }
         }
       }
+
+      // selectAccount
+      // auto fill form browser plugin
+      state.selectAccount = {
+        type: "List",
+        state: {
+          title: "选择",
+          items: [],
+          isActive: true,
+          disabled: true
+        }
+      };
+      desktopState.dialogs.selectAccount = {
+        visible: false,
+        page: "selectAccount"
+      };
+      desktopState.actions.closeSelectAccountDialog = [
+        {
+          name: "arkfbp/flows/assign",
+          response: {
+            "dialogs.selectAccount.visible": false
+          }
+        }
+      ];
+      desktopState.actions.openSelectAccountDialog = [
+        {
+          name: "arkfbp/flows/assign",
+          response: {
+            "dialogs.selectAccount.visible": true
+          }
+        }
+      ];
+      desktopState.actions.selectAccount = [
+        {
+          name: "flows/custom/desktop/select",
+          url: "/api/v1/tenant/{tenant_uuid}/user_app_account/",
+          method: "get"
+        },
+        "openSelectAccountDialog"
+      ];
     }
   }
 }
