@@ -5,6 +5,6 @@ export default interface CardPanelState {
   url?: string
   uuid?: string
   class?: string // custom class for styles
-  clickAction?: string | Function // display more operations
+  action?: string // click action
   data?: any
 }

@@ -22,7 +22,7 @@ export class TenantFetch extends APINode {
               logo: item.icon,
               // description: dateParser(item.created, 'YYYY-MM-DD HH:mm:ss'),
               tags: [ { label: '角色', value: item.role } ],
-              clickAction: 'switch',
+              action: 'switch',
               data: item
             }
           })
