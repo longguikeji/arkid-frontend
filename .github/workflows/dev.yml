@@ -39,19 +39,14 @@ jobs:
           harbor.longguikeji.com/ark-releases/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
           longguikeji/arkid-fe:v2dev-${{ github.run_number }}
           longguikeji/arkid-fe:v2dev
-    - name: deploy to cluster
-      uses: steebchen/kubectl@v2.0.0
-      with: # defaults to latest kubectl binary version
-        config: ${{ secrets.KUBE_CONFIG_HW }}
-        command: -n arkidv2 --insecure-skip-tls-verify=true set image --record deployment/arkidv2-fe arkid-fe=harbor.longguikeji.com/ark-releases/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
     - name: Feishu 报忧
       if: ${{ failure() }}
       uses: wangsijie/feishu-bot@v1
       with:
         uuid: ${{ secrets.FEISHU_UUID }}
         data: |
-          {"msg_type":"post","content":{"post":{"zh_cn":{"title":"${{ github.event.repository.name }}流水线状态通知",
-          "content":[[{"tag":"text","text":"${{ github.event.repository.name }} 项目流水线有更新: "},
+          {"msg_type":"post","content":{"post":{"zh_cn":{"title":"${{ github.event.repository.name }} v2 vue2 镜像构建通知",
+          "content":[[{"tag":"text","text":"${{ github.event.repository.name }} v2 vue2 镜像构建通知: "},
           {"tag":"a","text":"${{ github.event.ref }} 分支构建失败，点击查看具体日志","href":"https://github.com/longguikeji/arkid-frontend/actions/workflows/dev.yml"}]]}}}}
     - name: Feishu 报喜
       if: ${{ success() }}
@@ -59,6 +54,6 @@ jobs:
       with:
         uuid: ${{ secrets.FEISHU_UUID }}
         data: |
-          {"msg_type":"post","content":{"post":{"zh_cn":{"title": "${{ github.event.repository.name }}流水线状态通知",
-          "content":[[{"tag":"text","text":"${{ github.event.repository.name }} 项目流水线有更新: "},
-          {"tag":"a","text":"${{ github.event.ref }} 分支构建并部署成功，点击查看部署后的效果","href":"http://arkid.vtwo.longguikeji.com/"}]]}}}}
+          {"msg_type":"post","content":{"post":{"zh_cn":{"title": "${{ github.event.repository.name }} v2 vue2 镜像构建通知",
+          "content":[[{"tag":"text","text":"${{ github.event.repository.name }} v2 vue2 镜像构建通知: "},
+          {"tag":"a","text":"${{ github.event.ref }} 分支镜像构建成功：longguikeji/arkid-fe:v2dev-${{ github.run_number }}","href":"http://arkid.vtwo.longguikeji.com/"}]]}}}}
