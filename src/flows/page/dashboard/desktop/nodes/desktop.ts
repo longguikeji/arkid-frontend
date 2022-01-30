@@ -1,6 +1,4 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-// import { getSchemaByPath } from '@/utils/schema'
-// import generateForm from '@/utils/form'
 import OpenAPI, { ITagPageAction } from '@/config/openapi'
 
 export class DesktopNode extends FunctionNode {
@@ -119,43 +117,43 @@ export class DesktopNode extends FunctionNode {
 
       // selectAccount
       // auto fill form browser plugin
-      state.selectAccount = {
-        type: "List",
-        state: {
-          title: "选择",
-          items: [],
-          isActive: true,
-          disabled: true
-        }
-      };
-      desktopState.dialogs.selectAccount = {
-        visible: false,
-        page: "selectAccount"
-      };
-      desktopState.actions.closeSelectAccountDialog = [
-        {
-          name: "arkfbp/flows/assign",
-          response: {
-            "dialogs.selectAccount.visible": false
-          }
-        }
-      ];
-      desktopState.actions.openSelectAccountDialog = [
-        {
-          name: "arkfbp/flows/assign",
-          response: {
-            "dialogs.selectAccount.visible": true
-          }
-        }
-      ];
-      desktopState.actions.selectAccount = [
-        {
-          name: "flows/custom/desktop/select",
-          url: "/api/v1/tenant/{tenant_uuid}/user_app_account/",
-          method: "get"
-        },
-        "openSelectAccountDialog"
-      ];
+      // state.selectAccount = {
+      //   type: "List",
+      //   state: {
+      //     title: "选择",
+      //     items: [],
+      //     isActive: true,
+      //     disabled: true
+      //   }
+      // };
+      // desktopState.dialogs.selectAccount = {
+      //   visible: false,
+      //   page: "selectAccount"
+      // };
+      // desktopState.actions.closeSelectAccountDialog = [
+      //   {
+      //     name: "arkfbp/flows/assign",
+      //     response: {
+      //       "dialogs.selectAccount.visible": false
+      //     }
+      //   }
+      // ];
+      // desktopState.actions.openSelectAccountDialog = [
+      //   {
+      //     name: "arkfbp/flows/assign",
+      //     response: {
+      //       "dialogs.selectAccount.visible": true
+      //     }
+      //   }
+      // ];
+      // desktopState.actions.selectAccount = [
+      //   {
+      //     name: "flows/custom/desktop/select",
+      //     url: "/api/v1/tenant/{tenant_uuid}/user_app_account/",
+      //     method: "get"
+      //   },
+      //   "openSelectAccountDialog"
+      // ];
     }
   }
 }

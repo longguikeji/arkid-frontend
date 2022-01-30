@@ -28,7 +28,7 @@ export async function runFlowByActionName(com: any, action: string, previous?: a
   if (page) {
     const state = index !== -1 ? com.getAnyPageState(page) : (com.state.actions ? com.state : com.getAnyPageState(page))
     const actions = state.actions
-    const flows = actions[action]
+    const flows = actions && actions[action]
     if (flows && flows.length > 0) {
       FlowModule.startRunFlow()
       for (let i = 0, l = flows.length; i < l; i++) {

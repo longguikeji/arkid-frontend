@@ -23,9 +23,10 @@ export class ChangeStateNode extends APINode {
       results.forEach(app => {
         const uuid = app.uuid
         const index = data.indexOf(uuid)
-        if (app.type === 'auto_form_fill') {
-          app.action = "selectAccount";
-        }
+        // TODO: auto_form_fill type app
+        // if (app.type === 'auto_form_fill') {
+        //   app.action = "selectAccount";
+        // }
         if (index !== -1) {
           firstArr[index] = {
             type: "CardPanel",
