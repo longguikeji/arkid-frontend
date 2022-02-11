@@ -57,11 +57,15 @@ export default class extends Mixins(BaseVue) {
   }
 
   handleClick() {
-    let { action, url } = this.state
+    let { action, url, type, uuid } = this.state
     if (action) {
       this.runAction(action)
     } else if (url) {
       if (this.token) url = url.replace(/\{token\}/g, this.token)
+      if (type === 'auto_form_fill' && uuid) {
+        const prefix = url.includes('?') ? '&' : '?'
+        url = `${url}${prefix}app_uuid=${uuid}`
+      }
       window.open(url, '_blank')
     } else {
       this.$message({

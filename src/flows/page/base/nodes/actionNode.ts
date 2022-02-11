@@ -306,6 +306,22 @@ export class ActionNode extends FunctionNode {
         if (method === 'delete') state.actions![key].push('fetch')
         if (request) state.actions![key].push('fetch')
         break
+      case 'open':
+        const items = state.form?.items
+        const openParams = {}
+        if (items) {
+          Object.keys(items).forEach(key => {
+            openParams[key] = `form.items.${key}.state.value`
+          })
+        }
+        state.actions![key] = [
+          {
+            name: "arkfbp/flows/open",
+            url: path,
+            request: openParams
+          }
+        ];
+        break
       default:
         const { required, mapping } = getActionMapping(path, method)
         const parent = page.split('.').slice(0, -1).join('.')
