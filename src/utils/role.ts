@@ -22,6 +22,7 @@ export function getApiRolesByPath(path: string, method: string) {
 
 export function hasPermissionByPath(path: string, method: string) {
   let currentRole = UserModule.role
+  if (method === 'open') return true
   if (currentRole === UserRole.Platform) return true
   const roles = getApiRolesByPath(path, method)
   return roles.includes(currentRole)

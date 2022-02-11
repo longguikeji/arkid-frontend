@@ -1,5 +1,4 @@
 import { APINode } from '@/arkfbp/nodes/apiNode'
-import { dateParser } from '@/utils/common'
 
 export class TenantFetch extends APINode {
   async run() {
@@ -20,7 +19,6 @@ export class TenantFetch extends APINode {
             state: {
               name: item.name,
               logo: item.icon,
-              // description: dateParser(item.created, 'YYYY-MM-DD HH:mm:ss'),
               tags: [ { label: '角色', value: item.role } ],
               action: 'switch',
               data: item
