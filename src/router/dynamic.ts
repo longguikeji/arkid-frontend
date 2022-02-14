@@ -16,6 +16,14 @@ interface RouteMeta {
   roles?: Array<string>
 }
 
+const USER_COMMON_ROUTES = [
+  "/message_center",
+  "/desktop",
+  "/mine",
+  "/contacts",
+  "/notice"
+];
+
 // 根据OpenAPI信息动态生成当前登录用户所拥有权限的路由
 export function getDynamicRoutes() {
   const openAPI: ISpec | undefined = OpenAPI.instance.config
@@ -108,7 +116,7 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
   let roleRoutes = routes
   if (role === UserRole.User || role === UserRole.Platform) {
     roleRoutes = routes.filter((route) => {
-      return route.path !== '/system' && route.path !== '/tmanage'
+      return route.path ? USER_COMMON_ROUTES.includes(route.path) : false
     })
   } else if (role === UserRole.Tenant) {
     roleRoutes = routes.filter((route) => {
