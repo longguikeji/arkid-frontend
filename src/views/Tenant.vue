@@ -15,11 +15,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component } from 'vue-property-decorator'
 import { TenantModule } from '@/store/modules/tenant'
 import { runFlowByFile } from '@/arkfbp/index'
-import { UserRole, UserModule } from '@/store/modules/user'
-import { ConfigModule } from '@/store/modules/config'
 
 @Component({
   name: 'Tenant'
@@ -29,24 +27,12 @@ export default class extends Vue {
   initCompleted = false
   isShowClose = false
 
-  private get state() {
-    return TenantModule.tenantState
-  }
-
   private get page() {
     return this.$route.meta.page
   }
 
-  private get isVisibleDesktop() {
-    return ConfigModule.desktop.visible
-  }
-
   goHome() {
-    if (this.isVisibleDesktop) {
-      this.$router.push('/desktop')
-    } else {
-      this.$router.push('/mine/profile')
-    }
+    this.$router.push('/desktop')
   }
 
   async created() {
