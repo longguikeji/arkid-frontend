@@ -9,11 +9,8 @@ import InputList from '@/admin/common/Form/InputList/index.vue'
 import Select from '@/admin/common/Form/Select/index.vue'
 import Tree from '@/admin/common/data/Tree/index.vue'
 import Tabs from '@/admin/common/Navigation/Tabs/index.vue'
-import RadioGroup from '@/admin/common/Form/Radio/index.vue'
-import CheckBoxGroup from '@/admin/common/Form/Check/index.vue'
 import InputNumber from '@/admin/common/Form/InputNumber/index.vue'
 import SwitchForm from '@/admin/common/Form/Switch/index.vue'
-import Time from '@/admin/common/Form/TimePicker/index.vue'
 import DatePicker from '@/admin/common/Form/DatePicker/index.vue'
 import Tag from '@/admin/common/data/Tag/index.vue'
 import Upload from '@/admin/common/Form/Upload/index.vue'
@@ -47,11 +44,8 @@ Vue.component('InputList', InputList)
 Vue.component('Select', Select)
 Vue.component('Tree', Tree)
 Vue.component('Tabs', Tabs)
-Vue.component('RadioGroup', RadioGroup)
-Vue.component('CheckBoxGroup', CheckBoxGroup)
 Vue.component('InputNumber', InputNumber)
 Vue.component('SwitchForm', SwitchForm)
-Vue.component('Time', Time)
 Vue.component('DatePicker', DatePicker)
 Vue.component('Tag', Tag)
 Vue.component('Upload', Upload)
