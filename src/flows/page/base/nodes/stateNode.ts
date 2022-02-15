@@ -493,6 +493,7 @@ export class StateNode extends FunctionNode {
     const state = this._temp
     const columns = state.table!.columns
     const len = columns?.length as number
+    if (!len) return
     if (columns![len - 1].prop !== 'actions') {
       state.table!.columns?.push(
         {
@@ -528,13 +529,11 @@ export class StateNode extends FunctionNode {
   getButtonState(props: IButtonProps) {
     const pageType = this._type
     const { key, description, mode, role, icon, tag, path, method } = props
-    let available = true
     if (path && method) { // Permission
       if (!hasPermissionByPath(path, method)) return null
     } else if (tag) {
       if (!hasPermission(tag)) return null
     }
-    if (!available) return null
     let action = '', type = 'primary'
     switch (mode) {
       case 'open':
