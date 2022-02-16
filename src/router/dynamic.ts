@@ -120,7 +120,7 @@ function filterRoutes(routes: RouteConfig[]): RouteConfig[] {
     })
   } else if (role === UserRole.Tenant) {
     roleRoutes = routes.filter((route) => {
-      return route.path !== '/system'
+      return route.path !== '/system' && route.path !== '/extension'
     })
   }
   return roleRoutes
