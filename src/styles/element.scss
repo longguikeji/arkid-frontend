@@ -14,3 +14,8 @@
     background-color: #E7F3FF;
   }
 }
+
+::v-deep .el-table__empty-block {
+  width: 100% !important;
+  min-height: 200px !important;
+}
