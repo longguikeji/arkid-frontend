@@ -48,6 +48,11 @@ export default class Login extends Vue {
     }
   }
 
+  get next(): string | null {
+    const next = this.$route.query.next
+    return next ? typeof next === 'string' ? next : next[0] : null
+  }
+
   private async backendAuth() {
     const data = await http.get('/api/v1/backend_auth')
     const token = data.data?.token
@@ -62,20 +67,30 @@ export default class Login extends Vue {
 
   private async getLoginPage() {
     // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
-    const query = this.$route.query
-    let next: any = query && query.next
-    if (next) {
-      const keys = Object.keys(query)
+    if (this.next) {
+      let nextUrl = this.next
+      const query = this.$route.query
+      const keys = Object.keys(this.$route.query)
       for (const key of keys) {
+        if (key === 'is_alert') {
+          LoginStore.token = null
+          this.$message({
+            message: query[key] as string,
+            type: 'error',
+            showClose: true
+          })
+        }
         if (key === 'next') continue
-        next += `&${key}=${query[key]}`
+        if (nextUrl.includes(`&${key}=`)) continue
+        if (nextUrl.includes(`?${key}=`)) continue
+        nextUrl += `&${key}=${query[key]}`
       }
-      if (next.indexOf('?') === -1) next = next.replace('&', '?')
-      next = window.location.origin + next
-      LoginStore.NextUrl = next
+      if (nextUrl.indexOf('?') === -1) nextUrl = nextUrl.replace('&', '?')
+      nextUrl = window.location.origin + nextUrl
+      LoginStore.NextUrl = nextUrl
       if (LoginStore.token) {
-        const prefix = next.includes('?') ? '&' : '?'
-        window.location.replace(next + `${prefix}token=` + LoginStore.token)
+        const prefix = nextUrl.includes('?') ? '&' : '?'
+        window.location.replace(nextUrl + `${prefix}token=` + LoginStore.token)
       }
     }
 
