@@ -36,5 +36,4 @@ export default class LoginStore {
   public static TenantUUID:string | null
 
   public static CodeFileName: string = ''
-
 }

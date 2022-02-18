@@ -67,6 +67,8 @@ export default class Login extends Vue {
 
   private async getLoginPage() {
     // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
+    let hasPermission = true
+    let info = ''
     if (this.next) {
       let nextUrl = this.next
       const query = this.$route.query
@@ -74,11 +76,9 @@ export default class Login extends Vue {
       for (const key of keys) {
         if (key === 'is_alert') {
           LoginStore.token = null
-          this.$message({
-            message: query[key] as string,
-            type: 'error',
-            showClose: true
-          })
+          hasPermission = false
+          info = query[key] as string
+          continue
         }
         if (key === 'next') continue
         if (nextUrl.includes(`&${key}=`)) continue
@@ -92,6 +92,17 @@ export default class Login extends Vue {
         const prefix = nextUrl.includes('?') ? '&' : '?'
         window.location.replace(nextUrl + `${prefix}token=` + LoginStore.token)
       }
+    }
+
+    if (!hasPermission) {
+      this.$nextTick(() => {
+        this.$message({
+          message: info as string,
+          type: 'error',
+          showClose: true,
+          duration: 3000
+        })
+      })
     }
 
     LoginStore.TenantUUID = this.tenantUUID
@@ -136,5 +147,3 @@ export default class Login extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>
