@@ -37,15 +37,7 @@ export default class Login extends Vue {
 
   get tenantUUID(): string | null {
     const tenant = this.$route.query.tenant
-    if (tenant) {
-      if (typeof tenant === 'string') {
-        return tenant
-      } else {
-        return tenant[0]
-      }
-    } else {
-      return null
-    }
+    return tenant ? typeof tenant === 'string' ? tenant : tenant[0] : null
   }
 
   get next(): string | null {
@@ -94,17 +86,6 @@ export default class Login extends Vue {
       }
     }
 
-    if (!hasPermission) {
-      this.$nextTick(() => {
-        this.$message({
-          message: info as string,
-          type: 'error',
-          showClose: true,
-          duration: 3000
-        })
-      })
-    }
-
     LoginStore.TenantUUID = this.tenantUUID
     let url = '/api/v1/loginpage/'
     if (LoginStore.TenantUUID) {
@@ -127,6 +108,15 @@ export default class Login extends Vue {
     this.config = config
     this.tenant = tenant
     this.isRenderLoginPage = true
+
+    if (!hasPermission) {
+      this.$message({
+        message: info as string,
+        type: 'error',
+        showClose: true,
+        duration: 3000
+      })
+    }
   }
 
   // third-party
