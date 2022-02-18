@@ -229,3 +229,7 @@ aside {
 .el-pagination {
   border: 1px solid #e6ebf5;
 }
+
+.el-message {
+  z-index: 100000 !important;
+}
