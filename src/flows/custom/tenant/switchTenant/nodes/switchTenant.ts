@@ -10,17 +10,29 @@ export class SwitchTenant extends FunctionNode {
     const tenant = client.data
     if (!tenant) return
     const { origin, desktop } = ConfigModule
-    const path = desktop.visible ? '/desktop' : '/mine/profile'
+    const path = desktop.visible ? '/desktop' : '/mine'
     const { slug, use_slug } = tenant
     TenantModule.changeCurrentTenant(tenant)
     let url = ''
     if (slug && use_slug) {
       ConfigModule.setSlug(slug)
-      url = origin.replace(window.location.protocol + '//', window.location.protocol + '//' + slug + '.') + path + getBaseUrl() + '?token=' + getToken()
+      url =
+        origin.replace(
+          window.location.protocol + '//',
+          window.location.protocol + '//' + slug + '.',
+        ) +
+        path +
+        getBaseUrl() +
+        '?token=' +
+        getToken()
       window.location.replace(url)
     } else {
       ConfigModule.setSlug()
-      url = origin + path + getBaseUrl() + `?tenant=${TenantModule.currentTenant.uuid}&token=${getToken()}`
+      url =
+        origin +
+        path +
+        getBaseUrl() +
+        `?tenant=${TenantModule.currentTenant.uuid}&token=${getToken()}`
     }
     window.location.replace(url)
   }

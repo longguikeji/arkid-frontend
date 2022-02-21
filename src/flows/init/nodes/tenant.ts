@@ -1,7 +1,8 @@
-import { APINode } from "@/arkfbp/nodes/apiNode"
+import { APINode } from '@/arkfbp/nodes/apiNode'
 import { TenantModule } from '@/store/modules/tenant'
 import { getSlug, getUrlParamByName, isIPAddress } from '@/utils/url'
 import { ConfigModule } from '@/store/modules/config'
+import { updateTitle, updateIcon } from '@/utils'
 
 export class TenantNode extends APINode {
   async run() {
@@ -19,10 +20,11 @@ export class TenantNode extends APINode {
       TenantModule.setTenantSwitch(outputs.switch)
     }
 
-    // get current slug    
+    // get current slug
     const slug = getSlug()
     if (slug === '' || isIPAddress()) {
-      uuid = getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid') || uuid
+      uuid =
+        getUrlParamByName('tenant') || getUrlParamByName('tenant_uuid') || uuid
       if (uuid) {
         uuid = uuid.replace(/-/g, '')
         this.url = `/api/v1/tenant/${uuid}/`
@@ -45,5 +47,11 @@ export class TenantNode extends APINode {
         TenantModule.changeCurrentTenant({ uuid })
       }
     }
+
+    const { name, icon } = TenantModule.currentTenant
+    if (name) {
+      updateTitle(name)
+    }
+    updateIcon(icon)
   }
 }
