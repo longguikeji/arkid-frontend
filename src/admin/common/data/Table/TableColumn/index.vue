@@ -18,8 +18,9 @@
       />
     </template>
     <template slot-scope="scope">
+      <span v-if="state.getCellVisible && !state.getCellVisible(scope.row)">无</span>
       <AdminComponent
-        v-if="state.scope"
+        v-else-if="state.scope"
         :key="tableColumnScopeKey"
         :path="getAdminScopePath(scope)"
       />
@@ -31,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TableColumnState from './TableColumnState'
 import AdminComponent from '@/admin/common/AdminComponent/index.vue'
 import BaseVue from '@/admin/base/BaseVue'
@@ -58,7 +59,9 @@ export default class extends Mixins(BaseVue) {
   getAdminScopePath(scope) {
     if (!this.state.scopeColumn) this.state.scopeColumn = []
     const { state, type } = this.state.scope!
-    const index = scope.$index; const row = scope.row
+    const index = scope.$index
+    const row = scope.row
+
     if (isArray(state)) {
       this.state.scopeColumn[index] = {
         type,
