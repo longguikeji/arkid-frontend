@@ -38,11 +38,14 @@
         <span class="custom-tree-node-content">{{ node.label }}</span>
         <template v-if="state.slot">
           <span
-            v-for="(item, index) in state.slot"
-            :key="index"
+            v-if="!state.getSlotVisible || state.getSlotVisible(data)"
             class="custom-tree-node-other"
           >
-            <AdminComponent :path="getTreeNodeSlotPath(item, data)" />
+            <AdminComponent
+              v-for="(item, index) in state.slot"
+              :key="index"
+              :path="getTreeNodeSlotPath(item, data)"
+            />
           </span>
         </template>
       </span>
@@ -68,7 +71,7 @@ export default class extends Mixins(BaseVue) {
     return this.$state as TreeState
   }
 
-  private filterText = '';
+  private filterText = ''
 
   private nodeState = {}
 
@@ -110,9 +113,10 @@ export default class extends Mixins(BaseVue) {
     if (uuid) {
       this.state.slotState[uuid] = {
         type: item.type,
-        state: item.state.map(n => {
+        state: item.state.map((n) => {
           return {
-            ...n, data: node
+            ...n,
+            data: node
           }
         })
       }
@@ -135,6 +139,6 @@ export default class extends Mixins(BaseVue) {
   flex: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between
+  justify-content: space-between;
 }
 </style>
