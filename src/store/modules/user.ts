@@ -21,10 +21,10 @@ export interface IUserApp {
 }
 
 export enum UserRole {
-  User = 'general user',
-  Tenant = 'tenant admin',
-  Global = 'global admin',
-  Platform = 'platform user'
+  User = 'generaluser',
+  Tenant = 'tenantadmin',
+  Global = 'globaladmin',
+  Platform = 'platformuser'
 }
 
 @Module({ dynamic: true, store, name: 'user' })
