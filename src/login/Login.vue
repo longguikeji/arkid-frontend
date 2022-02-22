@@ -46,7 +46,7 @@ export default class Login extends Vue {
   }
 
   private async backendAuth() {
-    const data = await http.get('/api/v1/backend_auth')
+    const data = await http.get('/api/v1/backend_auth/')
     const token = data.data?.token
     if (token) {
       LoginStore.token = token
