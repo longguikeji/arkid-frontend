@@ -36,9 +36,15 @@ jobs:
         platforms: linux/amd64
         push: true
         tags: |
-          harbor.longguikeji.com/ark-releases/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
+          ${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}-${{steps.get-short-id.outputs.id}}
+          ${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}
           longguikeji/arkid-fe:v2dev-${{ github.run_number }}
           longguikeji/arkid-fe:v2dev
+    - name: deploy to cluster
+      uses: steebchen/kubectl@v2.0.0
+      with: # defaults to latest kubectl binary version
+        config: ${{ secrets.KUBE_CONFIG_LG }}
+        command: -n dev-arkidv2saas --insecure-skip-tls-verify=true set image --record deployment/dev-arkidv2saas-fe arkid-fe=${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}
     - name: Feishu 报忧
       if: ${{ failure() }}
       uses: wangsijie/feishu-bot@v1
@@ -56,4 +62,4 @@ jobs:
         data: |
           {"msg_type":"post","content":{"post":{"zh_cn":{"title": "${{ github.event.repository.name }} v2 vue2 镜像构建通知",
           "content":[[{"tag":"text","text":"${{ github.event.repository.name }} v2 vue2 镜像构建通知: "},
-          {"tag":"a","text":"${{ github.event.ref }} 分支镜像构建成功：longguikeji/arkid-fe:v2dev-${{ github.run_number }}","href":"http://arkid.vtwo.longguikeji.com/"}]]}}}}
+          {"tag":"a","text":"${{ github.event.ref }} 分支镜像构建成功：longguikeji/arkid-fe:v2dev-${{ github.run_number }}","href":"https://arkidv2saas.dev.longguikeji.com/"}]]}}}}
