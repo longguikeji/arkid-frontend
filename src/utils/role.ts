@@ -21,25 +21,27 @@ export function getApiRolesByPath(path: string, method: string) {
 }
 
 export function hasPermissionByPath(path: string, method: string) {
-  let currentRole = UserModule.role
-  if (method === 'open') return true
-  if (currentRole === UserRole.Platform) return true
-  const roles = getApiRolesByPath(path, method)
-  return roles.includes(currentRole)
+  return true
+  // let currentRole = UserModule.role
+  // if (method === 'open') return true
+  // if (currentRole === UserRole.Platform) return true
+  // const roles = getApiRolesByPath(path, method)
+  // return roles.includes(currentRole)
 }
 
 export default function hasPermission(page: string | string[]) {
-  let currentRole = UserModule.role
-  if (currentRole === UserRole.Platform) return true
-  if (currentRole !== UserRole.Global && page === 'all_tenant') return false
-  let roles: string[] = []
-  if (isArray(page)) {
-    for (const p of page) {
-      roles = roles.concat(getApiRolesByPageName(p))
-    }
-  } else {
-    roles = getApiRolesByPageName(page as string)
-  }
-  // roles.length = 0 - only staged code
-  return roles.length === 0 || roles.includes(currentRole)
+  return true
+  // let currentRole = UserModule.role
+  // if (currentRole === UserRole.Platform) return true
+  // if (currentRole !== UserRole.Global && page === 'all_tenant') return false
+  // let roles: string[] = []
+  // if (isArray(page)) {
+  //   for (const p of page) {
+  //     roles = roles.concat(getApiRolesByPageName(p))
+  //   }
+  // } else {
+  //   roles = getApiRolesByPageName(page as string)
+  // }
+  // // roles.length = 0 - only staged code
+  // return roles.length === 0 || roles.includes(currentRole)
 }

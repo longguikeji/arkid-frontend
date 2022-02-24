@@ -30,7 +30,7 @@ export function getDynamicRoutes() {
   if (!openAPI?.info?.routers) return []
   const openAPIRoutes = openAPI.info.routers
   let routes: RouteConfig[] = generateRoutesByOpenAPI(openAPIRoutes)
-  routes = filterRoutes(routes)
+  // routes = filterRoutes(routes)
   return routes
 }
 
