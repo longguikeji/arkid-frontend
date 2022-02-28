@@ -53,7 +53,7 @@ http.interceptors.response.use(
       })
     }
     if (response) {
-      errorCallback(response.status)
+      // errorCallback(response.status)
       return response
     } else {
       return Promise.reject(err)
