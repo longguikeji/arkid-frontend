@@ -259,7 +259,7 @@ export class App {
 
   static async list(
     params?: {
-      keyword: string,
+      keyword?: string,
       pageSize?: number;
       page?: number;
       nodeId?: string,

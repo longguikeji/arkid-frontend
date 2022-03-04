@@ -1,8 +1,8 @@
-import {Vue, Component, Prop} from 'vue-property-decorator';
-import * as api from '@/services/oneid';
-import * as model from '@/models/oneid';
-import Choose from '@/oneid-app/comps/choose/Choose';
-import './EditManager.less';
+import * as model from '@/models/oneid'
+import Choose from '@/oneid-app/comps/choose/Choose'
+import * as api from '@/services/oneid'
+import {Component, Prop, Vue} from 'vue-property-decorator'
+import './EditManager.less'
 
 @Component({
   components: {
@@ -75,7 +75,7 @@ import './EditManager.less';
               <div class="perm-settings-main-basic-list">
                 <span class="title">基础权限：</span>
                 <CheckboxGroup v-model="permIds" @on-change="doCheckPerm">
-                  <ul v-if="basicPermOptions">
+                  <ul v-if="basicPermOptions" class="data-list">
                     <li v-for="item in basicPermOptions" :key="item.id">
                       <div class="logo">
                         <img :src="item.logo ? $fileUrl(item.logo) : defaultLogo"/>
@@ -92,7 +92,7 @@ import './EditManager.less';
               <div class="perm-settings-main-app-list">
                 <span class="title">应用权限：</span>
                 <CheckboxGroup v-model="appIds" @on-change="doCheckApp">
-                  <ul v-if="appPermOptions">
+                  <ul v-if="appPermOptions" class="data-list">
                     <li v-for="item in appPermOptions" :key="item.uid">
                       <div class="logo">
                         <img :src="item.logo ? $fileUrl(item.logo) : defaultLogo"/>
@@ -105,6 +105,19 @@ import './EditManager.less';
                     </li>
                   </ul>
                 </CheckboxGroup>
+                <div class="page-wrapper">
+                  <Page
+                    v-if="appPermOptions.length"
+                    :total="pagination.total"
+                    :page-size="pagination.pageSize"
+                    :current="pagination.current"
+                    @on-change="onPageChange"
+                    @on-page-size-change="onPageSizeChange"
+                    show-total
+                    show-sizer
+                    class="page flex-row"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -124,50 +137,67 @@ import './EditManager.less';
   `,
 })
 export default class EditManager extends Vue {
-  basicPermOptions: {id: string, name: string}[] = [];
-  appPermOptions: model.App[] = [];
+  basicPermOptions: Array<{id: string, name: string}> = []
+  appPermOptions: model.App[] = []
 
-  permIds: string[] = [];
-  appIds: string[] = [];
+  permIds: string[] = []
+  appIds: string[] = []
 
-  form: model.Node|null = null;
-  isAllPerm = false;
-  tmpPerms: {id: string, name: string}[] = [];
-  tmpApps: model.App[] = [];
-  managerUserIds: model.User[] = [];
+  // 应用权限分页
+  pagination = {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  }
 
-  chooseUser: any = null;
-  chooseScope: any = null;
+  form: model.Node|null = null
+  isAllPerm = false
+  tmpPerms: Array<{id: string, name: string}> = []
+  tmpApps: model.App[] = []
+  managerUserIds: model.User[] = []
 
-  defaultLogo: string = require('../../../assets/icons/icon-applicationlist@2x.png');
+  chooseUser: any = null
+  chooseScope: any = null
+
+  defaultLogo: string = require('../../../assets/icons/icon-applicationlist@2x.png')
 
   get isNew() {
-    return this.$route.params.id === '0';
+    return this.$route.params.id === '0'
   }
 
   async loadData() {
-    await this.loadOptions();
-    await this.loadForm();
+    await this.loadOptions()
+    await this.loadForm()
   }
 
   async loadOptions() {
-    const {results: basicPermOptions} = await api.Config.retrieveMetaPermList();
-    const {results: appPermOptions} = await api.App.list();
+    const {results: basicPermOptions} = await api.Config.retrieveMetaPermList()
 
-    this.basicPermOptions = basicPermOptions;
-    this.appPermOptions = appPermOptions;
+    this.basicPermOptions = basicPermOptions
+
+    await this.loadAppList()
+  }
+
+  async loadAppList() {
+    const {results: appPermOptions, count} = await api.App.list({
+      page: this.pagination.current,
+      pageSize: this.pagination.pageSize,
+    })
+
+    this.appPermOptions = appPermOptions
+    this.pagination.total = count
   }
 
   async loadForm() {
-    const {id} = this.$route.params;
+    const {id} = this.$route.params
     if (!this.isNew) {
-      const managerList = await api.Node.Manager.list();
-      this.form = managerList.find(i => i.id === id);
+      const managerList = await api.Node.Manager.list()
+      this.form = managerList.find(i => i.id === id)
 
-      this.permIds = this.form!.managerGroup!.perms.map(i => i.id);
-      this.appIds = this.form!.managerGroup!.apps.map(i => i.uid);
+      this.permIds = this.form!.managerGroup!.perms.map(i => i.id)
+      this.appIds = this.form!.managerGroup!.apps.map(i => i.uid)
     } else {
-      this.form = new model.Node();
+      this.form = new model.Node()
     }
   }
 
@@ -177,8 +207,8 @@ export default class EditManager extends Vue {
       onlyUser: true,
       multiple: true,
       checkedUserIds: this.form!.users.map(u => u.id),
-    };
-    this.$nextTick(() => this.$refs.chooseUser.show());
+    }
+    this.$nextTick(() => this.$refs.chooseUser.show())
   }
 
   doStartChooseScope() {
@@ -187,83 +217,83 @@ export default class EditManager extends Vue {
       multiple: true,
       checkedIds: this.form!.managerGroup!.nodes.map(n => n.id),
       checkedUserIds: this.form!.managerGroup!.users.map(u => u.id),
-    };
-    this.$nextTick(() => this.$refs.chooseScope.show());
+    }
+    this.$nextTick(() => this.$refs.chooseScope.show())
   }
 
   onChooseUserOk(nodes: model.Node[], users: model.User[]) {
-    this.form!.users = users;
+    this.form!.users = users
   }
 
   onChooseScopeOk(nodes: model.Node[], users: model.User[]) {
-    this.form!.managerGroup!.nodes = nodes;
-    this.form!.managerGroup!.users = users;
+    this.form!.managerGroup!.nodes = nodes
+    this.form!.managerGroup!.users = users
   }
 
   doCheckPerm() {
     this.form!.managerGroup!.perms = this.basicPermOptions
-      .filter(i => this.permIds.includes(i.id));
+      .filter(i => this.permIds.includes(i.id))
   }
   doCheckApp() {
     this.form!.managerGroup!.apps = this.appPermOptions
-      .filter(i => this.appIds.includes(i.uid));
+      .filter(i => this.appIds.includes(i.uid))
   }
 
   async doSave() {
-    const isValid = this.validateForm();
+    const isValid = this.validateForm()
     if (!isValid) {
-      return;
+      return
     }
 
-    const form = this.form!;
+    const form = this.form!
 
-    form.parent = null;
-    const userIds = form.users.map(u => u.id);
+    form.parent = null
+    const userIds = form.users.map(u => u.id)
 
     if (this.isNew) {
-      const newManager = await api.Manager.create(form);
-      await api.Node.Manager.updateUsers(newManager.id, {userIds});
+      const newManager = await api.Manager.create(form)
+      await api.Node.Manager.updateUsers(newManager.id, {userIds})
     } else {
-      await api.Node.Manager.partialUpdate(form);
-      await api.Node.Manager.updateUsers(form.id, {userIds});
+      await api.Node.Manager.partialUpdate(form)
+      await api.Node.Manager.updateUsers(form.id, {userIds})
     }
-    this.$router.back();
+    this.$router.back()
   }
 
   validateForm(): boolean {
     if (this.form!.users.length === 0) {
-      this.$Message.error('请设置成员');
-      return false;
+      this.$Message.error('请设置成员')
+      return false
     }
     if (!this.form!.managerGroup!.scopeSubject) {
-      this.$Message.error('请设置管理范围');
-      return false;
+      this.$Message.error('请设置管理范围')
+      return false
     }
     if (
       this.form!.managerGroup!.scopeSubject &&
       this.form!.managerGroup!.scopeSubject === 2 &&
       this.form!.users.length === 0
     ) {
-      this.$Message.error('请设置管理范围');
-      return false;
+      this.$Message.error('请设置管理范围')
+      return false
     }
-    return true;
+    return true
   }
 
   onIsAllAppChange(isAllPerm: boolean) {
     if (isAllPerm) {
-      this.tmpApps = this.form!.managerGroup!.apps;
-      this.tmpPerms = this.form!.managerGroup!.perms;
+      this.tmpApps = this.form!.managerGroup!.apps
+      this.tmpPerms = this.form!.managerGroup!.perms
 
-      this.form!.managerGroup!.apps = this.appPermOptions!;
-      this.form!.managerGroup!.perms = this.basicPermOptions!;
-      this.permIds = this.basicPermOptions.map(i => i.id);
-      this.appIds = this.appPermOptions.map(i => i.uid);
+      this.form!.managerGroup!.apps = this.appPermOptions!
+      this.form!.managerGroup!.perms = this.basicPermOptions!
+      this.permIds = this.basicPermOptions.map(i => i.id)
+      this.appIds = this.appPermOptions.map(i => i.uid)
     } else {
-      this.form!.managerGroup!.apps = this.tmpApps;
-      this.form!.managerGroup!.perms = this.tmpPerms;
-      this.permIds = this.tmpPerms.map(i => i.id);
-      this.appIds = this.tmpApps.map(i => i.uid);
+      this.form!.managerGroup!.apps = this.tmpApps
+      this.form!.managerGroup!.perms = this.tmpPerms
+      this.permIds = this.tmpPerms.map(i => i.id)
+      this.appIds = this.tmpApps.map(i => i.uid)
     }
   }
 
@@ -271,22 +301,32 @@ export default class EditManager extends Vue {
     this.$Modal.confirm({
       render: () => '删除该子管理员配置',
       onOk: () => this.remove(),
-    });
+    })
   }
 
   async remove() {
-    const manager = this.form!;
+    const manager = this.form!
     try {
-      await api.Node.Manager.updateUsers(manager.id, {userIds: []});
-      await api.Node.Manager.remove(manager.id);
-      this.$Message.success('删除成功');
-      this.$router.replace({name: 'admin.manager'});
+      await api.Node.Manager.updateUsers(manager.id, {userIds: []})
+      await api.Node.Manager.remove(manager.id)
+      this.$Message.success('删除成功')
+      this.$router.replace({name: 'admin.manager'})
     } catch (e) {
-      this.$Message.error('删除失败');
+      this.$Message.error('删除失败')
     }
   }
 
+  async onPageChange(page: number) {
+    this.pagination.current = page
+    await this.loadAppList()
+  }
+
+  async onPageSizeChange(pageSize: number) {
+    this.pagination.pageSize = pageSize
+    await this.loadAppList()
+  }
+
   mounted() {
-    this.loadData();
+    this.loadData()
   }
 }
