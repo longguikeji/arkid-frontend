@@ -1,7 +1,7 @@
 import * as model from '@/models/oneid'
 import Choose from '@/oneid-app/comps/choose/Choose'
 import * as api from '@/services/oneid'
-import {Component, Prop, Vue} from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import './EditManager.less'
 
 @Component({
@@ -9,135 +9,152 @@ import './EditManager.less'
     Choose,
   },
   template: html`
-  <div class="ui-edit-manager-page">
-    <div class="ui-edit-manager-page--body">
-      <div class="ui-edit-manager-page--body-wrapper" v-if="form">
-        <div class="manager-settings">
-          <div class="manager-settings-users">
-            <span class="ui-edit-manager-page--label">成员：</span>
-            <div class="ui-edit-manager-page--content-side">
-              <div
-                class="node-user-list"
-                @click="doStartChooseUser"
-              >
-                <span v-if="form.users.length === 0" class="placeholder">请选择用户</span>
-                <span v-for="item in form.users" class="tag">{{ item.name }}</span>
+    <div class="ui-edit-manager-page">
+      <div class="ui-edit-manager-page--body">
+        <div class="ui-edit-manager-page--body-wrapper" v-if="form">
+          <div class="manager-settings">
+            <div class="manager-settings-users">
+              <span class="ui-edit-manager-page--label">成员：</span>
+              <div class="ui-edit-manager-page--content-side">
+                <div class="node-user-list" @click="doStartChooseUser">
+                  <span v-if="form.users.length === 0" class="placeholder"
+                    >请选择用户</span
+                  >
+                  <span v-for="item in form.users" class="tag"
+                    >{{ item.name }}</span
+                  >
+                </div>
+                <Choose
+                  v-if="chooseUser"
+                  v-bind="chooseUser"
+                  ref="chooseUser"
+                  @on-ok="onChooseUserOk"
+                />
               </div>
-              <Choose
-                v-if="chooseUser"
-                v-bind="chooseUser"
-                ref="chooseUser"
-                @on-ok="onChooseUserOk"
-              />
             </div>
-          </div>
-          <div class="manager-settings-scopes">
-            <span class="ui-edit-manager-page--label">管理范围：</span>
-            <div class="ui-edit-manager-page--content-side">
-              <span class="ui-edit-manager-page--help">
-                子管理员可以对五种分组类型（账号、部门、角色、标签、自定义分组类型）进行管理，每组子管理员至少要选择一种分组类型来管理
-              </span>
-              <RadioGroup vertical v-model="form.managerGroup.scopeSubject" class="radio-mode">
+            <div class="manager-settings-scopes">
+              <span class="ui-edit-manager-page--label">管理范围：</span>
+              <div class="ui-edit-manager-page--content-side">
+                <span class="ui-edit-manager-page--help">
+                  子管理员可以对五种分组类型（账号、部门、角色、标签、自定义分组类型）进行管理，每组子管理员至少要选择一种分组类型来管理
+                </span>
+                <RadioGroup
+                  vertical
+                  v-model="form.managerGroup.scopeSubject"
+                  class="radio-mode"
+                >
                   <Radio :label="1">所在分组及下级分组</Radio>
                   <Radio :label="2">特定账号及分组</Radio>
-              </RadioGroup>
-              <div
-                v-if="form.managerGroup.scopeSubject === 2"
-                class="node-user-list"
-                @click="doStartChooseScope"
-              >
-                <span
-                  v-if="form.managerGroup.nodes.length === 0 && form.managerGroup.users.length === 0"
-                  class="placeholder"
+                </RadioGroup>
+                <div
+                  v-if="form.managerGroup.scopeSubject === 2"
+                  class="node-user-list"
+                  @click="doStartChooseScope"
                 >
-                  请选择特定账号及分组
-                </span>
-                <span v-for="item in form.managerGroup.nodes" class="tag">{{ item.name }}</span>
-                <span v-for="item in form.managerGroup.users" class="tag">{{ item.name }}</span>
+                  <span
+                    v-if="form.managerGroup.nodes.length === 0 && form.managerGroup.users.length === 0"
+                    class="placeholder"
+                  >
+                    请选择特定账号及分组
+                  </span>
+                  <span v-for="item in form.managerGroup.nodes" class="tag"
+                    >{{ item.name }}</span
+                  >
+                  <span v-for="item in form.managerGroup.users" class="tag"
+                    >{{ item.name }}</span
+                  >
+                </div>
+                <Choose
+                  v-if="chooseScope"
+                  v-bind="chooseScope"
+                  ref="chooseScope"
+                  @on-ok="onChooseScopeOk"
+                />
               </div>
-              <Choose
-                v-if="chooseScope"
-                v-bind="chooseScope"
-                ref="chooseScope"
-                @on-ok="onChooseScopeOk"
-              />
             </div>
           </div>
-        </div>
-        <div class="perm-settings">
-          <span class="ui-edit-manager-page--label">分配权限：</span>
-          <div class="ui-edit-manager-page--content-side">
-            <div class="perm-settings-header">
-              <span class="ui-edit-manager-page--help">将会在上面选择的子管理员名单范围内配置权限</span>
-              <Checkbox v-model="isAllPerm" @on-change="onIsAllAppChange"><span>全选</span></Checkbox>
-            </div>
-            <div class="perm-settings-main">
-              <div class="perm-settings-main-basic-list">
-                <span class="title">基础权限：</span>
-                <CheckboxGroup v-model="permIds" @on-change="doCheckPerm">
-                  <ul v-if="basicPermOptions" class="data-list">
-                    <li v-for="item in basicPermOptions" :key="item.id">
-                      <div class="logo">
-                        <img :src="item.logo ? $fileUrl(item.logo) : defaultLogo"/>
-                      </div>
-                      <span class="name">{{ item.name }}</span>
-                      <Checkbox
-                        :label="item.id"
-                        class="checkbox"
-                      />
-                    </li>
-                  </ul>
-                </CheckboxGroup>
+          <div class="perm-settings">
+            <span class="ui-edit-manager-page--label">分配权限：</span>
+            <div class="ui-edit-manager-page--content-side">
+              <div class="perm-settings-header">
+                <span class="ui-edit-manager-page--help"
+                  >将会在上面选择的子管理员名单范围内配置权限</span
+                >
+                <Checkbox v-model="isAllPerm" @on-change="onIsAllAppChange"
+                  ><span>全选</span></Checkbox
+                >
               </div>
-              <div class="perm-settings-main-app-list">
-                <span class="title">应用权限：</span>
-                <CheckboxGroup v-model="appIds" @on-change="doCheckApp">
-                  <ul v-if="appPermOptions" class="data-list">
-                    <li v-for="item in appPermOptions" :key="item.uid">
-                      <div class="logo">
-                        <img :src="item.logo ? $fileUrl(item.logo) : defaultLogo"/>
-                      </div>
-                      <span class="name">{{ item.name }}</span>
-                      <Checkbox
-                        :label="item.uid"
-                        class="checkbox"
-                      />
-                    </li>
-                  </ul>
-                </CheckboxGroup>
-                <div class="page-wrapper">
-                  <Page
-                    v-if="appPermOptions.length"
-                    :total="pagination.total"
-                    :page-size="pagination.pageSize"
-                    :current="pagination.current"
-                    @on-change="onPageChange"
-                    @on-page-size-change="onPageSizeChange"
-                    show-total
-                    show-sizer
-                    class="page flex-row"
-                  />
+              <div class="perm-settings-main">
+                <div class="perm-settings-main-basic-list">
+                  <span class="title">基础权限：</span>
+                  <CheckboxGroup v-model="permIds" @on-change="doCheckPerm">
+                    <ul v-if="basicPermOptions" class="data-list">
+                      <li v-for="item in basicPermOptions" :key="item.id">
+                        <div class="logo">
+                          <img
+                            :src="item.logo ? $fileUrl(item.logo) : defaultLogo"
+                          />
+                        </div>
+                        <span class="name">{{ item.name }}</span>
+                        <Checkbox :label="item.id" class="checkbox" />
+                      </li>
+                    </ul>
+                  </CheckboxGroup>
+                </div>
+                <div class="perm-settings-main-app-list">
+                  <span class="title">应用权限：</span>
+                  <CheckboxGroup v-model="appIds" @on-change="doCheckApp">
+                    <ul v-if="appPermOptions" class="data-list">
+                      <li v-for="item in appPermOptions" :key="item.uid">
+                        <div class="logo">
+                          <img
+                            :src="item.logo ? $fileUrl(item.logo) : defaultLogo"
+                          />
+                        </div>
+                        <span class="name">{{ item.name }}</span>
+                        <Checkbox :label="item.uid" class="checkbox" />
+                      </li>
+                    </ul>
+                  </CheckboxGroup>
+                  <div class="page-wrapper">
+                    <Page
+                      v-if="appPermOptions.length"
+                      :total="pagination.total"
+                      :page-size="pagination.pageSize"
+                      :current="pagination.current"
+                      @on-change="onPageChange"
+                      @on-page-size-change="onPageSizeChange"
+                      show-total
+                      show-sizer
+                      class="page flex-row"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="ui-edit-manager-page--footer">
-      <div class="ui-edit-manager-page--footer-wrapper">
-        <Button type="error" @click="doRemove" :style="isNew ? 'visibility: hidden' : ''">删除</Button>
-        <div class="flex-row">
-          <Button type="default" @click="$router.back()">取消</Button>
-          <Button type="primary" @click="doSave">保存并返回</Button>
+      <div class="ui-edit-manager-page--footer">
+        <div class="ui-edit-manager-page--footer-wrapper">
+          <button
+            type="error"
+            @click="doRemove"
+            :style="isNew ? 'visibility: hidden' : ''"
+          >
+            删除
+          </button>
+          <div class="flex-row">
+            <button type="default" @click="$router.back()">取消</button>
+            <button type="primary" @click="doSave">保存并返回</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   `,
 })
 export default class EditManager extends Vue {
-  basicPermOptions: Array<{id: string, name: string}> = []
+  basicPermOptions: Array<{ id: string; name: string }> = []
   appPermOptions: model.App[] = []
 
   permIds: string[] = []
@@ -150,9 +167,9 @@ export default class EditManager extends Vue {
     total: 0,
   }
 
-  form: model.Node|null = null
+  form: model.Node | null = null
   isAllPerm = false
-  tmpPerms: Array<{id: string, name: string}> = []
+  tmpPerms: Array<{ id: string; name: string }> = []
   tmpApps: model.App[] = []
   managerUserIds: model.User[] = []
 
@@ -171,7 +188,9 @@ export default class EditManager extends Vue {
   }
 
   async loadOptions() {
-    const {results: basicPermOptions} = await api.Config.retrieveMetaPermList()
+    const {
+      results: basicPermOptions,
+    } = await api.Config.retrieveMetaPermList()
 
     this.basicPermOptions = basicPermOptions
 
@@ -179,7 +198,7 @@ export default class EditManager extends Vue {
   }
 
   async loadAppList() {
-    const {results: appPermOptions, count} = await api.App.list({
+    const { results: appPermOptions, count } = await api.App.list({
       page: this.pagination.current,
       pageSize: this.pagination.pageSize,
     })
@@ -189,13 +208,13 @@ export default class EditManager extends Vue {
   }
 
   async loadForm() {
-    const {id} = this.$route.params
+    const { id } = this.$route.params
     if (!this.isNew) {
       const managerList = await api.Node.Manager.list()
-      this.form = managerList.find(i => i.id === id)
+      this.form = managerList.find((i) => i.id === id)
 
-      this.permIds = this.form!.managerGroup!.perms.map(i => i.id)
-      this.appIds = this.form!.managerGroup!.apps.map(i => i.uid)
+      this.permIds = this.form!.managerGroup!.perms.map((i) => i.id)
+      this.appIds = this.form!.managerGroup!.apps.map((i) => i.uid)
     } else {
       this.form = new model.Node()
     }
@@ -206,7 +225,7 @@ export default class EditManager extends Vue {
       title: '选择用户',
       onlyUser: true,
       multiple: true,
-      checkedUserIds: this.form!.users.map(u => u.id),
+      checkedUserIds: this.form!.users.map((u) => u.id),
     }
     this.$nextTick(() => this.$refs.chooseUser.show())
   }
@@ -215,8 +234,8 @@ export default class EditManager extends Vue {
     this.chooseScope = {
       title: '选择特定账号及分组',
       multiple: true,
-      checkedIds: this.form!.managerGroup!.nodes.map(n => n.id),
-      checkedUserIds: this.form!.managerGroup!.users.map(u => u.id),
+      checkedIds: this.form!.managerGroup!.nodes.map((n) => n.id),
+      checkedUserIds: this.form!.managerGroup!.users.map((u) => u.id),
     }
     this.$nextTick(() => this.$refs.chooseScope.show())
   }
@@ -231,12 +250,14 @@ export default class EditManager extends Vue {
   }
 
   doCheckPerm() {
-    this.form!.managerGroup!.perms = this.basicPermOptions
-      .filter(i => this.permIds.includes(i.id))
+    this.form!.managerGroup!.perms = this.basicPermOptions.filter((i) =>
+      this.permIds.includes(i.id),
+    )
   }
   doCheckApp() {
-    this.form!.managerGroup!.apps = this.appPermOptions
-      .filter(i => this.appIds.includes(i.uid))
+    this.form!.managerGroup!.apps = this.appPermOptions.filter((i) =>
+      this.appIds.includes(i.uid),
+    )
   }
 
   async doSave() {
@@ -248,14 +269,14 @@ export default class EditManager extends Vue {
     const form = this.form!
 
     form.parent = null
-    const userIds = form.users.map(u => u.id)
+    const userIds = form.users.map((u) => u.id)
 
     if (this.isNew) {
       const newManager = await api.Manager.create(form)
-      await api.Node.Manager.updateUsers(newManager.id, {userIds})
+      await api.Node.Manager.updateUsers(newManager.id, { userIds })
     } else {
       await api.Node.Manager.partialUpdate(form)
-      await api.Node.Manager.updateUsers(form.id, {userIds})
+      await api.Node.Manager.updateUsers(form.id, { userIds })
     }
     this.$router.back()
   }
@@ -287,13 +308,13 @@ export default class EditManager extends Vue {
 
       this.form!.managerGroup!.apps = this.appPermOptions!
       this.form!.managerGroup!.perms = this.basicPermOptions!
-      this.permIds = this.basicPermOptions.map(i => i.id)
-      this.appIds = this.appPermOptions.map(i => i.uid)
+      this.permIds = this.basicPermOptions.map((i) => i.id)
+      this.appIds = this.appPermOptions.map((i) => i.uid)
     } else {
       this.form!.managerGroup!.apps = this.tmpApps
       this.form!.managerGroup!.perms = this.tmpPerms
-      this.permIds = this.tmpPerms.map(i => i.id)
-      this.appIds = this.tmpApps.map(i => i.uid)
+      this.permIds = this.tmpPerms.map((i) => i.id)
+      this.appIds = this.tmpApps.map((i) => i.uid)
     }
   }
 
@@ -307,10 +328,10 @@ export default class EditManager extends Vue {
   async remove() {
     const manager = this.form!
     try {
-      await api.Node.Manager.updateUsers(manager.id, {userIds: []})
+      await api.Node.Manager.updateUsers(manager.id, { userIds: [] })
       await api.Node.Manager.remove(manager.id)
       this.$Message.success('删除成功')
-      this.$router.replace({name: 'admin.manager'})
+      this.$router.replace({ name: 'admin.manager' })
     } catch (e) {
       this.$Message.error('删除失败')
     }
