@@ -137,16 +137,16 @@ import './EditManager.less'
       </div>
       <div class="ui-edit-manager-page--footer">
         <div class="ui-edit-manager-page--footer-wrapper">
-          <button
+          <Button
             type="error"
             @click="doRemove"
             :style="isNew ? 'visibility: hidden' : ''"
           >
             删除
-          </button>
+          </Button>
           <div class="flex-row">
-            <button type="default" @click="$router.back()">取消</button>
-            <button type="primary" @click="doSave">保存并返回</button>
+            <Button type="default" @click="$router.back()">取消</Button>
+            <Button type="primary" @click="doSave">保存并返回</Button>
           </div>
         </div>
       </div>
