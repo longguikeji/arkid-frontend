@@ -182,4 +182,22 @@ export class Manager extends Node {
     const nodes = resp.data.nodes.map(n => model.Node.fromData(n))
     return nodes
   }
+  static async pagerList(params?: {
+    pageSize?: number;
+    page?: number;
+  }) {
+    const data = params ? {params: {
+      page: params.page || 1,
+      page_size: params.pageSize || 10,
+    }} : {}
+
+    const url = '/siteapi/oneid/group/manager/group_page/'
+    const resp = await http.get(url, data)
+    const { count, results } = resp.data
+
+    return {
+      count,
+      results: results ? results.map(n => model.Node.fromData(n)) : [],
+    }
+  }
 }
