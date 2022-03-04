@@ -167,6 +167,12 @@ export class Node {
   static get Manager() {
     return Manager
   }
+  static async prefixName(id: string) {
+    const url = `/siteapi/oneid/dept/${id}/general_terms/`
+    const resp = await http.get(url)
+    const items = resp.data.items
+    return items && items.length > 1 ? items.join('/') : ''
+  }
 }
 
 export class Manager extends Node {
