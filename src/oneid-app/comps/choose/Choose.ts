@@ -112,12 +112,29 @@ export default class Choose extends Vue {
       : this.userSelection.filter(user => user.id !== cur.id)
   }
 
-  onTreeCheckChange(array: TreeNode[], cur: TreeNode) {
+  async onTreeCheckChange(array: TreeNode[], cur: TreeNode) {
+    await this.treeNodeCheck(cur)
+  }
+
+  async treeNodeCheck(cur: TreeNode) {
     if (this.multiple) {
       if (cur.type === 'node') {
-        this.nodeSelection = cur.checked
-          ? [...this.nodeSelection, cur.raw] as Node[]
-          : this.nodeSelection.filter(node => node.id !== cur.raw.id)
+        if (cur.checked) {
+          const index = this.nodeSelection.findIndex(node => node.id === cur.raw.id)
+          if (index === -1) {
+            this.nodeSelection.push(cur.raw as Node)
+          }
+        } else {
+          this.nodeSelection = this.nodeSelection.filter(node => node.id !== cur.raw.id)
+        }
+        await this.getCurNodeChildren(cur).then(async () => {
+          if (cur.children) {
+            for (const child of cur.children) {
+              child.checked = cur.checked
+              await this.treeNodeCheck(child)
+            }
+          }
+        })
       } else {
         this.userSelection = cur.checked
           ? [...this.userSelection, cur.raw] as User[]
