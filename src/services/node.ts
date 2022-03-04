@@ -171,7 +171,8 @@ export class Node {
     const url = `/siteapi/oneid/dept/${id}/general_terms/`
     const resp = await http.get(url)
     const items = resp.data.items
-    return items && items.length > 1 ? items.join('/') : ''
+    const prefix = items && items.length > 1 ? items.join('/').substring(0, ) : ''
+    return prefix.substring(0, prefix.lastIndexOf('/'))
   }
 }
 

@@ -57,7 +57,7 @@ import './Group.less'
         </div>
       </template>
       <template v-else>
-        <h2 class="title prefix">{{ curNodePrefixName }}</h2>
+        <h2 class="title prefix" v-if="curNodePrefixName">{{ curNodePrefixName }}</h2>
         <div class="ui-group-page-detail-header flex-row">
           <h2 class="title">{{ curNode.name }}</h2>
           <Button @click="goEdit">编辑{{ nodeTypeName }}</Button>
