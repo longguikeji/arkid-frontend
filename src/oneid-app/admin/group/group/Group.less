@@ -9,6 +9,17 @@
     cursor: text !important;
   }
 
+  .title.prefix {
+    &::before {
+      display: inline-flex;
+      width: 6px;
+      height: 30px;
+      margin: 0 10px 30px 30px;
+      background: @primary-color;
+      content: '';
+    }
+  }
+
   .subtitle {
     display: flex;
     align-items: center;

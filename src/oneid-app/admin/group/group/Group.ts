@@ -57,6 +57,7 @@ import './Group.less'
         </div>
       </template>
       <template v-else>
+        <h2 class="title prefix" v-if="curNodePrefixName">{{ curNodePrefixName }}</h2>
         <div class="ui-group-page-detail-header flex-row">
           <h2 class="title">{{ curNode.name }}</h2>
           <Button @click="goEdit">编辑{{ nodeTypeName }}</Button>
@@ -140,6 +141,7 @@ export default class Group extends Vue {
   metaNode: Node|null = null
   tree: TreeNode|null = null
   curNode: Node|null = null
+  curNodePrefixName: string = ''
 
   editData: {
     metaNode: Node,
@@ -271,6 +273,7 @@ export default class Group extends Vue {
       treeNode.children.push( TreeNode.fromNode(child, options) )
     }
     this.curNode = val
+    this.curNodePrefixName = await api.Node.prefixName(val.id)
   }
 
   goAddLevelOne() {

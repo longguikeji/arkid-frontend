@@ -18,11 +18,30 @@ import './Manager.less'
         :data="managerGroupList"
       ></Table>
     </div>
+    <div class="page-wrapper">
+      <Page
+        :total="pagination.total"
+        :page-size="pagination.pageSize"
+        :current="pagination.current"
+        @on-change="onPageChange"
+        @on-page-size-change="onPageSizeChange"
+        show-total
+        show-sizer
+        class="page flex-row"
+      />
+    </div>
   </div>
   `,
 })
 export default class Manager extends Vue {
   managerGroupList: model.Node[]|null = null
+
+  // 分页
+  pagination = {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  }
 
   get columns() {
     return [
@@ -82,10 +101,23 @@ export default class Manager extends Vue {
   }
 
   async loadData() {
+    const { count, results } = await api.Manager.pagerList({
+      page: this.pagination.current,
+      pageSize: this.pagination.pageSize,
+    })
 
-    const managerGroupList = await api.Manager.list()
-    this.managerGroupList = managerGroupList
+    this.managerGroupList = results
+    this.pagination.total = count
+  }
 
+  async onPageChange(page: number) {
+    this.pagination.current = page
+    await this.loadData()
+  }
+
+  async onPageSizeChange(pagSize: number) {
+    this.pagination.pageSize = pagSize
+    await this.loadData()
   }
 }
 
