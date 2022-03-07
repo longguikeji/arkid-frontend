@@ -118,9 +118,6 @@ export default class Choose extends Vue {
         this.nodeSelection = cur.checked
           ? [...this.nodeSelection, cur.raw] as Node[]
           : this.nodeSelection.filter(node => node.id !== cur.raw.id)
-        if (cur.checked) {
-          cur.expand = false
-        }
       } else {
         this.userSelection = cur.checked
           ? [...this.userSelection, cur.raw] as User[]
@@ -145,7 +142,6 @@ export default class Choose extends Vue {
     if (!this.multiple) {
       if (cur.type === 'node') {
         this.nodeSelection = [cur.raw!] as Node[]
-        if (cur.checked) return
       } else {
         this.userSelection = [cur.raw!] as User[]
       }
