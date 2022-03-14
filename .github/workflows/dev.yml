@@ -40,11 +40,11 @@ jobs:
           ${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}
           longguikeji/arkid-fe:v2dev-${{ github.run_number }}
           longguikeji/arkid-fe:v2dev
-    - name: deploy to cluster
-      uses: steebchen/kubectl@v2.0.0
-      with: # defaults to latest kubectl binary version
-        config: ${{ secrets.KUBE_CONFIG_LG }}
-        command: -n dev-arkidv2saas --insecure-skip-tls-verify=true set image --record deployment/dev-arkidv2saas-fe arkid-fe=${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}
+#     - name: deploy to cluster
+#       uses: steebchen/kubectl@v2.0.0
+#       with: # defaults to latest kubectl binary version
+#         config: ${{ secrets.KUBE_CONFIG_LG }}
+#         command: -n dev-arkidv2saas --insecure-skip-tls-verify=true set image --record deployment/dev-arkidv2saas-fe arkid-fe=${{ secrets.ARK_DEV }}/arkid-fe:v2dev-${{ github.run_number }}
     - name: Feishu 报忧
       if: ${{ failure() }}
       uses: wangsijie/feishu-bot@v1
