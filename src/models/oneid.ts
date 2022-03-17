@@ -96,7 +96,7 @@ export class User {
     obj.position = data.position
     obj.posixUser = data.posix_user
     obj.privateEmail = data.private_email
-    // obj.id = data.user_id;
+    obj.user_id = data.user_id
     obj.id = data.username
     obj.username = data.username
     obj.dingUser = data.ding_user ? DingUser.fromData(data.ding_user) : null
@@ -127,6 +127,7 @@ export class User {
   position: string = ''
   posixUser: any
   privateEmail: string = ''
+  user_id: string = ''
   id: string = ''
   username: string = ''
   hiredate: string = ''
@@ -157,7 +158,7 @@ export class User {
       position: this.position,
       posix_user: this.posixUser,
       private_email: this.privateEmail,
-      // user_id: this.id,
+      user_id: this.user_id,
       username: this.username,
       custom_user: {
         data: this.custom_user,

@@ -34,6 +34,7 @@ export default class PermList extends Vue {
   @Prop({type: Object, required: true}) app!: model.App
   @Prop({type: String}) groupId?: string
   @Prop({type: String}) username?: string
+  @Prop({type: String}) userId?: string
 
   defaultMetaNode: model.Node|null = null
   customMetaNode: model.Node|null = null
@@ -70,10 +71,10 @@ export default class PermList extends Vue {
     if (!this.groupId && !this.username) {
       return
     }
-    const {groupId, username, app} = this
+    const {groupId, username, app, userId} = this
     const {results: permList, count: total} = groupId
       ? await api.Perm.groupPermList(groupId, {appId: app.uid})
-      : await api.Perm.userPermList(username!, {appId: app.uid})
+      : await api.Perm.userPermList(userId!, {appId: app.uid})
 
     this.permList = permList.map(i => ({
       ...i.perm,
@@ -115,8 +116,8 @@ export default class PermList extends Vue {
   async updateOwerPerm(permId: string, status: number) {
     this.$Loading.start()
     try {
-      if (this.username) {
-        await api.Perm.updateUserPerm(this.username, permId, status)
+      if (this.userId) {
+        await api.Perm.updateUserPerm(this.userId, permId, status)
       } else {
         await api.Perm.updateNodePerm(this.groupId!, permId, status)
       }
