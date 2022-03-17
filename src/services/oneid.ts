@@ -393,7 +393,7 @@ export class Perm {
     return resp.data
   }
   static async userPermList(
-    username: string,
+    userId: string,
     params?: {appId?: string, action?: string, actionExcept?: string},
   ) {
     let data = {}
@@ -404,15 +404,15 @@ export class Perm {
         : {params: {action}}
     }
 
-    const url = `${this.url()}user/${username}/`
+    const url = `${this.url()}user/${userId}/`
     const resp = await http.get(url, data)
     return resp.data
   }
-  static async updateUserPerm(username, permId, status) {
+  static async updateUserPerm(userId, permId, status) {
     const data = {
       perm_statuses: [{uid: permId, status}],
     }
-    return http.patch(this.url() + `user/${username}/`, data).then(x => x.data)
+    return http.patch(this.url() + `user/${userId}/`, data).then(x => x.data)
   }
 }
 

@@ -249,7 +249,10 @@ export default class UserList extends Vue {
         'on-edit': () => this.goEdit(user),
         'on-edit-perm': () => this.$router.replace({
           name: 'admin.account.perm',
-          query: {username: user.username},
+          query: {
+            username: user.username,
+            userId: user.user_id,
+          },
         }),
         'on-activate': () => this.goInvite(user),
       },

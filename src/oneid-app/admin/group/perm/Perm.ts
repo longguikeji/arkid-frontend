@@ -40,6 +40,7 @@ import PermList from './PermList'
 export default class Perm extends Vue {
   groupId?: string
   username?: string
+  userId?: string
 
   group: model.Node|null = null
   user: model.User|null = null
@@ -51,6 +52,7 @@ export default class Perm extends Vue {
     app: model.App;
     groupId?: string;
     username?: string;
+    user_id?: string;
   }|null = null
 
   get title() {
@@ -63,11 +65,11 @@ export default class Perm extends Vue {
   }
 
   onSelectApp(app: model.App) {
-    const {groupId, username} = this
+    const {groupId, username, userId} = this
     this.app = app
 
-    const permListProps = groupId || username
-      ? {app, groupId, username}
+    const permListProps = groupId || username || userId
+      ? {app, groupId, username, userId}
       : null
 
     this.permListProps = null
@@ -83,9 +85,10 @@ export default class Perm extends Vue {
   }
 
   created() {
-    const {groupId, username} = this.$route.query
+    const {groupId, username, userId} = this.$route.query
     this.groupId = groupId as string
     this.username = username as string
+    this.userId = userId as string
   }
 
   mounted() {
