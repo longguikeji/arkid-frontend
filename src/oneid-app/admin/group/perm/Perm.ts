@@ -52,7 +52,7 @@ export default class Perm extends Vue {
     app: model.App;
     groupId?: string;
     username?: string;
-    user_id?: string;
+    userId?: string;
   }|null = null
 
   get title() {
