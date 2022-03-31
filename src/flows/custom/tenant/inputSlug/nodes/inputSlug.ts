@@ -1,11 +1,11 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import { ConfigModule } from '@/store/modules/config'
+import { TenantModule } from '@/store/modules/tenant'
 import { FlowModule } from '@/store/modules/flow'
 
 export class InputSlug extends FunctionNode {
   async run() {
     const inputSlugValue = this.inputs.params.slug
-    const slug = ConfigModule.slug
+    const slug = TenantModule.currentTenant.slug
     if (slug !== inputSlugValue) {
       FlowModule.stopRunFlow()
       this.inputs.com.$message({
