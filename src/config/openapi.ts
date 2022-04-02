@@ -36,6 +36,10 @@ export default class OpenAPI {
     if (!tags?.length) return undefined
     return tags.find(tag => tag.name === name)
   }
+
+  public getRolesDescribe(): IRolesDescribe | undefined {
+    return this._config?.info?.roles_describe
+  }
 }
 
 export interface Info {
@@ -46,6 +50,7 @@ export interface Info {
   contact?: IContact
   license?: ILicense
   routers?: IOpenAPIRouter[]
+  roles_describe?: IRolesDescribe
 }
 
 export interface IContact {
@@ -323,4 +328,10 @@ export interface IOpenAPIRouter {
   page?: string
   url?: string
   children?: IOpenAPIRouter[]
+}
+
+export interface IRolesDescribe {
+  name: string
+  code: string
+  children?: IRolesDescribe[]
 }

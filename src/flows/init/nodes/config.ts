@@ -2,11 +2,11 @@ import { APINode } from '@/arkfbp/nodes/apiNode'
 import { UserModule, UserRole } from '@/store/modules/user'
 import { TenantModule } from '@/store/modules/tenant'
 import { ConfigModule } from '@/store/modules/config'
-import OpenAPI from '@/config/openapi'
+import OpenAPI, { IRolesDescribe } from '@/config/openapi'
 import { processUUId } from '@/utils/common'
+import { PermissionModule } from '@/store/modules/permission'
 
 export class ConfigNode extends APINode {
-
   async run() {
     // get method
     this.method = 'get'
@@ -16,7 +16,7 @@ export class ConfigNode extends APINode {
 
     // config current login user role
     await this.setCurrentUserRole()
-    
+
     const uuid = TenantModule.currentTenant.uuid
     if (uuid) {
       // 桌面配置信息
@@ -52,14 +52,18 @@ export class ConfigNode extends APINode {
       UserModule.setUserRole(UserRole.Global)
     } else if (manageTenants?.length) {
       const uuid = TenantModule.currentTenant.uuid
-      const tenantManager = uuid && manageTenants.find((item) => {
-        item = processUUId(item)
-        return item === processUUId(uuid)
-      })
+      const tenantManager =
+        uuid &&
+        manageTenants.find((item) => {
+          item = processUUId(item)
+          return item === processUUId(uuid)
+        })
       if (tenantManager) {
         UserModule.setUserRole(UserRole.Tenant)
       } else {
-        isPlatformUser ? UserModule.setUserRole(UserRole.Platform) : UserModule.setUserRole(UserRole.User)
+        isPlatformUser
+          ? UserModule.setUserRole(UserRole.Platform)
+          : UserModule.setUserRole(UserRole.User)
       }
     } else if (isPlatformUser) {
       UserModule.setUserRole(UserRole.Platform)
@@ -87,7 +91,7 @@ export class ConfigNode extends APINode {
     const data = outputs?.data
     if (data) {
       ConfigModule.setContactsConfig({
-        isOpen: data.is_open
+        isOpen: data.is_open,
       })
     }
   }
@@ -107,7 +111,7 @@ export class ConfigNode extends APINode {
     if (data) {
       ConfigModule.setTenantConfig({
         closePageAutoLogout: data.close_page_auto_logout,
-        uploadFileFormat: data.upload_file_format
+        uploadFileFormat: data.upload_file_format,
       })
     }
   }
@@ -120,87 +124,121 @@ export class ConfigNode extends APINode {
     if (data) {
       ConfigModule.setPasswordComplexify({
         regular: data.regular,
-        title: data.title
+        title: data.title,
       })
     }
   }
 
   async setUserConfigLogging(uuid: string) {
-    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logging', 'get')) {
+    if (
+      OpenAPI.instance.getOperation(
+        '/api/v1/tenant/{tenant_uuid}/userconfig/logging',
+        'get',
+      )
+    ) {
       this.url = `/api/v1/tenant/${uuid}/userconfig/logging`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
         ConfigModule.setUserConfig({
           isLoggingDevice: data.is_logging_device,
-          isLoggingIp: data.is_logging_ip
+          isLoggingIp: data.is_logging_ip,
         })
       }
     }
   }
 
   async setUserConfigLogout(uuid: string) {
-    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/logout', 'get')) {
+    if (
+      OpenAPI.instance.getOperation(
+        '/api/v1/tenant/{tenant_uuid}/userconfig/logout',
+        'get',
+      )
+    ) {
       this.url = `/api/v1/tenant/${uuid}/userconfig/logout`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
         ConfigModule.setUserConfig({
-          isLogout: data.is_logout
+          isLogout: data.is_logout,
         })
       }
     }
   }
 
   async setUserConfigEditFields(uuid: string) {
-    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/editfields', 'get')) {
+    if (
+      OpenAPI.instance.getOperation(
+        '/api/v1/tenant/{tenant_uuid}/userconfig/editfields',
+        'get',
+      )
+    ) {
       this.url = `/api/v1/tenant/${uuid}/userconfig/editfields`
       this.method = 'GET'
       const data = await super.run()
       if (data?.results) {
-        const fields = data.results.map(field => {
+        const fields = data.results.map((field) => {
           return field.en_name || field.name
         })
         ConfigModule.setUserConfig({
-          isEditFields: fields
+          isEditFields: fields,
         })
       }
     }
   }
 
   async setUserConfigToken(uuid: string) {
-    if (OpenAPI.instance.getOperation('/api/v1/tenant/{tenant_uuid}/userconfig/token', 'get')) {
+    if (
+      OpenAPI.instance.getOperation(
+        '/api/v1/tenant/{tenant_uuid}/userconfig/token',
+        'get',
+      )
+    ) {
       this.url = `/api/v1/tenant/${uuid}/userconfig/token`
       this.method = 'GET'
       const data = await super.run()
       if (data) {
         ConfigModule.setUserConfig({
           isLookToken: data.is_look_token,
-          isManualOverdueToken: data.is_manual_overdue_token
+          isManualOverdueToken: data.is_manual_overdue_token,
         })
       }
     }
   }
 
   async getCurrentUserPermission(uuid: string) {
-    this.url = `/api/v1/tenant/${uuid}/check_permission/`
+    this.url = `/api/v1/tenant/${uuid}/userpermission_groups/`
     this.method = 'GET'
-    const data = await super.run()
-    if (data && data.is_childmanager) {
-      UserModule.setUserRole(UserRole.Tenant)
-      ConfigModule.setChildManagerIsAllShow(data.is_all_show)
-      ConfigModule.setChildManagerIsAllApplication(data.is_all_application)
-      const permissions = data.permissions
-      if (permissions) {
-        const items: string[] = []
-        permissions.forEach(p => {
-          const { is_system_permission, codename, permission_category, name } = p
-          if (is_system_permission && permission_category === '入口' && codename.substring(0, 5) === 'enter') {
-            items.push(name)
-          }
-        })
-        ConfigModule.setChildManagerVisibleSidebarItems(items)
-      }
+    const outputs = await super.run()
+    if (!outputs) return
+    // 存储当前用户的权限
+    const { en_names, global_en_names } = outputs
+    // 处理en_names和global_en_names, 方便在生成路由时直接读取
+    const { children } = OpenAPI.instance.getRolesDescribe() || {}
+    if (!children?.length) return
+    this.getUserRoutePermission(children, en_names, global_en_names)
+    PermissionModule.setPermission({
+      en_names: this._userRouteNames,
+      global_en_names: this._globalRouteNames,
+    })
+  }
+
+  private _globalRouteNames: string[] = []
+  private _userRouteNames: string[] = []
+
+  getUserRoutePermission(
+    children: IRolesDescribe[],
+    enNames: string[] = [],
+    globalEnNames: string[] = [],
+    prefix: string = '',
+  ) {
+    for (const child of children) {
+      const { name, code, children: c } = child
+      const routeCode = prefix ? `${prefix}.${code}` : code
+      if (enNames.includes(routeCode)) this._userRouteNames.push(name)
+      if (globalEnNames.includes(routeCode)) this._globalRouteNames.push(name)
+      if (c?.length)
+        this.getUserRoutePermission(c, enNames, globalEnNames, code)
     }
   }
 }
