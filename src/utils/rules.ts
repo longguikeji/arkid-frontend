@@ -16,7 +16,7 @@ const getUploadFileRegular = () => {
   }
 }
 
-const RULE_REGEXP = {
+export const RULE_REGEXP = {
   mobile: /(^(1)\d{10}$)/,
   email: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   url: new RegExp(
@@ -24,7 +24,8 @@ const RULE_REGEXP = {
     'i',
     ),
   other: /[<>"'()&/ ]/gi, // <>"'()&/ 可以增加字符的控制，目前包含 小括号 尖括号 单引号 双引号 &符 /斜线符 空格
-  path: /^(?!.\/|..\/).*/
+  path: /^(?!.\/|..\/).*/,
+  filename: /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
 }
 
 const RULE_HINT = {
