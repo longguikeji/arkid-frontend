@@ -287,8 +287,9 @@ export default class LoginComponent extends Vue {
     if (url.includes('tenant_uuid') && LoginStore.TenantUUID) {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
-    const response = await this.request(url, method, params)
-    const data = response.data
+    const res = await this.request(url, method, params)
+    const { data, status } = res || {}
+    if (!data || status !== 200) return
     if (data.error === '0') {
       if (this.btn.delay) {
         this.$message({

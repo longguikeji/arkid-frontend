@@ -45,9 +45,9 @@ http.interceptors.response.use(
   err => {
     const { response } = err
     const data = response && response.data
-    if (data) {
+    if (data?.message) {
       Message({
-        message: error[data.error] || data.message || 'error',
+        message: error[data.error] || data.message,
         type: 'error',
         showClose: true
       })
