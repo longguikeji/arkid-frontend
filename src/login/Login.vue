@@ -1,6 +1,7 @@
 <template>
+  <login-slug v-if="nullSlug" />
   <login-component
-    v-if="isRenderLoginPage"
+    v-else-if="config"
     :tenant="tenant"
     :config="config"
   />
@@ -9,6 +10,7 @@
 import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
+import LoginSlug from './components/LoginSlug.vue'
 import { LoginPagesConfig, LoginTenant, ButtonConfig } from './interface'
 import LoginStore from './store/login'
 import getBaseUrl from '@/utils/get-base-url'
@@ -17,12 +19,12 @@ import http from './http'
 @Component({
   name: 'Login',
   components: {
-    LoginComponent
+    LoginComponent,
+    LoginSlug
   }
 })
 export default class Login extends Vue {
-  private isRenderLoginPage = false
-  private config: LoginPagesConfig = {}
+  private config: LoginPagesConfig | null = null
   private tenant: LoginTenant = {}
 
   async mounted() {
@@ -33,6 +35,12 @@ export default class Login extends Vue {
   @Watch('$route')
   tenantChange() {
     this.getLoginPage()
+  }
+
+  get nullSlug(): boolean {
+    const sl = this.$route.query.slug
+    const res = sl ? (typeof sl === 'string' ? sl : sl[0]) : null
+    return res === 'null'
   }
 
   get tenantUUID(): string | null {
@@ -58,6 +66,7 @@ export default class Login extends Vue {
   }
 
   private async getLoginPage() {
+    if (this.nullSlug) return
     // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
     let hasPermission = true
     let info = ''
@@ -107,7 +116,6 @@ export default class Login extends Vue {
     })
     this.config = config
     this.tenant = tenant
-    this.isRenderLoginPage = true
 
     if (!hasPermission) {
       this.$message({
