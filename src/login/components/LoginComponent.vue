@@ -4,7 +4,7 @@
     :visible="true"
     :show-close="false"
     center
-    width="450px"
+    width="500px"
     :fullscreen="fullscreen"
     :style="loginBgStyle"
   >
@@ -166,8 +166,6 @@
   }
 
   ::v-deep .el-dialog {
-    margin-top: 200px !important;
-    width: 500px !important;
     .el-dialog__header {
       border-radius: 8px 8px 0 0;
       padding: 0px;
