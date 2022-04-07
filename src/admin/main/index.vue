@@ -1,6 +1,9 @@
 <template>
+  <div v-if="url">
+    <iframe :src="url" />
+  </div>
   <div
-    v-if="state"
+    v-else-if="state"
     :class="page"
   >
     <Tabs
@@ -17,20 +20,10 @@
       />
     </template>
   </div>
-  <div v-else-if="url">
-    <iframe :src="url" />
-  </div>
-  <div
-    v-else
-    class="placeholder"
-  >
-    页面功能正在开发中...
-  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import BaseVue from '@/admin/base/BaseVue'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
 
@@ -56,7 +49,11 @@ export default class extends Vue {
 
   async created() {
     if (this.page) {
-      const state = Object.create({ _pages_: [...this.cards], _cards_: this.cards, _tabs_: [] })
+      const state = Object.create({
+        _pages_: [...this.cards],
+        _cards_: this.cards,
+        _tabs_: []
+      })
       await runFlowByFile('flows/initPage', { state }).then(() => {
         AdminModule.setAdminState(state)
       })
@@ -70,8 +67,8 @@ export default class extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import "../../styles/page.scss";
-@import "../../styles/element.scss";
+@import '../../styles/page.scss';
+@import '../../styles/element.scss';
 
 .placeholder {
   text-align: center;
