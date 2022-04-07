@@ -30,3 +30,22 @@ export const updateIcon = (href: string = '') => {
   el.setAttribute('href', href || './favicon.ico')
   document.getElementsByTagName('head')[0].appendChild(el)
 }
+
+// 读取XLSX
+export const readExcel = (sheets: any) => {
+  const tableBody: any = []
+  const tableHeader: any = []
+  sheets.forEach((item: any, index: any) => {
+    if (tableHeader.length < 1) {
+      tableHeader.push(...Object.keys(item))
+    }
+    tableBody.push([])
+    Object.keys(item).map((objKeyItem) => {
+      tableBody[index].push(item[objKeyItem])
+    })
+  })
+  return {
+    tableHeader,
+    tableBody,
+  }
+}

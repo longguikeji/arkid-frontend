@@ -387,7 +387,10 @@ export class StateNode extends FunctionNode {
             {
               name: 'arkfbp/flows/import',
               url: path,
-              method
+              method,
+              request: {
+                data: 'form.items.file.state.file'
+              }
             },
             `${page}.closeImportDialog`,
             `${page}.fetch`

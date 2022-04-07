@@ -1,70 +1,37 @@
 <template>
   <div>
-    <!-- upload -->
-    <template>
-      <div class="uploadItem">
-        <!-- video -->
-        <div v-if="state.type === 'video'">
-          <el-link
-            :href="state.value"
-            target="_blank"
-            style="padding: 5px"
-          >
-            <i class="el-icon-document">{{ state.value }}</i>
-          </el-link>
-        </div>
-        <!-- image -->
-        <div v-else-if="state.type === 'image'">
-          <el-image
-            style="height: 50px; width: 50px; margin-right: 10px"
-            :src="state.value"
-            fit="scale-down"
-          />
-        </div>
-        <!-- XlsxFile -->
-        <div v-else-if="state.type === 'xlsx'">
-          <el-link
-            :href="state.value"
-            target="_blank"
-          />
-        </div>
-
-        <!-- others-->
-        <div v-else>
-          <el-link
-            :href="state.value"
-            target="_blank"
-            style="padding: 5px"
-          >
-            <i class="el-icon-document">{{ state.value }}</i>
-          </el-link>
-        </div>
-        <!-- 上传按钮 -->
-        <el-upload
-          v-if="fileList.length === 0"
-          ref="upload"
-          :action="''"
-          :show-file-list="false"
-          :auto-upload="false"
-          :on-change="onSuccess"
-        >
-          <el-button type="primary">
-            {{ state.title || btnText }}
-          </el-button>
-        </el-upload>
-      </div>
-    </template>
-    <!-- display board -->
-    <!-- video -->
-    <video
-      v-if="state.type === 'video'"
-      :src="fileUrl"
-      style="width: 95%; height: auto"
-      controls="controls"
-    />
+    <div class="upload-item">
+      <el-image
+        v-if="state.type === 'image'"
+        style="height: 50px; width: 50px; margin-right: 10px"
+        :src="state.value"
+        fit="scale-down"
+      />
+      <el-link
+        v-else-if="state.value"
+        :href="state.value"
+        target="_blank"
+        style="padding: 5px"
+      >
+        <i class="el-icon-document">{{ state.value }}</i>
+      </el-link>
+      <!-- 上传按钮 -->
+      <el-upload
+        v-if="fileList.length === 0"
+        ref="upload"
+        action=""
+        :show-file-list="false"
+        :auto-upload="false"
+        :on-change="onSuccess"
+      >
+        <el-button type="primary">
+          {{ state.title || btnText }}
+        </el-button>
+      </el-upload>
+    </div>
     <!-- image -->
     <div
-      v-else-if="state.type === 'image'"
+      v-if="state.type === 'image'"
       style="display: flex"
     >
       <div
@@ -76,29 +43,12 @@
         }"
       >
         <img
-          :src="fileUrl"
+          :src="imageUrl"
           alt=""
         >
       </div>
-      <div
-        v-if="previews"
-        :style="{
-          width: previews.w + 'px',
-          height: previews.h + 'px',
-          overflow: 'hidden',
-          'margin-left': '20px',
-          flex: 'none'
-        }"
-      >
-        <div :style="previews.div">
-          <img
-            :src="previews.url"
-            :style="previews.img"
-          >
-        </div>
-      </div>
     </div>
-    <!-- XlsxFile -->
+    <!-- xlsx -->
     <div
       v-else-if="state.type === 'xlsx'"
       id="excel-file-box"
@@ -127,13 +77,14 @@
           </td>
         </tr>
       </table>
+
       <el-pagination
         v-if="tableBody.length"
         class="excel-display-pager"
         :current-page="currentPage"
         :page-sizes="[5, 10, 15, 20]"
         :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total, sizes, prev, pager, next"
         :total="tableBody.length"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -149,33 +100,29 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UploadState from './UploadState'
-import XLSX from 'xlsx'
-import processTableData from '@/utils/readexcel'
+import { readExcel } from '@/utils'
 import BaseVue from '@/admin/base/BaseVue'
 import { xlsxValidator } from '@/utils/rules'
+import * as xlsx from 'xlsx'
 
 @Component({
   name: 'Upload'
 })
 export default class extends Mixins(BaseVue) {
-  btnText = '上传文件';
-  dialogVisible = false;
-  fileList = [] as any[];
-  fileUrl = '';
-  file = '';
-  valueBind = '';
+  btnText = '上传文件'
+  fileList = [] as any[]
+  fileUrl = ''
 
-  imageUrl = '';
-  imgInfo = {};
-  previews = null;
-  bili = 1;
-  crop = '';
+  imageUrl = ''
+  imgInfo = {}
+  bili = 1
+  crop = ''
 
-  fileName = '';
-  pagesize = 5;
-  currentPage = 1;
-  tableHeader = [] as any[];
-  tableBody = [] as any[];
+  fileName = ''
+  pagesize = 5
+  currentPage = 1
+  tableHeader = [] as any[]
+  tableBody = [] as any[]
 
   get state(): UploadState {
     return this.$state as UploadState
@@ -188,65 +135,70 @@ export default class extends Mixins(BaseVue) {
     )
   }
 
-  onSuccess(file: any, fileList: []) {
+  async onSuccess(file: any, fileList: []) {
     if (fileList.length > 0) {
       this.fileList = [fileList[fileList.length - 1]] // 这一步，是 展示最后一次选择的文件
     }
     this.fileUrl = URL.createObjectURL(file.raw)
-    this.dialogVisible = true
+    this.fileName = file.name
+    // 读取Excel文件内容并显示
     if (this.state.type === 'xlsx') {
-      this.fileName = file.name
-      // 读取Excel文件内容并显示
-      const f = file.raw
-      this.state.file = file
-      const reader = new FileReader()
-      let jsonobject
-      reader.onload = (e: any) => {
-        const data = e.target.result
-        const workbook = XLSX.read(data, {
-          type: 'binary'
-        })
-        jsonobject = XLSX.utils.sheet_to_json(
-          workbook.Sheets[workbook.SheetNames[0]]
-        )
-        const { tableHeader, tableBody } = processTableData(jsonobject)
-        const xlsxIsValid = xlsxValidator(tableHeader, tableBody)
-        if (!xlsxIsValid) {
-          this.$message({
-            message: '该文件包含不规则内容',
-            type: 'error',
-            showClose: true
-          })
-          return
-        }
-        this.tableHeader = tableHeader
-        this.tableBody = tableBody
-      }
-      reader.readAsBinaryString(f)
+      await this.readxlsx(file)
     }
+    // 展示图片
     if (this.state.type === 'image') {
-      const imageUrl = URL.createObjectURL(file.raw)
-      const img = new Image()
-      img.src = imageUrl
-      const vm = this
-      img.onload = function() {
-        const maxL = 800
-        let maxlength = img.height
-        if (img.width > img.height) {
-          maxlength = img.width
-        }
-        if (maxlength > maxL) {
-          vm.bili = maxL / maxlength
-        }
-        vm.$set(vm.imgInfo, 'width', Math.round(img.width * vm.bili))
-        vm.$set(vm.imgInfo, 'height', Math.round(img.height * vm.bili))
-        vm.imageUrl = imageUrl
-      }
+      this.previewImage(file)
     }
   }
 
-  realTime(data: any) {
-    this.previews = data
+  async readxlsx(file: any) {
+    const dataBinary = await this.readFile(file.raw)
+    const workBook = xlsx.read(dataBinary, { type: 'binary', cellDates: true })
+    const workSheet = workBook.Sheets[workBook.SheetNames[0]]
+    const data = xlsx.utils.sheet_to_json(workSheet)
+    const { tableHeader, tableBody } = readExcel(data)
+    const valid = xlsxValidator(tableHeader, tableBody)
+    if (!valid) {
+      this.$message({
+        message: '该文件包含不规则内容',
+        type: 'error',
+        showClose: true
+      })
+    } else {
+      this.tableHeader = tableHeader
+      this.tableBody = tableBody
+      this.state.file = file.raw
+    }
+  }
+
+  async readFile(file: any) {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.readAsBinaryString(file)
+      reader.onload = (e: any) => {
+        resolve(e.target.result)
+      }
+    })
+  }
+
+  previewImage(file: any) {
+    const imageUrl = URL.createObjectURL(file.raw)
+    const img = new Image()
+    img.src = imageUrl
+    const vm = this
+    img.onload = function() {
+      const maxL = 800
+      let maxlength = img.height
+      if (img.width > img.height) {
+        maxlength = img.width
+      }
+      if (maxlength > maxL) {
+        vm.bili = maxL / maxlength
+      }
+      vm.$set(vm.imgInfo, 'width', Math.round(img.width * vm.bili))
+      vm.$set(vm.imgInfo, 'height', Math.round(img.height * vm.bili))
+      vm.imageUrl = imageUrl
+    }
   }
 
   handleSizeChange(pageSize: number) {
@@ -260,11 +212,11 @@ export default class extends Mixins(BaseVue) {
 </script>
 
 <style lang="scss" scoped>
-.uploadItem {
+.upload-item {
   display: flex;
   align-items: center;
 }
-.uploadImage {
+.upload-image {
   height: 50px;
   width: 50px;
   margin-right: 10px;
