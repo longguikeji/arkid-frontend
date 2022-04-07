@@ -22,7 +22,6 @@
 </template>
 
 <script lang="ts">
-import { compile } from 'path-to-regexp'
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import { RouteRecord, Route } from 'vue-router'
 import { DesktopModule, IDesktopSingleApp } from '@/store/modules/desktop'
@@ -75,18 +74,10 @@ export default class extends Vue {
     return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
   }
 
-  private pathCompile(path: string) {
-    const { params } = this.$route
-    const toPath = compile(path)
-    return toPath(params)
-  }
-
   private handleLink(item: any) {
     const { redirect, path } = item
     if (redirect) {
-      this.$router.push(redirect).catch(err => {
-        console.log(err)
-      })
+      this.$router.push(redirect)
       return
     }
     if (path === '/desktop') {
