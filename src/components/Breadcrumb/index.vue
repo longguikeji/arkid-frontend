@@ -77,9 +77,7 @@ export default class extends Vue {
   private handleLink(item: any) {
     const { redirect, path } = item
     if (redirect) {
-      this.$router.push(redirect).catch(err => {
-        console.log(err)
-      })
+      this.$router.push(redirect)
       return
     }
     if (path === '/desktop') {
