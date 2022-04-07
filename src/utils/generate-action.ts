@@ -3,7 +3,8 @@ import OpenAPI, { ISchema } from '@/config/openapi'
 
 // 通过path和method在openAPI中进行
 export function getActionMapping(path: string, method: string, blank?: boolean, response?: boolean, readonly?: boolean) {
-  let mapping = {}, required
+  let mapping: any = {}
+  let required: any = undefined
   const isResponse = response || method === 'get' ? true : false
   const schema = getSchemaByPath(path, method)
   if (schema.discriminator && schema.oneOf) {

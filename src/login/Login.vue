@@ -1,5 +1,5 @@
 <template>
-  <login-slug v-if="nullSlug" />
+  <login-slug v-if="slugisnull" />
   <login-component
     v-else-if="config"
     :tenant="tenant"
@@ -11,10 +11,9 @@ import Vue from 'vue'
 import { Component, Watch } from 'vue-property-decorator'
 import LoginComponent from './components/LoginComponent.vue'
 import LoginSlug from './components/LoginSlug.vue'
-import { LoginPagesConfig, LoginTenant, ButtonConfig } from './interface'
-import LoginStore from './store/login'
-import getBaseUrl from '@/utils/get-base-url'
-import http from './http'
+import { LoginPagesConfig, LoginTenant } from './interface'
+import { backendAuth, getLoginPage } from './utils'
+import LoginStore from './store'
 
 @Component({
   name: 'Login',
@@ -28,120 +27,33 @@ export default class Login extends Vue {
   private tenant: LoginTenant = {}
 
   async mounted() {
-    await this.backendAuth()
-    await this.getLoginPage()
+    await backendAuth()
+    await this.initLoginPage()
   }
 
   @Watch('$route')
   tenantChange() {
-    this.getLoginPage()
+    this.initLoginPage()
   }
 
-  get nullSlug(): boolean {
+  get slugisnull(): boolean {
     const sl = this.$route.query.slug
     const res = sl ? (typeof sl === 'string' ? sl : sl[0]) : null
     return res === 'null'
   }
 
-  get tenantUUID(): string | null {
+  get uuid(): string | null {
     const tenant = this.$route.query.tenant
     return tenant ? typeof tenant === 'string' ? tenant : tenant[0] : null
   }
 
-  get next(): string | null {
-    const next = this.$route.query.next
-    return next ? typeof next === 'string' ? next : next[0] : null
-  }
-
-  private async backendAuth() {
-    const data = await http.get('/api/v1/backend_auth/')
-    const token = data.data?.token
-    if (token) {
-      LoginStore.token = token
-      this.$router.push({
-        path: '/',
-        query: this.$route.query
-      })
-    }
-  }
-
-  private async getLoginPage() {
-    if (this.nullSlug) return
-    // 登录之后进行当前登录地址的判断，如果当前登录地址有next参数，重定向到next中
-    let hasPermission = true
-    let info = ''
-    if (this.next) {
-      let nextUrl = this.next
-      const query = this.$route.query
-      const keys = Object.keys(this.$route.query)
-      for (const key of keys) {
-        if (key === 'is_alert') {
-          LoginStore.token = null
-          hasPermission = false
-          info = query[key] as string
-          continue
-        }
-        if (key === 'next') continue
-        if (nextUrl.includes(`&${key}=`)) continue
-        if (nextUrl.includes(`?${key}=`)) continue
-        nextUrl += `&${key}=${query[key]}`
-      }
-      if (nextUrl.indexOf('?') === -1) nextUrl = nextUrl.replace('&', '?')
-      nextUrl = window.location.origin + nextUrl
-      LoginStore.NextUrl = nextUrl
-      if (LoginStore.token) {
-        const prefix = nextUrl.includes('?') ? '&' : '?'
-        window.location.replace(nextUrl + `${prefix}token=` + LoginStore.token)
-      }
-    }
-
-    LoginStore.TenantUUID = this.tenantUUID
-    let url = '/api/v1/loginpage/'
-    if (LoginStore.TenantUUID) {
-      url = '/api/v1/loginpage/?tenant=' + LoginStore.TenantUUID
-    }
-    const response = await http.get(url)
-    const page = response.data
-    const { tenant, data } = page
-    const config = {}
-    Object.keys(data).forEach(key => {
-      if (key === 'login') {
-        config[key] = {
-          ...data[key],
-          extend: this.extendLogin(data[key].extend)
-        }
-      } else {
-        config[key] = data[key]
-      }
+  async initLoginPage() {
+    if (this.slugisnull) return
+    LoginStore.TenantUUID = this.uuid
+    await getLoginPage(this.$route).then(({ tenant, config }) => {
+      if (tenant) this.tenant = tenant
+      if (config) this.config = config
     })
-    this.config = config
-    this.tenant = tenant
-
-    if (!hasPermission) {
-      this.$message({
-        message: info as string,
-        type: 'error',
-        showClose: true,
-        duration: 3000
-      })
-    }
-  }
-
-  // third-party
-  private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
-    let next = window.location.origin + getBaseUrl() + '/third_part_callback'
-    if (LoginStore.NextUrl) next = `${next}&next=${LoginStore.NextUrl}`
-    if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
-      extend.buttons.forEach((btn: ButtonConfig) => {
-        btn.img = btn.img || 'extend-icon'
-        btn.redirect!.params = {
-          next: encodeURIComponent(next)
-        }
-      })
-      return extend
-    } else {
-      return null
-    }
   }
 }
 </script>

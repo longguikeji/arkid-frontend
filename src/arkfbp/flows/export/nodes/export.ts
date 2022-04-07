@@ -1,5 +1,5 @@
 import { APINode } from 'arkfbp/lib/apiNode'
-import http from '@/login/http'
+import http from '@/login/utils/http'
 import { AxiosRequestConfig } from 'axios'
 import { RULE_REGEXP } from '@/utils/rules'
 
@@ -45,6 +45,7 @@ export class Export extends APINode {
       link.click()
       document.body.removeChild(link)
     } else {
+      // @ts-ignore
       navigator.msSaveBlob(blob, filename)
     }
   }

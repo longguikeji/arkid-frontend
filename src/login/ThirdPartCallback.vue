@@ -1,7 +1,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import LoginStore from './store/login'
+import LoginStore from './store'
 
 interface Response {
   token:string

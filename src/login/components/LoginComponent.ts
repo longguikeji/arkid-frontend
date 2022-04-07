@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity, LoginTenant } from '../interface'
-import LoginStore from '../store/login'
+import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, LoginTenant } from '../interface'
+import LoginStore from '../store'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
-import http from '../http'
+import http from '../utils/http'
 import { error } from '@/constants/error'
 
 @Component({
@@ -127,7 +127,7 @@ export default class LoginComponent extends Vue {
 
   addKeyPressEvent() {
     const that = this
-    window.document.onkeypress = async function(e:KeyboardEvent) {
+    window.onkeypress = async function(e:KeyboardEvent) {
       if (e.code === 'Enter' && that.pageConfig?.forms) {
         that.btnClickHandler(that.pageConfig.forms[that.tabIndex].submit)
       }
@@ -258,7 +258,7 @@ export default class LoginComponent extends Vue {
         if (this.form.hasOwnProperty(key)) {
           submitParams[key] = this.form[key]
         }
-        if (key === 'code_filename') submitParams[key] = LoginStore.CodeFileName
+        if (key === 'code_filename') submitParams[key] = LoginStore.Captcha
       }
     } else {
       submitParams = this.form
@@ -276,7 +276,7 @@ export default class LoginComponent extends Vue {
     const data = response.data
     if (!data.error) {
       const { key, base64 } = data
-      LoginStore.CodeFileName = key
+      LoginStore.Captcha = key
       this.imageCodeSrc = `data:image/png;base64,${base64}`
     }  
   }
@@ -330,7 +330,7 @@ export default class LoginComponent extends Vue {
         }
       }
     } else {
-      if (data.is_need_refresh && LoginStore.CodeFileName === '') {
+      if (data.is_need_refresh && LoginStore.Captcha === '') {
         window.location.reload()
       } else if (data.error === '10029') {
         this.switchPage('password')
