@@ -5,7 +5,6 @@ import OptionType from '@/admin/common/Form/Select/OptionType'
 import SelectState from '@/admin/common/Form/Select/SelectState'
 import { FormPage } from '@/admin/FormPage/FormPageState'
 import OpenAPI, { ISchema } from '@/config/openapi'
-// import { isEmpty } from 'lodash'
 
 export default function generateForm(schema: ISchema, showReadOnly: boolean = false, showWriteOnly: boolean = true, disabled: boolean = false, readonly: boolean = false) {
   const formPageState: FormPage = {}
@@ -257,7 +256,6 @@ function createObjectItem(prop: string, schema: ISchema, showReadOnly: boolean, 
     itemState.items = getItemsBySchema(schema, showReadOnly, showWriteOnly, disabled)
     Object.assign(itemState, { isAddItem: schema.format === 'custom_dict' })
   }
-  // if (isEmpty(itemState.items)) return null
   return {
     type: 'FormObjectItem',
     label: schema.title,

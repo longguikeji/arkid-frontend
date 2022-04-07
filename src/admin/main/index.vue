@@ -30,7 +30,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import BaseVue from '@/admin/base/BaseVue'
 import { AdminModule } from '@/store/modules/admin'
 import { runFlowByFile } from '@/arkfbp/index'
 
