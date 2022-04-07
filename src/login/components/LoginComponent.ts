@@ -77,7 +77,7 @@ export default class LoginComponent extends Vue {
   }
 
   get currentForm() {
-    return this.$refs[this.tab][0].$children[0]
+    return this.$refs[this.tab] && this.$refs[this.tab]![0].$children[0]
   }
 
   created() {

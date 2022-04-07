@@ -37,7 +37,7 @@ export class ConfigNode extends APINode {
   async setCurrentUserInfo() {
     this.url = '/api/v1/user/info/'
     const outputs = await super.run()
-    if (outputs) {
+    if (outputs?.uuid) {
       UserModule.setUserInfo(outputs)
     }
   }

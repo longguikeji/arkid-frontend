@@ -16,7 +16,7 @@
         :to="{path: tag.path, query: tag.query, fullPath: tag.fullPath}"
         tag="span"
         class="tags-view-item"
-        @click.middle.native="!isAffix(tag)?closeSelectedTag(tag):''"
+        @click.middle.native="!isAffix(tag) ? closeSelectedTag(tag) : ''"
         @contextmenu.prevent.native="openMenu(tag, $event)"
       >
         {{ tag.meta.title }}
@@ -29,7 +29,7 @@
     </scroll-pane>
     <ul
       v-show="visible"
-      :style="{left: left+'px', top: top+'px'}"
+      :style="{left: left + 'px', top: top + 'px'}"
       class="contextmenu"
     >
       <li @click="refreshSelectedTag(selectedTag)">
@@ -39,8 +39,7 @@
         v-if="!isAffix(selectedTag)"
         @click="closeSelectedTag(selectedTag)"
       >
-        {{
-          $t('tagsView.close') }}
+        {{ $t('tagsView.close') }}
       </li>
       <li @click="closeOthersTags">
         {{ $t('tagsView.closeOthers') }}
@@ -128,7 +127,9 @@ export default class extends Vue {
 
   private isActive(route: ITagView) {
     if (route.path === '/desktop') {
-      return this.isAffix(route) ? route.path === this.$route.fullPath : route.fullPath === this.$route.fullPath
+      return this.isAffix(route)
+        ? route.path === this.$route.fullPath
+        : route.fullPath === this.$route.fullPath
     }
     return route.path === this.$route.path
   }
@@ -138,7 +139,11 @@ export default class extends Vue {
   }
 
   private isDesktopTag() {
-    if (this.$route.path === '/desktop' && this.$route.fullPath !== '/desktop' && !this.$route.meta.affix) {
+    if (
+      this.$route.path === '/desktop' &&
+      this.$route.fullPath !== '/desktop' &&
+      !this.$route.meta?.affix
+    ) {
       return true
     }
     return false
@@ -146,7 +151,7 @@ export default class extends Vue {
 
   private filterAffixTags(routes: RouteConfig[], basePath = '/') {
     let tags: ITagView[] = []
-    routes.forEach(route => {
+    routes.forEach((route) => {
       if (route.meta && route.meta.affix) {
         const tagPath = path.resolve(basePath, route.path)
         tags.push({
@@ -177,7 +182,11 @@ export default class extends Vue {
   }
 
   private addTags() {
-    if (this.$route.path === '/desktop' && this.$route.fullPath !== '/desktop' && this.$route.meta.affix) return
+    if (
+      this.$route.path === '/desktop' &&
+      this.$route.fullPath !== '/desktop' &&
+      this.$route.meta?.affix
+    ) { return }
     const { name } = this.$route
     if (name) {
       TagsViewModule.addView(this.$route)
@@ -191,10 +200,17 @@ export default class extends Vue {
       for (const tag of tags) {
         const target = tag.to as ITagView
         const currentPath = this.$route.path
-        if (currentPath === '/desktop' ? target.fullPath === this.$route.fullPath : target.path === this.$route.path) {
+        if (
+          currentPath === '/desktop'
+            ? target.fullPath === this.$route.fullPath
+            : target.path === this.$route.path
+        ) {
           (this.$refs.scrollPane as ScrollPane).moveToTarget(tag as any)
           // When query is different then update
-          if (target.fullPath !== this.$route.fullPath && currentPath !== '/desktop') {
+          if (
+            target.fullPath !== this.$route.fullPath &&
+            currentPath !== '/desktop'
+          ) {
             TagsViewModule.updateVisitedView(this.$route)
           }
           break
@@ -221,7 +237,10 @@ export default class extends Vue {
   }
 
   private closeOthersTags() {
-    if (this.selectedTag.fullPath !== this.$route.path && this.selectedTag.fullPath !== undefined) {
+    if (
+      this.selectedTag.fullPath !== this.$route.path &&
+      this.selectedTag.fullPath !== undefined
+    ) {
       this.$router.push(this.selectedTag.fullPath)
     }
     TagsViewModule.delOthersViews(this.selectedTag)
@@ -230,7 +249,7 @@ export default class extends Vue {
 
   private closeAllTags(view: ITagView) {
     TagsViewModule.delAllViews()
-    if (this.affixTags.some(tag => tag.path === this.$route.path)) {
+    if (this.affixTags.some((tag) => tag.path === this.$route.path)) {
       return
     }
     this.toLastView(TagsViewModule.visitedViews, view)
