@@ -50,10 +50,7 @@ export default class Login extends Vue {
     const token = data.data?.token
     if (token) {
       LoginStore.token = token
-      this.$router.push({
-        path: '/',
-        query: this.$route.query
-      })
+      window.location.reload()
     }
   }
 
