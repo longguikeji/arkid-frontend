@@ -18,7 +18,6 @@
       :debounce="state.debounce"
       :tooltip-class="state.tooltipClass"
       :marks="state.marks"
-      :format-tooltip="formatTooltip"
     />
   </div>
 </template>
@@ -35,10 +34,6 @@ import BaseVue from '@/admin/base/BaseVue'
 export default class extends Mixins(BaseVue) {
   get state(): SliderState {
     return this.$state as SliderState
-  }
-
-  formatTooltip() {
-    // console.log(this.state.value);
   }
 }
 </script>

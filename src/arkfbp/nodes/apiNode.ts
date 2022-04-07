@@ -15,7 +15,7 @@ export class APINode extends FunctionNode {
     method: 'GET',
     params: null,
     data: null,
-    headers: null
+    headers: undefined
   }
 
   initOptions() {

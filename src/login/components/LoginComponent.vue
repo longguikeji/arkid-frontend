@@ -145,6 +145,9 @@
   margin: 0 auto;
   background-repeat: no-repeat;
   background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &-title {
     padding: 50px 0 10px 50px;
@@ -166,6 +169,7 @@
   }
 
   ::v-deep .el-dialog {
+    margin: 0px !important;
     .el-dialog__header {
       border-radius: 8px 8px 0 0;
       padding: 0px;
