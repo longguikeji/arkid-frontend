@@ -13,7 +13,6 @@ import TableColumnState from '@/admin/common/data/Table/TableColumn/TableColumnS
 import generateForm from '@/utils/form'
 import ButtonState from '@/admin/common/Button/ButtonState'
 import { BasePageOptions } from '@/flows/initPage/nodes/initPage'
-import hasPermission, { hasPermissionByPath } from '@/utils/role'
 import FormItemState from '@/admin/common/Form/FormItem/FormItemState'
 import { FormItemsState } from '@/admin/common/Form/FormState'
 import { TABLE_COLUMN_WIDTH } from '@/utils/table'
@@ -529,11 +528,6 @@ export class StateNode extends FunctionNode {
   getButtonState(props: IButtonProps) {
     const pageType = this._type
     const { key, description, mode, role, icon, tag, path, method } = props
-    if (path && method) { // Permission
-      if (!hasPermissionByPath(path, method)) return null
-    } else if (tag) {
-      if (!hasPermission(tag)) return null
-    }
     let action = '', type = 'primary'
     switch (mode) {
       case 'open':
