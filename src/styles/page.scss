@@ -17,6 +17,14 @@
     flex: 3;
     height: calc(100vh - 86px - 2rem);
     margin-left: 0px;
+
+    ::v-deep .el-card__body {
+      height: calc(100% - 55px);
+      overflow: auto;
+      .el-table {
+        overflow: auto;
+      }
+    }
   }
 }
 
