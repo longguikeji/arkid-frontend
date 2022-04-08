@@ -1,7 +1,7 @@
 import { UserModule, UserRole } from '@/store/modules/user'
 import OpenAPI from '@/config/openapi'
-import { isArray } from '@/utils/common'
 import { PermissionModule } from '@/store/modules/permission'
+import { ROUTE_LAYER } from '@/router/dynamic' 
 
 const USER_COMMON_ROUTES = [
   'message_center',
@@ -10,6 +10,8 @@ const USER_COMMON_ROUTES = [
   'contacts',
   'notice',
 ]
+
+const PERMISSION_MANAGE_NAME = '权限管理'
 
 export function getApiRolesByPageName(name: string): string[] {
   const info = OpenAPI.instance.getOnePageTag(name)
@@ -29,7 +31,7 @@ export function getApiRolesByPath(path: string, method: string) {
   return operation ? operation.roles || [] : []
 }
 
-export function hasRouteManage(fullName: string, path: string) {
+export function hasRouteManage(fullName: string, path: string, layer?: number) {
   if (USER_COMMON_ROUTES.includes(path)) return true
   const role = UserModule.role
   if (role === UserRole.Global) return true
@@ -37,6 +39,9 @@ export function hasRouteManage(fullName: string, path: string) {
   if (role === UserRole.Tenant) {
     return !global_en_names.includes(fullName)
   } else {
+    if (layer === ROUTE_LAYER.third && en_names.includes(PERMISSION_MANAGE_NAME)) {
+      return true
+    }
     return en_names.includes(fullName)
   }
 }

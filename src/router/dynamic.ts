@@ -15,6 +15,12 @@ interface RouteMeta {
   roles?: Array<string>
 }
 
+export const ROUTE_LAYER = {
+  first: 1,
+  second: 2,
+  third: 3,
+}
+
 // 根据OpenAPI信息动态生成当前登录用户所拥有权限的路由
 export function getDynamicRoutes() {
   const routes: Array<RouteConfig> = []
@@ -40,7 +46,7 @@ function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
     meta: getRouteMeta(route),
     children:
       children && children.length
-        ? generateRouteChildren(children)
+        ? generateRouteChildren(children, ROUTE_LAYER.second)
         : [
             {
               path: '',
@@ -55,17 +61,17 @@ function generateRoute(route: IOpenAPIRouter): RouteConfig | undefined {
   return children?.length && !newRoute.children ? undefined : newRoute
 }
 
-function generateRouteChildren(routes: IOpenAPIRouter[]) {
+function generateRouteChildren(routes: IOpenAPIRouter[], layer: number) {
   const childRoutes: Array<RouteConfig> = []
   for (let i = 0, len = routes.length; i < len; i++) {
     const route = routes[i]
     const { children, path, name, page } = route
-    if (page && !hasRouteManage(name, path)) continue
+    if (page && !hasRouteManage(name, path, layer)) continue
     const childRoute = {
       path: path,
       name: `${path}_child_${i}`,
       component: Admin,
-      children: children ? generateRouteChildren(children) : undefined,
+      children: children ? generateRouteChildren(children, layer + 1) : undefined,
       meta: getRouteMeta(route),
     }
     if (children?.length && !childRoute.children) continue
