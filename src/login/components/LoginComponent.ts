@@ -1,7 +1,15 @@
 import Vue from 'vue'
 import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, TenantPasswordComplexity, LoginTenant } from '../interface'
+import {
+  LoginPagesConfig,
+  LoginPageConfig,
+  FormConfig,
+  ButtonConfig,
+  FormItemConfig,
+  TenantPasswordComplexity,
+  LoginTenant,
+} from '../interface'
 import LoginStore from '../store/login'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../http'
@@ -10,12 +18,12 @@ import { error } from '@/constants/error'
 @Component({
   name: 'LoginComponent',
   components: {
-    LoginButton
-  }
+    LoginButton,
+  },
 })
 export default class LoginComponent extends Vue {
   @Prop({ required: false }) tenant?: LoginTenant
-  @Prop({ required: true }) config?:LoginPagesConfig
+  @Prop({ required: true }) config?: LoginPagesConfig
 
   imageCodeSrc: string = ''
   forms: object = {}
@@ -42,12 +50,14 @@ export default class LoginComponent extends Vue {
 
   get loginBgStyle() {
     const bgUrl = this.tenant?.background_url
-    return bgUrl ? {
-      backgroundImage: `url(${bgUrl})`
-    } : {
-      backgroundImage: `url(${this.defaultBgImg})`,
-      backgroundColor: '#0f62ea'
-    }
+    return bgUrl
+      ? {
+          backgroundImage: `url(${bgUrl})`,
+        }
+      : {
+          backgroundImage: `url(${this.defaultBgImg})`,
+          backgroundColor: '#0f62ea',
+        }
   }
 
   get copyright() {
@@ -67,7 +77,9 @@ export default class LoginComponent extends Vue {
   }
 
   get passwordRule() {
-    const regex = this.complexity?.regular ? new RegExp(this.complexity.regular) : DEFAULT_PASSWORD_RULE.regex
+    const regex = this.complexity?.regular
+      ? new RegExp(this.complexity.regular)
+      : DEFAULT_PASSWORD_RULE.regex
     const hint = this.complexity?.title || DEFAULT_PASSWORD_RULE.hint
     return getRegexRule(hint, regex)
   }
@@ -108,7 +120,7 @@ export default class LoginComponent extends Vue {
         for (const i in _form.items) {
           const _item: FormItemConfig = _form.items[i]
           if (_item.name) {
-            this.$set(this.forms[p][f], _item.name,  _item.value || '')
+            this.$set(this.forms[p][f], _item.name, _item.value || '')
             this.addRule(_item.name)
           }
         }
@@ -117,17 +129,19 @@ export default class LoginComponent extends Vue {
   }
 
   addRule(name: string) {
-    this.$set(this.rules, name, [ RULES.required ])
+    this.$set(this.rules, name, [RULES.required])
     if (RULES[name]) this.rules[name].push(RULES[name])
     if (name === 'checkpassword') {
-      Array.prototype.push.apply(this.rules[name], [ this.passwordRule,
-        { validator: this.checkPassword, trigger: 'blur' } ])
+      Array.prototype.push.apply(this.rules[name], [
+        this.passwordRule,
+        { validator: this.checkPassword, trigger: 'blur' },
+      ])
     }
   }
 
   addKeyPressEvent() {
     const that = this
-    window.document.onkeypress = async function(e:KeyboardEvent) {
+    window.document.onkeypress = async function(e: KeyboardEvent) {
       if (e.code === 'Enter' && that.pageConfig?.forms) {
         that.btnClickHandler(that.pageConfig.forms[that.tabIndex].submit)
       }
@@ -152,12 +166,10 @@ export default class LoginComponent extends Vue {
       this.$set(this.rules, 'password', [
         RULES.required,
         this.passwordRule,
-        { validator: this.validateCheckPassword, trigger: 'blur' }
+        { validator: this.validateCheckPassword, trigger: 'blur' },
       ])
     } else {
-      this.$set(this.rules, 'password', [
-        RULES.required
-      ])
+      this.$set(this.rules, 'password', [RULES.required])
     }
   }
 
@@ -178,7 +190,8 @@ export default class LoginComponent extends Vue {
 
   isNeedImageCode(item: FormItemConfig) {
     this.$nextTick(() => {
-      const hasCode = item.name === 'code' && !item.append && this.page === 'login'
+      const hasCode =
+        item.name === 'code' && !item.append && this.page === 'login'
       if (hasCode && this.imageCodeSrc === '') {
         this.getImageCode()
       }
@@ -212,7 +225,7 @@ export default class LoginComponent extends Vue {
         this.$message({
           message: err,
           type: 'error',
-          showClose: true
+          showClose: true,
         })
       }
     })
@@ -251,7 +264,7 @@ export default class LoginComponent extends Vue {
   }
 
   getParams() {
-    const params= this.btn.http!.params
+    const params = this.btn.http!.params
     let submitParams = {}
     if (params) {
       for (const key in params) {
@@ -278,7 +291,7 @@ export default class LoginComponent extends Vue {
       const { key, base64 } = data
       LoginStore.CodeFileName = key
       this.imageCodeSrc = `data:image/png;base64,${base64}`
-    }  
+    }
   }
 
   async btnRequest() {
@@ -288,58 +301,49 @@ export default class LoginComponent extends Vue {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
     const response = await this.request(url, method, params)
-    const data = response.data
-    if (data.error === '0') {
+    let {
+      data,
+      error: errorCode,
+      message: msg,
+      is_need_refresh: isRefresh,
+      gopage,
+    } = response.data || {}
+    // 如果操作成功
+    if (errorCode === '0') {
       if (this.btn.delay) {
-        this.$message({
+        this.$message.success({
           message: '验证码发送成功，请注意查收',
-          type: 'success',
-          showClose: true
+          showClose: true,
         })
         this.isChangeDelay = true
-      } else if (this.btn.gopage) {
-        this.$message({
-          message: '重置密码成功，请登录',
-          type: 'success',
-          showClose: true
+      }
+      const token = data?.token || LoginStore.token
+      if (!token) return
+      LoginStore.token = token
+      // 绑定用户与第三方账号
+      if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
+        await this.request(LoginStore.BindUrl, 'post', {
+          user_id: LoginStore.ThirdUserID,
         })
-        this.switchPage()
-      } else if (data.data.token) {
-        // set token
-        LoginStore.token = data.data.token
-        // 绑定用户与第三方账号
-        if (LoginStore.ThirdUserID && LoginStore.BindUrl) {
-          const parmas = {
-            user_id: LoginStore.ThirdUserID
-          }
-          url = LoginStore.BindUrl
-          method = 'post'
-          await this.request(url, method, parmas)
-          LoginStore.BindUrl = ''
-          LoginStore.ThirdUserID = ''
-        }
-        // next url
-        const next = LoginStore.NextUrl
-        if (next) {
-          const prefix = next.includes('?') ? '&' : '?'
-          window.location.href = next + `${prefix}token=` + LoginStore.token
-          LoginStore.NextUrl = ''
-        } else {
-          window.location.reload()
-        }
+        LoginStore.BindUrl = ''
+        LoginStore.ThirdUserID = ''
       }
-    } else {
-      if (data.is_need_refresh && LoginStore.CodeFileName === '') {
+      // 调转nextUrl或直接进入主页面
+      if (LoginStore.NextUrl) {
+        const prefix = LoginStore.NextUrl.includes('?') ? '&' : '?'
+        window.location.href = LoginStore.NextUrl + `${prefix}token=` + LoginStore.token
+        LoginStore.NextUrl = ''
+      } else {
         window.location.reload()
-      } else if (data.error === '10029') {
-        this.switchPage('password')
       }
-      this.$message({
-        message: error[data.error] || data.message || 'error',
-        type: 'error',
-        showClose: true
-      })
+    } else { // 如果errorCode不等于0, 登录失败或有其他情形
+      if (isRefresh && !LoginStore.CodeFileName) window.location.reload()
+      if (errorCode === '10029' && gopage) {
+        LoginStore.token = data?.token
+        this.switchPage(gopage)
+      }
+      msg = error[errorCode] || msg
+      if (msg) this.$message.error({ message: msg, showClose: true })
     }
   }
-
 }
