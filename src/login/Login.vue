@@ -37,21 +37,22 @@ export default class Login extends Vue {
 
   get tenantUUID(): string | null {
     const tenant = this.$route.query.tenant
-    return tenant ? typeof tenant === 'string' ? tenant : tenant[0] : null
+    return tenant ? (typeof tenant === 'string' ? tenant : tenant[0]) : null
   }
 
   get next(): string | null {
     const next = this.$route.query.next
-    return next ? typeof next === 'string' ? next : next[0] : null
+    return next ? (typeof next === 'string' ? next : next[0]) : null
   }
 
   private async backendAuth() {
+    const token = LoginStore.token
+    if (token) return
     const data = await http.get('/api/v1/backend_auth')
-    const token = data.data?.token
-    if (token) {
-      LoginStore.token = token
-      window.location.reload()
-    }
+    const t = data?.data?.token
+    if (!t) return
+    LoginStore.token = t
+    window.location.reload()
   }
 
   private async getLoginPage() {
@@ -92,7 +93,7 @@ export default class Login extends Vue {
     const page = response.data
     const { tenant, data } = page
     const config = {}
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
       if (key === 'login') {
         config[key] = {
           ...data[key],
@@ -120,7 +121,12 @@ export default class Login extends Vue {
   private extendLogin(extend: { buttons: Array<ButtonConfig>, title: string }) {
     let next = window.location.origin + getBaseUrl() + '/third_part_callback'
     if (LoginStore.NextUrl) next = `${next}&next=${LoginStore.NextUrl}`
-    if (!LoginStore.ThirdUserID && !LoginStore.BindUrl && extend && extend.buttons) {
+    if (
+      !LoginStore.ThirdUserID &&
+      !LoginStore.BindUrl &&
+      extend &&
+      extend.buttons
+    ) {
       extend.buttons.forEach((btn: ButtonConfig) => {
         btn.img = btn.img || 'extend-icon'
         btn.redirect!.params = {
