@@ -21,11 +21,11 @@ const errorCallback = (status: number) => {
 }
 
 const http = axios.create({
-  withCredentials: true
+  withCredentials: true,
 })
 
 http.interceptors.request.use(
-  req => {
+  (req) => {
     const token = LoginStore.token
     if (token) {
       if (!req.headers) req.headers = {}
@@ -33,32 +33,27 @@ http.interceptors.request.use(
     }
     return req
   },
-  err => {
+  (err) => {
     return Promise.reject(err)
-  }
+  },
 )
 
 http.interceptors.response.use(
-  res => {
+  (res) => {
     return Promise.resolve(res)
   },
-  err => {
-    const { response } = err
-    const data = response && response.data
-    if (data) {
-      Message({
-        message: error[data.error] || data.message || 'error',
-        type: 'error',
-        showClose: true
-      })
-    }
+  (err) => {
+    const response = err?.response
+    let { error: errorCode, message: msg } = response?.data || {}
+    msg = error[errorCode] || msg
+    if (msg) Message.error({ message: msg, showClose: true })
     if (response) {
       errorCallback(response.status)
       return response
     } else {
-      return Promise.reject(err)
+      return err
     }
-  }
+  },
 )
 
 export default http
