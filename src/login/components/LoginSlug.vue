@@ -59,18 +59,16 @@ export default class LoginSlug extends Vue {
   toTarget() {
     const query = this.$route.query
     const { protocol, origin, pathname } = window.location
-    let url =
-      origin.replace(`${protocol}//`, `${protocol}//${this.model.slug}.`) +
-      pathname
+    const slug = this.model.slug
+    let url = origin.replace(`${protocol}//`, `${protocol}//${slug}.`) + pathname
+    url = url + `?${QUERY_KEYS.slug}=${slug}`
     const keys = Object.keys(query)
     for (const key of keys) {
       if (key === QUERY_KEYS.slug) continue
       if (key === QUERY_KEYS.tenant) continue
       if (url.includes(`&${key}=`)) continue
-      if (url.includes(`?${key}=`)) continue
       url = url + `&${key}=${query[key]}`
     }
-    if (url.indexOf('?') === -1) url = url.replace('&', '?')
     window.location.replace(url)
   }
 }
