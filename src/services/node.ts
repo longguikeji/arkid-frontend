@@ -177,11 +177,15 @@ export class Node {
 }
 
 export class Manager extends Node {
+  static get baseUrl() {
+    return '/siteapi/oneid/group/manager/group/'
+  }
+
   static async create(node: model.Node) {
-    const url = `/siteapi/oneid/group/manager/group/`
-    const resp = await http.post(url, node.toData())
+    const resp = await http.post(this.baseUrl, node.toData())
     return model.Node.fromData(resp.data)
   }
+
   static async list() {
     const url = `/siteapi/oneid/node/g_manager/node/`
     const resp = await http.get(url)
@@ -189,6 +193,7 @@ export class Manager extends Node {
     const nodes = resp.data.nodes.map(n => model.Node.fromData(n))
     return nodes
   }
+
   static async pagerList(params?: {
     pageSize?: number;
     page?: number;
@@ -206,5 +211,12 @@ export class Manager extends Node {
       count,
       results: results ? results.map(n => model.Node.fromData(n)) : [],
     }
+  }
+
+  // 获取某个管理员的权限等信息, 在EditManager组件页面中使用
+  static async oneManager(id: string) {
+    const url = `${this.baseUrl}${id}/`
+    const resp = await http.get(url)
+    return model.Node.fromData(resp.data)
   }
 }
