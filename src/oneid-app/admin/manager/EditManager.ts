@@ -169,6 +169,7 @@ export default class EditManager extends Vue {
 
   form: model.Node | null = null
   isAllPerm = false
+  tmpAllPerm = false
   tmpPerms: Array<{ id: string; name: string }> = []
   tmpApps: model.App[] = []
   managerUserIds: model.User[] = []
@@ -216,13 +217,7 @@ export default class EditManager extends Vue {
       this.permIds = this.form!.managerGroup!.perms.map((i) => i.id)
       this.appIds = this.form!.managerGroup!.apps.map((i) => i.uid)
 
-      // 判断是否为全选
-      if (
-        this.permIds.length === this.basicPermOptions.length &&
-        this.appIds.length === this.pagination.total
-      ) {
-        this.isAllPerm = true
-      }
+      this.isOpenAllPerm()
     } else {
       this.form = new model.Node()
     }
@@ -261,11 +256,13 @@ export default class EditManager extends Vue {
     this.form!.managerGroup!.perms = this.basicPermOptions.filter((i) =>
       this.permIds.includes(i.id),
     )
+    this.isOpenAllPerm()
   }
   doCheckApp() {
     this.form!.managerGroup!.apps = this.appPermOptions.filter((i) =>
       this.appIds.includes(i.uid),
     )
+    this.isOpenAllPerm()
   }
 
   async doSave() {
@@ -313,12 +310,13 @@ export default class EditManager extends Vue {
   // 如果全选, 则左侧和右侧全部选中
   // 如果取消全选, 则取消所有已选中内容, 不再恢复默认状态
   onIsAllAppChange(isAllPerm: boolean) {
+    this.tmpAllPerm = isAllPerm
     if (isAllPerm) {
       // this.tmpApps = this.form!.managerGroup!.apps
       // this.tmpPerms = this.form!.managerGroup!.perms
 
-      // this.form!.managerGroup!.apps = this.appPermOptions!
-      // this.form!.managerGroup!.perms = this.basicPermOptions!
+      this.form!.managerGroup!.apps = this.appPermOptions!
+      this.form!.managerGroup!.perms = this.basicPermOptions!
       this.permIds = this.basicPermOptions.map((i) => i.id)
       this.appIds = this.appPermOptions.map((i) => i.uid)
     } else {
@@ -362,12 +360,27 @@ export default class EditManager extends Vue {
     })
   }
 
+  // 是否启用全选状态
+  isOpenAllPerm() {
+    if (
+      this.permIds.length === this.basicPermOptions.length &&
+      this.appIds.length === this.pagination.total
+    ) {
+      this.isAllPerm = true
+    } else {
+      this.isAllPerm = false
+    }
+  }
+
   // 切换页面之后, 判断当前是否为全选状态
   // 若当前为全选状态, 更新页面视图和数据
   isCheckCurPageAllApp() {
-    if (!this.isAllPerm) return
+    if (!this.tmpAllPerm) return
     this.appPermOptions.forEach((option) => {
-      this.appIds.push(option.uid)
+      if (!this.appIds.includes(option.uid)) {
+        this.appIds.push(option.uid)
+        this.form!.managerGroup!.apps.push(option)
+      }
     })
   }
 
