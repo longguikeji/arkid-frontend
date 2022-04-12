@@ -74,9 +74,12 @@ export class Node {
     const resp = await http.delete(url)
     return resp.data
   }
-  static async partialUpdate(node: model.Node) {
+  static async partialUpdate(node: model.Node, allSelect?: boolean) {
     const url = `${this.baseUrl}/${node.id}/`
-    const resp = await http.patch(url, node.toData())
+    const resp = await http.patch(url, {
+      ...node.toData(),
+      all_select: allSelect,
+    })
     if (node.parent) {
       await this.addChild(node.parent.id, [node.id])
     }
@@ -177,12 +180,9 @@ export class Node {
 }
 
 export class Manager extends Node {
-  static get baseUrl() {
-    return '/siteapi/oneid/group/manager/group/'
-  }
-
   static async create(node: model.Node) {
-    const resp = await http.post(this.baseUrl, node.toData())
+    const url = `/siteapi/oneid/group/manager/group/`
+    const resp = await http.post(url, node.toData())
     return model.Node.fromData(resp.data)
   }
 
@@ -215,7 +215,7 @@ export class Manager extends Node {
 
   // 获取某个管理员的权限等信息, 在EditManager组件页面中使用
   static async oneManager(id: string) {
-    const url = `${this.baseUrl}${id}/`
+    const url = `/siteapi/oneid/group/manager/group/${id}/`
     const resp = await http.get(url)
     return model.Node.fromData(resp.data)
   }
