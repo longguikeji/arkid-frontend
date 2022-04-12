@@ -85,7 +85,7 @@ export default class Manager extends Vue {
               click: () => {
                 this.$router.push({
                   name: 'admin.manager.edit',
-                  params: {id: row.id},
+                  params: {id: row.uid},
                 })
               },
             },

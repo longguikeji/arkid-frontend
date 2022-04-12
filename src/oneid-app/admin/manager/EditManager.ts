@@ -210,11 +210,13 @@ export default class EditManager extends Vue {
   async loadForm() {
     const { id } = this.$route.params
     if (!this.isNew) {
-      const managerList = await api.Node.Manager.list()
-      this.form = managerList.find((i) => i.id === id)
+      const res = await api.Node.Manager.oneManager(id)
+      this.form = res
 
       this.permIds = this.form!.managerGroup!.perms.map((i) => i.id)
       this.appIds = this.form!.managerGroup!.apps.map((i) => i.uid)
+
+      this.isOpenAllPerm()
     } else {
       this.form = new model.Node()
     }
@@ -253,11 +255,13 @@ export default class EditManager extends Vue {
     this.form!.managerGroup!.perms = this.basicPermOptions.filter((i) =>
       this.permIds.includes(i.id),
     )
+    this.isOpenAllPerm()
   }
   doCheckApp() {
     this.form!.managerGroup!.apps = this.appPermOptions.filter((i) =>
       this.appIds.includes(i.uid),
     )
+    this.isOpenAllPerm()
   }
 
   async doSave() {
@@ -275,7 +279,8 @@ export default class EditManager extends Vue {
       const newManager = await api.Manager.create(form)
       await api.Node.Manager.updateUsers(newManager.id, { userIds })
     } else {
-      await api.Node.Manager.partialUpdate(form)
+      // 增加 all_select 更新属性值, 接口自动处理该内容
+      await api.Node.Manager.partialUpdate(form, this.isAllPerm)
       await api.Node.Manager.updateUsers(form.id, { userIds })
     }
     this.$router.back()
@@ -301,20 +306,22 @@ export default class EditManager extends Vue {
     return true
   }
 
+  // 如果全选, 则左侧和右侧全部选中
+  // 如果取消全选, 则取消所有已选中内容, 不再恢复默认状态
   onIsAllAppChange(isAllPerm: boolean) {
     if (isAllPerm) {
-      this.tmpApps = this.form!.managerGroup!.apps
-      this.tmpPerms = this.form!.managerGroup!.perms
+      // this.tmpApps = this.form!.managerGroup!.apps
+      // this.tmpPerms = this.form!.managerGroup!.perms
 
       this.form!.managerGroup!.apps = this.appPermOptions!
       this.form!.managerGroup!.perms = this.basicPermOptions!
       this.permIds = this.basicPermOptions.map((i) => i.id)
       this.appIds = this.appPermOptions.map((i) => i.uid)
     } else {
-      this.form!.managerGroup!.apps = this.tmpApps
-      this.form!.managerGroup!.perms = this.tmpPerms
-      this.permIds = this.tmpPerms.map((i) => i.id)
-      this.appIds = this.tmpApps.map((i) => i.uid)
+      this.form!.managerGroup!.apps = []
+      this.form!.managerGroup!.perms = []
+      this.permIds = []
+      this.appIds = []
     }
   }
 
@@ -339,12 +346,40 @@ export default class EditManager extends Vue {
 
   async onPageChange(page: number) {
     this.pagination.current = page
-    await this.loadAppList()
+    await this.loadAppList().then(() => {
+      this.isCheckCurPageAllApp()
+    })
   }
 
   async onPageSizeChange(pageSize: number) {
     this.pagination.pageSize = pageSize
-    await this.loadAppList()
+    await this.loadAppList().then(() => {
+      this.isCheckCurPageAllApp()
+    })
+  }
+
+  // 是否启用全选状态
+  isOpenAllPerm() {
+    if (
+      this.permIds.length === this.basicPermOptions.length &&
+      this.appIds.length === this.pagination.total
+    ) {
+      this.isAllPerm = true
+    } else {
+      this.isAllPerm = false
+    }
+  }
+
+  // 切换页面之后, 判断当前是否为全选状态
+  // 若当前为全选状态, 更新页面视图和数据
+  isCheckCurPageAllApp() {
+    if (!this.isAllPerm) return
+    this.appPermOptions.forEach((option) => {
+      if (!this.appIds.includes(option.uid)) {
+        this.appIds.push(option.uid)
+        this.form!.managerGroup!.apps.push(option)
+      }
+    })
   }
 
   mounted() {

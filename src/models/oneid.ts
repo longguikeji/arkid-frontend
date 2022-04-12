@@ -298,6 +298,7 @@ export class Node {
     obj.name = data.info ? data.info.name : data.name!
     obj.remark = data.info ? data.info.remark : data.remark!
     obj.id = data.info ? data.info.node_uid : data.node_uid!
+    obj.uid = data.info ? data.info.uid : data.uid
     obj.custom = data.custom && data.custom.data ? data.custom.data : {}
 
     obj.dept_id = data.info ? data.info.dept_id : -1
@@ -322,6 +323,7 @@ export class Node {
 
   name = ''
   id = ''
+  uid = ''
   type = ''
   remark = ''
   custom:any = {}
@@ -336,7 +338,7 @@ export class Node {
   nodeScope: string[] = []
   userScope: string[] = []
 
-  managerGroup: {
+  managerGroup?: {
     nodes: Node[];
     users: User[];
     apps: App[];
