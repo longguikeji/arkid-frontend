@@ -96,8 +96,8 @@ interface InternationalMobile {
 
         <FormItem prop="gender" label="性别">
           <RadioGroup v-model="form.gender">
-            <Radio label="1">男</Option>
-            <Radio label="2">女</Option>
+            <Radio :label="1">男</Option>
+            <Radio :label="2">女</Option>
           </RadioGroup>
         </FormItem>
 
