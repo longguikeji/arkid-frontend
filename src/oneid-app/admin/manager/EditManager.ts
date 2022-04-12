@@ -169,7 +169,6 @@ export default class EditManager extends Vue {
 
   form: model.Node | null = null
   isAllPerm = false
-  tmpAllPerm = false
   tmpPerms: Array<{ id: string; name: string }> = []
   tmpApps: model.App[] = []
   managerUserIds: model.User[] = []
@@ -310,7 +309,6 @@ export default class EditManager extends Vue {
   // 如果全选, 则左侧和右侧全部选中
   // 如果取消全选, 则取消所有已选中内容, 不再恢复默认状态
   onIsAllAppChange(isAllPerm: boolean) {
-    this.tmpAllPerm = isAllPerm
     if (isAllPerm) {
       // this.tmpApps = this.form!.managerGroup!.apps
       // this.tmpPerms = this.form!.managerGroup!.perms
@@ -375,7 +373,7 @@ export default class EditManager extends Vue {
   // 切换页面之后, 判断当前是否为全选状态
   // 若当前为全选状态, 更新页面视图和数据
   isCheckCurPageAllApp() {
-    if (!this.tmpAllPerm) return
+    if (!this.isAllPerm) return
     this.appPermOptions.forEach((option) => {
       if (!this.appIds.includes(option.uid)) {
         this.appIds.push(option.uid)
