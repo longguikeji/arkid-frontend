@@ -44,16 +44,15 @@ http.interceptors.response.use(
   },
   (err) => {
     const response = err?.response
-    const { message: msg, error: errorCode } = response?.data || {}
-    if (msg) {
-      Message({
-        message: error[errorCode] || msg,
-        type: 'error',
-        showClose: true,
-      })
+    let { error: errorCode, message: msg } = response?.data || {}
+    msg = error[errorCode] || msg
+    if (msg) Message.error({ message: msg, showClose: true })
+    if (response) {
+      errorCallback(response.status)
+      return response
+    } else {
+      return err
     }
-    response?.status && errorCallback(response.status)
-    return response || err
   },
 )
 
