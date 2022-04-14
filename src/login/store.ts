@@ -1,6 +1,5 @@
 export default class LoginStore {
   public static readonly TOKEN = 'token'
-
   private static _token:string | null
 
   public static get token():string | null {
@@ -20,20 +19,9 @@ export default class LoginStore {
     LoginStore._token = value
   }
 
-  public static removeToken() {
-    LoginStore.token = null
-  }
-
-  public static hasToken() {
-    return LoginStore.token
-  }
- 
   public static ThirdUserID = ''
   public static BindUrl = ''
   public static NextUrl = ''
-
-  public static host = 'http://127.0.0.1:8000'
-  public static TenantUUID:string | null
-
-  public static CodeFileName: string = ''
+  public static TenantUUID: string | null
+  public static Captcha: string | null
 }

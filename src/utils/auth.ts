@@ -1,4 +1,4 @@
-import LoginStore from '@/login/store/login'
+import LoginStore from '@/login/store'
 
 export function getToken() {
   return LoginStore.token
@@ -9,5 +9,5 @@ export function setToken(token: string) {
 }
 
 export function removeToken() {
-  LoginStore.removeToken()
+  LoginStore.token = null
 }

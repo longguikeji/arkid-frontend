@@ -30,12 +30,6 @@ interface IPasswordComplexity {
   title: string
 }
 
-interface IChildManagerPermission {
-  isAllShow?: boolean
-  isAllApplication?: boolean
-  visibleSidebarItems?: string[]
-}
-
 export interface IConfigState {
   origin: string // ArkID平台的Location.origin
   slug: string // 当前租户的短连接标识符
@@ -72,11 +66,6 @@ class Config extends VuexModule implements IConfigState {
     regular: DEFAULT_PASSWORD_RULE.regex,
     title: DEFAULT_PASSWORD_RULE.hint
   }
-  public childManagerPermissions: IChildManagerPermission = {
-    isAllShow: true,
-    isAllApplication: true,
-    visibleSidebarItems: []
-  }
 
   @Mutation
   setOrigin(origin: string = '') {
@@ -112,22 +101,6 @@ class Config extends VuexModule implements IConfigState {
   setPasswordComplexify(config: IPasswordComplexity) {
     this.passwordComplexity = Object.assign(this.passwordComplexity, config)
   }
-
-  @Mutation
-  setChildManagerIsAllShow(value: boolean) {
-    this.childManagerPermissions.isAllShow = value
-  }
-
-  @Mutation
-  setChildManagerIsAllApplication(value: boolean) {
-    this.childManagerPermissions.isAllApplication = value
-  }
-
-  @Mutation
-  setChildManagerVisibleSidebarItems(value: string[]) {
-    this.childManagerPermissions.visibleSidebarItems = value
-  }
-
 }
 
 export const ConfigModule = getModule(Config)

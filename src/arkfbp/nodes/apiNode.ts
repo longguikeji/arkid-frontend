@@ -1,5 +1,5 @@
 import { FunctionNode } from 'arkfbp/lib/functionNode'
-import http from '@/login/http'
+import http from '@/login/utils/http'
 import { Method, ResponseType, AxiosRequestConfig } from 'axios'
 
 export class APINode extends FunctionNode {

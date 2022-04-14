@@ -79,7 +79,7 @@
             @click.native="logout"
           >
             <span style="display: block">
-              {{ $t("navbar.logOut") }}
+              {{ $t('navbar.logOut') }}
             </span>
           </el-dropdown-item>
         </el-dropdown-menu>

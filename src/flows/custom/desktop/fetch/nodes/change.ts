@@ -1,5 +1,6 @@
 import { APINode } from '@/arkfbp/nodes/apiNode'
 import { UserModule } from '@/store/modules/user'
+import { TenantModule } from '@/store/modules/tenant'
 
 export class ChangeStateNode extends APINode {
 
@@ -8,10 +9,14 @@ export class ChangeStateNode extends APINode {
     const { client } = source
 
     // set app position
-    this.url = '/api/v1/user/appdata/'
-    this.method = 'GET'
-    const res = await super.run()
-    const data = res.data || []
+    let data: string[] = []
+    const uuid = TenantModule.currentTenant.uuid
+    if (uuid) {
+      this.url = `/api/v1/tenant/${uuid}/user_app_data/`
+      this.method = 'GET'
+      const res = await super.run()
+      data = res.data || []
+    }
 
     // save for headers search function
     UserModule.setUserApps(results || [])
@@ -20,7 +25,7 @@ export class ChangeStateNode extends APINode {
     if (results && results.length) {
       const firstArr = new Array()
       const secondArr = new Array()
-      results.forEach(app => {
+      results.forEach((app: any) => {
         const uuid = app.uuid
         const index = data.indexOf(uuid)
         if (index !== -1) {

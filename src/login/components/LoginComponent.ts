@@ -7,12 +7,11 @@ import {
   FormConfig,
   ButtonConfig,
   FormItemConfig,
-  TenantPasswordComplexity,
   LoginTenant,
 } from '../interface'
-import LoginStore from '../store/login'
+import LoginStore from '../store'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
-import http from '../http'
+import http from '../utils/http'
 import { error } from '@/constants/error'
 
 @Component({
@@ -89,7 +88,7 @@ export default class LoginComponent extends Vue {
   }
 
   get currentForm() {
-    return this.$refs[this.tab][0].$children[0]
+    return this.$refs[this.tab] && this.$refs[this.tab]![0].$children[0]
   }
 
   created() {
@@ -141,7 +140,7 @@ export default class LoginComponent extends Vue {
 
   addKeyPressEvent() {
     const that = this
-    window.document.onkeypress = async function(e: KeyboardEvent) {
+    window.onkeypress = async function(e: KeyboardEvent) {
       if (e.code === 'Enter' && that.pageConfig?.forms) {
         that.btnClickHandler(that.pageConfig.forms[that.tabIndex].submit)
       }
@@ -271,7 +270,7 @@ export default class LoginComponent extends Vue {
         if (this.form.hasOwnProperty(key)) {
           submitParams[key] = this.form[key]
         }
-        if (key === 'code_filename') submitParams[key] = LoginStore.CodeFileName
+        if (key === 'code_filename') submitParams[key] = LoginStore.Captcha
       }
     } else {
       submitParams = this.form
@@ -289,7 +288,7 @@ export default class LoginComponent extends Vue {
     const data = response.data
     if (!data.error) {
       const { key, base64 } = data
-      LoginStore.CodeFileName = key
+      LoginStore.Captcha = key
       this.imageCodeSrc = `data:image/png;base64,${base64}`
     }
   }
@@ -300,15 +299,14 @@ export default class LoginComponent extends Vue {
     if (url.includes('tenant_uuid') && LoginStore.TenantUUID) {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
-    const response = await this.request(url, method, params)
+    const res = await this.request(url, method, params)
     let {
       data,
       error: errorCode,
       message: msg,
       is_need_refresh: isRefresh,
       gopage,
-    } = response.data || {}
-    // 如果操作成功
+    } = res.data || {}
     if (errorCode === '0') {
       if (this.btn.delay) {
         this.$message.success({
@@ -336,9 +334,11 @@ export default class LoginComponent extends Vue {
       } else {
         window.location.reload()
       }
-    } else { // 如果errorCode不等于0, 登录失败或有其他情形
-      if (isRefresh && !LoginStore.CodeFileName) window.location.reload()
-      if (errorCode === '10029' && gopage) {
+    } else {
+      if (data.is_need_refresh && LoginStore.Captcha === '') {
+        window.location.reload()
+      }
+      if (isRefresh === '10029' && gopage) {
         LoginStore.token = data?.token
         this.switchPage(gopage)
       }

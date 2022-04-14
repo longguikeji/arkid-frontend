@@ -56,6 +56,8 @@ const PAGE_CUSTOM_FLOW = {
   'user_token_manage': 'flows/custom/user/token/state',
   'contacts_switch': 'flows/custom/contactsConfig',
   'extension.update': 'flows/custom/extension/state',
+  'permission_list': 'flows/custom/permissionList/state',
+  'permission_group': 'flows/custom/permissionGroup/state'
 }
 
 export interface BasePageOptions {

@@ -71,7 +71,7 @@ export default class extends Vue {
   get activeMenu() {
     const route = this.$route
     const { meta, path } = route
-    if (meta.active) {
+    if (meta?.active) {
       return meta.active
     }
     return path

@@ -9,6 +9,7 @@ import { ITenantState } from './modules/tenant'
 import { IDesktopState } from './modules/desktop'
 import { IValidateState } from './modules/validate'
 import { IConfigState } from './modules/config'
+import { IPermissionState } from './modules/permission'
 
 Vue.use(Vuex)
 
@@ -22,6 +23,7 @@ export interface IRootState {
   desktop: IDesktopState
   validate: IValidateState
   config: IConfigState
+  permission: IPermissionState
 }
 
 // Declare empty store first, dynamically register all modules later.

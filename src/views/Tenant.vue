@@ -28,7 +28,7 @@ export default class extends Vue {
   isShowClose = false
 
   private get page() {
-    return this.$route.meta.page
+    return this.$route.meta?.page
   }
 
   goHome() {
@@ -39,11 +39,13 @@ export default class extends Vue {
     this.isShow = true
     const tenantUUId = TenantModule.currentTenant.uuid
     if (tenantUUId) this.isShowClose = true
-    const state = Object.create({ _pages_: [this.page] })
-    await runFlowByFile('flows/initPage', { state }).then(() => {
-      TenantModule.changeState(state)
-      this.initCompleted = true
-    })
+    if (this.page) {
+      const state = Object.create({ _pages_: [this.page] })
+      await runFlowByFile('flows/initPage', { state }).then(() => {
+        TenantModule.changeState(state)
+        this.initCompleted = true
+      })
+    }
   }
 }
 </script>

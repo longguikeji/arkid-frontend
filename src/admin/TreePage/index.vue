@@ -54,11 +54,10 @@ export default class extends Mixins(BaseVue) {
 
 <style lang="scss" scoped>
 .tree-page {
-  height: calc(100vh - 86px - 2rem);
   box-sizing: border-box;
   overflow: hidden;
   .el-card {
-    height: calc(100vh - 86px - 2rem);
+    height: 100%;
   }
   .tree-list-page {
     display: inline-block;
@@ -72,7 +71,7 @@ export default class extends Mixins(BaseVue) {
   }
   ::v-deep .el-card {
     .el-card__body {
-      height: calc(100vh - 86px - 2rem);
+      height: calc(100% - 55px);
       position: relative;
       overflow: auto;
       .el-pagination {

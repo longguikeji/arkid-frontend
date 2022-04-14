@@ -73,6 +73,7 @@ export function getTreeData(data: Array<any>) {
   for (let i = 0; i < data.length; i++) {
     const d = data[i]
     const item = {
+      ...d,
       id: d.uuid,
       uuid: d.uuid,
       label: d.name || d.username || '',

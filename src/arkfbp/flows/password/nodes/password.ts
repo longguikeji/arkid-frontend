@@ -12,9 +12,8 @@ export class Password extends Update {
       old_password: submitData.oldPassword,
       password: submitData.password,
       uuid: uuid,
-      tenant_uuid: TenantModule.currentTenant.uuid
     }
-    this.inputs.url = url
+    this.inputs.url = url + `?tenant_uuid=${TenantModule.currentTenant.uuid}`
     this.inputs.method = method
     this.inputs.params = params
     await super.run()

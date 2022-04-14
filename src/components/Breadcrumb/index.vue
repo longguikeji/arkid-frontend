@@ -56,10 +56,10 @@ export default class extends Vue {
   }
 
   private getBreadcrumb() {
-    let matched = this.$route.matched.filter((item) => item.meta && item.meta.title)
+    let matched: any = this.$route.matched.filter((item) => item.meta && item.meta.title)
     const first = matched[0]
     if (!this.isDashboard(first)) {
-      matched = [{ path: '/desktop', meta: { title: '主页' } } as RouteRecord].concat(matched)
+      matched = [{ path: '/desktop', meta: { title: '主页' } }].concat(matched)
     }
     this.breadcrumbs = matched.filter((item) => {
       return item.meta && item.meta.title && item.meta.breadcrumb !== false

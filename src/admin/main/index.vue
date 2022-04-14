@@ -4,7 +4,7 @@
   </div>
   <div
     v-else-if="state"
-    :class="page"
+    :class="pages"
   >
     <Tabs
       v-if="state.$tabs"
@@ -13,10 +13,10 @@
     />
     <template v-else>
       <AdminComponent
-        v-for="(card, index) in cards"
+        v-for="(page, index) in pages"
         :key="index"
-        :path="`admin.adminState[${card}]`"
-        :class="`admin-page admin-${card}-page`"
+        :path="`admin.adminState[${page}]`"
+        :class="`admin-page admin-${page}-page`"
       />
     </template>
   </div>
@@ -35,23 +35,22 @@ export default class extends Vue {
     return AdminModule.adminState
   }
 
-  private get page(): string | string[] {
-    return this.$route.meta.page
+  private get pages(): undefined | string[] {
+    const value = this.$route.meta?.page
+    if (!value) return undefined
+    if (typeof value === 'string') return [value]
+    return value
   }
 
   private get url(): string | undefined {
-    return this.$route.meta.url
-  }
-
-  private get cards(): string[] {
-    return typeof this.page === 'string' ? [this.page] : this.page
+    return this.$route.meta?.url
   }
 
   async created() {
-    if (this.page) {
+    if (this.pages) {
       const state = Object.create({
-        _pages_: [...this.cards],
-        _cards_: this.cards,
+        _pages_: [...this.pages],
+        _cards_: this.pages,
         _tabs_: []
       })
       await runFlowByFile('flows/initPage', { state }).then(() => {

@@ -1,10 +1,14 @@
 import axios from 'axios'
-import LoginStore from '../store/login'
+import LoginStore from '../store'
 import { Message } from 'element-ui'
 import { error } from '@/constants/error'
 
+const http = axios.create({
+  withCredentials: true,
+})
+
 const toLogin = () => {
-  LoginStore.removeToken()
+  LoginStore.token = null
   const { origin, search } = window.location
   window.location.replace(`${origin}/login${search}`)
 }
@@ -19,10 +23,6 @@ const errorCallback = (status: number) => {
       break
   }
 }
-
-const http = axios.create({
-  withCredentials: true,
-})
 
 http.interceptors.request.use(
   (req) => {

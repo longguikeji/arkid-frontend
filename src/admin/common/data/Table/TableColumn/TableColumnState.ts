@@ -41,4 +41,5 @@ export default interface TableColumnState extends BaseState {
   scope?: AdminComponentState
   scopeColumn?: Array<any>
   hidden?: boolean // 是否隐藏该列
+  getCellVisible?: Function // 是否隐藏某个cell
 }

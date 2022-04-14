@@ -6,10 +6,12 @@ export interface LoginPageConfig {
   name?: string
   forms?:Array<FormConfig>
   bottoms?:Array<ButtonConfig>
-  extend?:{
-    title?: string
-    buttons?: Array<ButtonConfig>
-  }
+  extend?:LoginExtendConfig
+}
+
+export interface LoginExtendConfig {
+  title?: string
+  buttons?: Array<ButtonConfig>
 }
 
 export interface FormConfig {
@@ -55,17 +57,10 @@ export interface LoginTenant {
   slug?: string
   icon?: string
   created?: string
-  password_complexity?: TenantPasswordComplexity
   copyright_text?: string
   background_url?: string
-}
-
-export interface TenantPasswordComplexity {
-  regular?: string
-  title?: string
-}
-
-export interface PasswordComplexity {
-  regex?: RegExp
-  hint?: string
+  password_complexity?: {
+    regular: string
+    title: string
+  }
 }
