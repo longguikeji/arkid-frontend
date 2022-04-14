@@ -1,7 +1,14 @@
 import Vue from 'vue'
 import { Prop, Component } from 'vue-property-decorator'
 import LoginButton from './LoginButton.vue'
-import { LoginPagesConfig, LoginPageConfig, FormConfig, ButtonConfig, FormItemConfig, LoginTenant } from '../interface'
+import {
+  LoginPagesConfig,
+  LoginPageConfig,
+  FormConfig,
+  ButtonConfig,
+  FormItemConfig,
+  LoginTenant,
+} from '../interface'
 import LoginStore from '../store'
 import { RULES, getRegexRule, DEFAULT_PASSWORD_RULE } from '../utils/rules'
 import http from '../utils/http'
@@ -133,7 +140,7 @@ export default class LoginComponent extends Vue {
 
   addKeyPressEvent() {
     const that = this
-    window.onkeypress = async function(e:KeyboardEvent) {
+    window.onkeypress = async function(e: KeyboardEvent) {
       if (e.code === 'Enter' && that.pageConfig?.forms) {
         that.btnClickHandler(that.pageConfig.forms[that.tabIndex].submit)
       }
@@ -293,9 +300,13 @@ export default class LoginComponent extends Vue {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
     const res = await this.request(url, method, params)
-    const { data, status } = res || {}
-    if (!data || status >= 300) return
-    let { error: errorCode, message: msg, is_need_refresh: isRefresh, gopage } = data
+    let {
+      data,
+      error: errorCode,
+      message: msg,
+      is_need_refresh: isRefresh,
+      gopage,
+    } = res.data || {}
     if (errorCode === '0') {
       if (this.btn.delay) {
         this.$message.success({
@@ -314,6 +325,14 @@ export default class LoginComponent extends Vue {
         })
         LoginStore.BindUrl = ''
         LoginStore.ThirdUserID = ''
+      }
+      // 调转nextUrl或直接进入主页面
+      if (LoginStore.NextUrl) {
+        const prefix = LoginStore.NextUrl.includes('?') ? '&' : '?'
+        window.location.href = LoginStore.NextUrl + `${prefix}token=` + LoginStore.token
+        LoginStore.NextUrl = ''
+      } else {
+        window.location.reload()
       }
     } else {
       if (data.is_need_refresh && LoginStore.Captcha === '') {
