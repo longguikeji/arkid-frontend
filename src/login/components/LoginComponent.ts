@@ -306,7 +306,7 @@ export default class LoginComponent extends Vue {
       message: msg,
       is_need_refresh: isRefresh,
       gopage,
-    } = res.data || {}
+    } = res?.data || {}
     if (errorCode === '0') {
       if (this.btn.delay) {
         this.$message.success({
