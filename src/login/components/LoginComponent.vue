@@ -236,6 +236,12 @@
 }
 
 ::v-deep .agreement {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   .el-dialog__title {
     font-size: 1.5em;
     font-weight: bold;
