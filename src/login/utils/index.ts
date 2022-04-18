@@ -42,14 +42,13 @@ export async function getLoginPage(router: Route) {
     const item = data[key]
     if (item?.extend) {
       config[key] = {
-        ...config,
+        ...item,
         extend: getExtendLogin(item.extend, hasPermission),
       }
     } else {
       config[key] = item
     }
   })
-
   return { tenant, config }
 }
 
