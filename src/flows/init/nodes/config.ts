@@ -23,10 +23,8 @@ export class ConfigNode extends APINode {
       await this.setDesktopConfig(uuid)
       // 通讯录配置信息
       await this.setContactsConfig(uuid)
-      // 用户配置信息
-      await this.setUserConfig(uuid)
-      // 租户配置信息
-      await this.setTenantConfig(uuid)
+      // 用户和租户配置信息
+      await this.setOtherConfig(uuid)
       // 租户密码复杂度
       await this.setTenantPasswordComplexity(uuid)
       // 获取当前用户的权限
@@ -94,6 +92,14 @@ export class ConfigNode extends APINode {
         isOpen: data.is_open,
       })
     }
+  }
+
+  async setOtherConfig(uuid: string) {
+    const role = UserModule.role
+    if (role === UserRole.User) return
+    if (role === UserRole.Platform) return
+    await this.setUserConfig(uuid)
+    await this.setTenantConfig(uuid) 
   }
 
   async setUserConfig(uuid: string) {
