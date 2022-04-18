@@ -335,10 +335,10 @@ export default class LoginComponent extends Vue {
         window.location.reload()
       }
     } else {
-      if (data.is_need_refresh && LoginStore.Captcha === '') {
+      if (isRefresh && LoginStore.Captcha === '') {
         window.location.reload()
       }
-      if (isRefresh === '10029' && gopage) {
+      if (errorCode === '10029' && gopage) {
         LoginStore.token = data?.token
         this.switchPage(gopage)
       }
