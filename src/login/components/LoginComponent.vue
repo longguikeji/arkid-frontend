@@ -242,6 +242,10 @@
   align-items: center;
   justify-content: center;
 
+  .el-dialog__header {
+    padding: 20px !important;
+  }
+
   .el-dialog__title {
     font-size: 1.5em;
     font-weight: bold;
