@@ -300,6 +300,7 @@ export default class LoginComponent extends Vue {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
     const res = await this.request(url, method, params)
+    if (res.status >= 300) return
     let {
       data,
       error: errorCode,
@@ -335,10 +336,10 @@ export default class LoginComponent extends Vue {
         window.location.reload()
       }
     } else {
-      if (data.is_need_refresh && LoginStore.Captcha === '') {
+      if (isRefresh && LoginStore.Captcha === '') {
         window.location.reload()
       }
-      if (isRefresh === '10029' && gopage) {
+      if (errorCode === '10029' && gopage) {
         LoginStore.token = data?.token
         this.switchPage(gopage)
       }

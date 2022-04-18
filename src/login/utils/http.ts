@@ -9,7 +9,8 @@ const http = axios.create({
 
 const toLogin = () => {
   LoginStore.token = null
-  const { origin, search } = window.location
+  const { origin, search, pathname } = window.location
+  if (pathname === '/login') return
   window.location.replace(`${origin}/login${search}`)
 }
 

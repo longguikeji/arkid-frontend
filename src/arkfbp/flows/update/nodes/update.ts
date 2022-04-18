@@ -32,7 +32,7 @@ export class Update extends APINode {
     }
 
     const outputs = await super.run()
-    if (outputs && outputs.error) {
+    if (outputs?.error && outputs.error !== '0') {
       FlowModule.stopRunFlow()
       com.$message({
         message: error[outputs.error]  || outputs.message || 'Error',
