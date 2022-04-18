@@ -300,6 +300,7 @@ export default class LoginComponent extends Vue {
       url = url.replace('tenant_uuid', LoginStore.TenantUUID)
     }
     const res = await this.request(url, method, params)
+    if (res.status >= 300) return
     let {
       data,
       error: errorCode,
