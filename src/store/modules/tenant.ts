@@ -15,6 +15,7 @@ export interface ITenant {
   slug?: string
   icon?: string
   created?: string
+  background_url?: string
 }
 
 @Module({ dynamic: true, store, name: 'tenant' })
