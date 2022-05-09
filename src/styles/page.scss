@@ -200,7 +200,10 @@
   }
 }
 
-.contacts_switch  {
+.contacts_switch,
+.permission_group,
+.app_list,
+.data_sync {
   ::v-deep .table-page {
     .el-card {
       height: calc(100% - 39px) !important;
@@ -215,3 +218,4 @@
     }
   }
 }
+
