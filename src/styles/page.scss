@@ -76,13 +76,39 @@
 .contacts_switch,
 .login_register_extension_config,
 .notice_manage,
-.profile_config_editfields {
+.profile_config_editfields,
+.login_register_extension_config {
   .admin-tabs-page {
     height: calc(100vh - 86px - 2rem);
     background-color: #FFF;
   }
   ::v-deep .el-card {
     border: 0px;
+  }
+}
+
+.login_register_extension_config {
+  ::v-deep .el-tabs__content {
+    height: 100%;
+  }
+  ::v-deep .el-tab-pane {
+    height: 100%;
+  }
+  ::v-deep .el-tab-pane > div {
+    height: 100%;
+  }
+  ::v-deep .form-page {
+    height: 100%;
+    .el-card__body {
+      height: calc(100% - 56px);
+      overflow: auto;
+    }
+  }
+  ::v-deep .table-page {
+    .el-card__body {
+      height: calc(100% - 56px);
+      overflow: auto;
+    }
   }
 }
 
@@ -136,7 +162,9 @@
 .notice_manage,
 .group,
 .contacts_group,
-.all_tenant {
+.all_tenant,
+.backend_login,
+.auth_rules {
   .table-page {
     height: calc(100vh - 86px - 2rem);
     ::v-deep .el-card {
@@ -160,3 +188,34 @@
     }
   }
 }
+
+.other_auth_factor_config {
+  ::v-deep .el-card {
+    height: 100%;
+    padding-bottom: 0px;
+  }
+  ::v-deep .el-card__body {
+    height: calc(100% - 56px);
+    overflow: auto;
+  }
+}
+
+.contacts_switch,
+.permission_group,
+.app_list,
+.data_sync {
+  ::v-deep .table-page {
+    .el-card {
+      height: calc(100% - 39px) !important;
+    }
+    .el-card__body {
+      position: relative;
+      height: calc(100% - 55px);
+      overflow: auto;
+      .el-table {
+        overflow: auto;
+      }
+    }
+  }
+}
+

@@ -108,6 +108,7 @@
       center
       :modal="false"
       :fullscreen="fullscreen"
+      width="500px"
     >
       <div
         class="content"
